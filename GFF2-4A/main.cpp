@@ -2,6 +2,8 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
+	double dNextTime = GetNowCount();
+
 	SetMainWindowText("");
 
 	ChangeWindowMode(TRUE);		// ウィンドウモードで起動
@@ -48,6 +50,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		ScreenFlip();			// 裏画面の内容を表画面に反映
+
+		dNextTime += 16.66;
+		if (dNextTime > GetNowCount()) {
+			WaitTimer((int)dNextTime - GetNowCount());
 	}
 	return 0;
 }
