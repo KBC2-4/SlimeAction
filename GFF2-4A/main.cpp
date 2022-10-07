@@ -1,7 +1,11 @@
-#include "main.h"
+#include "DxLib.h"
+#include"PadInput.h"
+#include"SceneManager.h"
+#include"Title.h"
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
 	double dNextTime = GetNowCount();
 
 	SetMainWindowText("");
@@ -41,19 +45,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		ClearDrawScreen();		// 画面の初期化
-		FPSC.All();
-		PAD_INPUT::UpdateKey();
+
+		PAD_INPUT::UpdateKey();	//パッドの入力状態の更新
 		sceneMng->Draw();
-		if ((PAD_INPUT::GetPadFlag()) && (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_BACK) || (CheckHitKey(KEY_INPUT_ESCAPE) == 1))
-		{
-			break;
-		}
 
 		ScreenFlip();			// 裏画面の内容を表画面に反映
 
 		dNextTime += 16.66;
 		if (dNextTime > GetNowCount()) {
 			WaitTimer((int)dNextTime - GetNowCount());
+		}
 	}
+
+	DxLib_End();
 	return 0;
 }
