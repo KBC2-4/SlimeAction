@@ -51,9 +51,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		ScreenFlip();			// 裏画面の内容を表画面に反映
 
+		//フレームレートの設定
 		dNextTime += 16.66;
 		if (dNextTime > GetNowCount()) {
 			WaitTimer((int)dNextTime - GetNowCount());
+		}
+
+		//Backボタンを押したら強制終了
+		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_BACK) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
+		{
+			break;
 		}
 	}
 

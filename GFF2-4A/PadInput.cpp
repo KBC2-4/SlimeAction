@@ -3,7 +3,7 @@
 
 int PAD_INPUT::NowKey = -1;
 int PAD_INPUT::OldKey = -1;
-PADSTATE PAD_INPUT::state = PADSTATE::NOT;
+PAD_STATE PAD_INPUT::state = PAD_STATE::NOT;
 XINPUT_STATE PAD_INPUT::Input;
 
 void PAD_INPUT::UpdateKey()
@@ -28,19 +28,19 @@ void PAD_INPUT::UpdateKey()
 		//âüÇ≥ÇÍÇΩèuä‘
 		if (NowKey != OldKey)
 		{
-			state = PADSTATE::ON;
+			state = PAD_STATE::ON;
 		}
 
 		//âüÇ≥ÇÍÇƒÇ¢ÇÈä‘
 		if (NowKey == OldKey)
 		{
-			state = PADSTATE::DOWN;
+			state = PAD_STATE::DOWN;
 		}
 	}
 	else
 	{
 		//âüÇ≥ÇÍÇƒÇ¢Ç»Ç¢
-		state = PADSTATE::NOT;
+		state = PAD_STATE::NOT;
 	}
 	
 }
