@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetGraphMode(1280, 720, 32);
 	if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
 
-	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
+	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);		//フォントをアンチエイリアス対応にする。
 
 	SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
 
