@@ -14,5 +14,14 @@ private:
 	int stage;
 	int stage_map[36][32];
 public:
+	STAGE();
+	//ステージの描画
+	void Draw() const;
+	//ボタンの処理
+	void ButtonProcess();
+	//水たまりの処理
+	void PuddleProcess();
+	//フックの処理
+	void HookProcess();
 };
 
