@@ -2,6 +2,7 @@
 
 #define MAP_HEIGHT 18
 #define MAP_WIDTH 32
+#define MAP_CEll_SIZE 40
 
 class STAGE
 {
@@ -12,7 +13,7 @@ private:
 	int image4[100];
 	int image5[100];
 	int stage;
-	int stage_map[36][32];
+	int stage_map[36][MAP_WIDTH];
 public:
 	STAGE();
 	//ステージの描画
