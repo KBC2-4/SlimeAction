@@ -3,6 +3,7 @@
 #include"SceneManager.h"
 #include"Title.h"
 
+#include "PLAYER.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -19,7 +20,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
 
 	SceneManager* sceneMng;
-
 	try
 	{
 		sceneMng = new SceneManager((AbstractScene*)new Title());
@@ -40,6 +40,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return 0;
 	}
 
+	Player player;
+
 	// ゲームループ
 	while ((ProcessMessage() == 0) && (sceneMng->Update() != nullptr)) {
 
@@ -48,6 +50,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		PAD_INPUT::UpdateKey();	//パッドの入力状態の更新
 		sceneMng->Draw();
+
+		//プレイヤーの表示
+		player.Update();
+		player.Draw();
+
 
 		ScreenFlip();			// 裏画面の内容を表画面に反映
 
