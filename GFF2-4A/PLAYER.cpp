@@ -1,19 +1,21 @@
 #include "PLAYER.h"
 #include"DxLib.h"
+#include "STAGE.h"
+#include <math.h>
 
-
+//中心から240 フック
 
 
 /*コンストラクタ*/
 Player::Player() {
 	player_x = 20.0f;
-	player_y = 600.0f;
+	player_y = 550.0f;
 	map_x = 0;
 	map_y = 0;
 	life = 5;
 	jump_mode = 0;
 	player_state = PLAYER_STATE::IDLE;
-	LoadDivGraph("Resource/Images/Player/Slime.png", 5, 5, 1, 40, 40, image);
+	LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 40, 40, image);
 	animation_frame = 0;
 	animation_type = 0;
 }
@@ -70,6 +72,8 @@ void Player::Move() {
 			player_state = PLAYER_STATE::IDLE;	//ステートをIdleに切り替え
 		}
 	}
+	map_x = round((player_x) / 40.0f);
+	map_y = round((player_y) / 40.0f);
 }
 
 void Player::HookMove() {
@@ -101,7 +105,9 @@ void Player::JumpMove() {
 		}
 	}
 	else {
-		if (player_y < 700) {
+		SetFontSize(40);
+		DrawFormatString(0, 0, 0xFF, "%d, %d: %d", map_x, map_y, STAGE::GetMapDat(map_y, map_x));
+		if (STAGE::GetMapDat(map_y, map_x) == 0) {
 			++player_y;
 		}
 		else {

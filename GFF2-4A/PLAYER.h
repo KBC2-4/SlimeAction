@@ -29,7 +29,7 @@ private:
 	const int MAX_LIFE = 5;
 	const int DEVIATION = 2000;				//スティック入力の誤入力の範囲
 	const int ANIMATION_SWITCH_FRAME = 10;	//画像を切り替えるタイミング
-	const int IMAGE_MAX_NUM = 5;			//画像の枚数
+	const int IMAGE_MAX_NUM = 10;			//画像の枚数
 public:
 	Player();
 
