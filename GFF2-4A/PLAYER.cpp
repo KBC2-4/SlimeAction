@@ -9,7 +9,7 @@
 /*コンストラクタ*/
 Player::Player() {
 	player_x = 20.0f;
-	player_y = 550.0f;
+	player_y = 520.0f;
 	map_x = 0;
 	map_y = 0;
 	life = 5;
@@ -33,7 +33,6 @@ void Player::Update() {
 /// </summary>
 void Player::Draw()const {
 	DrawRotaGraphF(player_x, player_y, 1.0, 0.0, image[animation_type], TRUE, move_type);
-
 	//グリッドの表示(デバッグ用)
 	/*for (int i = 0; i < 32; i++) {
 		DrawLine(i * 40, 0, i * 40, 720, 0xFFFFFF, 2);
@@ -72,8 +71,8 @@ void Player::Move() {
 			player_state = PLAYER_STATE::IDLE;	//ステートをIdleに切り替え
 		}
 	}
-	map_x = round(player_x / 40.0f);
-	map_y = round(player_y / 40.0f);
+	map_x = round(player_x / 80.0f);
+	map_y = round(player_y / 80.0f);
 }
 
 void Player::HookMove() {
