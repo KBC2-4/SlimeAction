@@ -9,6 +9,7 @@ PLAYER::PLAYER() {
 	map_x = 0;
 	map_y = 0;
 	life = 5;
+	*image = { 0 };
 }
 
 void PLAYER::Draw()const {
