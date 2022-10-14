@@ -1,7 +1,7 @@
 #pragma once
 
 #define MAP_HEIGHT 9
-#define MAP_WIDTH 48
+#define MAP_WIDTH 16
 #define MAP_CEllSIZE 80
 
 class STAGE
