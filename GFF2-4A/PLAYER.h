@@ -15,13 +15,14 @@ class Player
 {
 
 private:
-	int player_x,player_y;
+	float player_x,player_y;
 	int map_x, map_y;
 	int life;
 	int image[100];
 	int move_type;			//左か右の移動(反転用)
 	int animation_frame;	//アニメーションのフレームのカウント
 	int animation_type;		//今のアニメーションの添え字
+	int jump_mode;			//停止ジャンプ(1)か移動ジャンプ(2)か
 
 	PLAYER_STATE player_state;		//ステート変数
 
