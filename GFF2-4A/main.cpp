@@ -2,6 +2,7 @@
 #include"PadInput.h"
 #include"SceneManager.h"
 #include"Title.h"
+#include "STAGE.h"
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -45,7 +46,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		ClearDrawScreen();		// 画面の初期化
-
 		PAD_INPUT::UpdateKey();	//パッドの入力状態の更新
 		sceneMng->Draw();
 
