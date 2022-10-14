@@ -15,7 +15,7 @@ Player::Player() {
 	life = 5;
 	jump_mode = 0;
 	player_state = PLAYER_STATE::IDLE;
-	LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 40, 40, image);
+	LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 80, 80, image);
 	animation_frame = 0;
 	animation_type = 0;
 }
@@ -72,8 +72,8 @@ void Player::Move() {
 			player_state = PLAYER_STATE::IDLE;	//ステートをIdleに切り替え
 		}
 	}
-	map_x = round((player_x) / 40.0f);
-	map_y = round((player_y) / 40.0f);
+	map_x = round(player_x / 40.0f);
+	map_y = round(player_y / 40.0f);
 }
 
 void Player::HookMove() {
@@ -89,7 +89,7 @@ void Player::JumpMove() {
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A) {
 		if (player_state != PLAYER_STATE::JUMP) {
 			jump_type = 1;
-			jump_y = player_y - 40;
+			jump_y = player_y - 80;
 			if (player_state == PLAYER_STATE::IDLE) {
 				jump_mode = 1;
 			}
