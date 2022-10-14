@@ -18,7 +18,7 @@ void STAGE::Draw()const {
 				DrawGraph(j * MAP_CEllSIZE, i * MAP_CEllSIZE, image1[0], TRUE);
 			}
 			else if (map_data[i][j] == 2) {
-				DrawGraph(j * MAP_CEllSIZE, i * MAP_CEllSIZE, image1[1], TRUE);
+				DrawGraph(j * MAP_CEllSIZE, i * MAP_CEllSIZE, image1[3], TRUE);
 			}
 		}
 	}
