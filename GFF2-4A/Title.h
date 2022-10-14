@@ -1,8 +1,11 @@
 #pragma once
 #include "AbstractScene.h"
+#include "STAGE.h"
 class Title :
     public AbstractScene
 {
+private:
+    STAGE stage;
 public:
     //コンストラクタ
     Title();
