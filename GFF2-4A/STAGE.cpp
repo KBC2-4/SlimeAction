@@ -15,7 +15,7 @@ void STAGE::Draw()const {
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			if (map_data[i][j] == 1) {
-				DrawGraph(j * MAP_CEllSIZE, i * MAP_CEllSIZE, image1[1], TRUE);
+				DrawGraph(j * MAP_CEllSIZE, i * MAP_CEllSIZE, image1[0], TRUE);
 			}
 			else if (map_data[i][j] == 2) {
 				DrawGraph(j * MAP_CEllSIZE, i * MAP_CEllSIZE, image1[3], TRUE);
@@ -33,13 +33,14 @@ void STAGE::InitStage() {
 		throw "Resource/Map_Data/MapData_1.txt";
 	}
 	for (int i = 0; i < MAP_HEIGHT; i++) {
-		for (int j = 0; j < MAP_WIDTH; j++) {
+		for (int j = 0; j < MAP_WIDTH+1; j++) {
 			char c;
 			fscanf_s(fp, "%c", &c);
 			
 			map_data[i][j] = c - '0';
 		}
 	}
+	fclose(fp);
 }
 
 void STAGE::ButtonProcess() {
