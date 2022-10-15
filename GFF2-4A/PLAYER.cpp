@@ -9,7 +9,7 @@
 /*コンストラクタ*/
 Player::Player() {
 	player_x = 20.0f;
-	player_y = 550.0f;
+	player_y = 500.0f;
 	map_x = 0;
 	map_y = 0;
 	life = 5;
@@ -18,6 +18,7 @@ Player::Player() {
 	LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 80, 80, image);
 	animation_frame = 0;
 	animation_type = 0;
+	animation_phase = 0;
 }
 
 /// <summary>
@@ -35,9 +36,14 @@ void Player::Draw()const {
 	DrawRotaGraphF(player_x, player_y, 1.0, 0.0, image[animation_type], TRUE, move_type);
 
 	//グリッドの表示(デバッグ用)
-	/*for (int i = 0; i < 32; i++) {
-		DrawLine(i * 40, 0, i * 40, 720, 0xFFFFFF, 2);
-	}*/
+	//for (int i = 0; i < 32; i++) {
+	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
+	//	DrawLine(i * 80, 0, i * 80,  720,0xFFFFFF, 2);		//縦
+	//}
+	
+	//マップチップの座標の表示(デバッグ用)
+	/*SetFontSize(40);
+	DrawFormatString(0, 0, 0xFF, "%d, %d: %d", map_x, map_y, STAGE::GetMapDat(map_y, map_x));*/
 }
 
 /// <summary>
@@ -52,28 +58,41 @@ void Player::Move() {
 		if (move_x > 0) move_type = 0;			//右移動の時
 		else move_type = 1;						//左移動の時
 		if (player_state != PLAYER_STATE::JUMP) {
-			player_x += move_x;
+			//アニメーションが前半のとき
+			if (animation_phase == 0 || true)
+				player_x += move_x * SPEED;
+			//アニメーションが後半のとき
+			else
+				player_x += move_x * SPEED / 2;
 			player_state = PLAYER_STATE::MOVE;	//ステートをMoveに切り替え
 		}
 		else {
 			//停止ジャンプだった時
 			if (jump_mode == 1) {
-				player_x += move_x / 2;
+				player_x += move_x * SPEED / 2;
 			}
 			//移動ジャンプだった時
 			else {
-				player_x += move_x;
+				player_x += move_x * SPEED;
 			}
 		}
 		MoveAnimation();
 	}
+	//移動してない時
 	else {
+		//アニメーションを後半へ移行
+		if (animation_type > 1) {
+			animation_phase = 1;
+			MoveAnimation();
+		}
+		//ジャンプ中じゃないかったらステートを切り替える
 		if (player_state != PLAYER_STATE::JUMP) {
 			player_state = PLAYER_STATE::IDLE;	//ステートをIdleに切り替え
 		}
 	}
-	map_x = round(player_x / 40.0f);
-	map_y = round(player_y / 40.0f);
+	//マップチップの座標のセット
+	map_x = round(player_x / (float)MAP_CEllSIZE);
+	map_y = round(player_y / (float)MAP_CEllSIZE);
 }
 
 void Player::HookMove() {
@@ -84,32 +103,38 @@ void Player::HookMove() {
 /// プレイヤーのジャンプ処理
 /// </summary>
 void Player::JumpMove() {
-	static int jump_type = 0;
-	static int jump_y = 0;
+	static bool isJump = false;	//ジャンプ中か
+	static int jump_y = 0;		//ジャンプの高さ
+	//Aボタンを押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A) {
+		//ジャンプ中じゃないとき
 		if (player_state != PLAYER_STATE::JUMP) {
-			jump_type = 1;
-			jump_y = player_y - 80;
+			isJump = true;			//ジャンプ中に移行
+			jump_y = player_y - (float)MAP_CEllSIZE; //ジャンプの高さのセット
+			//横移動してない時
 			if (player_state == PLAYER_STATE::IDLE) {
 				jump_mode = 1;
 			}
+			//横移動してるとき
 			else if (player_state == PLAYER_STATE::MOVE) {
 				jump_mode = 2;
 			}
 			player_state = PLAYER_STATE::JUMP;
 		}
 	}
-	if (jump_type == 1) {
+	//ジャンプ中
+	if (isJump) {
 		if (--player_y < jump_y) {
-			jump_type = 2;
+			isJump = false;
 		}
 	}
+	//落下中
 	else {
-		SetFontSize(40);
-		DrawFormatString(0, 0, 0xFF, "%d, %d: %d", map_x, map_y, STAGE::GetMapDat(map_y, map_x));
+		//落下処理
 		if (STAGE::GetMapDat(map_y, map_x) == 0) {
 			++player_y;
 		}
+		//地面についた時
 		else {
 			player_state = PLAYER_STATE::IDLE;
 		}
@@ -127,8 +152,16 @@ void Player::Throw() {
 void Player::MoveAnimation() {
 	//画像の切り替えタイミングのとき
 	if (++animation_frame % ANIMATION_SWITCH_FRAME == 0) {
-		//画像の要素数がオーバーした場合 0に戻す
-		if (++animation_type >= IMAGE_MAX_NUM) animation_type = 0;
+		//前半のアニメーション
+		if (animation_phase == 0) {
+			animation_type++;
+		}
+		//後半のアニメーション
+		else {
+			animation_type--;
+		}
+		//前半と後半の切り替え
+		if (animation_type >= IMAGE_MAX_NUM - 1 || animation_type <= 0) animation_phase = (animation_phase + 1) % 2;
 	}
 }
 

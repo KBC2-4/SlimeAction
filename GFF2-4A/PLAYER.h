@@ -1,6 +1,12 @@
 #pragma once
 #include"PadInput.h"
 
+#define MAX_LIFE				5		//プレイヤーの最大ライフ
+#define SPEED					3.0f	//プレイヤーのスピード
+#define DEVIATION				2000	//スティック入力の誤入力の範囲
+#define ANIMATION_SWITCH_FRAME	1		//画像を切り替えるタイミング(フレーム)
+#define IMAGE_MAX_NUM			10		//画像の枚数
+
 enum class PLAYER_STATE {
 	IDLE = 0,//停止しているとき
 	MOVE,    //動いてるとき
@@ -22,14 +28,11 @@ private:
 	int move_type;			//左か右の移動(反転用)
 	int animation_frame;	//アニメーションのフレームのカウント
 	int animation_type;		//今のアニメーションの添え字
+	int animation_phase;	//アニメーションの段階(0: 前半, 1: 後半)
 	int jump_mode;			//停止ジャンプ(1)か移動ジャンプ(2)か
 
 	PLAYER_STATE player_state;		//ステート変数
 
-	const int MAX_LIFE = 5;
-	const int DEVIATION = 2000;				//スティック入力の誤入力の範囲
-	const int ANIMATION_SWITCH_FRAME = 10;	//画像を切り替えるタイミング
-	const int IMAGE_MAX_NUM = 10;			//画像の枚数
 public:
 	Player();
 
