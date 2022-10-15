@@ -34,7 +34,6 @@ void Player::Update() {
 /// </summary>
 void Player::Draw()const {
 	DrawRotaGraphF(player_x, player_y, 1.0, 0.0, image[animation_type], TRUE, move_type);
-
 	//グリッドの表示(デバッグ用)
 	//for (int i = 0; i < 32; i++) {
 	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
