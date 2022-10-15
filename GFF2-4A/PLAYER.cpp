@@ -9,7 +9,7 @@
 /*コンストラクタ*/
 Player::Player() {
 	player_x = 20.0f;
-	player_y = 500.0f;
+	player_y = 520.0f;
 	map_x = 0;
 	map_y = 0;
 	life = 5;
@@ -54,15 +54,16 @@ void Player::Move() {
 	//移動するとき
 	if (input_lx < -DEVIATION || input_lx > DEVIATION) {
 		float move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
-		if (move_x > 0) move_type = 0;			//右移動の時
-		else move_type = 1;						//左移動の時
-		if (player_state != PLAYER_STATE::JUMP) {
+		move_type = move_x > 0 ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
+		if (player_state != PLAYER_STATE::JUMP && player_state != PLAYER_STATE::FALL) {
 			//アニメーションが前半のとき
-			if (animation_phase == 0 || true)
+			if (animation_phase == 0 || true) {
 				player_x += move_x * SPEED;
+			}
 			//アニメーションが後半のとき
-			else
+			else {
 				player_x += move_x * SPEED / 2;
+			}
 			player_state = PLAYER_STATE::MOVE;	//ステートをMoveに切り替え
 		}
 		else {
@@ -85,13 +86,13 @@ void Player::Move() {
 			MoveAnimation();
 		}
 		//ジャンプ中じゃないかったらステートを切り替える
-		if (player_state != PLAYER_STATE::JUMP) {
+		if (player_state != PLAYER_STATE::JUMP && player_state != PLAYER_STATE::FALL) {
 			player_state = PLAYER_STATE::IDLE;	//ステートをIdleに切り替え
 		}
 	}
 	//マップチップの座標のセット
-	map_x = round(player_x / (float)MAP_CEllSIZE);
-	map_y = round(player_y / (float)MAP_CEllSIZE);
+	map_x = (int)roundf(player_x / MAP_CEllSIZE);
+	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
 }
 
 void Player::HookMove() {
@@ -102,14 +103,16 @@ void Player::HookMove() {
 /// プレイヤーのジャンプ処理
 /// </summary>
 void Player::JumpMove() {
-	static bool isJump = false;	//ジャンプ中か
-	static int jump_y = 0;		//ジャンプの高さ
+	static bool is_jump = false;		//ジャンプ中か
+	static float jump_y = 0;			//ジャンプの高さ
+	static float velocity = 0.0f;	//ジャンプと落下のスピード
 	//Aボタンを押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A) {
 		//ジャンプ中じゃないとき
-		if (player_state != PLAYER_STATE::JUMP) {
-			isJump = true;			//ジャンプ中に移行
-			jump_y = player_y - (float)MAP_CEllSIZE; //ジャンプの高さのセット
+		if (player_state != PLAYER_STATE::JUMP && player_state != PLAYER_STATE::FALL) {
+			is_jump = true;			//ジャンプ中に移行
+			jump_y = player_y - MAP_CEllSIZE; //ジャンプの高さのセット
+			velocity = JUMP_VELOCITY;
 			//横移動してない時
 			if (player_state == PLAYER_STATE::IDLE) {
 				jump_mode = 1;
@@ -122,20 +125,28 @@ void Player::JumpMove() {
 		}
 	}
 	//ジャンプ中
-	if (isJump) {
-		if (--player_y < jump_y) {
-			isJump = false;
+	if (is_jump) {
+		velocity += 0.2f;
+		player_y += velocity;
+		if (player_y <= jump_y && velocity >= 0) {
+			is_jump = false;
 		}
 	}
 	//落下中
 	else {
 		//落下処理
 		if (STAGE::GetMapDat(map_y, map_x) == 0) {
-			++player_y;
+			velocity += 0.2f;
+			player_y += velocity;
+			player_state = PLAYER_STATE::FALL;
 		}
 		//地面についた時
 		else {
-			player_state = PLAYER_STATE::IDLE;
+			if (player_state == PLAYER_STATE::FALL) {
+				player_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+				velocity = 0;
+				player_state = PLAYER_STATE::IDLE;
+			}
 		}
 	}
 

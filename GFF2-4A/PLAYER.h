@@ -6,11 +6,13 @@
 #define DEVIATION				2000	//スティック入力の誤入力の範囲
 #define ANIMATION_SWITCH_FRAME	1		//画像を切り替えるタイミング(フレーム)
 #define IMAGE_MAX_NUM			10		//画像の枚数
+#define JUMP_VELOCITY			-5.8f	//ジャンプスピード
 
 enum class PLAYER_STATE {
 	IDLE = 0,//停止しているとき
 	MOVE,    //動いてるとき
 	JUMP,    //跳ぶ
+	FALL,	 //落下
 	THROW,   //投げる時
 	HOOK,    //フックをつかむとき
 	DAMAGE,  //ダメージを受けた時
