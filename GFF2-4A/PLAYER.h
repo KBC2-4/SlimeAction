@@ -25,6 +25,8 @@ class Player
 private:
 	float player_x,player_y;
 	int map_x, map_y;
+	float map_left, map_right;
+	float map_top, map_bottom;
 	int life;
 	int idle_images[10];
 	int move_images[10];

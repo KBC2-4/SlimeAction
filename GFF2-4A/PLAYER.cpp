@@ -4,8 +4,6 @@
 #include <math.h>
 
 //中心から240 フック
-float map_left, map_right;
-float map_top, map_bottom;
 
 /*コンストラクタ*/
 Player::Player() {
@@ -112,45 +110,45 @@ void Player::Move() {
 		}
 	}
 	//マップチップの座標のセット
-	map_x = (int)roundf(player_x / MAP_CEllSIZE);
+	map_x = (int)roundf((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
-	map_left = (player_x - 35);
-	map_right = (player_x + 35);
+	map_left = (player_x - STAGE::GetScrollX() - 35);
+	map_right = (player_x - STAGE::GetScrollX() + 35);
 	map_top = (player_y - MAP_CEllSIZE / 2);
 	map_bottom = (player_y + MAP_CEllSIZE / 2);
 	if (player_state == PLAYER_STATE::JUMP || player_state == PLAYER_STATE::FALL) {
 		if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
 			if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
-				player_x -= SPEED;
+				player_x -= SPEED * 2;
 			}
 			else {
-				player_x += SPEED;
+				player_x += SPEED * 2;
 			}
 		}
 		else if(STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
 			if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
-				player_x += SPEED;
+				player_x += SPEED * 2;
 			}
 			else {
-				player_x -= SPEED;
+				player_x -= SPEED * 2;
 			}
 		}
 	}
 	else {
 		if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
 			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
-				player_x += SPEED;
+				player_x += SPEED * 2;
 			}
 			else {
-				player_x -= SPEED;
+				player_x -= SPEED * 2;
 			}
 		}
 		else if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
 			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
-				player_x -= SPEED;
+				player_x -= SPEED * 2;
 			}
 			else {
-				player_x += SPEED;
+				player_x += SPEED * 2;
 			}
 		}
 	}
@@ -191,13 +189,13 @@ void Player::JumpMove() {
 		player_y += velocity;
 		bool is_block = false;
 		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0 &&
-			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) != 0)
+			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE)) != 0)
 			is_block = true;
 		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0 &&
-			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) != 0)
+			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE)) != 0)
 			is_block = true;
-		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0) player_x -= SPEED;
-		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0) player_x += SPEED;
+		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0) player_x -= SPEED * 2;
+		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0) player_x += SPEED * 2;
 
 		if (player_y <= jump_y && velocity >= 0 || is_block) {
 			is_jump = false;
