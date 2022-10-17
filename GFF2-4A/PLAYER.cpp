@@ -33,7 +33,7 @@ void Player::Update() {
 /// プレイヤーの表示
 /// </summary>
 void Player::Draw()const {
-	DrawRotaGraphF(player_x, player_y, 1.0, 0.0, image[animation_type], TRUE, move_type);
+	DrawRotaGraphF((player_x-16), player_y, 1.0, 0.0, image[animation_type], TRUE, move_type);
 	//グリッドの表示(デバッグ用)
 	//for (int i = 0; i < 32; i++) {
 	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
@@ -77,7 +77,9 @@ void Player::Move() {
 			}
 		}
 		MoveAnimation();
+		STAGE::SetScrollPos(move_type);
 	}
+	
 	//移動してない時
 	else {
 		//アニメーションを後半へ移行

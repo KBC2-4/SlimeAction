@@ -49,6 +49,8 @@ public:
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
+	float GetPlayerX() { return player_x; };
+	float GetPlayerY() { return player_y; };
 
 	void SetLife(int);
 };

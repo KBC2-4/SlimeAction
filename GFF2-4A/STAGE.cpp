@@ -2,6 +2,8 @@
 #include"DxLib.h"
 
 int STAGE::map_data[MAP_HEIGHT][MAP_WIDTH];
+float STAGE::scroll_x = 0;
+float STAGE::scroll_y = 0;
 
 STAGE::STAGE() {
 	**map_data = { 0 };
@@ -11,14 +13,25 @@ STAGE::STAGE() {
 }
 
 
+void STAGE::Update(float player_x,float player_y) {
+	//map_x = player_x - float((MAP_WIDTH/3 + 2) / 2 - 1);
+	//map_x++;
+	//map_y = player_y - float((MAP_HEIGHT + 2) / 2 - 1);
+}
+
 void STAGE::Draw()const {
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
-			if (map_data[i][j] == 1) {
-				DrawGraph(j * MAP_CEllSIZE, i * MAP_CEllSIZE, image1[0], TRUE);
+			//DrawFormatString(200+j*30, 50+i*30, 0xffffff, "%3d ", map_data[i + int(map_x)][j + int(map_y)]);
+			//‰æ–ÊŠO‚Í•`‰æ‚µ‚È‚¢
+			/*if (j + map_x<0 || i + map_y<0 || j + map_x>MAP_WIDTH * MAP_CEllSIZE || i + map_y>MAP_HEIGHT * MAP_CEllSIZE)
+				continue;*/
+
+			if (map_data[i ][j ] == 1) {
+				DrawGraph(j*MAP_CEllSIZE+scroll_x, i*MAP_CEllSIZE, image1[0], TRUE);
 			}
-			else if (map_data[i][j] == 2) {
-				DrawGraph(j * MAP_CEllSIZE, i * MAP_CEllSIZE, image1[3], TRUE);
+			else if (map_data[i][j ] == 2) {
+				DrawGraph(j * MAP_CEllSIZE+scroll_x , i*MAP_CEllSIZE , image1[3], TRUE);
 			}
 			
 		}
@@ -53,4 +66,13 @@ void STAGE::HookProcess() {
 
 void STAGE::PuddleProcess(){
 
+}
+
+void STAGE::SetScrollPos(int move_type) {
+	if (move_type ==0) {
+		scroll_x--;
+	}
+	else {
+		scroll_x++;
+	}
 }

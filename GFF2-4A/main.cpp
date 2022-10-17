@@ -42,6 +42,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	Player player;
+	STAGE stage;
 
 	// ゲームループ
 	while ((ProcessMessage() == 0) && (sceneMng->Update() != nullptr)) {
@@ -52,8 +53,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		sceneMng->Draw();
 
 		//プレイヤーの表示
+		int old_playerx = player.GetPlayerX();
 		player.Update();
 		player.Draw();
+
+		stage.Update(player.GetPlayerX()-old_playerx,player.GetPlayerY()-40);
+		stage.Draw();
 
 
 		ScreenFlip();			// 裏画面の内容を表画面に反映
