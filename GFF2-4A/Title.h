@@ -5,7 +5,7 @@ class Title :
     public AbstractScene
 {
 private:
-    STAGE stage;
+    
 public:
     //コンストラクタ
     Title();

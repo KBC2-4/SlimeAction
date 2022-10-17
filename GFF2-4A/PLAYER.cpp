@@ -92,7 +92,9 @@ void Player::Move() {
 			}
 		}
 		MoveAnimation(1);
+		STAGE::SetScrollPos(move_type);
 	}
+	
 	//移動してない時
 	else {
 		//アニメーションを後半へ移行
