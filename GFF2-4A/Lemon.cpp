@@ -3,10 +3,6 @@
 
 LEMON::LEMON()
 {
-	x = 0;
-	y = 0;
-	map_x = 0;
-	map_y = 0;
 	if (LoadGraph("") == -1)
 	{
 		throw "image/Lemon";
@@ -19,6 +15,11 @@ void LEMON::Move()
 }
 
 void LEMON::ShotFruitJuice()
+{
+
+}
+
+void LEMON::Hit()
 {
 
 }

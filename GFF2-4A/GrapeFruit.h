@@ -1,14 +1,10 @@
 #pragma once
 #include"Enemy.h"
-
-class LEMON :
-    public ENEMY
+class GRAPEFRUIT :
+	public ENEMY
 {
-private:
-
 public:
-    LEMON();
-
+	GRAPEFRUIT();
 	/// <summary>
 	/// ˆÚ“®
 	/// </summary>
@@ -16,7 +12,7 @@ public:
 	/// <summary>
 	/// ‰Ê`‚ğ”­Ë
 	/// </summary>
-	void ShotFruitJuice() override;
+	void ShotFruitJuice()override;
 	/// <summary>
 	/// “–‚½‚è”»’è
 	/// </summary>
@@ -28,6 +24,6 @@ public:
 	/// <summary>
 	/// •`‰æ
 	/// </summary>
-	void Draw()const override;
+	virtual void Draw()const override;
 };
 

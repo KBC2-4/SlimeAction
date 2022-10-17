@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="GrapeFruit.cpp" />
     <ClCompile Include="Lemon.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\PG\dxlib</AdditionalIncludeDirectories>
@@ -162,18 +163,23 @@
     <ClCompile Include="PadInput.cpp" />
     <ClCompile Include="PLAYER.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Splash.cpp" />
     <ClCompile Include="STAGE.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="Tomato.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="GrapeFruit.h" />
     <ClInclude Include="Lemon.h" />
     <ClInclude Include="PadInput.h" />
     <ClInclude Include="PLAYER.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Splash.h" />
     <ClInclude Include="STAGE.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="Tomato.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
