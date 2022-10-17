@@ -2,6 +2,7 @@
 #include"PadInput.h"
 #include"SceneManager.h"
 #include"Title.h"
+#include "STAGE.h"
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -14,7 +15,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetGraphMode(1280, 720, 32);
 	if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
 
-	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
+	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);		//フォントをアンチエイリアス対応にする。
 
 	SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
 
@@ -45,7 +46,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		ClearDrawScreen();		// 画面の初期化
-
 		PAD_INPUT::UpdateKey();	//パッドの入力状態の更新
 		sceneMng->Draw();
 

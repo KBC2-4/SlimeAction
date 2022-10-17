@@ -13,5 +13,5 @@ AbstractScene* Title::Update()
 
 void Title::Draw()const
 {
-
+	stage.Draw();
 }

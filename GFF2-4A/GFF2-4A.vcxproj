@@ -160,7 +160,9 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\PG\dxlib</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="PadInput.cpp" />
+    <ClCompile Include="PLAYER.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="STAGE.cpp" />
     <ClCompile Include="Title.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -168,7 +170,9 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Lemon.h" />
     <ClInclude Include="PadInput.h" />
+    <ClInclude Include="PLAYER.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="STAGE.h" />
     <ClInclude Include="Title.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
