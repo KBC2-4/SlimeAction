@@ -4,7 +4,8 @@
 #include <math.h>
 
 //中心から240 フック
-
+float map_left, map_right;
+float map_top, map_bottom;
 
 /*コンストラクタ*/
 Player::Player() {
@@ -25,6 +26,7 @@ Player::Player() {
 /// プレイヤーの更新
 /// </summary>
 void Player::Update() {
+	clsDx();
 	Move();
 	JumpMove();
 }
@@ -39,6 +41,11 @@ void Player::Draw()const {
 	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
 	//	DrawLine(i * 80, 0, i * 80,  720,0xFFFFFF, 2);		//縦
 	//}
+
+	//座標(デバッグ用)
+	/*printfDx("x1: %d, x2: %d\n", (int)(map_left / MAP_CEllSIZE), (int)map_right / MAP_CEllSIZE);
+	printfDx("y1: %d, y2: %d\n", (int)(map_top / MAP_CEllSIZE), (int)map_bottom / MAP_CEllSIZE);
+	printfDx("x : %d, y : %d\n", (int)(player_x / MAP_CEllSIZE), (int)player_y / MAP_CEllSIZE);*/
 	
 	//マップチップの座標の表示(デバッグ用)
 	/*SetFontSize(40);
@@ -52,8 +59,8 @@ void Player::Move() {
 	//スティック入力の取得
 	int input_lx = PAD_INPUT::GetPadThumbLX();
 	//移動するとき
+	float move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 	if (input_lx < -DEVIATION || input_lx > DEVIATION) {
-		float move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 		move_type = move_x > 0 ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
 		if (player_state != PLAYER_STATE::JUMP && player_state != PLAYER_STATE::FALL) {
 			//アニメーションが前半のとき
@@ -95,6 +102,46 @@ void Player::Move() {
 	//マップチップの座標のセット
 	map_x = (int)roundf(player_x / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
+	map_left = (player_x - 35);
+	map_right = (player_x + 35);
+	map_top = (player_y - MAP_CEllSIZE / 2);
+	map_bottom = (player_y + MAP_CEllSIZE / 2);
+	if (player_state == PLAYER_STATE::JUMP || player_state == PLAYER_STATE::FALL) {
+		if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
+				player_x -= SPEED;
+			}
+			else {
+				player_x += SPEED;
+			}
+		}
+		else if(STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
+				player_x += SPEED;
+			}
+			else {
+				player_x -= SPEED;
+			}
+		}
+	}
+	else {
+		if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
+				player_x += SPEED;
+			}
+			else {
+				player_x -= SPEED;
+			}
+		}
+		else if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
+				player_x -= SPEED;
+			}
+			else {
+				player_x += SPEED;
+			}
+		}
+	}
 }
 
 void Player::HookMove() {
@@ -130,24 +177,49 @@ void Player::JumpMove() {
 	if (is_jump) {
 		velocity += 0.2f;
 		player_y += velocity;
-		if (player_y <= jump_y && velocity >= 0) {
+		bool is_block = false;
+		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0 &&
+			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) != 0)
+			is_block = true;
+		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0 &&
+			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) != 0)
+			is_block = true;
+		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0) player_x -= SPEED;
+		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0) player_x += SPEED;
+
+		if (player_y <= jump_y && velocity >= 0 || is_block) {
 			is_jump = false;
+			velocity = 0;
 		}
 	}
 	//落下中
 	else {
 		//落下処理
-		if (STAGE::GetMapDat(map_y, map_x) == 0) {
+		bool is_ground = false;
+		if (STAGE::GetMapDat((int)(map_bottom / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0 &&
+			STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) == 0) is_ground = true;
+		if (STAGE::GetMapDat((int)(map_bottom / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0 &&
+			STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) == 0) is_ground = true;
+		if (!is_ground) {
 			velocity += 0.2f;
 			player_y += velocity;
 			player_state = PLAYER_STATE::FALL;
 		}
 		//地面についた時
 		else {
-			if (player_state == PLAYER_STATE::FALL) {
-				player_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
-				velocity = 0;
-				player_state = PLAYER_STATE::IDLE;
+			if (player_state == PLAYER_STATE::FALL || player_state == PLAYER_STATE::JUMP) {
+				float new_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+				if (fabsf(player_y - new_y) <= 10) {
+					player_y = new_y;
+					velocity = 0;
+					player_state = PLAYER_STATE::IDLE;
+				}
+				else {
+					if (move_type == 0)
+						player_x -= SPEED;
+					else
+						player_x += SPEED;
+				}
 			}
 		}
 	}
