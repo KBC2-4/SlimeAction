@@ -16,10 +16,14 @@ Player::Player() {
 	life = 5;
 	jump_mode = 0;
 	player_state = PLAYER_STATE::IDLE;
-	LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 80, 80, image);
+	LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 80, 80, move_images);
+	LoadDivGraph("Resource/Images/Player/Slimest.png", 10, 10, 1, 80, 80, idle_images);
 	animation_frame = 0;
-	animation_type = 0;
-	animation_phase = 0;
+	animation_mode = 0;
+	animation_type[0] = 0;
+	animation_type[1] = 0;
+	animation_phase[0] = 0;
+	animation_phase[1] = 0;
 }
 
 /// <summary>
@@ -35,7 +39,10 @@ void Player::Update() {
 /// プレイヤーの表示
 /// </summary>
 void Player::Draw()const {
-	DrawRotaGraphF(player_x, player_y, 1.0, 0.0, image[animation_type], TRUE, move_type);
+	if (animation_mode == 0)
+		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, idle_images[animation_type[0]], TRUE, move_type);
+	else
+		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, move_images[animation_type[1]], TRUE, move_type);
 	//グリッドの表示(デバッグ用)
 	//for (int i = 0; i < 32; i++) {
 	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
@@ -61,6 +68,7 @@ void Player::Move() {
 	//移動するとき
 	float move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 	if (input_lx < -DEVIATION || input_lx > DEVIATION) {
+		animation_mode = 1;
 		move_type = move_x > 0 ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
 		if (player_state != PLAYER_STATE::JUMP && player_state != PLAYER_STATE::FALL) {
 			//アニメーションが前半のとき
@@ -83,14 +91,18 @@ void Player::Move() {
 				player_x += move_x * SPEED;
 			}
 		}
-		MoveAnimation();
+		MoveAnimation(1);
 	}
 	//移動してない時
 	else {
 		//アニメーションを後半へ移行
-		if (animation_type > 1) {
-			animation_phase = 1;
-			MoveAnimation();
+		if (animation_type[1] > 1) {
+			animation_phase[1] = 1;
+			MoveAnimation(1);
+		}
+		else {
+			animation_mode = 0;
+			MoveAnimation(0);
 		}
 		//ジャンプ中じゃないかったらステートを切り替える
 		if (player_state != PLAYER_STATE::JUMP && player_state != PLAYER_STATE::FALL) {
@@ -231,19 +243,19 @@ void Player::Throw() {
 /// <summary>
 /// アニメーションの切り替え
 /// </summary>
-void Player::MoveAnimation() {
+void Player::MoveAnimation(int type) {
 	//画像の切り替えタイミングのとき
 	if (++animation_frame % ANIMATION_SWITCH_FRAME == 0) {
 		//前半のアニメーション
-		if (animation_phase == 0) {
-			animation_type++;
+		if (animation_phase[type] == 0) {
+			animation_type[type]++;
 		}
 		//後半のアニメーション
 		else {
-			animation_type--;
+			(animation_type[type])--;
 		}
 		//前半と後半の切り替え
-		if (animation_type >= IMAGE_MAX_NUM - 1 || animation_type <= 0) animation_phase = (animation_phase + 1) % 2;
+		if (animation_type[type] >= IMAGE_MAX_NUM - 1 || animation_type[type] <= 0) animation_phase[type] = (animation_phase[type] + 1) % 2;
 	}
 }
 
