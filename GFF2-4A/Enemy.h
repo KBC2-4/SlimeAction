@@ -26,7 +26,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	ENEMY(){}
+	ENEMY();
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
