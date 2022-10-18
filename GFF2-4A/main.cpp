@@ -41,7 +41,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return 0;
 	}
 
-	Player player;
+	PLAYER player;
 	STAGE stage;
 
 	// ƒQ[ƒ€ƒ‹[ƒv

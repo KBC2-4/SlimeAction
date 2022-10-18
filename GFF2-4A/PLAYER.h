@@ -19,7 +19,7 @@ enum class PLAYER_STATE {
 	DEAD     //死んだとき
 };
 
-class Player
+class PLAYER
 {
 
 private:
@@ -40,7 +40,7 @@ private:
 	PLAYER_STATE player_state;		//ステート変数
 
 public:
-	Player();
+	PLAYER();
 
 	void Move();
 	void Draw() const;
