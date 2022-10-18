@@ -6,6 +6,12 @@ LEMON::LEMON()
 	
 }
 
+
+LEMON::LEMON(PLAYER* player)
+{
+	this->player = player;
+}
+
 void LEMON::Move()
 {
 

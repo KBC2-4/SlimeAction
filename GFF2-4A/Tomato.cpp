@@ -6,6 +6,12 @@ TOMATO::TOMATO()
 {
 
 }
+
+TOMATO::TOMATO(PLAYER* player)
+{
+	this->player = player;
+}
+
 void TOMATO::Move()
 {
 
