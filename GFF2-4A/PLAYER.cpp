@@ -32,6 +32,7 @@ void PLAYER::Update() {
 	clsDx();
 	Move();
 	JumpMove();
+	HitBlock();
 }
 
 /// <summary>
@@ -101,7 +102,6 @@ void PLAYER::Move() {
 		if (!isScroll) {
 			rebound_x = SPEED;
 		}
-		//printfDx("%f", )
 	}
 	
 	//移動してない時
@@ -118,50 +118,6 @@ void PLAYER::Move() {
 		//ジャンプ中じゃないかったらステートを切り替える
 		if (player_state != PLAYER_STATE::JUMP && player_state != PLAYER_STATE::FALL) {
 			player_state = PLAYER_STATE::IDLE;	//ステートをIdleに切り替え
-		}
-	}
-	//マップチップの座標のセット
-	map_x = (int)roundf((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE);
-	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
-	map_left = (player_x - STAGE::GetScrollX() - 35);
-	map_right = (player_x - STAGE::GetScrollX() + 35);
-	map_top = (player_y - MAP_CEllSIZE / 2);
-	map_bottom = (player_y + MAP_CEllSIZE / 2);
-
-	if (player_state == PLAYER_STATE::JUMP || player_state == PLAYER_STATE::FALL) {
-		if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
-			if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
-				player_x -= rebound_x;
-			}
-			else {
-				player_x += rebound_x;
-			}
-		}
-		else if(STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
-			if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
-				player_x += rebound_x;
-			}
-			else {
-				player_x -= rebound_x;
-			}
-		}
-	}
-	else {
-		if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
-			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
-				player_x += rebound_x;
-			}
-			else {
-				player_x -= rebound_x;
-			}
-		}
-		else if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
-			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
-				player_x -= rebound_x;
-			}
-			else {
-				player_x += rebound_x;
-			}
 		}
 	}
 }
@@ -250,6 +206,56 @@ void PLAYER::JumpMove() {
 
 void PLAYER::Throw() {
 
+}
+
+/// <summary>
+/// 横移動の当たり判定
+/// </summary>
+void PLAYER::HitBlock() {
+	//マップチップの座標のセット
+	map_x = (int)roundf((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE);
+	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
+	map_left = (player_x - STAGE::GetScrollX() - 35);
+	map_right = (player_x - STAGE::GetScrollX() + 35);
+	map_top = (player_y - MAP_CEllSIZE / 2);
+	map_bottom = (player_y + MAP_CEllSIZE / 2);
+
+	if (player_state == PLAYER_STATE::JUMP || player_state == PLAYER_STATE::FALL) {
+		if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
+				player_x -= rebound_x;
+			}
+			else {
+				player_x += rebound_x;
+			}
+		}
+		else if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
+				player_x += rebound_x;
+			}
+			else {
+				player_x -= rebound_x;
+			}
+		}
+	}
+	else {
+		if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
+				player_x += rebound_x;
+			}
+			else {
+				player_x -= rebound_x;
+			}
+		}
+		else if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
+				player_x -= rebound_x;
+			}
+			else {
+				player_x += rebound_x;
+			}
+		}
+	}
 }
 
 /// <summary>
