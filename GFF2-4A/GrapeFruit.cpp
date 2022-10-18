@@ -3,10 +3,7 @@
 
 GRAPEFRUIT::GRAPEFRUIT()
 {
-	if (LoadGraph("") == -1)
-	{
-		throw "";
-	}
+
 }
 void GRAPEFRUIT::Move()
 {

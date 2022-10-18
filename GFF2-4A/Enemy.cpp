@@ -13,10 +13,12 @@ ENEMY::ENEMY(PLAYER* player)
 	h = 0;
 	angle = 0;
 	image = 0;
-	state == ENEMY_STATE::IDOL;
+	state = ENEMY_STATE::IDOL;
 }
 
 void ENEMY::ChangeAngle()
 {
-	float rad = atan2f()
+	float rad = atan2f(player->GetPlayerX() - x, player->GetPlayerY() - y);
+
+	//angle = 
 }

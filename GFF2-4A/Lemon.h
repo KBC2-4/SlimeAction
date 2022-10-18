@@ -7,6 +7,10 @@ class LEMON :
 private:
 
 public:
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <param name="player"></param>
     LEMON();
 
 	/// <summary>

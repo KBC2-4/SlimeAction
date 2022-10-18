@@ -4,6 +4,9 @@ class GRAPEFRUIT :
 	public ENEMY
 {
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	GRAPEFRUIT();
 	/// <summary>
 	/// 移動

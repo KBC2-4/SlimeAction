@@ -1,12 +1,9 @@
 #include "DxLib.h"
 #include "Lemon.h"
 
-LEMON::LEMON()
+LEMON::LEMON(PLAYER* player)
 {
-	if (LoadGraph("") == -1)
-	{
-		throw "image/Lemon";
-	}
+	
 }
 
 void LEMON::Move()
