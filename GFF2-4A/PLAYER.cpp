@@ -15,8 +15,12 @@ PLAYER::PLAYER() {
 	life = 5;
 	jump_mode = 0;
 	player_state = PLAYER_STATE::IDLE;
-	LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 80, 80, move_images);
-	LoadDivGraph("Resource/Images/Player/Slimest.png", 10, 10, 1, 80, 80, idle_images);
+	if (LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 80, 80, move_images) == -1) {
+		throw "Resource/Images/Player/Slime.png";
+	}
+	if (LoadDivGraph("Resource/Images/Player/Slimest.png", 10, 10, 1, 80, 80, idle_images) == -1) {
+		throw "Resource/Images/Player/Slimest.png";
+	}
 	animation_frame = 0;
 	animation_mode = 0;
 	animation_type[0] = 0;
@@ -39,9 +43,9 @@ void PLAYER::Update() {
 /// プレイヤーの表示
 /// </summary>
 void PLAYER::Draw()const {
-	if (animation_mode == 0)
+	if (animation_mode == 0) //アイドル状態
 		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, idle_images[animation_type[0]], TRUE, move_type);
-	else
+	else					 //移動状態
 		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, move_images[animation_type[1]], TRUE, move_type);
 	//グリッドの表示(デバッグ用)
 	//for (int i = 0; i < 32; i++) {
@@ -68,7 +72,7 @@ void PLAYER::Move() {
 	//移動するとき
 	float move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 	if (input_lx < -DEVIATION || input_lx > DEVIATION) {
-		animation_mode = 1;
+		animation_mode = 1;							//アニメーションの切り替え
 		move_type = move_x > 0 ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
 		if (player_state != PLAYER_STATE::JUMP && player_state != PLAYER_STATE::FALL) {
 			//アニメーションが前半のとき
@@ -92,25 +96,32 @@ void PLAYER::Move() {
 			}
 		}
 		MoveAnimation(1);
+
+		//スクロールの処理
 		bool isScroll = false;
+		//プレイヤーの位置が中心だったら
 		if (move_x > 0 && player_x >= 680 || move_x < 0 && player_x <= 600) {
+			//スクロールが端まで行ってない時
 			if (!(isScroll = STAGE::SetScrollPos(move_x))) {
+				//プレイヤーの位置を中心に戻す
 				rebound_x = SPEED * 2;
 				player_x -= move_x * rebound_x;
 			}
 		}
+		//スクロールしてない時
 		if (!isScroll) {
-			rebound_x = SPEED;
+			rebound_x = SPEED; //反発力を変更
 		}
 	}
 	
 	//移動してない時
 	else {
-		//アニメーションを後半へ移行
+		//移動アニメーションを後半へ移行
 		if (animation_type[1] > 1) {
 			animation_phase[1] = 1;
 			MoveAnimation(1);
 		}
+		//移動アニメーションが終わったらアイドルアニメーションの再生
 		else {
 			animation_mode = 0;
 			MoveAnimation(0);
@@ -172,12 +183,14 @@ void PLAYER::JumpMove() {
 	}
 	//落下中
 	else {
-		//落下処理
+		//地面の判定
 		bool is_ground = false;
 		if (STAGE::GetMapDat((int)(map_bottom / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0 &&
 			STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) == 0) is_ground = true;
 		if (STAGE::GetMapDat((int)(map_bottom / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0 &&
 			STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) == 0) is_ground = true;
+
+		//地面じゃない時は落下
 		if (!is_ground) {
 			velocity += 0.2f;
 			player_y += velocity;
