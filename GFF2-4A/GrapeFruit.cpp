@@ -5,6 +5,11 @@ GRAPEFRUIT::GRAPEFRUIT()
 {
 
 }
+
+GRAPEFRUIT::GRAPEFRUIT(PLAYER* player)
+{
+	this->player = player;
+}
 void GRAPEFRUIT::Move()
 {
 }

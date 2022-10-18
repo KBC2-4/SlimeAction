@@ -2,9 +2,11 @@
 #include<math.h>
 #include "Enemy.h"
 
-ENEMY::ENEMY(PLAYER* player)
+
+
+ENEMY::ENEMY()
 {
-	this->player = player;
+	this->player = nullptr;
 	x = 0;
 	y = 0;
 	map_x = 0;
