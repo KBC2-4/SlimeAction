@@ -9,6 +9,7 @@
 PLAYER::PLAYER() {
 	player_x = 20.0f;
 	player_y = 520.0f;
+	rebound_x = SPEED;
 	map_x = 0;
 	map_y = 0;
 	life = 5;
@@ -90,7 +91,17 @@ void PLAYER::Move() {
 			}
 		}
 		MoveAnimation(1);
-		STAGE::SetScrollPos(move_x);
+		bool isScroll = false;
+		if (move_x > 0 && player_x >= 680 || move_x < 0 && player_x <= 600) {
+			if (!(isScroll = STAGE::SetScrollPos(move_x))) {
+				rebound_x = SPEED * 2;
+				player_x -= move_x * rebound_x;
+			}
+		}
+		if (!isScroll) {
+			rebound_x = SPEED;
+		}
+		//printfDx("%f", )
 	}
 	
 	//ˆÚ“®‚µ‚Ä‚È‚¢Žž
@@ -116,39 +127,40 @@ void PLAYER::Move() {
 	map_right = (player_x - STAGE::GetScrollX() + 35);
 	map_top = (player_y - MAP_CEllSIZE / 2);
 	map_bottom = (player_y + MAP_CEllSIZE / 2);
+
 	if (player_state == PLAYER_STATE::JUMP || player_state == PLAYER_STATE::FALL) {
 		if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
 			if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
-				player_x -= SPEED * 2;
+				player_x -= rebound_x;
 			}
 			else {
-				player_x += SPEED * 2;
+				player_x += rebound_x;
 			}
 		}
 		else if(STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
 			if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
-				player_x += SPEED * 2;
+				player_x += rebound_x;
 			}
 			else {
-				player_x -= SPEED * 2;
+				player_x -= rebound_x;
 			}
 		}
 	}
 	else {
 		if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
 			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
-				player_x += SPEED * 2;
+				player_x += rebound_x;
 			}
 			else {
-				player_x -= SPEED * 2;
+				player_x -= rebound_x;
 			}
 		}
 		else if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
 			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
-				player_x -= SPEED * 2;
+				player_x -= rebound_x;
 			}
 			else {
-				player_x += SPEED * 2;
+				player_x += rebound_x;
 			}
 		}
 	}
@@ -194,8 +206,8 @@ void PLAYER::JumpMove() {
 		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0 &&
 			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE)) != 0)
 			is_block = true;
-		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0) player_x -= SPEED * 2;
-		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0) player_x += SPEED * 2;
+		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0) player_x -= rebound_x;
+		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0) player_x += rebound_x;
 
 		if (player_y <= jump_y && velocity >= 0 || is_block) {
 			is_jump = false;
