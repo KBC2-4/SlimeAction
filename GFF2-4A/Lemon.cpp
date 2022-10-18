@@ -3,10 +3,7 @@
 
 LEMON::LEMON()
 {
-	if (LoadGraph("") == -1)
-	{
-		throw "image/Lemon";
-	}
+	
 }
 
 void LEMON::Move()

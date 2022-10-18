@@ -26,6 +26,10 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	ENEMY();
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	/// <param name="player">プレイヤーのアドレス</param>
 	ENEMY(PLAYER* player);
 	/// <summary>

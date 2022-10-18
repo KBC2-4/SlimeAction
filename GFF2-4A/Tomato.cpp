@@ -1,12 +1,10 @@
 #include "DxLib.h"
 #include "Tomato.h"
 
+
 TOMATO::TOMATO()
 {
-	if (LoadGraph("") == -1)
-	{
-		throw "";
-	}
+
 }
 void TOMATO::Move()
 {

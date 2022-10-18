@@ -4,6 +4,9 @@ class TOMATO :
 	public ENEMY
 {
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	TOMATO();
 	/// <summary>
 	/// 移動
