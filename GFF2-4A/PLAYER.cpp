@@ -6,7 +6,7 @@
 //中心から240 フック
 
 /*コンストラクタ*/
-Player::Player() {
+PLAYER::PLAYER() {
 	player_x = 20.0f;
 	player_y = 520.0f;
 	map_x = 0;
@@ -27,7 +27,7 @@ Player::Player() {
 /// <summary>
 /// プレイヤーの更新
 /// </summary>
-void Player::Update() {
+void PLAYER::Update() {
 	clsDx();
 	Move();
 	JumpMove();
@@ -36,7 +36,7 @@ void Player::Update() {
 /// <summary>
 /// プレイヤーの表示
 /// </summary>
-void Player::Draw()const {
+void PLAYER::Draw()const {
 	if (animation_mode == 0)
 		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, idle_images[animation_type[0]], TRUE, move_type);
 	else
@@ -60,7 +60,7 @@ void Player::Draw()const {
 /// <summary>
 /// プレイヤーの移動
 /// </summary>
-void Player::Move() {
+void PLAYER::Move() {
 	//スティック入力の取得
 	int input_lx = PAD_INPUT::GetPadThumbLX();
 	//移動するとき
@@ -154,14 +154,14 @@ void Player::Move() {
 	}
 }
 
-void Player::HookMove() {
+void PLAYER::HookMove() {
 
 }
 
 /// <summary>
 /// プレイヤーのジャンプ処理
 /// </summary>
-void Player::JumpMove() {
+void PLAYER::JumpMove() {
 	static bool is_jump = false;		//ジャンプ中か
 	static float jump_y = 0;			//ジャンプの高さ
 	static float velocity = 0.0f;	//ジャンプと落下のスピード
@@ -236,14 +236,14 @@ void Player::JumpMove() {
 
 }
 
-void Player::Throw() {
+void PLAYER::Throw() {
 
 }
 
 /// <summary>
 /// アニメーションの切り替え
 /// </summary>
-void Player::MoveAnimation(int type) {
+void PLAYER::MoveAnimation(int type) {
 	//画像の切り替えタイミングのとき
 	if (++animation_frame % ANIMATION_SWITCH_FRAME == 0) {
 		//前半のアニメーション
