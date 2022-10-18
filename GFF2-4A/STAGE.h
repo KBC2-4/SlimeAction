@@ -28,7 +28,7 @@ public:
 	void HookProcess();
 	////マップデータ取得関数
 	static int GetMapDat(int y, int x) { return map_data[y][x]; }
-	static void SetScrollPos(int move_type);
+	static bool SetScrollPos(int move_x);
 	static float GetScrollX() { return scroll_x; };
 };
 

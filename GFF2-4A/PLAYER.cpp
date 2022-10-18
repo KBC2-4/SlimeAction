@@ -90,7 +90,7 @@ void PLAYER::Move() {
 			}
 		}
 		MoveAnimation(1);
-		STAGE::SetScrollPos(move_type);
+		STAGE::SetScrollPos(move_x);
 	}
 	
 	//ˆÚ“®‚µ‚Ä‚È‚¢Žž
