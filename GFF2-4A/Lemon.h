@@ -12,7 +12,6 @@ public:
     /// </summary>
     /// <param name="player"></param>
     LEMON();
-
 	/// <summary>
 	/// ˆÚ“®
 	/// </summary>

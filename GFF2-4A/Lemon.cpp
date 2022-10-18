@@ -1,7 +1,7 @@
 #include "DxLib.h"
 #include "Lemon.h"
 
-LEMON::LEMON(PLAYER* player)
+LEMON::LEMON()
 {
 	
 }
