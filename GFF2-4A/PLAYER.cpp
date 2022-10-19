@@ -39,6 +39,11 @@ void PLAYER::Update() {
 	JumpMove();
 	HitBlock();
 
+	//画面端の判定
+	if (player_left <= 0) player_x = 40;
+	if (player_right + STAGE::GetScrollX() >= 1280) player_x = 1240;
+
+	//描画する画像のセット
 	int image_type = static_cast<int>(animation_state);
 	now_image = images[image_type][animation_type[image_type]];
 }
@@ -57,8 +62,8 @@ void PLAYER::Draw()const {
 	//}
 
 	//座標(デバッグ用)
-	/*printfDx("x1: %d, x2: %d\n", (int)(map_left / MAP_CEllSIZE), (int)map_right / MAP_CEllSIZE);
-	printfDx("y1: %d, y2: %d\n", (int)(map_top / MAP_CEllSIZE), (int)map_bottom / MAP_CEllSIZE);
+	/*printfDx("x1: %d, x2: %d\n", (int)(player_left / MAP_CEllSIZE), (int)player_right / MAP_CEllSIZE);
+	printfDx("y1: %d, y2: %d\n", (int)(player_top / MAP_CEllSIZE), (int)player_bottom / MAP_CEllSIZE);
 	printfDx("x : %d, y : %d\n", (int)(player_x / MAP_CEllSIZE), (int)player_y / MAP_CEllSIZE);*/
 
 	//マップチップの座標の表示(デバッグ用)
@@ -172,14 +177,14 @@ void PLAYER::JumpMove() {
 		velocity += 0.2f;
 		player_y += velocity;
 		bool is_block = false;
-		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0 &&
+		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) != 0 &&
 			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE)) != 0)
 			is_block = true;
-		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0 &&
+		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) != 0 &&
 			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE)) != 0)
 			is_block = true;
-		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0) player_x -= rebound_x;
-		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0) player_x += rebound_x;
+		if (STAGE::GetMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) != 0) player_x -= rebound_x;
+		if (STAGE::GetMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) != 0) player_x += rebound_x;
 
 		if (player_y <= jump_y && velocity >= 0 || is_block) {
 			is_jump = false;
@@ -190,10 +195,10 @@ void PLAYER::JumpMove() {
 	else {
 		//地面の判定
 		bool is_ground = false;
-		if (STAGE::GetMapDat((int)(map_bottom / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0 &&
-			STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) == 0) is_ground = true;
-		if (STAGE::GetMapDat((int)(map_bottom / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0 &&
-			STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) == 0) is_ground = true;
+		if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) != 0 &&
+			STAGE::GetMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_ground = true;
+		if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) != 0 &&
+			STAGE::GetMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_ground = true;
 
 		//地面じゃない時は落下
 		if (!is_ground) {
@@ -233,22 +238,22 @@ void PLAYER::HitBlock() {
 	//マップチップの座標のセット
 	map_x = (int)roundf((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
-	map_left = (player_x - STAGE::GetScrollX() - 35);
-	map_right = (player_x - STAGE::GetScrollX() + 35);
-	map_top = (player_y - MAP_CEllSIZE / 2);
-	map_bottom = (player_y + MAP_CEllSIZE / 2);
+	player_left = (player_x - STAGE::GetScrollX() - 35);
+	player_right = (player_x - STAGE::GetScrollX() + 35);
+	player_top = (player_y - MAP_CEllSIZE / 2);
+	player_bottom = (player_y + MAP_CEllSIZE / 2);
 
 	if (player_state == PLAYER_MOVE_STATE::JUMP || player_state == PLAYER_MOVE_STATE::FALL) {
-		if (STAGE::GetMapDat((int)(map_bottom / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0) {
-			if (STAGE::GetMapDat(map_y - 1, (int)(map_right / MAP_CEllSIZE)) != 0) {
+		if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) != 0) {
+			if (STAGE::GetMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE)) != 0) {
 				player_x -= rebound_x;
 			}
 			else {
 				player_x += rebound_x;
 			}
 		}
-		else if (STAGE::GetMapDat((int)(map_bottom / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0) {
-			if (STAGE::GetMapDat(map_y - 1, (int)(map_left / MAP_CEllSIZE)) != 0) {
+		else if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) != 0) {
+			if (STAGE::GetMapDat(map_y - 1, (int)(player_left / MAP_CEllSIZE)) != 0) {
 				player_x += rebound_x;
 			}
 			else {
@@ -257,16 +262,16 @@ void PLAYER::HitBlock() {
 		}
 	}
 	else {
-		if (STAGE::GetMapDat(map_y - 1, (int)(map_left / MAP_CEllSIZE)) != 0) {
-			if (STAGE::GetMapDat((int)(map_bottom / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0) {
+		if (STAGE::GetMapDat(map_y - 1, (int)(player_left / MAP_CEllSIZE)) != 0) {
+			if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) != 0) {
 				player_x += rebound_x;
 			}
 			else {
 				player_x -= rebound_x;
 			}
 		}
-		else if (STAGE::GetMapDat(map_y - 1, (int)(map_right / MAP_CEllSIZE)) != 0) {
-			if (STAGE::GetMapDat((int)(map_bottom / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0) {
+		else if (STAGE::GetMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE)) != 0) {
+			if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) != 0) {
 				player_x -= rebound_x;
 			}
 			else {

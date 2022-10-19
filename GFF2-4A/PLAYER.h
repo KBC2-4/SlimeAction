@@ -32,20 +32,20 @@ class PLAYER
 private:
 	float player_x,player_y;
 	int map_x, map_y;
-	float map_left = 0, map_right = 0;
-	float map_top = 0, map_bottom = 0;
+	float player_left = 0, player_right = 0;
+	float player_top = 0, player_bottom = 0;
 	float rebound_x;
 	int life;
-	int now_image;
-	int images[2][10];
+	int now_image;			//描画する画像
+	int images[2][10];		//アニメーションの画像
 	int move_type;			//左か右の移動(反転用)
 	int animation_frame;	//アニメーションのフレームのカウント
 	int animation_type[2];		//今のアニメーションの添え字
 	int animation_phase[2];	//アニメーションの段階(0: 前半, 1: 後半)
 	int animation_mode;
 	int jump_mode;			//停止ジャンプ(1)か移動ジャンプ(2)か
-
-	PLAYER_MOVE_STATE player_state;		//ステート変数
+	//ステート変数
+	PLAYER_MOVE_STATE player_state;
 	PLAYER_ANIM_STATE animation_state;
 
 public:
