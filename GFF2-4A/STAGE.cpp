@@ -37,6 +37,12 @@ void STAGE::Draw()const {
 			else if (map_data[i][j ] == 2) {
 				DrawGraph(j * MAP_CEllSIZE+scroll_x , i*MAP_CEllSIZE , block_image1[3], TRUE);
 			}
+			else if (map_data[i][j] == 3) {
+				DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[1], TRUE);
+			}
+			else if (map_data[i][j] == 4) {
+				DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[2], TRUE);
+			}
 			
 		}
 	}
@@ -45,19 +51,34 @@ void STAGE::Draw()const {
 
 void STAGE::InitStage() {
 	FILE *fp = NULL;
-	if ((fopen_s(&fp, "Resource/Map_Data/MapData_1.txt", "r")) != 0) {
+	if ((fopen_s(&fp, "Resource/Map_Data/MapData_1.csv", "r")) != 0) {
 		
-		throw "Resource/Map_Data/MapData_1.txt";
+		throw "Resource/Map_Data/MapData_1.csv";
 	}
 	for (int i = 0; i < MAP_HEIGHT; i++) {
-		for (int j = 0; j < MAP_WIDTH+1; j++) {
-			char c;
-			fscanf_s(fp, "%c", &c);
-			
-			map_data[i][j] = c - '0';
+		for (int j = 0; j < MAP_WIDTH; j++) {
+			//char c;
+			fscanf_s(fp, "%2d,", &map_data[i][j]);
+			//map_data[i][j] = c - '0';
 		}
 	}
 	fclose(fp);
+	if ((fopen_s(&fp, "Resource/Map_Data/MapData_res.csv", "a")) != 0) {
+		
+		throw "Resource/Map_Data/MapData_res.csv";
+	}
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		for (int j = 0; j < MAP_WIDTH; j++) {
+			//char c;
+			//fscanf_s(fp, "%2d,", &map_data[i][j]);
+			fprintf_s(fp, "%2d,", map_data[i][j]);
+			//map_data[i][j] = c - '0';
+		}
+		fprintf_s(fp, "\n");
+	}
+	fclose(fp);
+
+
 }
 
 void STAGE::ButtonProcess() {
@@ -77,7 +98,7 @@ void STAGE::PuddleProcess(){
 /// </summary>
 bool STAGE::SetScrollPos(int move_type) {
 	scroll_x -= 5 * move_type;
-	if (scroll_x >= 0 || scroll_x <= -2560) {
+	if (scroll_x >= 0 || scroll_x <= -7680) {
 		scroll_x += 5 * move_type;
 		return true;
 	}
