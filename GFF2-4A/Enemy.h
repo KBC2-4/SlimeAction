@@ -40,6 +40,10 @@ public:
 		delete player;
 	}
 	/// <summary>
+	/// XV
+	/// </summary>
+	virtual void Updata() = 0;
+	/// <summary>
 	/// ˆÚ“®
 	/// </summary>
 	virtual void Move() = 0;
