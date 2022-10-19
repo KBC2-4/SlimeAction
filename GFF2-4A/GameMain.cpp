@@ -22,7 +22,7 @@ AbstractScene* GAMEMAIN::Update()
 	int old_playerx = player->GetPlayerX();
 	player->Update();
 	stage->Update(player->GetPlayerX() - old_playerx, player->GetPlayerY() - 40);
-
+	tomaton->Updata();
 	return this;
 }
 
@@ -30,6 +30,8 @@ void GAMEMAIN::Draw() const
 {
 	//プレイヤーの描画
 	player->Draw();
+	//とまとんの描画
+	tomaton->Draw();
 	//ステージの描画
 	stage->Draw();
 }
