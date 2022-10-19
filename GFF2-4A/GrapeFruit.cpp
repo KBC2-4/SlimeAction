@@ -18,6 +18,7 @@ void GRAPEFRUIT::Updata()
 
 void GRAPEFRUIT::Move()
 {
+	DrawRotaGraph2(0,0,40,0,1,)
 }
 
 void GRAPEFRUIT::ShotFruitJuice()

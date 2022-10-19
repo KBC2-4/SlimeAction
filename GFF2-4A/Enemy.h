@@ -79,4 +79,3 @@ public:
 	/// <returns>yÀ•W</returns>
 	int GetY()const { return y; }
 };
-
