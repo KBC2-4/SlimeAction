@@ -2,9 +2,7 @@
 #include"PadInput.h"
 #include"SceneManager.h"
 #include"Title.h"
-#include "STAGE.h"
-
-#include "PLAYER.h"
+#include"GameMain.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -23,7 +21,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SceneManager* sceneMng;
 	try
 	{
-		sceneMng = new SceneManager((AbstractScene*)new Title());
+		sceneMng = new SceneManager((AbstractScene*)new GAMEMAIN());
 
 	}
 	catch (const char* err)
@@ -41,9 +39,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return 0;
 	}
 
-	PLAYER player;
-	STAGE stage;
-
 	// ゲームループ
 	while ((ProcessMessage() == 0) && (sceneMng->Update() != nullptr)) {
 
@@ -51,15 +46,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ClearDrawScreen();		// 画面の初期化
 		PAD_INPUT::UpdateKey();	//パッドの入力状態の更新
 		sceneMng->Draw();
-
-		//プレイヤーの表示
-		int old_playerx = player.GetPlayerX();
-		player.Update();
-		player.Draw();
-
-		stage.Update(player.GetPlayerX()-old_playerx,player.GetPlayerY()-40);
-		stage.Draw();
-
 
 		ScreenFlip();			// 裏画面の内容を表画面に反映
 

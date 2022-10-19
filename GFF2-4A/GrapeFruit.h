@@ -9,6 +9,11 @@ public:
 	/// </summary>
 	GRAPEFRUIT();
 	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="player">プレイヤーのアドレス</param>
+	GRAPEFRUIT(PLAYER* player);
+	/// <summary>
 	/// 移動
 	/// </summary>
 	void Move() override;

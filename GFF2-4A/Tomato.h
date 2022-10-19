@@ -9,6 +9,11 @@ public:
 	/// </summary>
 	TOMATO();
 	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="player">プレイヤーのアドレス</param>
+	TOMATO(PLAYER* player);
+	/// <summary>
 	/// 移動
 	/// </summary>
 	void Move() override;
