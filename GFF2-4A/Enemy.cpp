@@ -1,4 +1,5 @@
 #include "DxLib.h"
+#define _USE_MATH_DEFINES
 #include<math.h>
 #include "Enemy.h"
 
@@ -20,7 +21,8 @@ ENEMY::ENEMY()
 
 void ENEMY::ChangeAngle()
 {
-	float rad = atan2f(player->GetPlayerX() - x, player->GetPlayerY() - y);
-
-	//angle = 
+	//プレイヤーを原点としてプレイヤーと自分の角度の計算
+	float rad = atan2f(y - player->GetPlayerY(), x - player->GetPlayerX());
+	//ラジアンを角度に変換
+	angle = 180 / M_PI * rad;
 }
