@@ -30,11 +30,12 @@ class PLAYER
 {
 
 private:
-	float player_x,player_y;
+	float player_x = 0,player_y = 0;
 	int map_x, map_y;
 	float player_left = 0, player_right = 0;
 	float player_top = 0, player_bottom = 0;
 	float rebound_x;
+	float jump_move_x;
 	int life;
 	int now_image;			//描画する画像
 	int images[2][10];		//アニメーションの画像

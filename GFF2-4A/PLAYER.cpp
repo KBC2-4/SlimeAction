@@ -56,9 +56,9 @@ void PLAYER::Draw()const {
 	DrawRotaGraphF(player_x, player_y, 1.0, 0.0, now_image, TRUE, move_type);
 
 	//グリッドの表示(デバッグ用)
-	//for (int i = 0; i < 32; i++) {
+	//for (int i = 0; i < 128; i++) {
 	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
-	//	DrawLine(i * 80, 0, i * 80,  720,0xFFFFFF, 2);		//縦
+	//	DrawLine(i * 80 + STAGE::GetScrollX(), 0, i * 80 + STAGE::GetScrollX(),  720,0xFFFFFF, 2);		//縦
 	//}
 
 	//座標(デバッグ用)
@@ -92,6 +92,7 @@ void PLAYER::Move() {
 			else {
 				player_x += move_x * SPEED / 2;
 			}
+			jump_move_x = move_x;
 			player_state = PLAYER_MOVE_STATE::MOVE;	//ステートをMoveに切り替え
 		}
 		else {
@@ -101,7 +102,14 @@ void PLAYER::Move() {
 			}
 			//移動ジャンプだった時
 			else {
-				player_x += move_x * SPEED;
+				move_type = jump_move_x > 0 ? 0 : 1;
+				//ジャンプ中に反対方向に移動するとき
+				if (jump_move_x != move_x) {
+					player_x += jump_move_x * SPEED / 2;
+				}
+				else {
+					player_x += jump_move_x * SPEED;
+				}
 			}
 		}
 		MoveAnimation();
