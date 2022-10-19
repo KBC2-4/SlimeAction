@@ -35,5 +35,6 @@ void TOMATO::Animation()
 
 void TOMATO::Draw()const
 {
-
+	DrawCircle(x, y, 10, 0xff0000, TRUE);
+	//DrawGraph(x, y, image, TRUE);
 }
