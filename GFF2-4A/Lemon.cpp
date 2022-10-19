@@ -12,6 +12,11 @@ LEMON::LEMON(PLAYER* player)
 	this->player = player;
 }
 
+
+void LEMON::Updata()
+{
+
+}
 void LEMON::Move()
 {
 
