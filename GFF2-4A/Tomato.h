@@ -13,6 +13,11 @@ public:
 	/// </summary>
 	/// <param name="player">プレイヤーのアドレス</param>
 	TOMATO(PLAYER* player);
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Updata() override;
 	/// <summary>
 	/// 移動
 	/// </summary>

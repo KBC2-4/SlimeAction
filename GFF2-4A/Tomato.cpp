@@ -9,12 +9,19 @@ TOMATO::TOMATO()
 
 TOMATO::TOMATO(PLAYER* player)
 {
+	x = 200;
 	this->player = player;
+}
+
+
+void TOMATO::Updata()
+{
+	Move();
 }
 
 void TOMATO::Move()
 {
-
+	y += 2;
 }
 
 void TOMATO::ShotFruitJuice()
