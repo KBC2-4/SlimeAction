@@ -25,8 +25,9 @@ class PLAYER
 private:
 	float player_x,player_y;
 	int map_x, map_y;
-	float map_left, map_right;
-	float map_top, map_bottom;
+	float map_left = 0, map_right = 0;
+	float map_top = 0, map_bottom = 0;
+	float rebound_x;
 	int life;
 	int idle_images[10];
 	int move_images[10];
@@ -49,7 +50,7 @@ public:
 	void Throw();
 	void MoveAnimation(int type);
 	void Update();
-
+	void HitBlock();
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };

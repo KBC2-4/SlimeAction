@@ -9,6 +9,7 @@
 PLAYER::PLAYER() {
 	player_x = 20.0f;
 	player_y = 520.0f;
+	rebound_x = SPEED;
 	map_x = 0;
 	map_y = 0;
 	life = 5;
@@ -31,6 +32,7 @@ void PLAYER::Update() {
 	clsDx();
 	Move();
 	JumpMove();
+	HitBlock();
 }
 
 /// <summary>
@@ -90,7 +92,16 @@ void PLAYER::Move() {
 			}
 		}
 		MoveAnimation(1);
-		STAGE::SetScrollPos(move_x);
+		bool isScroll = false;
+		if (move_x > 0 && player_x >= 680 || move_x < 0 && player_x <= 600) {
+			if (!(isScroll = STAGE::SetScrollPos(move_x))) {
+				rebound_x = SPEED * 2;
+				player_x -= move_x * rebound_x;
+			}
+		}
+		if (!isScroll) {
+			rebound_x = SPEED;
+		}
 	}
 	
 	//移動してない時
@@ -107,49 +118,6 @@ void PLAYER::Move() {
 		//ジャンプ中じゃないかったらステートを切り替える
 		if (player_state != PLAYER_STATE::JUMP && player_state != PLAYER_STATE::FALL) {
 			player_state = PLAYER_STATE::IDLE;	//ステートをIdleに切り替え
-		}
-	}
-	//マップチップの座標のセット
-	map_x = (int)roundf((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE);
-	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
-	map_left = (player_x - STAGE::GetScrollX() - 35);
-	map_right = (player_x - STAGE::GetScrollX() + 35);
-	map_top = (player_y - MAP_CEllSIZE / 2);
-	map_bottom = (player_y + MAP_CEllSIZE / 2);
-	if (player_state == PLAYER_STATE::JUMP || player_state == PLAYER_STATE::FALL) {
-		if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
-			if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
-				player_x -= SPEED * 2;
-			}
-			else {
-				player_x += SPEED * 2;
-			}
-		}
-		else if(STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
-			if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
-				player_x += SPEED * 2;
-			}
-			else {
-				player_x -= SPEED * 2;
-			}
-		}
-	}
-	else {
-		if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
-			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
-				player_x += SPEED * 2;
-			}
-			else {
-				player_x -= SPEED * 2;
-			}
-		}
-		else if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
-			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
-				player_x -= SPEED * 2;
-			}
-			else {
-				player_x += SPEED * 2;
-			}
 		}
 	}
 }
@@ -194,8 +162,8 @@ void PLAYER::JumpMove() {
 		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0 &&
 			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE)) != 0)
 			is_block = true;
-		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0) player_x -= SPEED * 2;
-		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0) player_x += SPEED * 2;
+		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_right / MAP_CEllSIZE)) != 0) player_x -= rebound_x;
+		if (STAGE::GetMapDat((int)(map_top / MAP_CEllSIZE), (int)(map_left / MAP_CEllSIZE)) != 0) player_x += rebound_x;
 
 		if (player_y <= jump_y && velocity >= 0 || is_block) {
 			is_jump = false;
@@ -238,6 +206,56 @@ void PLAYER::JumpMove() {
 
 void PLAYER::Throw() {
 
+}
+
+/// <summary>
+/// 横移動の当たり判定
+/// </summary>
+void PLAYER::HitBlock() {
+	//マップチップの座標のセット
+	map_x = (int)roundf((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE);
+	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
+	map_left = (player_x - STAGE::GetScrollX() - 35);
+	map_right = (player_x - STAGE::GetScrollX() + 35);
+	map_top = (player_y - MAP_CEllSIZE / 2);
+	map_bottom = (player_y + MAP_CEllSIZE / 2);
+
+	if (player_state == PLAYER_STATE::JUMP || player_state == PLAYER_STATE::FALL) {
+		if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
+				player_x -= rebound_x;
+			}
+			else {
+				player_x += rebound_x;
+			}
+		}
+		else if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
+				player_x += rebound_x;
+			}
+			else {
+				player_x -= rebound_x;
+			}
+		}
+	}
+	else {
+		if (STAGE::GetMapDat(map_y - 1, map_left / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_right / MAP_CEllSIZE) != 0) {
+				player_x += rebound_x;
+			}
+			else {
+				player_x -= rebound_x;
+			}
+		}
+		else if (STAGE::GetMapDat(map_y - 1, map_right / MAP_CEllSIZE) != 0) {
+			if (STAGE::GetMapDat(map_bottom / MAP_CEllSIZE, map_left / MAP_CEllSIZE) != 0) {
+				player_x -= rebound_x;
+			}
+			else {
+				player_x += rebound_x;
+			}
+		}
+	}
 }
 
 /// <summary>
