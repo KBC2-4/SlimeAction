@@ -4,7 +4,7 @@
 #include <math.h>
 
 //中心から240 フック
-
+//起動時に移動ジャンプするとエラー
 /*コンストラクタ*/
 PLAYER::PLAYER() {
 	player_x = 20.0f;
@@ -14,6 +14,7 @@ PLAYER::PLAYER() {
 	map_y = 0;
 	life = 5;
 	jump_mode = 0;
+	jump_move_x = 0;
 	player_state = PLAYER_MOVE_STATE::IDLE;
 	if (LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 80, 80, images[1]) == -1) {
 		throw "Resource/Images/Player/Slime.png";
