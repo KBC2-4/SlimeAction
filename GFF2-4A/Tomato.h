@@ -3,6 +3,10 @@
 class TOMATO :
 	public ENEMY
 {
+private:
+	int animation_timer;	//アニメーションの切り替え時間用変数
+	int animation_type;		//アニメーションの画像タイプ
+	const int ANIMATION_TIME = 5;	//アニメーションの切り替え時間
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -22,6 +26,10 @@ public:
 	/// 移動
 	/// </summary>
 	void Move() override;
+	/// <summary>
+	/// 果汁を発射
+	/// </summary>
+	void ShotFruitJuice() override;
 	/// <summary>
 	/// 当たり判定
 	/// </summary>

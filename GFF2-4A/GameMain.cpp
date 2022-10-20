@@ -14,13 +14,14 @@ GAMEMAIN::~GAMEMAIN()
 {
 	delete player;
 	delete stage;
+	delete tomaton;
 }
 
 AbstractScene* GAMEMAIN::Update()
 {
 	stage->Update();
 	player->Update();
-	
+	tomaton->Updata();
 
 	return this;
 }
@@ -31,5 +32,6 @@ void GAMEMAIN::Draw() const
 	stage->Draw();
 	//ƒvƒŒƒCƒ„[‚Ì•`‰æ
 	player->Draw();
-	
+	//‚Æ‚Ü‚Æ‚ñ‚Ì•`‰æ
+	tomaton->Draw();
 }

@@ -4,6 +4,9 @@
 
 TOMATO::TOMATO()
 {
+	x = 200;
+	animation_timer = 0;
+	animation_type = 0;
 	if (LoadDivGraph("Resource/Images/Enemy/tomaton.png", 3, 3, 1, 80, 80, image) == -1)
 	{
 		throw "Resource/Images/Enemy/tomaton.png";
@@ -14,12 +17,19 @@ TOMATO::TOMATO(PLAYER* player)
 {
 	x = 200;
 	this->player = player;
+	animation_timer = 0;
+	animation_type = 0;
+	if (LoadDivGraph("Resource/Images/Enemy/tomaton.png", 3, 3, 1, 80, 80, image) == -1)
+	{
+		throw "Resource/Images/Enemy/tomaton.png";
+	}
 }
 
 
 void TOMATO::Updata()
 {
 	Move();
+	Animation();
 }
 
 void TOMATO::Move()
@@ -27,7 +37,10 @@ void TOMATO::Move()
 	y += 2;
 }
 
+void TOMATO::ShotFruitJuice()
+{
 
+}
 void TOMATO::Hit()
 {
 
@@ -35,12 +48,23 @@ void TOMATO::Hit()
 
 void TOMATO::Animation()
 {
-
+	//アイドル状態ならアイドルの時の画像を使用
+	if (state == ENEMY_STATE::IDOL)
+	{
+		now_image = image[0];
+	}
+	//落下状態の時の画像の入れ替え
+	if (state == ENEMY_STATE::WALL)
+	{
+		if (++animation_timer % ANIMATION_TIME == 0)
+		{
+			now_image = image[(++animation_type % 2) + 1];
+		}
+	}
 }
 
 
 void TOMATO::Draw()const
 {
-	DrawCircle(x, y, 30, 0xff0000, TRUE);
-	//DrawGraph(x, y, image, TRUE);
+	DrawGraph(x, y, now_image, TRUE);
 }
