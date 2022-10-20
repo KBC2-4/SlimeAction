@@ -186,14 +186,14 @@ void PLAYER::JumpMove() {
 		velocity += 0.2f;
 		player_y += velocity;
 		bool is_block = false;
-		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) != 0 &&
-			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE)) != 0)
+		if (STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
+			STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE)))
 			is_block = true;
-		if (STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) != 0 &&
-			STAGE::GetMapDat((int)(player_y / MAP_CEllSIZE), (int)((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE)) != 0)
+		if (STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
+			STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE)))
 			is_block = true;
-		if (STAGE::GetMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) != 0) player_x -= rebound_x;
-		if (STAGE::GetMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) != 0) player_x += rebound_x;
+		if (STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE))) player_x -= rebound_x;
+		if (STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) player_x += rebound_x;
 
 		if (player_y <= jump_y && velocity >= 0 || is_block) {
 			is_jump = false;
@@ -204,10 +204,10 @@ void PLAYER::JumpMove() {
 	else {
 		//’n–Ê‚Ì”»’è
 		bool is_ground = false;
-		if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) != 0 &&
-			STAGE::GetMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_ground = true;
-		if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) != 0 &&
-			STAGE::GetMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_ground = true;
+		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
+			STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_ground = true;
+		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
+			STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_ground = true;
 
 		//’n–Ê‚¶‚á‚È‚¢Žž‚Í—Ž‰º
 		if (!is_ground) {
@@ -253,16 +253,16 @@ void PLAYER::HitBlock() {
 	player_bottom = (player_y + MAP_CEllSIZE / 2);
 
 	if (player_state == PLAYER_MOVE_STATE::JUMP || player_state == PLAYER_MOVE_STATE::FALL) {
-		if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) != 0) {
-			if (STAGE::GetMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE)) != 0) {
+		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
+			if (STAGE::HitMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE))) {
 				player_x -= rebound_x;
 			}
 			else {
 				player_x += rebound_x;
 			}
 		}
-		else if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) != 0) {
-			if (STAGE::GetMapDat(map_y - 1, (int)(player_left / MAP_CEllSIZE)) != 0) {
+		else if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE))) {
+			if (STAGE::HitMapDat(map_y - 1, (int)(player_left / MAP_CEllSIZE))) {
 				player_x += rebound_x;
 			}
 			else {
@@ -271,16 +271,16 @@ void PLAYER::HitBlock() {
 		}
 	}
 	else {
-		if (STAGE::GetMapDat(map_y - 1, (int)(player_left / MAP_CEllSIZE)) != 0) {
-			if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) != 0) {
+		if (STAGE::HitMapDat(map_y - 1, (int)(player_left / MAP_CEllSIZE))) {
+			if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE))) {
 				player_x += rebound_x;
 			}
 			else {
 				player_x -= rebound_x;
 			}
 		}
-		else if (STAGE::GetMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE)) != 0) {
-			if (STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) != 0) {
+		else if (STAGE::HitMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE))) {
+			if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
 				player_x -= rebound_x;
 			}
 			else {
