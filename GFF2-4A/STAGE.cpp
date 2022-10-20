@@ -10,7 +10,7 @@ STAGE::STAGE() {
 	*block_image1 = 0;
 	*stage_image = 0;
 	stage_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
-	LoadDivGraph("Resource/Images/Stage/StageBlock.png", 8, 8, 1, 80, 80, block_image1);
+	LoadDivGraph("Resource/Images/Stage/stage.png", 8, 8, 1, 80, 80, block_image1);
 	InitStage();
 }
 
@@ -37,13 +37,13 @@ void STAGE::Draw()const {
 					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[0], TRUE);
 				}
 				else if (map_data[i][j] == 2) {
-					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[3], TRUE);
-				}
-				else if (map_data[i][j] == 3) {
 					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[1], TRUE);
 				}
-				else if (map_data[i][j] == 4) {
+				else if (map_data[i][j] == 3) {
 					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[2], TRUE);
+				}
+				else if (map_data[i][j] == 4) {
+					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[3], TRUE);
 				}
 			}
 		}
