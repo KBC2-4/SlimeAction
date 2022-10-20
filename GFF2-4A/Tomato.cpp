@@ -7,11 +7,6 @@ TOMATO::TOMATO()
 
 }
 
-
-void TOMATO::Updata()
-{
-
-}
 TOMATO::TOMATO(PLAYER* player)
 {
 	x = 200;
