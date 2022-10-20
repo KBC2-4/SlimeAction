@@ -41,6 +41,7 @@ void TOMATO::Updata()
 void TOMATO::Move()
 {
 	state = ENEMY_STATE::WALL;
+	//óéâ∫èÛë‘ÇÃéûÇÃèàóù
 	if (state == ENEMY_STATE::WALL)
 	{
 		y += WALL_SPEED;
@@ -77,4 +78,5 @@ void TOMATO::Animation()
 void TOMATO::Draw()const
 {
 	DrawGraph(x, y, now_image, TRUE);
+	DrawCircle(x + IMAGE_SIZE / 2, y + IMAGE_SIZE / 2, 33, 0xffffff, FALSE);
 }
