@@ -30,7 +30,7 @@ class PLAYER
 {
 
 private:
-	float player_x = 0,player_y = 0;
+	static float player_x, player_y;
 	int map_x, map_y;
 	float player_left = 0, player_right = 0;
 	float player_top = 0, player_bottom = 0;
@@ -63,8 +63,8 @@ public:
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
-	float GetPlayerX() { return player_x; };
-	float GetPlayerY() { return player_y; };
+	static float GetPlayerX() { return player_x; };
+	static float GetPlayerY() { return player_y; };
 
 	void SetLife(int);
 };
