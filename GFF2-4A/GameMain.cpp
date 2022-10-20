@@ -18,18 +18,18 @@ GAMEMAIN::~GAMEMAIN()
 
 AbstractScene* GAMEMAIN::Update()
 {
-	//プレイヤーの表示
-	int old_playerx = player->GetPlayerX();
+	stage->Update();
 	player->Update();
-	stage->Update(player->GetPlayerX() - old_playerx, player->GetPlayerY() - 40);
+	
 
 	return this;
 }
 
 void GAMEMAIN::Draw() const
 {
-	//プレイヤーの描画
-	player->Draw();
 	//ステージの描画
 	stage->Draw();
+	//プレイヤーの描画
+	player->Draw();
+	
 }
