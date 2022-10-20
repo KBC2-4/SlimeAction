@@ -106,3 +106,11 @@ bool STAGE::SetScrollPos(int move_x) {
 	}
 	return false;
 }
+
+bool STAGE::HitMapDat(int y, int x) {
+	int block_type = GetMapDat(y, x);
+	if (block_type == 0 || block_type == 6) {
+		return false;
+	}
+	return true;
+}
