@@ -16,12 +16,14 @@ STAGE::STAGE() {
 
 
 void STAGE::Update() {
+	//scroll_x-=10;
 	//map_x = player_x - float((MAP_WIDTH/3 + 2) / 2 - 1);
 	//map_x++;
 	//map_y = player_y - float((MAP_HEIGHT + 2) / 2 - 1);
 }
 
 void STAGE::Draw()const {
+	printfDx("%f",scroll_x);
 	DrawGraph(scroll_x, scroll_y, stage_image[0], FALSE);
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
@@ -63,20 +65,20 @@ void STAGE::InitStage() {
 		}
 	}
 	fclose(fp);
-	if ((fopen_s(&fp, "Resource/Map_Data/MapData_res.csv", "a")) != 0) {
-		
-		throw "Resource/Map_Data/MapData_res.csv";
-	}
-	for (int i = 0; i < MAP_HEIGHT; i++) {
-		for (int j = 0; j < MAP_WIDTH; j++) {
-			//char c;
-			//fscanf_s(fp, "%2d,", &map_data[i][j]);
-			fprintf_s(fp, "%2d,", map_data[i][j]);
-			//map_data[i][j] = c - '0';
-		}
-		fprintf_s(fp, "\n");
-	}
-	fclose(fp);
+	//if ((fopen_s(&fp, "Resource/Map_Data/MapData_res.csv", "a")) != 0) {
+	//	
+	//	throw "Resource/Map_Data/MapData_res.csv";
+	//}
+	//for (int i = 0; i < MAP_HEIGHT; i++) {
+	//	for (int j = 0; j < MAP_WIDTH; j++) {
+	//		//char c;
+	//		//fscanf_s(fp, "%2d,", &map_data[i][j]);
+	//		fprintf_s(fp, "%2d,", map_data[i][j]);
+	//		//map_data[i][j] = c - '0';
+	//	}
+	//	fprintf_s(fp, "\n");
+	//}
+	//fclose(fp);
 
 
 }
@@ -96,11 +98,19 @@ void STAGE::PuddleProcess(){
 /// <summary>
 /// ステージのスクロール
 /// </summary>
-bool STAGE::SetScrollPos(int move_type) {
-	scroll_x -= 5 * move_type;
+bool STAGE::SetScrollPos(int move_x) {
+	scroll_x -= 5 * move_x;
 	if (scroll_x >= 0 || scroll_x <= -7680) {
-		scroll_x += 5 * move_type;
+		scroll_x += 5 * move_x;
 		return true;
 	}
 	return false;
+}
+
+bool STAGE::HitMapDat(int y, int x) {
+	int block_type = GetMapDat(y, x);
+	if (block_type == 0 || block_type == 6) {
+		return false;
+	}
+	return true;
 }
