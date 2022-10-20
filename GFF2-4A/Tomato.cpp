@@ -7,6 +7,7 @@ TOMATO::TOMATO()
 	x = 200;
 	animation_timer = 0;
 	animation_type = 0;
+	image = new int[3];
 	if (LoadDivGraph("Resource/Images/Enemy/tomaton.png", 3, 3, 1, 80, 80, image) == -1)
 	{
 		throw "Resource/Images/Enemy/tomaton.png";
@@ -19,22 +20,31 @@ TOMATO::TOMATO(PLAYER* player)
 	this->player = player;
 	animation_timer = 0;
 	animation_type = 0;
+	image = new int[3];
 	if (LoadDivGraph("Resource/Images/Enemy/tomaton.png", 3, 3, 1, 80, 80, image) == -1)
 	{
 		throw "Resource/Images/Enemy/tomaton.png";
 	}
 }
 
-
+TOMATO::~TOMATO()
+{
+	delete[] image;
+}
 void TOMATO::Updata()
 {
 	Move();
 	Animation();
+
 }
 
 void TOMATO::Move()
 {
-	y += 2;
+	state = ENEMY_STATE::WALL;
+	if (state == ENEMY_STATE::WALL)
+	{
+		y += WALL_SPEED;
+	}
 }
 
 void TOMATO::ShotFruitJuice()

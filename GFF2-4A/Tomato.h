@@ -7,6 +7,7 @@ private:
 	int animation_timer;	//アニメーションの切り替え時間用変数
 	int animation_type;		//アニメーションの画像タイプ
 	const int ANIMATION_TIME = 5;	//アニメーションの切り替え時間
+	const int WALL_SPEED = 10;		//落下速度
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -17,7 +18,10 @@ public:
 	/// </summary>
 	/// <param name="player">プレイヤーのアドレス</param>
 	TOMATO(PLAYER* player);
-
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~TOMATO();
 	/// <summary>
 	/// 更新
 	/// </summary>
