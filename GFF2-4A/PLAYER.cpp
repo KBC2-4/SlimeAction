@@ -4,7 +4,9 @@
 #include <math.h>
 
 //中心から240 フック
-//起動時に移動ジャンプするとエラー
+
+float PLAYER::player_x, PLAYER::player_y;
+
 /*コンストラクタ*/
 PLAYER::PLAYER() {
 	player_x = 20.0f;
