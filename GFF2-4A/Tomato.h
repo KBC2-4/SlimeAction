@@ -23,10 +23,6 @@ public:
 	/// </summary>
 	void Move() override;
 	/// <summary>
-	/// ‰Ê`‚ğ”­Ë
-	/// </summary>
-	void ShotFruitJuice()override;
-	/// <summary>
 	/// “–‚½‚è”»’è
 	/// </summary>
 	void Hit() override;

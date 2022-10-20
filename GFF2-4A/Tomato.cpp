@@ -4,7 +4,10 @@
 
 TOMATO::TOMATO()
 {
-
+	if (LoadDivGraph("Resource/Images/Enemy/tomaton.png", 3, 3, 1, 80, 80, image) == -1)
+	{
+		throw "Resource/Images/Enemy/tomaton.png";
+	}
 }
 
 TOMATO::TOMATO(PLAYER* player)
@@ -24,10 +27,6 @@ void TOMATO::Move()
 	y += 2;
 }
 
-void TOMATO::ShotFruitJuice()
-{
-
-}
 
 void TOMATO::Hit()
 {
