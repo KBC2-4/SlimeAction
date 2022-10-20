@@ -19,11 +19,11 @@ protected:
 	int map_x, map_y;	//マップ内での座標
 	int* image;			//画像保存用
 	int now_image;		//使用している画像
-	int w, h;			//幅、高さ
 	int angle;			//角度
 	ENEMY_STATE state;	//エネミーの状態
 
 	PLAYER* player;
+	const int IMAGE_SIZE = 80;
 public:
 	/// <summary>
 	/// コンストラクタ
