@@ -17,7 +17,8 @@ class ENEMY
 protected:
 	int x, y;			//座標
 	int map_x, map_y;	//マップ内での座標
-	int* image;			//画像
+	int* image;			//画像保存用
+	int now_image;		//使用している画像
 	int w, h;			//幅、高さ
 	int angle;			//角度
 	ENEMY_STATE state;	//エネミーの状態
