@@ -29,7 +29,7 @@ public:
 	/// <summary>
 	/// ‰Ê`‚ğ”­Ë
 	/// </summary>
-	void ShotFruitJuice() override;
+	void ShotFruitJuice();
 	/// <summary>
 	/// “–‚½‚è”»’è
 	/// </summary>
