@@ -3,6 +3,9 @@
 class GRAPEFRUIT :
 	public ENEMY
 {
+private:
+	int gurepon;
+	int shootcount;
 public:
 	/// <summary>
 	/// コンストラクタ
