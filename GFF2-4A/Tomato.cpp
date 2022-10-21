@@ -48,10 +48,7 @@ void TOMATO::Move()
 	}
 }
 
-void TOMATO::ShotFruitJuice()
-{
 
-}
 void TOMATO::Hit()
 {
 	int 
