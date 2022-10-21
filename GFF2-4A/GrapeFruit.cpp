@@ -14,7 +14,7 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player)
 	this->player = player;
 }
 
-void GRAPEFRUIT::Updata()
+void GRAPEFRUIT::Update()
 {
 
 }

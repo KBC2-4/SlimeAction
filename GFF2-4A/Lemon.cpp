@@ -13,7 +13,7 @@ LEMON::LEMON(PLAYER* player)
 }
 
 
-void LEMON::Updata()
+void LEMON::Update()
 {
 
 }
