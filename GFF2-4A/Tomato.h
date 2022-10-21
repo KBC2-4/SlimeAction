@@ -25,10 +25,6 @@ public:
 	/// <summary>
 	/// 果汁を発射
 	/// </summary>
-	void ShotFruitJuice()override;
-	/// <summary>
-	/// 当たり判定
-	/// </summary>
 	void Hit() override;
 	/// <summary>
 	/// アニメーション

@@ -49,10 +49,6 @@ public:
 	/// </summary>
 	void ChangeAngle();
 	/// <summary>
-	/// ‰Ê`‚ğ”­Ë
-	/// </summary>
-	virtual void ShotFruitJuice() = 0;
-	/// <summary>
 	/// “–‚½‚è”»’è
 	/// </summary>
 	virtual void Hit() = 0;
