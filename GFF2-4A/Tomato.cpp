@@ -31,7 +31,7 @@ TOMATO::~TOMATO()
 {
 	delete[] image;
 }
-void TOMATO::Updata()
+void TOMATO::Update()
 {
 	Move();
 	Animation();
@@ -54,7 +54,7 @@ void TOMATO::ShotFruitJuice()
 }
 void TOMATO::Hit()
 {
-
+	int 
 }
 
 void TOMATO::Animation()

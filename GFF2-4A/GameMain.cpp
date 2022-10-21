@@ -21,7 +21,7 @@ AbstractScene* GAMEMAIN::Update()
 {
 	stage->Update();
 	player->Update();
-	tomaton->Updata();
+	tomaton->Update();
 
 	return this;
 }
