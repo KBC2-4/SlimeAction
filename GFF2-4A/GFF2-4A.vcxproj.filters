@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\Enemy">
+      <UniqueIdentifier>{2df5ad98-9739-4c28-b4d2-af7adfdc578b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Enemy">
+      <UniqueIdentifier>{f9a59b30-86b8-4003-89a5-32a115a7c197}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -33,23 +39,26 @@
     <ClCompile Include="STAGE.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Lemon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GrapeFruit.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Tomato.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Splash.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="GameMain.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Element.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Lemon.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="GrapeFruit.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Splash.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Tomato.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,23 +80,26 @@
     <ClInclude Include="STAGE.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Lemon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="GrapeFruit.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Tomato.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Splash.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="GameMain.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Element.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>ヘッダー ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="GrapeFruit.h">
+      <Filter>ヘッダー ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Lemon.h">
+      <Filter>ヘッダー ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Tomato.h">
+      <Filter>ヘッダー ファイル\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Splash.h">
+      <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
