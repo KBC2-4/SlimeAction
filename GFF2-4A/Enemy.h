@@ -39,7 +39,7 @@ public:
 	/// <summary>
 	/// XV
 	/// </summary>
-	virtual void Updata() = 0;
+	virtual void Update() = 0;
 	/// <summary>
 	/// ˆÚ“®
 	/// </summary>

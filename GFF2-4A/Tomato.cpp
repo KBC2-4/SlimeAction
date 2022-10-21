@@ -8,7 +8,7 @@ TOMATO::TOMATO()
 }
 
 
-void TOMATO::Updata()
+void TOMATO::Update()
 {
 
 }
