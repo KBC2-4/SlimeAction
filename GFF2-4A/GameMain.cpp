@@ -14,12 +14,14 @@ GAMEMAIN::~GAMEMAIN()
 {
 	delete player;
 	delete stage;
+	delete gurepon;
 }
 
 AbstractScene* GAMEMAIN::Update()
 {
 	stage->Update();
 	player->Update();
+	gurepon->Update();
 	
 
 	return this;

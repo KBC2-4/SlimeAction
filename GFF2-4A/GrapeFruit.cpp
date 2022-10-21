@@ -9,7 +9,7 @@ GRAPEFRUIT::GRAPEFRUIT()
 
 GRAPEFRUIT::GRAPEFRUIT(PLAYER* player)
 {
-	gurepon = LoadGraph("images/Gurepon.png");
+	gurepon = LoadGraph("Resource/Images/enemys/gurepon.png");
 	shootcount = 0;
 	this->player = player;
 }
