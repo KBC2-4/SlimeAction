@@ -6,7 +6,7 @@ Element::Element() {
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
 		{
-			ELEMENT_DATA data = { j * MAP_CEllSIZE, i * MAP_CEllSIZE };
+			ELEMENT_DATA data = { j * MAP_CEllSIZE + MAP_CEllSIZE / 2, i * MAP_CEllSIZE + MAP_CEllSIZE / 2 };
 			if (map_data[i][j] == 70)hook.push_back(data);
 		}
 	}
