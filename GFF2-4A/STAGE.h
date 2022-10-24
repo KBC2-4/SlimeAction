@@ -1,7 +1,7 @@
 #pragma once
 
 #define MAP_HEIGHT 14
-#define MAP_WIDTH 112
+#define MAP_WIDTH 117
 #define MAP_CEllSIZE 80
 
 class STAGE
@@ -12,6 +12,7 @@ private:
 	float map_x, map_y;			//マップ描画座標
 	static float scroll_x, scroll_y;	//マップスクロール量
 
+protected:
 	static int map_data[MAP_HEIGHT][MAP_WIDTH];
 public:
 	STAGE();
@@ -32,5 +33,6 @@ public:
 	static bool HitMapDat(int y, int x);
 	static bool SetScrollPos(int move_x);
 	static float GetScrollX() { return scroll_x; };
+	void LoadMapData(void);
 };
 
