@@ -33,7 +33,11 @@ void STAGE::Draw()const {
 			/*if (j + map_x<0 || i + map_y<0 || j + map_x>MAP_WIDTH * MAP_CEllSIZE || i + map_y>MAP_HEIGHT * MAP_CEllSIZE)
 				continue;*/
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280) {
-				if (map_data[i][j] == 1) {
+				int NotDraw[] = { 5,6,7,10 };
+				if(map_data[i][j] != 0 && map_data[i][j] <= 4)DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[map_data[i][j] - 1], TRUE);
+			}
+
+				/*if (map_data[i][j] == 1) {
 					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[0], TRUE);
 				}
 				else if (map_data[i][j] == 2) {
@@ -44,8 +48,8 @@ void STAGE::Draw()const {
 				}
 				else if (map_data[i][j] == 4) {
 					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[3], TRUE);
-				}
-			}
+				}*/
+			
 		}
 	}
 	
