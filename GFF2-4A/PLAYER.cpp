@@ -162,6 +162,7 @@ void PLAYER::HookMove() {
 /// プレイヤーのジャンプ処理
 /// </summary>
 void PLAYER::JumpMove() {
+	if (CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
 	static bool is_jump = false;		//ジャンプ中か
 	static float jump_y = 0;			//ジャンプの高さ
 	static float velocity = 0.0f;	//ジャンプと落下のスピード
