@@ -1,7 +1,7 @@
 #pragma once
 
 #define MAP_HEIGHT 14
-#define MAP_WIDTH 112
+#define MAP_WIDTH 117
 #define MAP_CEllSIZE 80
 
 class STAGE
@@ -32,5 +32,6 @@ public:
 	static bool HitMapDat(int y, int x);
 	static bool SetScrollPos(int move_x);
 	static float GetScrollX() { return scroll_x; };
+	void LoadMapData(void);
 };
 
