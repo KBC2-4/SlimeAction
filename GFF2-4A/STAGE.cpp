@@ -10,7 +10,7 @@ STAGE::STAGE() {
 	*block_image1 = 0;
 	*stage_image = 0;
 	stage_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
-	LoadDivGraph("Resource/Images/Stage/StageBlock.png", 8, 8, 1, 80, 80, block_image1);
+	LoadDivGraph("Resource/Images/Stage/stage.png", 8, 8, 1, 80, 80, block_image1);
 	InitStage();
 }
 
@@ -32,19 +32,23 @@ void STAGE::Draw()const {
 			//‰æ–ÊŠO‚Í•`‰æ‚µ‚È‚¢
 			/*if (j + map_x<0 || i + map_y<0 || j + map_x>MAP_WIDTH * MAP_CEllSIZE || i + map_y>MAP_HEIGHT * MAP_CEllSIZE)
 				continue;*/
+			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280) {
+				int NotDraw[] = { 5,6,7,10 };
+				if(map_data[i][j] != 0 && map_data[i][j] <= 4)DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[map_data[i][j] - 1], TRUE);
+			}
 
-			if (map_data[i ][j ] == 1) {
-				DrawGraph(j*MAP_CEllSIZE+scroll_x, i*MAP_CEllSIZE, block_image1[0], TRUE);
-			}
-			else if (map_data[i][j ] == 2) {
-				DrawGraph(j * MAP_CEllSIZE+scroll_x , i*MAP_CEllSIZE , block_image1[3], TRUE);
-			}
-			else if (map_data[i][j] == 3) {
-				DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[1], TRUE);
-			}
-			else if (map_data[i][j] == 4) {
-				DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[2], TRUE);
-			}
+				/*if (map_data[i][j] == 1) {
+					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[0], TRUE);
+				}
+				else if (map_data[i][j] == 2) {
+					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[1], TRUE);
+				}
+				else if (map_data[i][j] == 3) {
+					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[2], TRUE);
+				}
+				else if (map_data[i][j] == 4) {
+					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[3], TRUE);
+				}*/
 			
 		}
 	}
