@@ -33,5 +33,7 @@ void GAMEMAIN::Draw() const
 	stage->Draw();
 	//プレイヤーの描画
 	player->Draw();
+	//グレポンの描画
+	gurepon->Draw();
 	
 }
