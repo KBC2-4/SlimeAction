@@ -11,7 +11,7 @@ public:
 		float x, y;
 	};
 private:
-	std::vector<ELEMENT_DATA> hook;
+	std::vector<ELEMENT_DATA> hook;	
 	ELEMENT_DATA button;
 	ELEMENT_DATA door;
 	ELEMENT_DATA lift;
