@@ -2,6 +2,7 @@
 #include "Element.h"
 
 ELEMENT::ELEMENT() {
+	ELEMENT_DATA data;
 	for (int i = 0; i < MAP_HEIGHT; i++)
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
@@ -9,27 +10,36 @@ ELEMENT::ELEMENT() {
 			switch (map_data[i][j])
 			{
 			case 70:
-				ELEMENT_DATA data = { j * MAP_CEllSIZE + MAP_CEllSIZE / 2, i * MAP_CEllSIZE + MAP_CEllSIZE / 2 };
+				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.y = i * MAP_CEllSIZE + MAP_CEllSIZE / 2;
 				hook.push_back(data);
 				break;
 
 			case 61:
-				ELEMENT_DATA data = { (j * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25, i * MAP_CEllSIZE + MAP_CEllSIZE / 2 ,1 };
+				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25;
+				data.y = i * MAP_CEllSIZE + MAP_CEllSIZE / 2 ;
+				data.type = 1;
 				button.push_back(data);
 				break;
 
 			case 62:
-				ELEMENT_DATA data = { (j * MAP_CEllSIZE + MAP_CEllSIZE / 2), (i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25 ,2 };
+				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25;
+				data.type = 2;
 				button.push_back(data);
 				break;
 
 			case 63:
-				ELEMENT_DATA data = { (j * MAP_CEllSIZE + MAP_CEllSIZE / 2), (i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25 ,3 };
+				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.type = 3;
 				button.push_back(data);
 				break;
 
 			case 64:
-				ELEMENT_DATA data = { j * MAP_CEllSIZE + MAP_CEllSIZE / 2, i * MAP_CEllSIZE + MAP_CEllSIZE / 2 };
+				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25;
+				data.type = 0;
 				door.push_back(data);
 				break;
 
