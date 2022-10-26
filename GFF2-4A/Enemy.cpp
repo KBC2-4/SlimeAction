@@ -8,11 +8,11 @@
 ENEMY::ENEMY()
 {
 	this->player = nullptr;
+	rad = 0.0;
 	x = 0;
 	y = 0;
 	map_x = 0;
 	map_y = 0;
-	angle = 0;
 	image = nullptr;
 	now_image = 0;
 	state = ENEMY_STATE::IDOL;
@@ -20,8 +20,6 @@ ENEMY::ENEMY()
 
 void ENEMY::ChangeAngle()
 {
-	//プレイヤーを原点としてプレイヤーと自分の角度の計算
-	float rad = atan2f(y - player->GetPlayerY(), x - player->GetPlayerX());
-	//ラジアンを角度に変換
-	angle = 180 / M_PI * rad;
+	//自分を原点にプレイヤーとの角度を計算
+	rad = atan2(player->GetPlayerY() - y, player->GetPlayerX() - x);
 }
