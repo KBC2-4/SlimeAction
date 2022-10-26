@@ -176,71 +176,107 @@ void PLAYER::Scroll(float move_x) {
 	}
 }
 
+/// <summary>
+/// フックの移動処理
+/// </summary>
 void PLAYER::HookMove(Element* element) {
+	//フックの移動方向
 	static float move_x = 0;
 	static float move_y = 0;
+	//フックまでの移動終了判定
 	static bool end_move = false;
+	//近くにフックがあるかどうか
 	bool is_hook = false;
+	//Bボタン押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
+		//フックの座標
 		float hook_y, hook_x;
+		//フックまでの距離
 		float min_distance = HOOK_MAX_DISTANCE;
+		//フックの位置
 		std::vector<Element::ELEMENT_DATA> hook_pos = element->GetHookPos();
 		for (int i = 0; i < hook_pos.size(); i++) {
 			Element::ELEMENT_DATA pos = hook_pos[i];
+			//距離計算
 			float diff_x = pos.x - (player_x - STAGE::GetScrollX());
 			float diff_y = pos.y - player_y;
 			float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
+			//距離が最短距離より近いとき
 			if (distance <= min_distance) {
+				//フックの角度
 				float angle = atan2f(diff_y, diff_x);
+				//移動の計算
 				move_x = cosf(angle) * SPEED * 3;
 				move_y = sinf(angle) * SPEED * 3;
+				//プレイヤーの現在の位置
 				float x = player_x - STAGE::GetScrollX();
 				float y = player_y;
+				//フックまでの移動経路に障害物がないか
 				while (!STAGE::HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
 					x += move_x;
 					y += move_y;
 				}
+				//配列に変換
 				int hook_map_x = x / MAP_CEllSIZE;
 				int hook_map_y = y / MAP_CEllSIZE;
+				//障害物がある場合は移動させない
 				if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 70) {
 					continue;
 				}
-
+				//最短距離の更新
 				min_distance = distance;
+				//フックの座標の更新
 				hook_x = pos.x;
 				hook_y = pos.y;
+				//フックが見つかった判定をtrue
 				is_hook = true;
 			}
 		}
+		//フックが見つかった時
 		if (is_hook) {
+			//移動中の時
 			if (!end_move) {
+				//フックまでの距離の計算
 				float y = hook_y - player_y;
 				float x = hook_x - (player_x - STAGE::GetScrollX());
+				hook_distance = sqrt(x * x + y * y);
+				//フック移動してない時
 				if (!is_hook_move) {
+					//角度の計算
 					hook_angle = atan2f(y, x) + 90.0f * (DX_PI_F / 180.0f);
+					//移動方向の計算
 					move_x = cosf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
 					move_y = sinf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
+					//慣性的な奴
 					jump_move_x = move_x > 0 ? 1 : -1;
 					jump_mode == 2;
 				}
-				hook_distance = sqrt(x * x + y * y);
+				//フックについてない時
 				if (hook_distance > 40) {
 					player_x += move_x;
 					player_y += move_y;
 					Scroll(jump_move_x);
 				}
+				//フックについたら移動処理の終了
 				else end_move = true;
+				//フックまでの移動判定
 				is_hook_move = true;
 			}
+			//移動が終わった時
 			else {
+				//フックまでの移動判定
 				is_hook_move = false;
+				//ステートの変更
 				player_state = PLAYER_MOVE_STATE::HOOK;
+				//フックの座標にプレイヤーを移動
 				player_x = hook_x + STAGE::GetScrollX();
 				player_y = hook_y;
 			}
 		}
 	}
+	//フックが見つからなかったら
 	if (!is_hook) {
+		//初期化
 		end_move = false;
 		is_hook_move = false;
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
