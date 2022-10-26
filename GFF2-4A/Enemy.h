@@ -20,6 +20,7 @@ protected:
 	int* image;			//画像保存用
 	int now_image;		//使用している画像
 	int angle;			//角度
+	float rad;          //ラジアン
 	ENEMY_STATE state;	//エネミーの状態
 
 	PLAYER* player;
@@ -48,10 +49,6 @@ public:
 	/// プレイヤーとの角度を求める
 	/// </summary>
 	void ChangeAngle();
-	/// <summary>
-	/// 果汁を発射
-	/// </summary>
-	virtual void ShotFruitJuice() = 0;
 	/// <summary>
 	/// 当たり判定
 	/// </summary>
