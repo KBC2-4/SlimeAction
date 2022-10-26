@@ -19,8 +19,7 @@ protected:
 	int map_x, map_y;	//マップ内での座標
 	int* image;			//画像保存用
 	int now_image;		//使用している画像
-	int angle;			//角度
-	float rad;          //ラジアン
+	double rad;          //ラジアン
 	ENEMY_STATE state;	//エネミーの状態
 
 	PLAYER* player;
