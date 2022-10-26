@@ -39,7 +39,7 @@ PLAYER::PLAYER() {
 /// <summary>
 /// プレイヤーの更新
 /// </summary>
-void PLAYER::Update(Element* element) {
+void PLAYER::Update(ELEMENT* element) {
 	clsDx();
 	Move();
 	JumpMove();
@@ -179,7 +179,7 @@ void PLAYER::Scroll(float move_x) {
 /// <summary>
 /// フックの移動処理
 /// </summary>
-void PLAYER::HookMove(Element* element) {
+void PLAYER::HookMove(ELEMENT* element) {
 	//フックの移動方向
 	static float move_x = 0;
 	static float move_y = 0;
@@ -194,9 +194,9 @@ void PLAYER::HookMove(Element* element) {
 		//フックまでの距離
 		float min_distance = HOOK_MAX_DISTANCE;
 		//フックの位置
-		std::vector<Element::ELEMENT_DATA> hook_pos = element->GetHookPos();
+		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHookPos();
 		for (int i = 0; i < hook_pos.size(); i++) {
-			Element::ELEMENT_DATA pos = hook_pos[i];
+			ELEMENT::ELEMENT_DATA pos = hook_pos[i];
 			//距離計算
 			float diff_x = pos.x - (player_x - STAGE::GetScrollX());
 			float diff_y = pos.y - player_y;

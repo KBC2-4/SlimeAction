@@ -59,11 +59,11 @@ public:
 
 	void Move();
 	void Draw() const;
-	void HookMove(Element* element);
+	void HookMove(ELEMENT* element);
 	void JumpMove();
 	void Throw();
 	void MoveAnimation();
-	void Update(Element *element);
+	void Update(ELEMENT*element);
 	void HitBlock();
 	void Scroll(float move_x);
 
