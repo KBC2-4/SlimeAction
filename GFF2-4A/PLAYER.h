@@ -1,5 +1,6 @@
 #pragma once
 #include"PadInput.h"
+#include "Element.h"
 
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
 #define SPEED					3.0f	//プレイヤーのスピード
@@ -7,6 +8,7 @@
 #define ANIMATION_SWITCH_FRAME	1		//画像を切り替えるタイミング(フレーム)
 #define IMAGE_MAX_NUM			10		//画像の枚数
 #define JUMP_VELOCITY			-5.8f	//ジャンプスピード
+#define HOOK_MAX_DISTANCE		480
 
 //移動ステート
 enum class PLAYER_MOVE_STATE {
@@ -45,6 +47,9 @@ private:
 	int animation_phase[2];	//アニメーションの段階(0: 前半, 1: 後半)
 	int animation_mode;
 	int jump_mode;			//停止ジャンプ(1)か移動ジャンプ(2)か
+	bool is_hook_move;
+	float hook_angle;
+	float hook_distance;
 	//ステート変数
 	PLAYER_MOVE_STATE player_state;
 	PLAYER_ANIM_STATE animation_state;
@@ -54,12 +59,13 @@ public:
 
 	void Move();
 	void Draw() const;
-	void HookMove();
+	void HookMove(Element* element);
 	void JumpMove();
 	void Throw();
 	void MoveAnimation();
-	void Update();
+	void Update(Element *element);
 	void HitBlock();
+	void Scroll(float move_x);
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };

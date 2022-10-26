@@ -20,7 +20,7 @@ GAMEMAIN::~GAMEMAIN()
 AbstractScene* GAMEMAIN::Update()
 {
 	stage->Update();
-	player->Update();
+	player->Update(element);
 
 	return this;
 }
