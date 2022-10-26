@@ -25,4 +25,13 @@ void ENEMY::ChangeAngle()
 	rad = atan2f(y - player->GetPlayerY(), x - player->GetPlayerX());
 	//ƒ‰ƒWƒAƒ“‚ğŠp“x‚É•ÏŠ·
 	angle = 180 / M_PI * rad;
+	if (angle < 90)
+	{
+		angle = 90;
+	}
+	if (angle > 180)
+	{
+		angle = 180;
+	}
+
 }
