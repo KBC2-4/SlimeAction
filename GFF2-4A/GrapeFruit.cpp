@@ -53,6 +53,7 @@ void GRAPEFRUIT::Animation()
 void GRAPEFRUIT::Draw() const
 {
 	DrawRotaGraph2(640, 40, 40, 0, 2, sin(angle), image[0], TRUE);
-	DrawFormatString(50, 50, 0x00ff00, "%d", angle);
+	SetFontSize(24);
+	DrawFormatString(50, 50, 0xff0000, "%d", angle);
 	//DrawGraph(0, 0, image[0],TRUE);
 }
