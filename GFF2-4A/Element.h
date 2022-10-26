@@ -12,6 +12,8 @@ public:
 	{
 		float x, y;
 		int type;
+		bool flg;
+
 	};
 private:
 	std::vector<ELEMENT_DATA> hook;			//ƒtƒbƒN
@@ -22,6 +24,7 @@ private:
 
 public:
 	ELEMENT();
+	void Button();
 	std::vector<ELEMENT_DATA> GetHookPos() { return hook; }
 	std::vector<ELEMENT_DATA>GetButtonPos() { return button; }
 	std::vector<ELEMENT_DATA>GetDoorPos() { return door; }
