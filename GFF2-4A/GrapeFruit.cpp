@@ -51,7 +51,7 @@ void GRAPEFRUIT::Animation()
 
 void GRAPEFRUIT::Draw() const
 {
-	DrawRotaGraph2(640, 40, 40, 40, 2, rad1, image[0], TRUE);
+	DrawRotaGraph2(640, 40, 40, 0, 2, angle, image[0], TRUE);
 	//DrawGraph(0, 0, image[0],TRUE);
 
 }
