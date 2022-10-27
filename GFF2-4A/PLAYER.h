@@ -10,6 +10,11 @@
 #define JUMP_VELOCITY			-5.8f	//ジャンプスピード
 #define HOOK_MAX_DISTANCE		480
 
+#define PI 3.1415926535897932384626433832795
+#define LENGTH      200                 // 紐の長さ
+#define CLENGTH     (LENGTH * 2 * PI)   // 紐を伸ばして一周させた場合に出来る円の円周の長さ
+#define G           9.81                // 重力加速度
+
 //移動ステート
 enum class PLAYER_MOVE_STATE {
 	IDLE = 0,//停止しているとき
@@ -50,6 +55,16 @@ private:
 	bool is_hook_move;
 	float hook_angle;
 	float hook_distance;
+
+	float hook_y, hook_x;
+
+	double x;     // 紐を伸ばして一周させた場合に出来る円の線上の座標、０は紐が軸の真下に伸びた位置
+	double speed; // xの変化速度
+	double angle;
+	int nx, ny;
+	double b = 8.0;		//デフォルト8
+	double mass = 4.0;
+
 	//ステート変数
 	PLAYER_MOVE_STATE player_state;
 	PLAYER_ANIM_STATE animation_state;

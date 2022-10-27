@@ -21,6 +21,10 @@ PLAYER::PLAYER() {
 	jump_move_x = 0;
 	is_hook_move = false;
 	player_state = PLAYER_MOVE_STATE::IDLE;
+	// 初期位置は軸の真下から左方向に45度傾いた位置
+		x = CLENGTH / b;
+		// 初期速度は０
+		speed = 0;
 	if (LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 80, 80, images[1]) == -1) {
 		throw "Resource/Images/Player/Slime.png";
 	}
@@ -68,13 +72,17 @@ void PLAYER::Draw()const {
 	}
 	else {
 		if (player_state == PLAYER_MOVE_STATE::HOOK) 
-			DrawRotaGraphF(player_x, player_y, 1.0, 0.0, now_image, TRUE, move_type);
+			DrawRotaGraphF(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 1.0, 0.0, now_image, TRUE, move_type);
 		else {
 			DrawRotaGraph3F(player_x, player_y, 40, 80,
 				1, hook_distance / (MAP_CEllSIZE / 2), (double)hook_angle,
 				now_image, TRUE, move_type);
 		}
 	}
+
+	printfDx("hook: %f %f\n", hook_x, hook_y);
+	printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
+
 	//グリッドの表示(デバッグ用)
 	//for (int i = 0; i < 128; i++) {
 	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
@@ -95,7 +103,7 @@ void PLAYER::Draw()const {
 /// プレイヤーの移動
 /// </summary>
 void PLAYER::Move() {
-	if (is_hook_move) return;
+	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
 	//スティック入力の取得
 	int input_lx = PAD_INPUT::GetPadThumbLX();
 	//移動するとき
@@ -187,12 +195,18 @@ void PLAYER::HookMove(Element* element) {
 	static bool end_move = false;
 	//近くにフックがあるかどうか
 	bool is_hook = false;
+	
+	//スティック入力の取得
+	int input_lx = PAD_INPUT::GetPadThumbLX();
+	
+	
 	//Bボタン押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
 		//フックの座標
-		float hook_y, hook_x;
+		//float hook_y, hook_x;
 		//フックまでの距離
 		float min_distance = HOOK_MAX_DISTANCE;
+		
 		//フックの位置
 		std::vector<Element::ELEMENT_DATA> hook_pos = element->GetHookPos();
 		for (int i = 0; i < hook_pos.size(); i++) {
@@ -269,8 +283,40 @@ void PLAYER::HookMove(Element* element) {
 				//ステートの変更
 				player_state = PLAYER_MOVE_STATE::HOOK;
 				//フックの座標にプレイヤーを移動
-				player_x = hook_x + STAGE::GetScrollX();
-				player_y = hook_y;
+				//player_x = hook_x + STAGE::GetScrollX();
+				//player_y = hook_y;
+
+				// 公式に従って速度を加算
+				speed += -mass * (G / 60) * sin(x / LENGTH);
+				x += speed;
+				// 軸を原点とした場合のぶら下がっている物の座標を算出
+				angle = x / LENGTH + PI / 2.0;
+				nx = cos(angle) * LENGTH;
+				ny = sin(angle) * LENGTH;
+				if (speed >= 0) {
+					if (input_lx < -15000) {
+						speed += 0.05;
+					}
+					if (input_lx > 15000) {
+						speed -= 0.09;
+					}
+				}
+				else if (speed < 0) {
+					if (input_lx < -15000) {
+						speed += 0.09;
+					}
+					if (input_lx > 15000) {
+						speed -= 0.05;
+					}
+				}
+				if (hook_y + ny < hook_y) {
+					ny = 0;
+					speed = 0.0;
+				}
+				if (input_lx < 15000 && input_lx >- 15000) {	//離している間は角度を狭く、スピードを遅くしていく
+					if (speed > 0)speed -= 0.05;
+					if (speed < 0)speed += 0.05;
+				}
 			}
 		}
 	}
@@ -280,6 +326,8 @@ void PLAYER::HookMove(Element* element) {
 		end_move = false;
 		is_hook_move = false;
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
+			player_x = hook_x + STAGE::GetScrollX() + nx;
+			player_y = hook_y + ny;
 			player_y += 1;
 			player_state = PLAYER_MOVE_STATE::IDLE;
 		}
