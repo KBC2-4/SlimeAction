@@ -65,7 +65,7 @@ public:
 	/// プレイヤーとの角度の取得
 	/// </summary>
 	/// <returns>角度</returns>
-	int GetAngle()const { return angle; }
+	int GetRadian()const { return rad; }
 	/// <summary>
 	/// X座標の取得
 	/// </summary>
