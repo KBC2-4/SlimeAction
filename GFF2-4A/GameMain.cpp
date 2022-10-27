@@ -8,7 +8,7 @@ GAMEMAIN::GAMEMAIN()
 	lemonner = new LEMON(player);
 	gurepon = new GRAPEFRUIT(player);
 	tomaton = new TOMATO(player);
-	element = new Element();
+	element = new ELEMENT();
 }
 
 GAMEMAIN::~GAMEMAIN()

@@ -17,7 +17,7 @@ private:
 	LEMON* lemonner;	//レモナー
 	GRAPEFRUIT* gurepon;	//グレぽん
 	TOMATO* tomaton;	//とまとん
-	Element* element;	//ステージ内要素
+	ELEMENT* element;	//ステージ内要素
 public:
 	/// <summary>
 	/// コンストラクタ
