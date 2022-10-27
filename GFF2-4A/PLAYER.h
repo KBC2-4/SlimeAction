@@ -88,7 +88,7 @@ private:
 
 	//アニメーション画像の枚数
 	const int animation_image_num[2] = {
-		10,	//アイドル
+		9,	//アイドル
 		10,	//移動
 	};
 
