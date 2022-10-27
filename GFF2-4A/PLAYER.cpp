@@ -484,18 +484,26 @@ void PLAYER::HitBlock() {
 /// </summary>
 void PLAYER::MoveAnimation() {
 	//画像の切り替えタイミングのとき
-	if (++animation_frame % ANIMATION_SWITCH_FRAME == 0) {
-		int type = static_cast<int>(animation_state);
+	int type = static_cast<int>(animation_state);
+	if (++animation_frame % animation_switch_frame[type] == 0) {
 		//前半のアニメーション
 		if (animation_phase[type] == 0) {
 			animation_type[type]++;
 		}
 		//後半のアニメーション
 		else {
-			(animation_type[type])--;
+			if (animation_play_type[type] == 0) {
+				animation_type[type]--;
+			}
+			else {
+				animation_phase[type] = 0;
+				animation_type[type] = 1;
+			}
 		}
 		//前半と後半の切り替え
-		if (animation_type[type] >= IMAGE_MAX_NUM - 1 || animation_type[type] <= 0) animation_phase[type] = (animation_phase[type] + 1) % 2;
+		if (animation_type[type] >= animation_image_num[type] - 1 || animation_type[type] <= 0) {
+			animation_phase[type] = (animation_phase[type] + 1) % 2;
+		}
 	}
 }
 

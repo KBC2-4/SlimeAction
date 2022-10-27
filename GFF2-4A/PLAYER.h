@@ -5,8 +5,8 @@
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
 #define SPEED					3.0f	//プレイヤーのスピード
 #define DEVIATION				2000	//スティック入力の誤入力の範囲
-#define ANIMATION_SWITCH_FRAME	1		//画像を切り替えるタイミング(フレーム)
-#define IMAGE_MAX_NUM			10		//画像の枚数
+//#define ANIMATION_SWITCH_FRAME	1		//画像を切り替えるタイミング(フレーム)
+//#define IMAGE_MAX_NUM			10		//画像の枚数
 #define JUMP_VELOCITY			-5.8f	//ジャンプスピード
 #define HOOK_MAX_DISTANCE		480
 
@@ -65,6 +65,26 @@ private:
 	int nx, ny;
 	double b = 8.0;		//デフォルト8
 	double mass = 4.0;
+
+	//画像を切り替えるタイミング(フレーム)
+	const int animation_switch_frame[2] = {
+		3,	//アイドル
+		1,	//移動
+	};
+
+	//アニメーションの再生の仕方
+	// 0: 一枚目から再生したら逆再生する
+	// 1: 一枚目から再生したら一枚目に戻す
+	const int animation_play_type[2] = {
+		1,	//アイドル
+		0,	//移動
+	};
+
+	//アニメーション画像の枚数
+	const int animation_image_num[2] = {
+		10,	//アイドル
+		10,	//移動
+	};
 
 	//ステート変数
 	PLAYER_MOVE_STATE player_state;
