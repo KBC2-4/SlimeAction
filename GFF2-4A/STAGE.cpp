@@ -1,4 +1,5 @@
 #include "STAGE.h"
+#include "Element.h"
 #include"DxLib.h"
 #include <iostream>
 #include <fstream>
@@ -20,12 +21,9 @@ STAGE::STAGE() {
 }
 
 
-void STAGE::Update() {
-	//scroll_x-=10;
-	//map_x = player_x - float((MAP_WIDTH/3 + 2) / 2 - 1);
-	//map_x++;
-	//map_y = player_y - float((MAP_HEIGHT + 2) / 2 - 1);
-}
+//void STAGE::Update() {
+//
+//}
 
 void STAGE::Draw()const {
 	printfDx("%f",scroll_x);
@@ -76,9 +74,7 @@ void STAGE::Draw()const {
 //
 //}
 
-void STAGE::ButtonProcess() {
 
-}
 
 void STAGE::HookProcess() {
 
@@ -103,7 +99,7 @@ bool STAGE::SetScrollPos(int move_x) {
 bool STAGE::HitMapDat(int y, int x) {
 	if (CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
 	int block_type = GetMapDat(y, x);
-	if (block_type == 0 || block_type == 9 || block_type == 64) {
+	if (block_type == 0 || block_type == 9 || block_type == 64 || block_type == 62) {
 		return false;
 	}
 	return true;

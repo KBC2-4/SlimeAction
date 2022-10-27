@@ -3,6 +3,7 @@
 #include <vector>
 
 
+class PLAYER;
 
 class ELEMENT :
     public STAGE
@@ -21,10 +22,12 @@ private:
 	std::vector<ELEMENT_DATA> door;			//ドア
 	std::vector<ELEMENT_DATA> lift;			//動く床
 	std::vector<ELEMENT_DATA> tunnel;		//トンネル
+	std::vector<ELEMENT_DATA> acid;			//酸
 
 public:
 	ELEMENT();
-	void Button();
+	void Update(PLAYER* player);
+	void Button(float player_x,float player_y);
 	std::vector<ELEMENT_DATA> GetHookPos() { return hook; }
 	std::vector<ELEMENT_DATA>GetButtonPos() { return button; }
 	std::vector<ELEMENT_DATA>GetDoorPos() { return door; }

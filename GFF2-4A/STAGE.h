@@ -4,6 +4,7 @@
 #define MAP_WIDTH 117
 #define MAP_CEllSIZE 80
 
+
 class STAGE
 {
 private:
@@ -17,13 +18,12 @@ protected:
 public:
 	STAGE();
 	//マップ情報の更新
-	void Update();
+	//void Update();
 	//ステージの描画
 	void Draw() const;
 	//ステージの初期化
-	void InitStage();
-	//ボタンの処理
-	void ButtonProcess();
+	//void InitStage();
+	
 	//水たまりの処理
 	void PuddleProcess();
 	//フックの処理
