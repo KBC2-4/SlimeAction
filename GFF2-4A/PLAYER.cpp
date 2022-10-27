@@ -29,8 +29,8 @@ PLAYER::PLAYER() {
 	if (LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 80, 80, images[1]) == -1) {
 		throw "Resource/Images/Player/Slime.png";
 	}
-	if (LoadDivGraph("Resource/Images/Player/Slimest.png", 10, 10, 1, 80, 80, images[0]) == -1) {
-		throw "Resource/Images/Player/Slimest.png";
+	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
+		throw "Resource/Images/Player/IdorSlime.png";
 	}
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	animation_frame = 0;
@@ -90,10 +90,9 @@ void PLAYER::Draw()const {
 		DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
 	}
 
-	printfDx("hook: %f %f\n", hook_x, hook_y);
-	printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
-	printfDx("hook_angle: %f\n", hook_angle);
-	printfDx("nx: %d\n", nx);
+	//printfDx("hook: %f %f\n", hook_x, hook_y);
+	//printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
+
 	//グリッドの表示(デバッグ用)
 	//for (int i = 0; i < 128; i++) {
 	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
