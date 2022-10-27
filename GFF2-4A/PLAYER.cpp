@@ -49,6 +49,7 @@ void PLAYER::Update(ELEMENT* element) {
 	Move();
 	JumpMove();
 	HookMove(element);
+	Throw();
 	HitBlock();
 
 	//‰æ–Ê’[‚Ì”»’è
@@ -79,6 +80,14 @@ void PLAYER::Draw()const {
 				1, hook_distance / (MAP_CEllSIZE / 2), (double)hook_angle,
 				now_image, TRUE, move_type);
 		}
+	}
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
+		for (int i = 0; i < 100; i++) {
+			DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
+		}
+	}
+	else {
+		DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
 	}
 
 	printfDx("hook: %f %f\n", hook_x, hook_y);
@@ -439,7 +448,48 @@ void PLAYER::JumpMove() {
 }
 
 void PLAYER::Throw() {
-
+	static bool push = false;
+	static int i = 0;
+	//‹O“¹‚ÌŒvŽZ
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
+		push = true;
+		i = 0;
+		throw_rad = atan2(PAD_INPUT::GetPadThumbRY(), PAD_INPUT::GetPadThumbRX());
+		for (int j = 0; j < 100; j++) {
+			//‰Á‘¬“x‚ÌŒvŽZ
+			int V = 40 - 9.8 * (j * 0.1);
+			//À•W
+			throw_x[j] = 40 * cos(throw_rad) * (j * 0.1);
+			throw_y[j] = 9.8 * pow(j * 0.1, 2) / 2 - V * sin(throw_rad) * (j * 0.1);
+			if (j > 0) {
+				throw_x[j] += throw_x[j - 1];
+				throw_y[j] += throw_y[j - 1];
+			}
+			else {
+				throw_x[j] += player_x;
+				throw_y[j] += player_y;
+			}
+		}
+	}
+	else {
+		//“Š‚°‚éˆ—
+		if (push) {
+			int V = 40 - 9.8 * (i * 0.1);
+			throw_x[0] += 40 * cos(throw_rad) * (i * 0.1);
+			throw_y[0] -= -9.8 * pow(i * 0.1, 2) / 2 + V * sin(throw_rad) * (i * 0.1);
+			if (++i >= 100) {
+				i = 0;
+				push = false;
+			}
+		}
+	}
+	/*if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
+		int V = 30 - 0.1 * (i * 0.1);
+		x += 30 * cos(rad) * (i * 0.1);
+		y -= -9.8 * pow(i * 0.1, 2) / 2 + V * sin(rad) * (i * 0.1);
+		DrawCircle(x, y, 10, 0xFFFFFF, TRUE);
+		i++;
+	}*/
 }
 
 /// <summary>
