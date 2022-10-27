@@ -92,7 +92,8 @@ void PLAYER::Draw()const {
 
 	printfDx("hook: %f %f\n", hook_x, hook_y);
 	printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
-
+	printfDx("hook_angle: %f\n", hook_angle);
+	printfDx("nx: %d\n", nx);
 	//グリッドの表示(デバッグ用)
 	//for (int i = 0; i < 128; i++) {
 	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
@@ -299,7 +300,6 @@ void PLAYER::HookMove(ELEMENT* element) {
 				//フックの座標にプレイヤーを移動
 				//player_x = hook_x + STAGE::GetScrollX();
 				//player_y = hook_y;
-
 				// 速度を加算
 				speed += -mass * (G / 60) * sin(x / LENGTH);
 				x += speed;
