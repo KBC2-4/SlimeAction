@@ -19,6 +19,7 @@ PLAYER::PLAYER() {
 	life = 5;
 	jump_mode = 0;
 	jump_move_x = 0;
+	jump_request = false;
 	is_hook_move = false;
 	player_state = PLAYER_MOVE_STATE::IDLE;
 	// 初期位置は軸の真下から左方向に45度傾いた位置
@@ -125,9 +126,11 @@ void PLAYER::Move() {
 			player_state = PLAYER_MOVE_STATE::MOVE;	//ステートをMoveに切り替え
 		}
 		else {
+			if (jump_move_x == 0) jump_move_x = move_x;
+			move_type = jump_move_x > 0 ? 0 : 1;
 			//停止ジャンプだった時
 			if (jump_mode == 1) {
-				player_x += move_x * SPEED / 2;
+				player_x += jump_move_x * SPEED / 2;
 			}
 			//移動ジャンプだった時
 			else {
@@ -161,6 +164,7 @@ void PLAYER::Move() {
 		//ジャンプ中じゃないかったらステートを切り替える
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && 
 			player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
+			jump_move_x = 0;
 			player_state = PLAYER_MOVE_STATE::IDLE;	//ステートをIdleに切り替え
 		}
 	}
@@ -329,7 +333,8 @@ void PLAYER::HookMove(ELEMENT* element) {
 			player_x = hook_x + STAGE::GetScrollX() + nx;
 			player_y = hook_y + ny;
 			player_y += 1;
-			player_state = PLAYER_MOVE_STATE::IDLE;
+			jump_request = true;
+			player_state = PLAYER_MOVE_STATE::JUMP;
 		}
 	}
 }
@@ -343,9 +348,11 @@ void PLAYER::JumpMove() {
 	static float jump_y = 0;			//ジャンプの高さ
 	static float velocity = 0.0f;	//ジャンプと落下のスピード
 	//Aボタンを押したとき
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A) {
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A || jump_request) {
 		//ジャンプ中じゃないとき
-		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL) {
+		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && player_state != PLAYER_MOVE_STATE::HOOK
+			|| jump_request) {
+			jump_request = false;
 			is_jump = true;			//ジャンプ中に移行
 			jump_y = player_y - MAP_CEllSIZE; //ジャンプの高さのセット
 			velocity = JUMP_VELOCITY;
