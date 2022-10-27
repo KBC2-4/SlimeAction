@@ -291,10 +291,10 @@ void PLAYER::HookMove(ELEMENT* element) {
 				//player_x = hook_x + STAGE::GetScrollX();
 				//player_y = hook_y;
 
-				// 公式に従って速度を加算
+				// 速度を加算
 				speed += -mass * (G / 60) * sin(x / LENGTH);
 				x += speed;
-				// 軸を原点とした場合のぶら下がっている物の座標を算出
+				// 軸を原点としてぶら下がっている物の座標を計算
 				angle = x / LENGTH + PI / 2.0;
 				nx = cos(angle) * LENGTH;
 				ny = sin(angle) * LENGTH;
