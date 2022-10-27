@@ -108,7 +108,7 @@ void PLAYER::Move() {
 	//スティック入力の取得
 	int input_lx = PAD_INPUT::GetPadThumbLX();
 	//移動するとき
-	float move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
+	move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 	if ((input_lx < -DEVIATION || input_lx > DEVIATION) && player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		animation_state = PLAYER_ANIM_STATE::MOVE;
 		animation_mode = 1;							//アニメーションの切り替え
@@ -150,6 +150,7 @@ void PLAYER::Move() {
 
 	//移動してない時
 	else {
+		move_x = 0;
 		//移動アニメーションを後半へ移行
 		if (animation_type[1] > 1) {
 			animation_phase[1] = 1;
@@ -411,6 +412,18 @@ void PLAYER::JumpMove() {
 					player_state = PLAYER_MOVE_STATE::IDLE;
 				}
 				else {
+					bool is_wall = false;
+					if (move_x < 0 &&
+						STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
+						STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_wall = true;
+					if (move_x > 0 &&
+						STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
+						STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_wall = true;
+
+					if (!is_wall) {
+						player_y = new_y;
+					}
+
 					if (move_type == 0)
 						player_x -= SPEED;
 					else

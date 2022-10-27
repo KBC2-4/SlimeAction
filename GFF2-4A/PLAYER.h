@@ -47,6 +47,7 @@ private:
 	int now_image;			//描画する画像
 	int images[2][10];		//アニメーションの画像
 	int move_type;			//左か右の移動(反転用)
+	float move_x;
 	int animation_frame;	//アニメーションのフレームのカウント
 	int animation_type[2];		//今のアニメーションの添え字
 	int animation_phase[2];	//アニメーションの段階(0: 前半, 1: 後半)
