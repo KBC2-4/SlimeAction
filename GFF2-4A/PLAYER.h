@@ -67,6 +67,11 @@ private:
 	double b = 8.0;		//デフォルト8
 	double mass = 4.0;
 
+	//Throw
+	double throw_x[100];// = 100;
+	double throw_y[100];// = 560;
+	float throw_rad;
+
 	//画像を切り替えるタイミング(フレーム)
 	const int animation_switch_frame[2] = {
 		3,	//アイドル
