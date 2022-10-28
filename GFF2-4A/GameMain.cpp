@@ -8,6 +8,7 @@ GAMEMAIN::GAMEMAIN()
 	lemonner = new LEMON(player);
 	gurepon = new GRAPEFRUIT(player);
 	tomaton = new TOMATO(player);
+	element = new ELEMENT();
 }
 
 GAMEMAIN::~GAMEMAIN()
@@ -20,9 +21,8 @@ GAMEMAIN::~GAMEMAIN()
 AbstractScene* GAMEMAIN::Update()
 {
 	stage->Update();
-	player->Update();
+	player->Update(element);
 	tomaton->Update();
-
 	return this;
 }
 
