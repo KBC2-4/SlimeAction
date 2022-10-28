@@ -510,7 +510,7 @@ void PLAYER::HitBlock() {
 			if (STAGE::HitMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE))) {
 				player_x -= rebound_x;
 			}
-			else {
+			else if (move_x < 0) {
 				player_x += rebound_x;
 			}
 		}
@@ -518,7 +518,7 @@ void PLAYER::HitBlock() {
 			if (STAGE::HitMapDat(map_y - 1, (int)(player_left / MAP_CEllSIZE))) {
 				player_x += rebound_x;
 			}
-			else {
+			else if (move_x > 0) {
 				player_x -= rebound_x;
 			}
 		}
