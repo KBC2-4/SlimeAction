@@ -19,13 +19,18 @@ PLAYER::PLAYER() {
 	life = 5;
 	jump_mode = 0;
 	jump_move_x = 0;
+	jump_request = false;
 	is_hook_move = false;
 	player_state = PLAYER_MOVE_STATE::IDLE;
+	// 初期位置は軸の真下から左方向に45度傾いた位置
+		x = CLENGTH / b;
+		// 初期速度は０
+		speed = 0;
 	if (LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 80, 80, images[1]) == -1) {
 		throw "Resource/Images/Player/Slime.png";
 	}
-	if (LoadDivGraph("Resource/Images/Player/Slimest.png", 10, 10, 1, 80, 80, images[0]) == -1) {
-		throw "Resource/Images/Player/Slimest.png";
+	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
+		throw "Resource/Images/Player/IdorSlime.png";
 	}
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	animation_frame = 0;
@@ -44,6 +49,7 @@ void PLAYER::Update(ELEMENT* element) {
 	Move();
 	JumpMove();
 	HookMove(element);
+	Throw();
 	HitBlock();
 
 	//画面端の判定
@@ -68,13 +74,25 @@ void PLAYER::Draw()const {
 	}
 	else {
 		if (player_state == PLAYER_MOVE_STATE::HOOK) 
-			DrawRotaGraphF(player_x, player_y, 1.0, 0.0, now_image, TRUE, move_type);
+			DrawRotaGraphF(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 1.0, 0.0, now_image, TRUE, move_type);
 		else {
 			DrawRotaGraph3F(player_x, player_y, 40, 80,
 				1, hook_distance / (MAP_CEllSIZE / 2), (double)hook_angle,
 				now_image, TRUE, move_type);
 		}
 	}
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
+		for (int i = 0; i < 100; i++) {
+			DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
+		}
+	}
+	else {
+		DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
+	}
+
+	//printfDx("hook: %f %f\n", hook_x, hook_y);
+	//printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
+
 	//グリッドの表示(デバッグ用)
 	//for (int i = 0; i < 128; i++) {
 	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
@@ -95,11 +113,11 @@ void PLAYER::Draw()const {
 /// プレイヤーの移動
 /// </summary>
 void PLAYER::Move() {
-	if (is_hook_move) return;
+	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
 	//スティック入力の取得
 	int input_lx = PAD_INPUT::GetPadThumbLX();
 	//移動するとき
-	float move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
+	move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 	if ((input_lx < -DEVIATION || input_lx > DEVIATION) && player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		animation_state = PLAYER_ANIM_STATE::MOVE;
 		animation_mode = 1;							//アニメーションの切り替え
@@ -117,9 +135,11 @@ void PLAYER::Move() {
 			player_state = PLAYER_MOVE_STATE::MOVE;	//ステートをMoveに切り替え
 		}
 		else {
+			if (jump_move_x == 0) jump_move_x = move_x;
+			move_type = jump_move_x > 0 ? 0 : 1;
 			//停止ジャンプだった時
 			if (jump_mode == 1) {
-				player_x += move_x * SPEED / 2;
+				player_x += jump_move_x * SPEED / 2;
 			}
 			//移動ジャンプだった時
 			else {
@@ -139,6 +159,7 @@ void PLAYER::Move() {
 
 	//移動してない時
 	else {
+		move_x = 0;
 		//移動アニメーションを後半へ移行
 		if (animation_type[1] > 1) {
 			animation_phase[1] = 1;
@@ -153,6 +174,7 @@ void PLAYER::Move() {
 		//ジャンプ中じゃないかったらステートを切り替える
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && 
 			player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
+			jump_move_x = 0;
 			player_state = PLAYER_MOVE_STATE::IDLE;	//ステートをIdleに切り替え
 		}
 	}
@@ -187,12 +209,18 @@ void PLAYER::HookMove(ELEMENT* element) {
 	static bool end_move = false;
 	//近くにフックがあるかどうか
 	bool is_hook = false;
+	
+	//スティック入力の取得
+	int input_lx = PAD_INPUT::GetPadThumbLX();
+	
+	
 	//Bボタン押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
 		//フックの座標
-		float hook_y, hook_x;
+		//float hook_y, hook_x;
 		//フックまでの距離
 		float min_distance = HOOK_MAX_DISTANCE;
+		
 		//フックの位置
 		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHookPos();
 		for (int i = 0; i < hook_pos.size(); i++) {
@@ -269,8 +297,39 @@ void PLAYER::HookMove(ELEMENT* element) {
 				//ステートの変更
 				player_state = PLAYER_MOVE_STATE::HOOK;
 				//フックの座標にプレイヤーを移動
-				player_x = hook_x + STAGE::GetScrollX();
-				player_y = hook_y;
+				//player_x = hook_x + STAGE::GetScrollX();
+				//player_y = hook_y;
+				// 速度を加算
+				speed += -mass * (G / 60) * sin(x / LENGTH);
+				x += speed;
+				// 軸を原点としてぶら下がっている物の座標を計算
+				angle = x / LENGTH + PI / 2.0;
+				nx = cos(angle) * LENGTH;
+				ny = sin(angle) * LENGTH;
+				if (speed >= 0) {
+					if (input_lx < -15000) {
+						speed += 0.05;
+					}
+					if (input_lx > 15000) {
+						speed -= 0.09;
+					}
+				}
+				else if (speed < 0) {
+					if (input_lx < -15000) {
+						speed += 0.09;
+					}
+					if (input_lx > 15000) {
+						speed -= 0.05;
+					}
+				}
+				if (hook_y + ny < hook_y) {
+					ny = 0;
+					speed = 0.0;
+				}
+				if (input_lx < 15000 && input_lx >- 15000) {	//離している間は角度を狭く、スピードを遅くしていく
+					if (speed > 0)speed -= 0.05;
+					if (speed < 0)speed += 0.05;
+				}
 			}
 		}
 	}
@@ -280,8 +339,11 @@ void PLAYER::HookMove(ELEMENT* element) {
 		end_move = false;
 		is_hook_move = false;
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
+			player_x = hook_x + STAGE::GetScrollX() + nx;
+			player_y = hook_y + ny;
 			player_y += 1;
-			player_state = PLAYER_MOVE_STATE::IDLE;
+			jump_request = true;
+			player_state = PLAYER_MOVE_STATE::JUMP;
 		}
 	}
 }
@@ -295,9 +357,11 @@ void PLAYER::JumpMove() {
 	static float jump_y = 0;			//ジャンプの高さ
 	static float velocity = 0.0f;	//ジャンプと落下のスピード
 	//Aボタンを押したとき
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A) {
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A || jump_request) {
 		//ジャンプ中じゃないとき
-		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL) {
+		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && player_state != PLAYER_MOVE_STATE::HOOK
+			|| jump_request) {
+			jump_request = false;
 			is_jump = true;			//ジャンプ中に移行
 			jump_y = player_y - MAP_CEllSIZE; //ジャンプの高さのセット
 			velocity = JUMP_VELOCITY;
@@ -356,6 +420,18 @@ void PLAYER::JumpMove() {
 					player_state = PLAYER_MOVE_STATE::IDLE;
 				}
 				else {
+					bool is_wall = false;
+					if (move_x < 0 &&
+						STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
+						STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_wall = true;
+					if (move_x > 0 &&
+						STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
+						STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_wall = true;
+
+					if (!is_wall) {
+						player_y = new_y;
+					}
+
 					if (move_type == 0)
 						player_x -= SPEED;
 					else
@@ -371,7 +447,48 @@ void PLAYER::JumpMove() {
 }
 
 void PLAYER::Throw() {
-
+	static bool push = false;
+	static int i = 0;
+	//軌道の計算
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
+		push = true;
+		i = 0;
+		throw_rad = atan2(PAD_INPUT::GetPadThumbRY(), PAD_INPUT::GetPadThumbRX());
+		for (int j = 0; j < 100; j++) {
+			//加速度の計算
+			int V = 40 - 9.8 * (j * 0.1);
+			//座標
+			throw_x[j] = 40 * cos(throw_rad) * (j * 0.1);
+			throw_y[j] = 9.8 * pow(j * 0.1, 2) / 2 - V * sin(throw_rad) * (j * 0.1);
+			if (j > 0) {
+				throw_x[j] += throw_x[j - 1];
+				throw_y[j] += throw_y[j - 1];
+			}
+			else {
+				throw_x[j] += player_x;
+				throw_y[j] += player_y;
+			}
+		}
+	}
+	else {
+		//投げる処理
+		if (push) {
+			int V = 40 - 9.8 * (i * 0.1);
+			throw_x[0] += 40 * cos(throw_rad) * (i * 0.1);
+			throw_y[0] -= -9.8 * pow(i * 0.1, 2) / 2 + V * sin(throw_rad) * (i * 0.1);
+			if (++i >= 100) {
+				i = 0;
+				push = false;
+			}
+		}
+	}
+	/*if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
+		int V = 30 - 0.1 * (i * 0.1);
+		x += 30 * cos(rad) * (i * 0.1);
+		y -= -9.8 * pow(i * 0.1, 2) / 2 + V * sin(rad) * (i * 0.1);
+		DrawCircle(x, y, 10, 0xFFFFFF, TRUE);
+		i++;
+	}*/
 }
 
 /// <summary>
@@ -429,18 +546,26 @@ void PLAYER::HitBlock() {
 /// </summary>
 void PLAYER::MoveAnimation() {
 	//画像の切り替えタイミングのとき
-	if (++animation_frame % ANIMATION_SWITCH_FRAME == 0) {
-		int type = static_cast<int>(animation_state);
+	int type = static_cast<int>(animation_state);
+	if (++animation_frame % animation_switch_frame[type] == 0) {
 		//前半のアニメーション
 		if (animation_phase[type] == 0) {
 			animation_type[type]++;
 		}
 		//後半のアニメーション
 		else {
-			(animation_type[type])--;
+			if (animation_play_type[type] == 0) {
+				animation_type[type]--;
+			}
+			else {
+				animation_phase[type] = 0;
+				animation_type[type] = 1;
+			}
 		}
 		//前半と後半の切り替え
-		if (animation_type[type] >= IMAGE_MAX_NUM - 1 || animation_type[type] <= 0) animation_phase[type] = (animation_phase[type] + 1) % 2;
+		if (animation_type[type] >= animation_image_num[type] - 1 || animation_type[type] <= 0) {
+			animation_phase[type] = (animation_phase[type] + 1) % 2;
+		}
 	}
 }
 
