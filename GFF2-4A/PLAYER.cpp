@@ -21,24 +21,31 @@ PLAYER::PLAYER() {
 	jump_move_x = 0;
 	jump_request = false;
 	is_hook_move = false;
+	is_throw_anim = false;
 	player_state = PLAYER_MOVE_STATE::IDLE;
 	// 初期位置は軸の真下から左方向に45度傾いた位置
 		x = CLENGTH / b;
 		// 初期速度は０
 		speed = 0;
+	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
+		throw "Resource/Images/Player/IdorSlime.png";
+	}
 	if (LoadDivGraph("Resource/Images/Player/Slime.png", 10, 10, 1, 80, 80, images[1]) == -1) {
 		throw "Resource/Images/Player/Slime.png";
 	}
-	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
-		throw "Resource/Images/Player/IdorSlime.png";
+	if (LoadDivGraph("Resource/Images/Player/ThrowSlime.png", 7, 7, 1, 80, 80, images[2]) == -1) {
+		throw "Resource/Images/Player/ThrowSlime.png";
+	}
+	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
+		throw "Resource/Images/Player/SlimeBullet.png";
 	}
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	animation_frame = 0;
 	animation_mode = 0;
-	animation_type[0] = 0;
-	animation_type[1] = 0;
-	animation_phase[0] = 0;
-	animation_phase[1] = 0;
+	for (int i = 0; i < ANIMATION_TYPE; i++) {
+		animation_type[i] = 0;
+		animation_phase[i] = 0;
+	}
 }
 
 /// <summary>
@@ -83,13 +90,17 @@ void PLAYER::Draw()const {
 	}
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
 		for (int i = 0; i < 100; i++) {
-			DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
+			//DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
+			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 		}
 	}
 	else {
-		DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
+		//DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
+		DrawGraph(throw_x[0], throw_y[0], throw_ball_image, TRUE);
 	}
-
+	for (int i = 0; i < 10; i++) {
+		printfDx("throw_x[%d]: %f\n", i,throw_x[i]);
+	}
 	//printfDx("hook: %f %f\n", hook_x, hook_y);
 	//printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
 
@@ -114,6 +125,7 @@ void PLAYER::Draw()const {
 /// </summary>
 void PLAYER::Move() {
 	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
+	if (is_throw_anim) return;
 	//スティック入力の取得
 	int input_lx = PAD_INPUT::GetPadThumbLX();
 	//移動するとき
@@ -453,6 +465,7 @@ void PLAYER::Throw() {
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
 		push = true;
 		i = 0;
+		animation_type[2] = 0;
 		throw_rad = atan2(PAD_INPUT::GetPadThumbRY(), PAD_INPUT::GetPadThumbRX());
 		for (int j = 0; j < 100; j++) {
 			//加速度の計算
@@ -465,7 +478,7 @@ void PLAYER::Throw() {
 				throw_y[j] += throw_y[j - 1];
 			}
 			else {
-				throw_x[j] += player_x;
+				throw_x[j] += player_x - 20;
 				throw_y[j] += player_y;
 			}
 		}
@@ -473,6 +486,15 @@ void PLAYER::Throw() {
 	else {
 		//投げる処理
 		if (push) {
+			int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
+			if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
+				is_throw_anim = false;
+			}
+			else {
+				is_throw_anim = true;
+				animation_state = PLAYER_ANIM_STATE::THROW;
+				MoveAnimation();
+			}
 			int V = 40 - 9.8 * (i * 0.1);
 			throw_x[0] += 40 * cos(throw_rad) * (i * 0.1);
 			throw_y[0] -= -9.8 * pow(i * 0.1, 2) / 2 + V * sin(throw_rad) * (i * 0.1);
@@ -508,7 +530,7 @@ void PLAYER::HitBlock() {
 			if (STAGE::HitMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE))) {
 				player_x -= rebound_x;
 			}
-			else {
+			else if (move_x < 0) {
 				player_x += rebound_x;
 			}
 		}
@@ -516,7 +538,7 @@ void PLAYER::HitBlock() {
 			if (STAGE::HitMapDat(map_y - 1, (int)(player_left / MAP_CEllSIZE))) {
 				player_x += rebound_x;
 			}
-			else {
+			else if (move_x > 0) {
 				player_x -= rebound_x;
 			}
 		}
