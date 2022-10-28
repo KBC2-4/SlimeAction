@@ -31,5 +31,7 @@ void GAMEMAIN::Draw() const
 	stage->Draw();
 	//ƒvƒŒƒCƒ„[‚Ì•`‰æ
 	player->Draw();
+
+	element->Draw();
 	
 }

@@ -23,11 +23,13 @@ private:
 	std::vector<ELEMENT_DATA> lift;			//“®‚­°
 	std::vector<ELEMENT_DATA> tunnel;		//ƒgƒ“ƒlƒ‹
 	std::vector<ELEMENT_DATA> acid;			//_
+	float player_map_x, player_map_y;
 
 public:
 	ELEMENT();
+	void Draw() const override;
 	void Update(PLAYER* player);
-	void Button(float player_x,float player_y);
+	void Button();
 	std::vector<ELEMENT_DATA> GetHookPos() { return hook; }
 	std::vector<ELEMENT_DATA>GetButtonPos() { return button; }
 	std::vector<ELEMENT_DATA>GetDoorPos() { return door; }

@@ -20,7 +20,7 @@ public:
 	//マップ情報の更新
 	//void Update();
 	//ステージの描画
-	void Draw() const;
+	virtual void Draw() const;
 	//ステージの初期化
 	//void InitStage();
 	

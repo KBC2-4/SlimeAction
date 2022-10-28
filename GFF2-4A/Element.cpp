@@ -109,34 +109,34 @@ ELEMENT::ELEMENT() {
 	}
 }
 
-void ELEMENT::Update(PLAYER* player) {
-	Button(player->GetPlayerX(),player->GetPlayerY());
+void ELEMENT::Draw() const {
+	DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
+	DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
 }
 
-void ELEMENT::Button(float player_x, float player_y) {
-	DrawFormatString(200, 300, 0xFFFFFF, "x:%lf", player_x);
+void ELEMENT::Update(PLAYER* player) {
+	player_map_x = roundf((player->GetPlayerX() - STAGE::GetScrollX()));
+	player_map_y = floorf((player->GetPlayerY() + MAP_CEllSIZE / 2));
+	Button();
+}
+
+void ELEMENT::Button() {
 	for (int i = 0; i < button.size(); i++) {
 		printfDx("button[i].x%d", button[i].x);
 		if (button[i].type == 1) {
-			if ((player_x == button[i].x) && (player_y == button[i].y)) {
-				DrawFormatString(100, 300, 0xFFFFFF, "bx:%lf\nby:lf", button[i].x, button[i].y);
+			if ((player_map_x == button[i].x) && (player_map_y == button[i].y)) {
 				DxLib_End();
 			}
 			if (button[i].type == 2) {
-				if ((player_x  == button[i].x) && (player_y == button[i].y)) {
-					DrawFormatString(100, 300, 0xFFFFFF, "bx:%lf\nby:lf", button[i].x, button[i].y);
+				if ((player_map_x == button[i].x) && (player_map_y == button[i].y)) {
 					DxLib_End();
 				}
 			}
 
 
 			if (button[i].type == 3) {
-				//if (button[i].flg == false) {
-					if ((player_x == button[i].x) && (player_y == button[i].y)) {
-						DrawFormatString(100, 300, 0xFFFFFF, "bx:%lf\nby:lf", button[i].x, button[i].y);
-						DxLib_End();
-				//}	
-
+				if ((player_map_x >= button[i].x-MAP_CEllSIZE/2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2)&& (player_map_y >= button[i].y - MAP_CEllSIZE / 2)&& (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
+					DxLib_End();
 				}
 			}
 		}
