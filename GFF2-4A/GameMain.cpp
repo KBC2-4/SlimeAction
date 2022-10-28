@@ -15,6 +15,7 @@ GAMEMAIN::~GAMEMAIN()
 {
 	delete player;
 	delete stage;
+	delete element;
 }
 
 AbstractScene* GAMEMAIN::Update()
