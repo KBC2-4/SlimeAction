@@ -27,8 +27,8 @@ STAGE::STAGE() {
 
 void STAGE::Draw()const {
 	printfDx("%f",scroll_x);
-	DrawGraph(int(scroll_x)%1920+1920, scroll_y, stage_image[0], FALSE);
-	DrawGraph(int(scroll_x) % 1920, scroll_y, stage_image[0], FALSE);
+	DrawGraph(int(scroll_x)%3840+3840, scroll_y, stage_image[0], FALSE);
+	DrawTurnGraph(int(scroll_x) % 3840, scroll_y, stage_image[0], FALSE);
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
@@ -99,7 +99,7 @@ bool STAGE::SetScrollPos(int move_x) {
 bool STAGE::HitMapDat(int y, int x) {
 	if (CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
 	int block_type = GetMapDat(y, x);
-	if (block_type == 0 || block_type == 9 || block_type == 64 || block_type == 62) {
+	if (block_type == 0 || block_type == 15 || block_type == 64 || block_type == 62) {
 		return false;
 	}
 	return true;
