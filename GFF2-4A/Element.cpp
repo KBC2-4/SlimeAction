@@ -76,7 +76,7 @@ ELEMENT::ELEMENT() {
 				break;
 
 				//ƒtƒbƒN
-			case 70:
+			case 71:
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.y = i * MAP_CEllSIZE + MAP_CEllSIZE / 2;
 				hook.push_back(data);

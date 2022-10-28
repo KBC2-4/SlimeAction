@@ -8,7 +8,7 @@
 //#define ANIMATION_SWITCH_FRAME	1		//画像を切り替えるタイミング(フレーム)
 //#define IMAGE_MAX_NUM			10		//画像の枚数
 #define JUMP_VELOCITY			-5.8f	//ジャンプスピード
-#define HOOK_MAX_DISTANCE		480
+#define HOOK_MAX_DISTANCE		240
 
 #define PI 3.1415926535897932384626433832795
 #define LENGTH      200                 // 紐の長さ
