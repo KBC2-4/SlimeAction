@@ -22,6 +22,7 @@ PLAYER::PLAYER() {
 	jump_request = false;
 	is_hook_move = false;
 	is_throw_anim = false;
+	is_death = false;
 	player_state = PLAYER_MOVE_STATE::IDLE;
 	// 初期位置は軸の真下から左方向に45度傾いた位置
 		x = CLENGTH / b;
@@ -58,6 +59,10 @@ void PLAYER::Update(ELEMENT* element) {
 	HookMove(element);
 	Throw();
 	HitBlock();
+
+	if (STAGE::GetMapDat(map_y, map_x) == -1) {
+		is_death = true;
+	}
 
 	//画面端の判定
 	if (player_left <= 0) player_x = 40;

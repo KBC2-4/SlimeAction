@@ -39,6 +39,7 @@ class PLAYER
 {
 
 private:
+	bool is_death;
 	static float player_x, player_y;
 	int map_x, map_y;
 	float player_left = 0, player_right = 0;
@@ -118,6 +119,7 @@ public:
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
+	bool IsDeath() { return is_death; }
 	static float GetPlayerX() { return player_x; };
 	static float GetPlayerY() { return player_y; };
 

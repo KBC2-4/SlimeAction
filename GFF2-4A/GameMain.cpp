@@ -22,6 +22,9 @@ AbstractScene* GAMEMAIN::Update()
 {
 	element->Update(player);
 	player->Update(element);
+	if (player->IsDeath()) {
+		return new GAMEMAIN();
+	}
 
 	return this;
 }
