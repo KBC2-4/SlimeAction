@@ -260,7 +260,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 				int hook_map_x = x / MAP_CEllSIZE;
 				int hook_map_y = y / MAP_CEllSIZE;
 				//áŠQ•¨‚ª‚ ‚éê‡‚ÍˆÚ“®‚³‚¹‚È‚¢
-				if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 70) {
+				if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 71) {
 					continue;
 				}
 				//Å’Z‹——£‚ÌXV

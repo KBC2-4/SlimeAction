@@ -19,7 +19,7 @@ GAMEMAIN::~GAMEMAIN()
 
 AbstractScene* GAMEMAIN::Update()
 {
-	stage->Update();
+	element->Update(player);
 	player->Update(element);
 
 	return this;
@@ -31,5 +31,7 @@ void GAMEMAIN::Draw() const
 	stage->Draw();
 	//ƒvƒŒƒCƒ„[‚Ì•`‰æ
 	player->Draw();
+
+	element->Draw();
 	
 }
