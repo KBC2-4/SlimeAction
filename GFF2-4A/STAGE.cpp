@@ -15,6 +15,8 @@ STAGE::STAGE() {
 	*block_image1 = 0;
 	*stage_image = 0;
 	stage_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
+	scroll_x = 0;
+	scroll_y = 0;
 	LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1);
 	//InitStage();
 	LoadMapData();
