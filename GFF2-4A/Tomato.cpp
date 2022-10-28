@@ -51,7 +51,6 @@ void TOMATO::Move()
 
 void TOMATO::Hit()
 {
-	int 
 }
 
 void TOMATO::Animation()

@@ -3,11 +3,28 @@
 
 GAMEMAIN::GAMEMAIN()
 {
+	//‚Æ‚Ü‚Æ‚ñ‚Ì¶¬êŠ‚Ì”—p‚Ì•Ï”
+	int spawn_tomaton_count = 0;
 	player = new PLAYER;
 	stage = new STAGE;
 	lemonner = new LEMON(player);
 	gurepon = new GRAPEFRUIT(player);
-	tomaton = new TOMATO(player);
+	tomaton = nullptr;
+
+	for (int i = 0; i < MAP_HEIGHT; i++)
+	{
+		for (int j = 0; j < MAP_WIDTH; j++)
+		{
+			if (stage->GetMapDat(i, j) == 93)
+			{
+				spawn_tomaton_count++;
+			}
+		}
+	}
+	if (spawn_tomaton_count > 0)
+	{
+		tomaton = new TOMATO[spawn_tomaton_count];
+	}
 	element = new ELEMENT();
 }
 
