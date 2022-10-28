@@ -12,6 +12,7 @@ private:
 	float map_x, map_y;			//マップ描画座標
 	static float scroll_x, scroll_y;	//マップスクロール量
 
+protected:
 	static int map_data[MAP_HEIGHT][MAP_WIDTH];
 public:
 	STAGE();
