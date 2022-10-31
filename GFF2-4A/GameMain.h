@@ -12,11 +12,14 @@ class GAMEMAIN :
 {
 private:
 
+	//とまとんの数用の変数
+	int tomaton_count = 0;
+
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
 	LEMON* lemonner;	//レモナー
 	GRAPEFRUIT* gurepon;	//グレぽん
-	TOMATO* tomaton;	//とまとん
+	TOMATO** tomaton;	//とまとん
 	ELEMENT* element;	//ステージ内要素
 public:
 	/// <summary>
