@@ -8,7 +8,7 @@ GRAPEFRUIT::GRAPEFRUIT()
 	if (image[0] = LoadGraph("Resource/Images/Enemy/gurepon.png") == -1)
 		throw "Resource/Images/Enemy/gurepon.png";
 	shootcount = 0;
-	shootcount = 0;
+	hitflg = false;
 }
 
 GRAPEFRUIT::GRAPEFRUIT(PLAYER* player)
@@ -23,6 +23,7 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player)
 void GRAPEFRUIT::Update()
 {
 	ChangeAngle();
+	ShotFruitJuice();
 }
 
 void GRAPEFRUIT::Move()
@@ -33,10 +34,10 @@ void GRAPEFRUIT::Move()
 
 void GRAPEFRUIT::ShotFruitJuice()
 {
-	/*if (shootcount++ % 120 == 0) 
+	if (++shootcount % 120 == 0) 
 	{
-
-	}*/
+		
+	}
 }
 
 void GRAPEFRUIT::Hit()

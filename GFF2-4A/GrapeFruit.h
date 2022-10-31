@@ -4,6 +4,7 @@ class GRAPEFRUIT :
 	public ENEMY
 {
 private:
+	bool hitflg;
 	int shootcount;
 public:
 	/// <summary>
