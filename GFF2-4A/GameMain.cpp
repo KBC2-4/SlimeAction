@@ -20,11 +20,11 @@ GAMEMAIN::~GAMEMAIN()
 
 AbstractScene* GAMEMAIN::Update()
 {
-	element->Update(player);
 	player->Update(element);
 	if (player->IsDeath()) {
 		return new GAMEMAIN();
 	}
+	element->Update(player);
 
 	return this;
 }

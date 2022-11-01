@@ -21,7 +21,7 @@ ELEMENT::ELEMENT() {
 				//ボタン(下)
 			case 62:
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25;
+				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.type = 2;
 				button.push_back(data);
 				break;
@@ -112,6 +112,7 @@ ELEMENT::ELEMENT() {
 void ELEMENT::Draw() const {
 	DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
 	DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
+	//DrawBox(button[1].x + scroll_x, button[1].y + scroll_y, button[1].x + scroll_x + MAP_CEllSIZE, button[1].y + scroll_y + MAP_CEllSIZE,0xff0000,TRUE);
 }
 
 void ELEMENT::Update(PLAYER* player) {
@@ -122,23 +123,24 @@ void ELEMENT::Update(PLAYER* player) {
 
 void ELEMENT::Button() {
 	for (int i = 0; i < button.size(); i++) {
-		printfDx("button[i].x%d", button[i].x);
 		if (button[i].type == 1) {
-			if ((player_map_x == button[i].x) && (player_map_y == button[i].y)) {
-				DxLib_End();
-			}
-			if (button[i].type == 2) {
-				if ((player_map_x == button[i].x) && (player_map_y == button[i].y)) {
-					DxLib_End();
-				}
-			}
-
-
-			if (button[i].type == 3) {
-				if ((player_map_x >= button[i].x-MAP_CEllSIZE/2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2)&& (player_map_y >= button[i].y - MAP_CEllSIZE / 2)&& (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
-					DxLib_End();
-				}
+			if ((player_map_x >= button[i].x - MAP_CEllSIZE / 2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
+				printfDx("1番に入ってるよ！");
 			}
 		}
+			if (button[i].type == 2) {
+				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
+					printfDx("2番に入ってるよ！");
+					//DrawOvalAA(button[i].x, button[i].y, MAP_CEllSIZE + 25, MAP_CEllSIZE / 2,)
+				}
+			}
+
+			//一回限り
+			if (button[i].type == 3) {
+				if ((player_map_x >= button[i].x-MAP_CEllSIZE/2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2)&& (player_map_y >= button[i].y - MAP_CEllSIZE / 2)&& (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
+					printfDx("3番に入ってるよ！");
+				}
+			}
+		
 	}
 }

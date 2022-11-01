@@ -104,7 +104,7 @@ void PLAYER::Draw()const {
 		DrawGraph(throw_x[0], throw_y[0], throw_ball_image, TRUE);
 	}
 	for (int i = 0; i < 10; i++) {
-		printfDx("throw_x[%d]: %f\n", i,throw_x[i]);
+		//printfDx("throw_x[%d]: %f\n", i,throw_x[i]);
 	}
 	//printfDx("hook: %f %f\n", hook_x, hook_y);
 	//printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
