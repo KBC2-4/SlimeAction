@@ -17,7 +17,7 @@ ELEMENT::ELEMENT() {
 				data.type = 1;
 				button.push_back(data);
 				break;
-				
+					
 				//ボタン(下)
 			case 62:
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
@@ -110,9 +110,19 @@ ELEMENT::ELEMENT() {
 }
 
 void ELEMENT::Draw() const {
+	static int animtimer = 0;
+	printfDx("%d", animtimer);
 	DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
 	DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
 	//DrawBox(button[1].x + scroll_x, button[1].y + scroll_y, button[1].x + scroll_x + MAP_CEllSIZE, button[1].y + scroll_y + MAP_CEllSIZE,0xff0000,TRUE);
+	for (int i = 0; i < button.size(); i++) {
+		if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
+		if (button[i].type == 2 && button[i].flg == true) { 
+			++animtimer;
+			DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30 + animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f); 
+		}
+		else if (animtimer > 30)animtimer = 0;
+	}
 }
 
 void ELEMENT::Update(PLAYER* player) {
@@ -131,7 +141,8 @@ void ELEMENT::Button() {
 			if (button[i].type == 2) {
 				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
 					printfDx("2番に入ってるよ！");
-					//DrawOvalAA(button[i].x, button[i].y, MAP_CEllSIZE + 25, MAP_CEllSIZE / 2,)
+					button[i].flg = true;		//ボタンを押した
+					door[i].flg = true;
 				}
 			}
 

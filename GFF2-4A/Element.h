@@ -13,7 +13,7 @@ public:
 	{
 		float x, y;
 		int type;
-		bool flg;
+		bool flg = false;
 
 	};
 private:
@@ -24,6 +24,7 @@ private:
 	std::vector<ELEMENT_DATA> tunnel;		//ƒgƒ“ƒlƒ‹
 	std::vector<ELEMENT_DATA> acid;			//Ž_
 	float player_map_x, player_map_y;
+	//mutable int animtimer;
 
 public:
 	ELEMENT();

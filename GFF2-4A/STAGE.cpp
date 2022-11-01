@@ -14,7 +14,6 @@ STAGE::STAGE() {
 	**map_data = 0;
 	*block_image1 = 0;
 	*stage_image = 0;
-	stage_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
 	scroll_x = 0;
 	scroll_y = 0;
 	LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1);
@@ -28,9 +27,7 @@ STAGE::STAGE() {
 //}
 
 void STAGE::Draw()const {
-	printfDx("%f",scroll_x);
-	DrawGraph(int(scroll_x)%3840+3840, scroll_y, stage_image[0], FALSE);
-	DrawTurnGraph(int(scroll_x) % 3840, scroll_y, stage_image[0], FALSE);
+	//printfDx("%f",scroll_x);
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
