@@ -38,7 +38,6 @@ ELEMENT::ELEMENT() {
 
 				//ƒhƒA
 			case 64:
-				//data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.type = 1;
