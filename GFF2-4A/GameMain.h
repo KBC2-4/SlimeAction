@@ -11,6 +11,8 @@ class GAMEMAIN :
     public AbstractScene
 {
 private:
+	int background_image[5];
+	float time;		//Œo‰ßŠÔ
 
 	//‚Æ‚Ü‚Æ‚ñ‚Ì”—p‚Ì•Ï”
 	int tomaton_count = 0;

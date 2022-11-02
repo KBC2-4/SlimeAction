@@ -8,7 +8,8 @@
 //#define ANIMATION_SWITCH_FRAME	1		//画像を切り替えるタイミング(フレーム)
 //#define IMAGE_MAX_NUM			10		//画像の枚数
 #define JUMP_VELOCITY			-5.8f	//ジャンプスピード
-#define HOOK_MAX_DISTANCE		480
+#define HOOK_MAX_DISTANCE		320
+#define ANIMATION_TYPE			3
 
 #define PI 3.1415926535897932384626433832795
 #define LENGTH      200                 // 紐の長さ
@@ -30,13 +31,15 @@ enum class PLAYER_MOVE_STATE {
 //アニメーションステート
 enum class PLAYER_ANIM_STATE {
 	IDLE = 0,//アイドルアニメーション
-	MOVE	 //移動アニメーション
+	MOVE,	 //移動アニメーション
+	THROW,	 //投げるアニメーション
 };
 
 class PLAYER
 {
 
 private:
+	bool is_death;
 	static float player_x, player_y;
 	int map_x, map_y;
 	float player_left = 0, player_right = 0;
@@ -45,12 +48,12 @@ private:
 	float jump_move_x;
 	int life;
 	int now_image;			//描画する画像
-	int images[2][10];		//アニメーションの画像
+	int images[ANIMATION_TYPE][10];		//アニメーションの画像
 	int move_type;			//左か右の移動(反転用)
 	float move_x;
 	int animation_frame;	//アニメーションのフレームのカウント
-	int animation_type[2];		//今のアニメーションの添え字
-	int animation_phase[2];	//アニメーションの段階(0: 前半, 1: 後半)
+	int animation_type[ANIMATION_TYPE];		//今のアニメーションの添え字
+	int animation_phase[ANIMATION_TYPE];	//アニメーションの段階(0: 前半, 1: 後半)
 	int animation_mode;
 	int jump_mode;			//停止ジャンプ(1)か移動ジャンプ(2)か
 	bool jump_request;
@@ -68,28 +71,33 @@ private:
 	double mass = 4.0;
 
 	//Throw
+	int throw_ball_image;
+	bool is_throw_anim;
 	double throw_x[100];// = 100;
 	double throw_y[100];// = 560;
 	float throw_rad;
 
 	//画像を切り替えるタイミング(フレーム)
-	const int animation_switch_frame[2] = {
+	const int animation_switch_frame[ANIMATION_TYPE] = {
 		3,	//アイドル
 		1,	//移動
+		3,	//投げる
 	};
 
 	//アニメーションの再生の仕方
 	// 0: 一枚目から再生したら逆再生する
 	// 1: 一枚目から再生したら一枚目に戻す
-	const int animation_play_type[2] = {
+	const int animation_play_type[ANIMATION_TYPE] = {
 		1,	//アイドル
 		0,	//移動
+		1,	//投げる
 	};
 
 	//アニメーション画像の枚数
-	const int animation_image_num[2] = {
+	const int animation_image_num[ANIMATION_TYPE] = {
 		9,	//アイドル
 		10,	//移動
+		7,	//投げる
 	};
 
 	//ステート変数
@@ -111,6 +119,7 @@ public:
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
+	bool IsDeath() { return is_death; }
 	static float GetPlayerX() { return player_x; };
 	static float GetPlayerY() { return player_y; };
 
