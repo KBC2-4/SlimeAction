@@ -470,22 +470,32 @@ void PLAYER::Throw() {
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
 		push = true;
 		i = 0;
+		//アニメーションのリセット
 		animation_type[2] = 0;
+		//角度取得
 		throw_rad = atan2(PAD_INPUT::GetPadThumbRY(), PAD_INPUT::GetPadThumbRX());
+		float angle = throw_rad * 180.0f / M_PI;
+		if (angle > 120) throw_rad = 120.0f * M_PI / 180.0f;
+		else if (angle < 60) throw_rad = 60.0f * M_PI / 180.0f;
+		if ((move_type == 0 && angle > 90) || (move_type == 1 && angle < 90)) throw_rad = 90.0f * M_PI / 180.0f;
+		//初期位置
+		throw_x[0] = player_x;
+		throw_y[0] = player_y;
+		float V0 = 25; //初速度
 		for (int j = 0; j < 100; j++) {
 			//加速度の計算
-			int V = 40 - 9.8 * (j * 0.1);
-			//座標
-			throw_x[j] = 40 * cos(throw_rad) * (j * 0.1);
-			throw_y[j] = 9.8 * pow(j * 0.1, 2) / 2 - V * sin(throw_rad) * (j * 0.1);
+			float t = j * 0.1f;
+			float tmpX = V0 * cosf(throw_rad) * t;
+			float tmpY = V0 * sinf(throw_rad) * t - 0.5f * 9.8f * powf(t, 2);
 			if (j > 0) {
-				throw_x[j] += throw_x[j - 1];
-				throw_y[j] += throw_y[j - 1];
+				throw_x[j] = throw_x[j - 1];
+				throw_y[j] = throw_y[j - 1];
 			}
-			else {
-				throw_x[j] += player_x - 20;
-				throw_y[j] += player_y;
+			if (j % 5 == 0) {
+				V0--;
 			}
+			throw_x[j] += tmpX;
+			throw_y[j] -= tmpY;
 		}
 	}
 	else {
@@ -500,11 +510,9 @@ void PLAYER::Throw() {
 				animation_state = PLAYER_ANIM_STATE::THROW;
 				MoveAnimation();
 			}
-			int V = 40 - 9.8 * (i * 0.1);
-			throw_x[0] += 40 * cos(throw_rad) * (i * 0.1);
-			throw_y[0] -= -9.8 * pow(i * 0.1, 2) / 2 + V * sin(throw_rad) * (i * 0.1);
+			throw_x[0] = throw_x[i];
+			throw_y[0] = throw_y[i];
 			if (++i >= 100) {
-				i = 0;
 				push = false;
 			}
 		}
