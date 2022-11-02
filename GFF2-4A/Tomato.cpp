@@ -71,7 +71,7 @@ void TOMATO::Animation()
 }
 
 
-void TOMATO::Draw()const
+void TOMATO::Draw(float scroll_x)const
 {
 	DrawGraph(x, y, now_image, TRUE);
 	DrawCircle(x + IMAGE_SIZE / 2, y + IMAGE_SIZE / 2, 33, 0xffffff, FALSE);
