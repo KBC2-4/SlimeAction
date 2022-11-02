@@ -36,7 +36,7 @@ void GRAPEFRUIT::Animation()
 }
 
 
-void GRAPEFRUIT::Draw() const
+void GRAPEFRUIT::Draw(float scroll_x) const
 {
 
 }

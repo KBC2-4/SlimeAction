@@ -37,7 +37,7 @@ void LEMON::Animation()
 
 }
 
-void LEMON::Draw() const
+void LEMON::Draw(float scroll_x) const
 {
 
 }

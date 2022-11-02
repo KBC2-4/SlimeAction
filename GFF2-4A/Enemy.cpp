@@ -7,7 +7,7 @@
 
 ENEMY::ENEMY()
 {
-	this->player = nullptr;
+	player = nullptr;
 	rad = 0.0;
 	x = 0;
 	y = 0;
