@@ -1,4 +1,5 @@
 #include "STAGE.h"
+#include "Element.h"
 #include"DxLib.h"
 #include <iostream>
 #include <fstream>
@@ -14,23 +15,22 @@ STAGE::STAGE() {
 	*block_image1 = 0;
 	*stage_image = 0;
 	stage_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
+	scroll_x = 0;
+	scroll_y = 0;
 	LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1);
 	//InitStage();
 	LoadMapData();
 }
+	
 
-
-void STAGE::Update() {
-	//scroll_x-=10;
-	//map_x = player_x - float((MAP_WIDTH/3 + 2) / 2 - 1);
-	//map_x++;
-	//map_y = player_y - float((MAP_HEIGHT + 2) / 2 - 1);
-}
+//void STAGE::Update() {
+//
+//}
 
 void STAGE::Draw()const {
 	printfDx("%f",scroll_x);
-	DrawGraph(int(scroll_x)%1920+1920, scroll_y, stage_image[0], FALSE);
-	DrawGraph(int(scroll_x) % 1920, scroll_y, stage_image[0], FALSE);
+	DrawGraph(int(scroll_x)%3840+3840, scroll_y, stage_image[0], FALSE);
+	DrawTurnGraph(int(scroll_x) % 3840, scroll_y, stage_image[0], FALSE);
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
@@ -76,9 +76,7 @@ void STAGE::Draw()const {
 //
 //}
 
-void STAGE::ButtonProcess() {
 
-}
 
 void STAGE::HookProcess() {
 
@@ -103,7 +101,7 @@ bool STAGE::SetScrollPos(int move_x) {
 bool STAGE::HitMapDat(int y, int x) {
 	if (CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
 	int block_type = GetMapDat(y, x);
-	if (block_type == 0 || block_type == 9 || block_type == 64) {
+	if (block_type == -1 || block_type == 0 || block_type == 15 || block_type == 64 || block_type == 62) {
 		return false;
 	}
 	return true;

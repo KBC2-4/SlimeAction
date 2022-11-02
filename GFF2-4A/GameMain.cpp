@@ -15,12 +15,16 @@ GAMEMAIN::~GAMEMAIN()
 {
 	delete player;
 	delete stage;
+	delete element;
 }
 
 AbstractScene* GAMEMAIN::Update()
 {
-	stage->Update();
+	element->Update(player);
 	player->Update(element);
+	if (player->IsDeath()) {
+		return new GAMEMAIN();
+	}
 
 	return this;
 }
@@ -31,5 +35,7 @@ void GAMEMAIN::Draw() const
 	stage->Draw();
 	//ƒvƒŒƒCƒ„[‚Ì•`‰æ
 	player->Draw();
+
+	element->Draw();
 	
 }
