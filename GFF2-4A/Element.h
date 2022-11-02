@@ -14,6 +14,7 @@ public:
 		float x, y;
 		int type;
 		bool flg = false;
+		int animtimer = 0;
 
 	};
 private:

@@ -3,6 +3,7 @@
 #include "PLAYER.h"
 
 ELEMENT::ELEMENT() {
+
 	ELEMENT_DATA data;
 	for (int i = 0; i < MAP_HEIGHT; i++)
 	{
@@ -118,10 +119,8 @@ void ELEMENT::Draw() const {
 	for (int i = 0; i < button.size(); i++) {
 		if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		if (button[i].type == 2 && button[i].flg == true) { 
-			++animtimer;
-			DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30 + animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f); 
+			DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30 + button[i].animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		}
-		else if (animtimer > 30)animtimer = 0;
 	}
 }
 
@@ -133,13 +132,19 @@ void ELEMENT::Update(PLAYER* player) {
 
 void ELEMENT::Button() {
 	for (int i = 0; i < button.size(); i++) {
+		if(button[i].flg == true)button[i].animtimer++;
+		if (button[i].animtimer > 180) {
+			button[i].animtimer = 0;
+			button[i].flg = false;
+		}
+
 		if (button[i].type == 1) {
 			if ((player_map_x >= button[i].x - MAP_CEllSIZE / 2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
 				printfDx("1番に入ってるよ！");
 			}
 		}
 			if (button[i].type == 2) {
-				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
+				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 + 50) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
 					printfDx("2番に入ってるよ！");
 					button[i].flg = true;		//ボタンを押した
 					door[i].flg = true;
@@ -152,6 +157,5 @@ void ELEMENT::Button() {
 					printfDx("3番に入ってるよ！");
 				}
 			}
-		
 	}
 }
