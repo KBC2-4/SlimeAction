@@ -32,6 +32,7 @@ public:
 	void Draw() const override;
 	void Update(PLAYER* player);
 	void Button();
+	void Door();
 	std::vector<ELEMENT_DATA> GetHookPos() { return hook; }
 	std::vector<ELEMENT_DATA>GetButtonPos() { return button; }
 	std::vector<ELEMENT_DATA>GetDoorPos() { return door; }
