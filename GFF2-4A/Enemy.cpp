@@ -8,6 +8,7 @@
 ENEMY::ENEMY()
 {
 	player = nullptr;
+	stage = nullptr;
 	rad = 0.0;
 	x = 0;
 	y = 0;
@@ -21,5 +22,5 @@ ENEMY::ENEMY()
 void ENEMY::ChangeAngle()
 {
 	//自分を原点にプレイヤーとの角度を計算
-	rad = atan2(player->GetPlayerY() - y, player->GetPlayerX() - x);
+	rad = atan2f(player->GetPlayerY() - y, player->GetPlayerX() - x);
 }
