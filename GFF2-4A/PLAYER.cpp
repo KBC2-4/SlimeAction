@@ -205,7 +205,7 @@ void PLAYER::Scroll(float move_x) {
 		//スクロールが端まで行ってない時
 		if (!(isScroll = STAGE::SetScrollPos(move_x))) {
 			//プレイヤーの位置を中心に戻す
-			rebound_x = SPEED * 2;
+			rebound_x = SPEED * 1.3f;
 			player_x -= move_x * rebound_x;
 		}
 	}
