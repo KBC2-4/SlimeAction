@@ -28,6 +28,8 @@ PLAYER::PLAYER() {
 		x = CLENGTH / b;
 		// 初期速度は０
 		speed = 0;
+
+		ve = 70.0;
 	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
 		throw "Resource/Images/Player/IdorSlime.png";
 	}
@@ -40,6 +42,7 @@ PLAYER::PLAYER() {
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
 		throw "Resource/Images/Player/SlimeBullet.png";
 	}
+
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	animation_frame = 0;
 	animation_mode = 0;
@@ -93,8 +96,10 @@ void PLAYER::Draw()const {
 				now_image, TRUE, move_type);
 		}
 	}
+	
+
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < throw_x.size(); i++) {
 			//DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 		}
@@ -103,9 +108,15 @@ void PLAYER::Draw()const {
 		//DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
 		DrawGraph(throw_x[0], throw_y[0], throw_ball_image, TRUE);
 	}
-	for (int i = 0; i < 10; i++) {
-		//printfDx("throw_x[%d]: %f\n", i,throw_x[i]);
+
+
+	/*for (int i = 0; i < 10; i++) {
+		printfDx("throw_x[%d]: %f\n", i,throw_x[i]);
 	}
+	for (int i = 0; i < 10; i++) {
+		printfDx("throw_y[%d]: %f\n", i, throw_y[i]);
+	}*/
+	printfDx("throw_rad: %f\n", throw_rad);
 	//printfDx("hook: %f %f\n", hook_x, hook_y);
 	//printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
 
@@ -469,34 +480,76 @@ void PLAYER::Throw() {
 	//軌道の計算
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
 		push = true;
-		i = 0;
+		//i = 0;
 		//アニメーションのリセット
 		animation_type[2] = 0;
+		
+		throw_index = 0;
+		throw_x.clear();
+		throw_y.clear();
 		//角度取得
 		throw_rad = atan2(PAD_INPUT::GetPadThumbRY(), PAD_INPUT::GetPadThumbRX());
-		float angle = throw_rad * 180.0f / M_PI;
-		if (angle > 120) throw_rad = 120.0f * M_PI / 180.0f;
-		else if (angle < 60) throw_rad = 60.0f * M_PI / 180.0f;
-		if ((move_type == 0 && angle > 90) || (move_type == 1 && angle < 90)) throw_rad = 90.0f * M_PI / 180.0f;
-		//初期位置
-		throw_x[0] = player_x;
-		throw_y[0] = player_y;
-		float V0 = 25; //初速度
-		for (int j = 0; j < 100; j++) {
-			//加速度の計算
-			float t = j * 0.1f;
-			float tmpX = V0 * cosf(throw_rad) * t;
-			float tmpY = V0 * sinf(throw_rad) * t - 0.5f * 9.8f * powf(t, 2);
-			if (j > 0) {
-				throw_x[j] = throw_x[j - 1];
-				throw_y[j] = throw_y[j - 1];
+		//float angle = throw_rad * 180.0f / M_PI;
+		vx0 = ve * (float)cos(throw_rad);
+		vy0 = ve * (float)sin(throw_rad);
+
+		g = 9.8;
+		dt = 0.1f;
+
+		x0 = player_x;
+		y0 = player_y;
+
+		vx = vx0; vy = vy0;
+
+		for (t = 0.0; y0 <= 720; t = t + dt) {
+			x0 = x0 + vx * dt;
+			y0 = y0 - vy * dt;
+			vy = vy - g * dt;
+			if (vy < 0) {
+				g += 0.2f;
 			}
-			if (j % 5 == 0) {
-				V0--;
-			}
-			throw_x[j] += tmpX;
-			throw_y[j] -= tmpY;
+			throw_x.push_back(x0);
+			throw_y.push_back(y0);
 		}
+
+		/*if (angle > 120) throw_rad = 120.0f * M_PI / 180.0f;
+		else if (angle < 60) throw_rad = 60.0f * M_PI / 180.0f;*/
+		//if (testang > 120) throw_rad = 120.0f * M_PI / 180.0f;
+		//else if (testang < 60) throw_rad = 60.0f * M_PI / 180.0f;
+
+		//if ((move_type == 0 && angle > 90) || (move_type == 1 && angle < 90)) throw_rad = 90.0f * M_PI / 180.0f;
+		//if ((move_type == 0 && testang > 90) || (move_type == 1 && testang < 90)) throw_rad = 90.0f * M_PI / 180.0f;
+		
+		//testvx0 = testve * (float)cos((3.14 / 180.0) * testang);
+		//testvy0 = testve * (float)sin((3.14 / 180.0) * testang);
+		
+		////初期位置
+		//throw_x[0] = player_x;
+		//throw_y[0] = player_y;
+		//float V0 = 25; //初速度
+		//for (int j = 0; j < 100; j++) {
+		//	//加速度の計算
+		//	/*float t = j * 0.1f;
+		//	float tmpX = V0 * cosf(throw_rad) * t;
+		//	float tmpY = V0 * sinf(throw_rad) * t - 0.5f * 9.8f * powf(t, 2);
+		//	if (j > 0) {
+		//		throw_x[j] = throw_x[j - 1];
+		//		throw_y[j] = throw_y[j - 1];
+		//	}
+		//	if (j % 5 == 0) {
+		//		V0--;
+		//	}
+		//	throw_x[j] += tmpX;
+		//	throw_y[j] -= tmpY;*/
+		//}
+		//for (testt = 0.0; testy >= 0; testt = testt + testdt) {
+		//	testx = testx + testvx * testdt;//位置変化
+		//	testy = testy + testvy * testdt;
+		//	throw_x[testi] = testx;
+		//	throw_y[testi] = testy;
+		//	testi++;
+		//	testvy = testvy - testg * testdt;//速度変化
+		//}
 	}
 	else {
 		//投げる処理
@@ -510,11 +563,9 @@ void PLAYER::Throw() {
 				animation_state = PLAYER_ANIM_STATE::THROW;
 				MoveAnimation();
 			}
-			throw_x[0] = throw_x[i];
-			throw_y[0] = throw_y[i];
-			if (++i >= 100) {
-				push = false;
-			}
+			throw_x[0] = throw_x[throw_index];
+			throw_y[0] = throw_y[throw_index++];
+			if (throw_index >= throw_x.size())push = false;
 		}
 	}
 	/*if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {

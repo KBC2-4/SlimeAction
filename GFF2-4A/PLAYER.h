@@ -1,6 +1,7 @@
 #pragma once
 #include"PadInput.h"
 #include "Element.h"
+#include <vector>
 
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
 #define SPEED					3.0f	//プレイヤーのスピード
@@ -73,9 +74,17 @@ private:
 	//Throw
 	int throw_ball_image;
 	bool is_throw_anim;
-	double throw_x[100];// = 100;
-	double throw_y[100];// = 560;
+	//double throw_x[100];// = 100;
+	//double throw_y[100];// = 560;
 	float throw_rad;
+
+	/*bool pressBtn = false;*/
+	std::vector<float>throw_x = {0};
+	std::vector<float>throw_y = {0};
+	int throw_index = 0;
+
+	float ve, vx0, vy0, vx, vy;
+	float g, dt, t,x0, y0;
 
 	//画像を切り替えるタイミング(フレーム)
 	const int animation_switch_frame[ANIMATION_TYPE] = {
