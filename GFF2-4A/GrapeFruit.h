@@ -38,6 +38,6 @@ public:
 	/// <summary>
 	/// •`‰æ
 	/// </summary>
-	virtual void Draw(float scroll_x)const override;
+	virtual void Draw()const override;
 };
 
