@@ -1,8 +1,9 @@
 #include "GameMain.h"
-
+#include <vector>
 
 GAMEMAIN::GAMEMAIN()
 {
+	std::vector<std::vector<int>> spawn_point;
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
 	time = 0.0;
 	tomaton_count = 0;
@@ -12,13 +13,17 @@ GAMEMAIN::GAMEMAIN()
 	gurepon = new GRAPEFRUIT(player);
 	tomaton = nullptr;
 
-	for (int i = 0; i < MAP_HEIGHT; i++)
+	for (int i = 0,point = 0 ; i < MAP_HEIGHT; i++)
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
 		{
 			if (stage->GetMapDat(i, j) == 93)
 			{
 				tomaton_count++;
+				spawn_point.push_back(std::vector<int>(2));
+				spawn_point[point][0] = i;
+				spawn_point[point][1] = j;
+				point++;
 			}
 		}
 	}
@@ -27,7 +32,7 @@ GAMEMAIN::GAMEMAIN()
 		tomaton = new TOMATO*[tomaton_count];
 		for (int i = 0; i < tomaton_count; i++)
 		{
-			tomaton[i] = new TOMATO(player,stage);
+			tomaton[i] = new TOMATO(player,stage, spawn_point[i][0],spawn_point[i][1]);
 		}
 
 	}
