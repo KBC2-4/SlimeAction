@@ -51,7 +51,7 @@ void GRAPEFRUIT::Animation()
 }
 
 
-void GRAPEFRUIT::Draw() const
+void GRAPEFRUIT::Draw(float scroll_x) const
 {
 	DrawRotaGraph2(640, 40, 40, 0, 2, rad, image[0], TRUE);
 	SetFontSize(24);

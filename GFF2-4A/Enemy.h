@@ -1,6 +1,5 @@
 #pragma once
 #include"PLAYER.h"
-
 enum class ENEMY_STATE
 {
 	IDOL = 0,	//アイドル状態
@@ -59,7 +58,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	virtual void Draw()const = 0;
+	virtual void Draw(float scroll_x)const = 0;
 
 	/// <summary>
 	/// プレイヤーとの角度の取得

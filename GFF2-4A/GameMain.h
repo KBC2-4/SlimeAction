@@ -5,17 +5,21 @@
 #include"Lemon.h"
 #include"GrapeFruit.h"
 #include"Tomato.h"
+#include "Element.h"
 
 class GAMEMAIN :
     public AbstractScene
 {
 private:
+	int background_image[5];
+	float time;		//経過時間
 
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
 	LEMON* lemonner;	//レモナー
 	GRAPEFRUIT* gurepon;	//グレぽん
 	TOMATO* tomaton;	//とまとん
+	ELEMENT* element;	//ステージ内要素
 public:
 	/// <summary>
 	/// コンストラクタ

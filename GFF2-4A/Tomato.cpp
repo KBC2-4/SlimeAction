@@ -33,7 +33,7 @@ void TOMATO::Animation()
 }
 
 
-void TOMATO::Draw()const
+void TOMATO::Draw(float scroll_x)const
 {
 
 }

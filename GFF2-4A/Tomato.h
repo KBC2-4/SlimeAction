@@ -33,6 +33,6 @@ public:
 	/// <summary>
 	/// •`‰æ
 	/// </summary>
-	void Draw()const override;
+	void Draw(float scroll_x)const override;
 };
 
