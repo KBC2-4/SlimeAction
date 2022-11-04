@@ -14,12 +14,15 @@ TOMATO::TOMATO()
 	}
 }
 
-TOMATO::TOMATO(PLAYER* player)
+TOMATO::TOMATO(PLAYER* player, STAGE* stage)
 {
 	x = 200;
 	this->player = player;
+	this->stage = stage;
 	animation_timer = 0;
 	animation_type = 0;
+	state = ENEMY_STATE::WALL;
+
 	image = new int[3];
 	if (LoadDivGraph("Resource/Images/Enemy/tomaton.png", 3, 3, 1, 80, 80, image) == -1)
 	{
@@ -33,14 +36,28 @@ TOMATO::~TOMATO()
 }
 void TOMATO::Update()
 {
+
+	//マップ上の座標の設定
+	map_x = x / MAP_CEllSIZE;
+	map_y = y / MAP_CEllSIZE;
 	Move();
 	Animation();
+	Hit();
 
+	if ((fabsf(player->GetPlayerX() - x) < 240) && (state != ENEMY_STATE::DETH))
+	{
+		state = ENEMY_STATE::WALL;
+	}
+
+	//画面外に出た処理
+	if (y > 720)
+	{
+		state = ENEMY_STATE::IDOL;
+	}
 }
 
 void TOMATO::Move()
 {
-	state = ENEMY_STATE::WALL;
 	//落下状態の時の処理
 	if (state == ENEMY_STATE::WALL)
 	{
@@ -51,6 +68,14 @@ void TOMATO::Move()
 
 void TOMATO::Hit()
 {
+	//地面やブロックとの当たり判定
+	if (state == ENEMY_STATE::WALL)
+	{
+		if (stage->GetMapDat(map_y, map_x) != 0)
+		{
+			state = ENEMY_STATE::DETH;
+		}
+	}
 }
 
 void TOMATO::Animation()
@@ -73,6 +98,7 @@ void TOMATO::Animation()
 
 void TOMATO::Draw()const
 {
-	DrawGraph(x, y, now_image, TRUE);
-	DrawCircle(x + IMAGE_SIZE / 2, y + IMAGE_SIZE / 2, 33, 0xffffff, FALSE);
+	DrawRotaGraph(x + stage->GetScrollX(), y, 1, 0, now_image, TRUE);
+	DrawCircle(x, y, 33, 0xffffff, FALSE);
+	DrawFormatString(100, 100, 0xffffff, "%d,%d", map_x, map_y);
 }

@@ -27,7 +27,7 @@ GAMEMAIN::GAMEMAIN()
 		tomaton = new TOMATO*[tomaton_count];
 		for (int i = 0; i < tomaton_count; i++)
 		{
-			tomaton[i] = new TOMATO(player);
+			tomaton[i] = new TOMATO(player,stage);
 		}
 
 	}
