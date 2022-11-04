@@ -11,6 +11,8 @@ class GAMEMAIN :
     public AbstractScene
 {
 private:
+	int background_image[5];
+	float time;		//経過時間
 
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
