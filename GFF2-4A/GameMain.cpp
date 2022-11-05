@@ -24,18 +24,16 @@ GAMEMAIN::~GAMEMAIN()
 
 AbstractScene* GAMEMAIN::Update()
 {
-	stage->Update();
-	player->Update();
+	//stage->Update();
+	//player->Update();
 	player->Update(element);
 	if (player->IsDeath()) {
 		return new GAMEMAIN();
 	}
-	stage->Update();
-	player->Update();
+	//stage->Update();
+	//player->Update();
 	gurepon->Update();
-	element->Update(player);
-
-	
+	//element->Update(player);
 
 	return this;
 }
@@ -53,6 +51,6 @@ void GAMEMAIN::Draw() const
 	//プレイヤーの描画	player->Draw();
 	player->Draw();
 	//グレポンの描画
-	gurepon->Draw();
+	gurepon->Draw(stage->GetScrollX());
 	
 }

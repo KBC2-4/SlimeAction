@@ -6,6 +6,7 @@ class GRAPEFRUIT :
 private:
 	bool hitflg;
 	int shootcount;
+	double rads[2];
 public:
 	/// <summary>
 	/// コンストラクタ
