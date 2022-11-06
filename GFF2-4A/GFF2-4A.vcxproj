@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="GrapeFruit.cpp" />
     <ClCompile Include="Lemon.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="AbstractScene.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="GrapeFruit.h" />
     <ClInclude Include="Lemon.h" />

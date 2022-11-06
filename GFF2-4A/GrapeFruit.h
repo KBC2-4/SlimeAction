@@ -1,5 +1,7 @@
 #pragma once
 #include"Enemy.h"
+#include"EnemyBullet.h"
+#include"STAGE.h"
 class GRAPEFRUIT :
 	public ENEMY
 {
@@ -7,6 +9,8 @@ private:
 	bool hitflg;
 	int shootcount;
 	double rads[2];
+	ENEMYBULLET* bullet;
+	STAGE* stages;
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -16,7 +20,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="player">プレイヤーのアドレス</param>
-	GRAPEFRUIT(PLAYER* player);
+	GRAPEFRUIT(PLAYER* player,STAGE* stage);
 
 
 	/// <summary>
@@ -42,6 +46,6 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	virtual void Draw(float scroll_x)const override;
+	void Draw(float scroll_x)const override;
 };
 
