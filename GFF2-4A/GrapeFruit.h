@@ -46,6 +46,6 @@ public:
 	/// <summary>
 	/// •`‰æ
 	/// </summary>
-	void Draw(float scroll_x)const override;
+    void Draw(float scroll_x)const override;
 };
 

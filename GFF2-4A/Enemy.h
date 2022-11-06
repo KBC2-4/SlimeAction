@@ -1,5 +1,6 @@
 #pragma once
 #include"PLAYER.h"
+#include"STAGE.h"
 enum class ENEMY_STATE
 {
 	IDOL = 0,	//アイドル状態
@@ -20,8 +21,8 @@ protected:
 	int now_image;		//使用している画像
 	double rad;          //ラジアン
 	ENEMY_STATE state;	//エネミーの状態
-
-	PLAYER* player;
+	STAGE* stage;		//ステージ
+	PLAYER* player;		//ステージ
 	const int IMAGE_SIZE = 80;
 public:
 	/// <summary>
@@ -58,13 +59,13 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	virtual void Draw(float scroll_x)const = 0;
+	virtual void Draw()const = 0;
 
 	/// <summary>
 	/// プレイヤーとの角度の取得
 	/// </summary>
 	/// <returns>角度</returns>
-	int GetRadian()const { return rad; }
+	double GetRadian()const { return rad; }
 	/// <summary>
 	/// X座標の取得
 	/// </summary>
