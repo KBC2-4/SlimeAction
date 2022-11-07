@@ -85,16 +85,16 @@ ELEMENT::ELEMENT() {
 
 				//動く床
 			case 95:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 10;
+				data.x = (j * MAP_CEllSIZE) + MAP_CEllSIZE/2;
+				data.y = (i * MAP_CEllSIZE);
 				data.type = 1;
 				lift.push_back(data);
 				break;
 
 				//動く床(fast)
 			case 96:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 10;
+				data.x = (j * MAP_CEllSIZE);
+				data.y = (i * MAP_CEllSIZE);
 				data.type = 2;
 				lift.push_back(data);
 				break;
@@ -108,23 +108,41 @@ ELEMENT::ELEMENT() {
 		}
 			
 	}
+
+	player_map_x = 0;
+	player_map_y = 0;
+	lift_speed = 1.0f;
 }
 
 void ELEMENT::Draw() const {
+	//for (int i = 0; i < 9; i++) {
+	//	DrawLine(0, i * 80, 1280, i * 80, 0xffffff);
+	//}
+	//for (int j = 0; j < 16; j++) {
+	//	DrawLine(j * MAP_CEllSIZE, 0, j * MAP_CEllSIZE, 720, 0xffffff);
+	//}
+
+	
 	static int animtimer = 0;
-	printfDx("%d", animtimer);
-	DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
+	//printfDx("%d", animtimer);
+	printfDx("%f",lift[0].x);
+	printfDx("%f", lift[0].y);
+	//DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
 	DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
 	//デバッグ用
-	DrawFormatString(200, 250, 0xFFFFFF, "door.x%f\ndoor.y%f", door[0].x, door[0].y);
-	DrawFormatString(200, 300, 0xFFFFFF, "flg:%d", door[0].flg);
-	DrawFormatString(200, 350, 0xFFFFFF, ":%d", static_cast<int>((door[0].x / MAP_CEllSIZE)));
+	//DrawFormatString(200, 250, 0xFFFFFF, "door.x%f\ndoor.y%f", door[0].x, door[0].y);
+	//DrawFormatString(200, 300, 0xFFFFFF, "flg:%d", door[0].flg);
+	//DrawFormatString(200, 350, 0xFFFFFF, ":%d", static_cast<int>((door[0].x / MAP_CEllSIZE)));
 	//DrawBox(button[1].x + scroll_x, button[1].y + scroll_y, button[1].x + scroll_x + MAP_CEllSIZE, button[1].y + scroll_y + MAP_CEllSIZE,0xff0000,TRUE);
 	for (int i = 0; i < button.size(); i++) {
 		if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		if (button[i].type == 2 && button[i].flg == true) { 
 			DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30 + button[i].animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		}
+	}
+
+	for (int i = 0; i < lift.size(); i++) {
+		DrawGraph(lift[i].x + scroll_x-40, lift[i].y +scroll_y-25, block_image1[94+i], TRUE);
 	}
 
 	for (int i = 0; i < door.size(); i++) {
@@ -136,12 +154,17 @@ void ELEMENT::Draw() const {
 }
 
 void ELEMENT::Update(PLAYER* player) {
-	player_map_x = roundf((player->GetPlayerX() - STAGE::GetScrollX()));
+	player_map_x = roundf(player->GetPlayerX() - scroll_x);
 	player_map_y = floorf((player->GetPlayerY() + MAP_CEllSIZE / 2));
 	Button();
 	Door();
+	Lift();
+	
 }
 
+/// <summary>
+/// ボタンの処理
+/// </summary>
 void ELEMENT::Button() {
 	for (int i = 0; i < button.size(); i++) {
 		if(button[i].flg == true)button[i].animtimer++;
@@ -172,6 +195,9 @@ void ELEMENT::Button() {
 	}
 }
 
+/// <summary>
+/// ドアの処理
+/// </summary>
 void ELEMENT::Door() {
 	for (int i = 0; i < door.size(); i++) {
 		if (door[i].flg == true) {
@@ -196,4 +222,36 @@ void ELEMENT::Door() {
 			
 		}
 	}
+}
+
+/// <summary>
+/// 動く床の処理
+/// </summary>
+void ELEMENT::Lift() {
+	for (int i = 0; i < lift.size(); i++) {
+		//if (-player_map_x<=scroll_x+MAP_CEllSIZE*3&&-player_map_x>=scroll_x-MAP_CEllSIZE*3) {
+		if (map_data[int(lift[i].y / MAP_CEllSIZE)][int(((lift[i].x -lift_speed*40) / MAP_CEllSIZE) + lift_speed)] == 0) {
+			lift[i].x += lift_speed;
+		}
+		else lift_speed *= -1;
+		if (!fmodf(lift[i].x, MAP_CEllSIZE)) 
+		{
+			if(map_data[int(lift[i].y / MAP_CEllSIZE)][int(lift[i].x / MAP_CEllSIZE - lift_speed)] == lift[i].type+94)
+			map_data[int(lift[i].y / MAP_CEllSIZE)][int(lift[i].x / MAP_CEllSIZE - lift_speed)] = 0;
+			//map_data[int(lift[i].y / MAP_CEllSIZE)][int(lift[i].x / MAP_CEllSIZE)] = lift[i].type+94;
+		}
+	}
+}
+
+/// <summary>
+/// プレイヤーと動く床の当たり判定
+/// </summary>
+bool ELEMENT::HitLift() {
+	for (int i = 0; i < lift.size(); i++) {
+		if (player_map_x+30 >= lift[i].x-40 && player_map_x-30 <= lift[i].x + 40
+			&& player_map_y<=lift[i].y&&player_map_y>=lift[i].y-MAP_CEllSIZE) {
+			return true;
+		}
+	}
+	return false;
 }

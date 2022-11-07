@@ -110,7 +110,7 @@ public:
 	void Move();
 	void Draw() const;
 	void HookMove(ELEMENT* element);
-	void JumpMove();
+	void JumpMove(ELEMENT* element);
 	void Throw();
 	void MoveAnimation();
 	void Update(ELEMENT*element);

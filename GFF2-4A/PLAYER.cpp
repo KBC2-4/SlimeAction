@@ -55,7 +55,7 @@ PLAYER::PLAYER() {
 void PLAYER::Update(ELEMENT* element) {
 	clsDx();
 	Move();
-	JumpMove();
+	JumpMove(element);
 	HookMove(element);
 	Throw();
 	HitBlock();
@@ -74,6 +74,10 @@ void PLAYER::Update(ELEMENT* element) {
 		image_type = static_cast<int>(animation_state);
 	}
 	now_image = images[image_type][animation_type[image_type]];
+
+	if (element->HitLift()) {
+		x += element->GetLiftSpeed()*3;
+	}
 }
 
 /// <summary>
@@ -239,7 +243,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 		float min_distance = HOOK_MAX_DISTANCE;
 		
 		//フックの位置
-		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHookPos();
+		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
 		for (int i = 0; i < hook_pos.size(); i++) {
 			ELEMENT::ELEMENT_DATA pos = hook_pos[i];
 			//距離計算
@@ -368,7 +372,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 /// <summary>
 /// プレイヤーのジャンプ処理
 /// </summary>
-void PLAYER::JumpMove() {
+void PLAYER::JumpMove(ELEMENT* element) {
 	if (CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
 	static bool is_jump = false;		//ジャンプ中か
 	static float jump_y = 0;			//ジャンプの高さ
@@ -391,6 +395,8 @@ void PLAYER::JumpMove() {
 				jump_mode = 2;
 			}
 			player_state = PLAYER_MOVE_STATE::JUMP;
+
+
 		}
 	}
 	//ジャンプ中
@@ -421,44 +427,46 @@ void PLAYER::JumpMove() {
 		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
 			STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_ground = true;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) is_ground = true;
-		//地面じゃない時は落下
-		if (!is_ground) {
-			velocity += 0.2f;
-			player_y += velocity;
-			player_state = PLAYER_MOVE_STATE::FALL;
-		}
+		if (element->HitLift()) is_ground = true;
+		
+			//地面じゃない時は落下
+			if (!is_ground) {
+				velocity += 0.2f;
+				player_y += velocity;
+				player_state = PLAYER_MOVE_STATE::FALL;
+			}
 		//地面についた時
-		else {
-			if ((player_state == PLAYER_MOVE_STATE::FALL || player_state == PLAYER_MOVE_STATE::JUMP) && !is_hook_move) {
-				float new_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
-				if (fabsf(player_y - new_y) <= 10) {
-					player_y = new_y;
-					velocity = 0;
-					player_state = PLAYER_MOVE_STATE::IDLE;
-				}
-				else {
-					bool is_wall = false;
-					if (move_x < 0 &&
-						STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
-						STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_wall = true;
-					if (move_x > 0 &&
-						STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
-						STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_wall = true;
-
-					if (!is_wall) {
+			else {
+				if ((player_state == PLAYER_MOVE_STATE::FALL || player_state == PLAYER_MOVE_STATE::JUMP) && !is_hook_move) {
+					float new_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+					if (fabsf(player_y - new_y) <= 10) {
 						player_y = new_y;
+						velocity = 0;
+						player_state = PLAYER_MOVE_STATE::IDLE;
 					}
+					else {
+						bool is_wall = false;
+						if (move_x < 0 &&
+							STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
+							STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_wall = true;
+						if (move_x > 0 &&
+							STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
+							STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_wall = true;
 
-					if (move_type == 0)
-						player_x -= SPEED;
-					else
-						player_x += SPEED;
+						if (!is_wall) {
+							player_y = new_y;
+						}
+
+						if (move_type == 0)
+							player_x -= SPEED;
+						else
+							player_x += SPEED;
+					}
+				}
+				if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
+					velocity = 0;
 				}
 			}
-			if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
-				velocity = 0;
-			}
-		}
 	}
 
 }

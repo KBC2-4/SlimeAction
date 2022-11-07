@@ -27,13 +27,15 @@ STAGE::STAGE() {
 //}
 
 void STAGE::Draw()const {
-	//printfDx("%f",scroll_x);
+	printfDx("%f",scroll_x);
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			//‰æ–ÊŠO‚Í•`‰æ‚µ‚È‚¢
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280) {
+				if(map_data[i][j]<94)
 				DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[map_data[i][j] - 1], TRUE);
+				DrawBox(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, j * MAP_CEllSIZE + scroll_x+MAP_CEllSIZE, i * MAP_CEllSIZE+MAP_CEllSIZE,0x000000,FALSE);
 			}
 			
 		}
