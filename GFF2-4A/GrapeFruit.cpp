@@ -25,7 +25,7 @@ GRAPEFRUIT::GRAPEFRUIT()
 	x = 640;
 	y = 40;
 	bullet = nullptr;
-	stages = nullptr;
+	stage = nullptr;
 }
 
 GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage)
@@ -41,7 +41,7 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage)
 	x = 640;
 	y = 40;
 	bullet = nullptr;
-	stages = stage;
+	stage = stage;
 }
 
 void GRAPEFRUIT::Update()
@@ -78,7 +78,7 @@ void GRAPEFRUIT::Animation()
 }
 
 
-void GRAPEFRUIT::Draw() const
+void GRAPEFRUIT::Draw(float scroll_x) const
 {
 	DrawRotaGraph2(x, y, 40, 0, 2, rad, image[0], TRUE);
 	SetFontSize(24);

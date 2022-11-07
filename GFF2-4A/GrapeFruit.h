@@ -10,7 +10,6 @@ private:
 	int shootcount;
 	double rads[2];
 	ENEMYBULLET* bullet;
-	STAGE* stages;
 public:
 	/// <summary>
 	/// コンストラクタ
