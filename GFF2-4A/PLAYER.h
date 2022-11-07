@@ -2,6 +2,7 @@
 #include"PadInput.h"
 #include "Element.h"
 #include <vector>
+#include "ThrowSlime.h"
 
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
 #define SPEED					3.0f	//プレイヤーのスピード
@@ -79,6 +80,7 @@ private:
 	float throw_rad;
 
 	/*bool pressBtn = false;*/
+	std::vector<ThrowSlime> throw_slime;
 	std::vector<float>throw_x = {0};
 	std::vector<float>throw_y = {0};
 	int throw_index = 0;

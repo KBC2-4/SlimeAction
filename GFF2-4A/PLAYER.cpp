@@ -63,6 +63,11 @@ void PLAYER::Update(ELEMENT* element) {
 	Throw();
 	HitBlock();
 
+	int throw_cnt = throw_slime.size();
+	for (int i = 0; i < throw_cnt; i++) {
+		throw_slime[i].Update();
+	}
+
 	if (STAGE::GetMapDat(map_y, map_x) == -1) {
 		is_death = true;
 	}
@@ -97,17 +102,20 @@ void PLAYER::Draw()const {
 		}
 	}
 	
-
+	int throw_cnt = throw_slime.size();
+	for (int i = 0; i < throw_cnt; i++) {
+		throw_slime[i].Draw();
+	}
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
 		for (int i = 0; i < throw_x.size(); i += 5) {
 			//DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 		}
 	}
-	else {
-		//DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
-		DrawGraph(throw_x[0], throw_y[0], throw_ball_image, TRUE);
-	}
+	//else {
+	//	//DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
+	//	DrawGraph(throw_x[0], throw_y[0], throw_ball_image, TRUE);
+	//}
 
 
 	/*for (int i = 0; i < 10; i++) {
@@ -475,12 +483,11 @@ void PLAYER::JumpMove() {
 }
 
 void PLAYER::Throw() {
-	static bool push = false;
-	static int i = 0;
+	static bool is_throw = false;
 	//軌道の計算
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
-		push = true;
-		//i = 0;
+		is_throw = false;
+		is_throw_anim = true;
 		//アニメーションのリセット
 		animation_type[2] = 0;
 		
@@ -521,70 +528,24 @@ void PLAYER::Throw() {
 			throw_x.push_back(x0);
 			throw_y.push_back(y0);
 		}
-
-		/*if (angle > 120) throw_rad = 120.0f * M_PI / 180.0f;
-		else if (angle < 60) throw_rad = 60.0f * M_PI / 180.0f;*/
-		//if (testang > 120) throw_rad = 120.0f * M_PI / 180.0f;
-		//else if (testang < 60) throw_rad = 60.0f * M_PI / 180.0f;
-
-		//if ((move_type == 0 && angle > 90) || (move_type == 1 && angle < 90)) throw_rad = 90.0f * M_PI / 180.0f;
-		//if ((move_type == 0 && testang > 90) || (move_type == 1 && testang < 90)) throw_rad = 90.0f * M_PI / 180.0f;
-		
-		//testvx0 = testve * (float)cos((3.14 / 180.0) * testang);
-		//testvy0 = testve * (float)sin((3.14 / 180.0) * testang);
-		
-		////初期位置
-		//throw_x[0] = player_x;
-		//throw_y[0] = player_y;
-		//float V0 = 25; //初速度
-		//for (int j = 0; j < 100; j++) {
-		//	//加速度の計算
-		//	/*float t = j * 0.1f;
-		//	float tmpX = V0 * cosf(throw_rad) * t;
-		//	float tmpY = V0 * sinf(throw_rad) * t - 0.5f * 9.8f * powf(t, 2);
-		//	if (j > 0) {
-		//		throw_x[j] = throw_x[j - 1];
-		//		throw_y[j] = throw_y[j - 1];
-		//	}
-		//	if (j % 5 == 0) {
-		//		V0--;
-		//	}
-		//	throw_x[j] += tmpX;
-		//	throw_y[j] -= tmpY;*/
-		//}
-		//for (testt = 0.0; testy >= 0; testt = testt + testdt) {
-		//	testx = testx + testvx * testdt;//位置変化
-		//	testy = testy + testvy * testdt;
-		//	throw_x[testi] = testx;
-		//	throw_y[testi] = testy;
-		//	testi++;
-		//	testvy = testvy - testg * testdt;//速度変化
-		//}
 	}
 	else {
+		if (!is_throw) {
+			throw_slime.push_back(ThrowSlime(throw_x, throw_y));
+			is_throw = true;
+		}
 		//投げる処理
-		if (push) {
+		if (is_throw_anim) {
 			int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
 			if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
 				is_throw_anim = false;
 			}
 			else {
-				is_throw_anim = true;
 				animation_state = PLAYER_ANIM_STATE::THROW;
 				MoveAnimation();
 			}
-			throw_x[0] = throw_x[throw_index];
-			throw_y[0] = throw_y[throw_index++];
-			if (throw_index >= throw_x.size())push = false;
 		}
 	}
-	/*if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
-		int V = 30 - 0.1 * (i * 0.1);
-		x += 30 * cos(rad) * (i * 0.1);
-		y -= -9.8 * pow(i * 0.1, 2) / 2 + V * sin(rad) * (i * 0.1);
-		DrawCircle(x, y, 10, 0xFFFFFF, TRUE);
-		i++;
-	}*/
 }
 
 /// <summary>
