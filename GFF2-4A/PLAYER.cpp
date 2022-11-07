@@ -29,7 +29,7 @@ PLAYER::PLAYER() {
 		// èâä˙ë¨ìxÇÕÇO
 		speed = 0;
 
-		ve = 70.0;
+		ve = 100.0;
 	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
 		throw "Resource/Images/Player/IdorSlime.png";
 	}
@@ -99,7 +99,7 @@ void PLAYER::Draw()const {
 	
 
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
-		for (int i = 0; i < throw_x.size(); i++) {
+		for (int i = 0; i < throw_x.size(); i += 5) {
 			//DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 		}
@@ -489,12 +489,22 @@ void PLAYER::Throw() {
 		throw_y.clear();
 		//äpìxéÊìæ
 		throw_rad = atan2(PAD_INPUT::GetPadThumbRY(), PAD_INPUT::GetPadThumbRX());
-		//float angle = throw_rad * 180.0f / M_PI;
+		float angle = throw_rad * 180.0f / M_PI;
+		//äpìxÇÃêßå¿
+		if (move_type == 0) {
+			if (angle > 90) throw_rad = 90 * M_PI / 180.0f;
+			else if (angle < 60) throw_rad = 60 * M_PI / 180.0f;
+		}
+		else {
+			if (angle > 120) throw_rad = 120 * M_PI / 180.0f;
+			else if (angle < 90) throw_rad = 90 * M_PI / 180.0f;
+		}
+
 		vx0 = ve * (float)cos(throw_rad);
 		vy0 = ve * (float)sin(throw_rad);
 
 		g = 9.8;
-		dt = 0.1f;
+		dt = 0.15f;
 
 		x0 = player_x;
 		y0 = player_y;
