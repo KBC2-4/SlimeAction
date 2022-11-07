@@ -49,7 +49,7 @@ void TOMATO::Update()
 	//画像サイズが元の大きさ一定以上になったら
 	if (image_rate >= 1)
 	{
-		//プレイヤーが一定以内に入っている間落ちる
+		//プレイヤーが一定範囲以内に入っている間落ちる
 		if ((fabsf(player->GetPlayerX() - (x + stage->GetScrollX())) < 240) && (state == ENEMY_STATE::IDOL))
 		{
 			animation_timer = 0; 
@@ -107,32 +107,31 @@ void TOMATO::Hit()
 
 void TOMATO::Animation()
 {
-	//アイドル状態ならアイドルの時の画像を使用
-	if (state == ENEMY_STATE::IDOL)
+
+	if (++animation_timer % ANIMATION_TIME == 0)
 	{
-		if (++animation_timer % ANIMATION_TIME == 0)
+		//アイドル状態ならアイドルの時の画像を使用
+		if (state == ENEMY_STATE::IDOL)
 		{
-			if (image_rate < 1)
+			if (image_rate < 1.0)
 			{
 				image_rate += 0.1;
 			}
+			else
+			{
+				image_rate = 1.0;
+			}
+			now_image = image[0];
 		}
-
-		now_image = image[0];
-	}
-	//落下状態の時の画像の入れ替え
-	if (state == ENEMY_STATE::WALL)
-	{
-		if (++animation_timer % ANIMATION_TIME == 0)
+		//落下状態の時の画像の入れ替え
+		if (state == ENEMY_STATE::WALL)
 		{
 			now_image = image[(++animation_type % 2) + 1];
 		}
-	}
-	if (state == ENEMY_STATE::DETH)
-	{
-		if (++animation_timer % ANIMATION_TIME == 0)
+		//ブロックに当たった時
+		if (state == ENEMY_STATE::DETH)
 		{
-
+	
 		}
 	}
 }
@@ -140,9 +139,9 @@ void TOMATO::Animation()
 
 void TOMATO::Draw()const
 {
+	//画面外に出たら描画しない
 	if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280))
 	{
 		DrawRotaGraph(x + stage->GetScrollX(), y, image_rate, 0, now_image, TRUE);
-		DrawCircle(x + stage->GetScrollX(), y, 33, 0xffffff, FALSE);
 	}
 }

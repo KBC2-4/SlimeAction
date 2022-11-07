@@ -21,7 +21,7 @@ private:
 	STAGE* stage;	//ステージ
 	LEMON* lemonner;	//レモナー
 	GRAPEFRUIT* gurepon;	//グレぽん
-	TOMATO** tomaton;	//とまとん
+	TOMATO** tomaton;	//とまトン
 	ELEMENT* element;	//ステージ内要素
 public:
 	/// <summary>

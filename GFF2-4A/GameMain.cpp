@@ -13,6 +13,7 @@ GAMEMAIN::GAMEMAIN()
 	gurepon = new GRAPEFRUIT(player);
 	tomaton = nullptr;
 
+	//とまトン生成する数を数える
 	for (int i = 0,point = 0 ; i < MAP_HEIGHT; i++)
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
@@ -27,6 +28,7 @@ GAMEMAIN::GAMEMAIN()
 			}
 		}
 	}
+	//とまトンの生成
 	if (tomaton_count > 0)
 	{
 		tomaton = new TOMATO*[tomaton_count];
@@ -34,7 +36,6 @@ GAMEMAIN::GAMEMAIN()
 		{
 			tomaton[i] = new TOMATO(player,stage, spawn_point[i][0],spawn_point[i][1]);
 		}
-
 	}
 	element = new ELEMENT();
 }
@@ -44,7 +45,7 @@ GAMEMAIN::~GAMEMAIN()
 	delete player;
 	delete stage;
 
-	//とまとんの削除
+	//とまトンの削除
 	for (int i = 0; i < tomaton_count; i++)
 	{
 		delete tomaton[i];
@@ -78,7 +79,7 @@ void GAMEMAIN::Draw() const
 	stage->Draw();
 	//プレイヤーの描画
 	player->Draw();
-	//とまとんの描画
+	//とまトンの描画
 	for (int i = 0; i < tomaton_count; i++)
 	{
 		tomaton[i]->Draw();
