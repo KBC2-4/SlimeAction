@@ -19,7 +19,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="player">プレイヤーのアドレス</param>
-	GRAPEFRUIT(PLAYER* player,STAGE* stage);
+	GRAPEFRUIT(PLAYER* player/*,STAGE* stage*/);
 
 
 	/// <summary>
@@ -45,6 +45,6 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-    void Draw(float scroll_x)const override;
+    void Draw()const override;
 };
 

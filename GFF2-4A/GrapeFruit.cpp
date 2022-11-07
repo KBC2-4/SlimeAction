@@ -25,10 +25,10 @@ GRAPEFRUIT::GRAPEFRUIT()
 	x = 640;
 	y = 40;
 	bullet = nullptr;
-	stage = nullptr;
+	//stage = nullptr;
 }
 
-GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage)
+GRAPEFRUIT::GRAPEFRUIT(PLAYER* player/*, STAGE* stage*/)
 {
 	image = new int[100];
 	if (LoadDivGraph("Resource/Images/Enemy/gurepon.png", 1, 1, 1, 80, 80, image) == -1)
@@ -41,20 +41,22 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage)
 	x = 640;
 	y = 40;
 	bullet = nullptr;
-	stage = stage;
+	//stage = stage;
 }
 
 void GRAPEFRUIT::Update()
 {
 	ChangeAngle();
-	if (++shootcount % 120 == 0) {
+	if (++shootcount % 240 == 0) {
 		if (flag == false) {
-			bullet = new ENEMYBULLET;
-			bullet->Update();
+			bullet = new ENEMYBULLET(player,x,y);
 			flag = true;
 		}
 	}
-	if (flag)bullet->Move();
+	if (flag)
+	{
+		bullet->Update();
+	}
 }
 
 void GRAPEFRUIT::Move()
@@ -78,9 +80,9 @@ void GRAPEFRUIT::Animation()
 }
 
 
-void GRAPEFRUIT::Draw(float scroll_x) const
+void GRAPEFRUIT::Draw() const
 {
-	DrawRotaGraph2(x, y, 40, 0, 2, rad, image[0], TRUE);
+	DrawRotaGraph2(x, y, 40, 0, 2, rad+(-90*(PI/180)), image[0], TRUE);
 	SetFontSize(24);
 	DrawFormatString(50, 50, 0xff0000, "%lf", rad);
 	if (flag)bullet->Draw();

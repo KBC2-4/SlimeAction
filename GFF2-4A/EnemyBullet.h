@@ -17,7 +17,7 @@ private:
 public:
     ENEMYBULLET();
     ENEMYBULLET(PLAYER* player,int x,int y);
-    ~ENEMYBULLET();
+    ~ENEMYBULLET() {};
 
     void Update() override;
     void Move() override;
@@ -26,7 +26,7 @@ public:
     /// アニメーション
     /// </summary>
     void Animation()override;
-    void Draw(float scroll_x) const override;
+    void Draw() const override;
 
 };
 

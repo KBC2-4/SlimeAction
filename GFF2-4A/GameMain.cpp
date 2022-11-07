@@ -51,6 +51,6 @@ void GAMEMAIN::Draw() const
 	//プレイヤーの描画	player->Draw();
 	player->Draw();
 	//グレポンの描画
-	gurepon->Draw(stage->GetScrollX());
+	gurepon->Draw(/*stage->GetScrollX()*/);
 	
 }

@@ -19,11 +19,11 @@ ENEMYBULLET::ENEMYBULLET()
 
 ENEMYBULLET::ENEMYBULLET(PLAYER* player ,int x,int y) 
 {
-	this->player = new PLAYER;
+	this->player = player;
 	player_x = player->GetPlayerX();
 	player_y = player->GetPlayerY();
-	bullet_x = 0.0;
-	bullet_y = 0.0;
+	bullet_x = x;
+	bullet_y = y;
 	hypote = 0.0;
 	my_x = x;
 	my_y = y;
@@ -34,20 +34,22 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* player ,int x,int y)
 	bullet_flag = true;
 }
 
-void ENEMYBULLET::Draw(float scroll_x) const 
+void ENEMYBULLET::Draw() const 
 {
 	DrawBox(bullet_x, bullet_y, bullet_x + 40, bullet_y + 40, 0xff00ff, TRUE);
 }
 
 void ENEMYBULLET::Update() 
 {
-	dis_x = my_x - player_x;
-	dis_y = my_y - player_y;
+	dis_x = player_x - my_x;
+	dis_y = player_y - my_y;
 	
 	hypote = sqrt(pow(dis_x, 2) + pow(dis_y, 2));
 
 	bullet_sx = dis_x / hypote * 20;
 	bullet_sy = dis_y / hypote * 20;
+
+	Move();
 }
 
 void ENEMYBULLET::Move() 
@@ -61,3 +63,12 @@ void ENEMYBULLET::Move()
 		bullet_flag = true;
 }
 
+void ENEMYBULLET::Animation() 
+{
+
+}
+
+void ENEMYBULLET::Hit()
+{
+
+}
