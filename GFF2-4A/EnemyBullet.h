@@ -13,10 +13,11 @@ private:
     double dis_x, dis_y;              //プレイヤーと敵の距離
     double bullet_sx, bullet_sy;      //弾のX、Yそれぞれのスピード
     bool bullet_flag;                 //弾を消すかどうか
+    double rad_x;                     //角度変更用変数
 
 public:
     ENEMYBULLET();
-    ENEMYBULLET(PLAYER* player,int x,int y);
+    ENEMYBULLET(PLAYER* player,int x,int y , double dis);
     ~ENEMYBULLET() {};
 
     void Update() override;

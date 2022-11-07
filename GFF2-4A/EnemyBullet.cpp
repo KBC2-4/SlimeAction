@@ -15,9 +15,10 @@ ENEMYBULLET::ENEMYBULLET()
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
 	bullet_flag = false;
+	rad_x = 0.0;
 }
 
-ENEMYBULLET::ENEMYBULLET(PLAYER* player ,int x,int y) 
+ENEMYBULLET::ENEMYBULLET(PLAYER* player ,int x,int y ,double dis) 
 {
 	this->player = player;
 	player_x = player->GetPlayerX();
@@ -32,6 +33,7 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* player ,int x,int y)
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
 	bullet_flag = true;
+	rad_x = dis;
 }
 
 void ENEMYBULLET::Draw() const 
@@ -41,7 +43,7 @@ void ENEMYBULLET::Draw() const
 
 void ENEMYBULLET::Update() 
 {
-	dis_x = player_x - my_x;
+	dis_x = (player_x - rad_x) - my_x;
 	dis_y = player_y - my_y;
 	
 	hypote = sqrt(pow(dis_x, 2) + pow(dis_y, 2));

@@ -9,7 +9,7 @@ private:
 	bool hitflg;
 	int shootcount;
 	double rads[2];
-	ENEMYBULLET* bullet;
+	ENEMYBULLET* bullet[3];
 public:
 	/// <summary>
 	/// コンストラクタ

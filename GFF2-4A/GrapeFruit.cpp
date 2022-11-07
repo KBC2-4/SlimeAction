@@ -24,7 +24,9 @@ GRAPEFRUIT::GRAPEFRUIT()
 
 	x = 640;
 	y = 40;
-	bullet = nullptr;
+	for (int i = 0; i < 3; i++) {
+		bullet[i] = nullptr;
+	}
 	//stage = nullptr;
 }
 
@@ -40,22 +42,36 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player/*, STAGE* stage*/)
 	this->player = player;
 	x = 640;
 	y = 40;
-	bullet = nullptr;
+    for (int i = 0; i < 3; i++) {
+		bullet[i] = nullptr;
+	}
 	//stage = stage;
 }
 
 void GRAPEFRUIT::Update()
 {
 	ChangeAngle();
-	if (++shootcount % 240 == 0) {
-		if (flag == false) {
-			bullet = new ENEMYBULLET(player,x,y);
+	if (++shootcount % 180 == 0) {
+		if (flag == false) {			
+			bullet[0] = new ENEMYBULLET(player, x, y,0.0);
+			bullet[1] = new ENEMYBULLET(player, x, y, 200.0);
+			bullet[2] = new ENEMYBULLET(player, x, y, -200.0);
 			flag = true;
 		}
 	}
 	if (flag)
 	{
-		bullet->Update();
+		for (int i = 0; i < 3; i++) 
+		{
+			bullet[i]->Update();
+		}
+	}
+	if (shootcount % 360 == 0) {
+		for (int i = 0; i < 3; i++) 
+		{
+			bullet[i] = nullptr;
+		}
+		flag = false;
 	}
 }
 
@@ -85,5 +101,12 @@ void GRAPEFRUIT::Draw() const
 	DrawRotaGraph2(x, y, 40, 0, 2, rad+(-90*(PI/180)), image[0], TRUE);
 	SetFontSize(24);
 	DrawFormatString(50, 50, 0xff0000, "%lf", rad);
-	if (flag)bullet->Draw();
+	
+	if (flag)
+	{
+		for (int i = 0; i < 3; i++) 
+		{
+			bullet[i]->Draw();
+		}
+	}
 }
