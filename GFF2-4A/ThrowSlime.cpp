@@ -1,5 +1,6 @@
 #include "ThrowSlime.h"
 #include "PadInput.h"
+#include "STAGE.h"
 
 ThrowSlime::ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y) {
 	if ((image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
@@ -9,6 +10,9 @@ ThrowSlime::ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y) {
 	throw_x = _throw_x;
 	throw_y = _throw_y;
 	throw_cnt = _throw_x.size();
+	for (int i = 0; i < throw_cnt; i++) {
+		throw_x[i] -= STAGE::GetScrollX();
+	}
 	throw_index = 0;
 	throw_end = false;
 }
@@ -22,7 +26,5 @@ void ThrowSlime::Update() {
 }
 
 void ThrowSlime::Draw() const {
-	if (PAD_INPUT::GetNowKey() != XINPUT_BUTTON_RIGHT_THUMB) {
-		DrawGraph(throw_x[0], throw_y[0], image, TRUE);
-	}
+	DrawGraph(throw_x[0] + STAGE::GetScrollX(), throw_y[0], image, TRUE);
 }
