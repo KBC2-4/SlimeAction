@@ -8,11 +8,12 @@
 class STAGE
 {
 private:
-	int block_image1[100];		//ステージブロック画像
+	
 	int stage_image[5];			//ステージ背景画像
 	float map_x, map_y;			//マップ描画座標
 
 protected:
+	int block_image1[100];		//ステージブロック画像
 	static int map_data[MAP_HEIGHT][MAP_WIDTH];
 	static float scroll_x, scroll_y;	//マップスクロール量
 public:

@@ -25,6 +25,7 @@ private:
 	std::vector<ELEMENT_DATA> tunnel;		//ƒgƒ“ƒlƒ‹
 	std::vector<ELEMENT_DATA> acid;			//Ž_
 	float player_map_x, player_map_y;
+	float lift_speed;
 	//mutable int animtimer;
 
 public:
@@ -33,10 +34,13 @@ public:
 	void Update(PLAYER* player);
 	void Button();
 	void Door();
-	std::vector<ELEMENT_DATA> GetHookPos() { return hook; }
-	std::vector<ELEMENT_DATA>GetButtonPos() { return button; }
-	std::vector<ELEMENT_DATA>GetDoorPos() { return door; }
-	std::vector<ELEMENT_DATA>GetLiftPos() { return lift; }
+	void Lift();
+	bool HitLift();
+	std::vector<ELEMENT_DATA> GetHook() { return hook; }
+	std::vector<ELEMENT_DATA>GetButton() { return button; }
+	std::vector<ELEMENT_DATA>GetDoor() { return door; }
+	std::vector<ELEMENT_DATA>GetLift() { return lift; }
 	std::vector<ELEMENT_DATA>GetTunnel() { return tunnel; }
+	float GetLiftSpeed() { return lift_speed; }
 };
 
