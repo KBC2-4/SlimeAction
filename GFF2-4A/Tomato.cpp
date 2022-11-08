@@ -87,7 +87,7 @@ void TOMATO::Move()
 	//—Ž‰ºó‘Ô‚ÌŽž‚Ìˆ—
 	if (state == ENEMY_STATE::WALL)
 	{
-		y += WALL_SPEED;
+		y += FALL_SPEED;
 	}
 }
 
