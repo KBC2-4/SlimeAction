@@ -109,6 +109,7 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 65	//ドア 
 		|| block_type == 62
 		|| block_type == 68	//マンホールの蓋
+		|| block_type == 73	//ゴール
 		) {
 		return false;
 	}
