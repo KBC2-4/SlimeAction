@@ -34,7 +34,6 @@ public:
 	/// </summary>
 	~ENEMY()
 	{
-		delete player;
 	}
 	/// <summary>
 	/// XV
