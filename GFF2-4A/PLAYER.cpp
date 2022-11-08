@@ -483,7 +483,7 @@ void PLAYER::JumpMove() {
 }
 
 void PLAYER::Throw() {
-	static bool is_throw = false;
+	static bool is_throw = true;
 	//‹O“¹‚ÌŒvZ
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
 		is_throw = false;
@@ -537,20 +537,27 @@ void PLAYER::Throw() {
 		}
 	}
 	else {
-		if (!is_throw) {
-			throw_slime.push_back(ThrowSlime(throw_x, throw_y));
-			is_throw = true;
+		if (life > 1 || is_throw) {
+			if (!is_throw) {
+				throw_slime.push_back(ThrowSlime(throw_x, throw_y));
+				life--;
+				is_throw = true;
+			}
+			//“Š‚°‚éˆ—
+			if (is_throw_anim) {
+				int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
+				if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
+					is_throw_anim = false;
+				}
+				else {
+					animation_state = PLAYER_ANIM_STATE::THROW;
+					MoveAnimation();
+				}
+			}
 		}
-		//“Š‚°‚éˆ—
-		if (is_throw_anim) {
-			int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
-			if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
-				is_throw_anim = false;
-			}
-			else {
-				animation_state = PLAYER_ANIM_STATE::THROW;
-				MoveAnimation();
-			}
+		else {
+			is_throw = true;
+			is_throw_anim = false;
 		}
 	}
 }
