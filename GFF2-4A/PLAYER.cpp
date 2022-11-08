@@ -494,8 +494,15 @@ void PLAYER::Throw() {
 		throw_index = 0;
 		throw_x.clear();
 		throw_y.clear();
+		int input_ry = PAD_INPUT::GetPadThumbRY();
+		int input_rx = PAD_INPUT::GetPadThumbRX();
+		if ((abs(input_rx) <= DEVIATION || abs(input_ry) <= DEVIATION) || input_ry < DEVIATION) {
+			is_throw = true;
+			is_throw_anim = false;
+			return;
+		}
 		//Šp“xŽæ“¾
-		throw_rad = atan2(PAD_INPUT::GetPadThumbRY(), PAD_INPUT::GetPadThumbRX());
+		throw_rad = atan2(input_ry, input_rx);
 		float angle = throw_rad * 180.0f / M_PI;
 		//Šp“x‚Ì§ŒÀ
 		if (move_type == 0) {
