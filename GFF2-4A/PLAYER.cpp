@@ -265,7 +265,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 				int hook_map_x = x / MAP_CEllSIZE;
 				int hook_map_y = y / MAP_CEllSIZE;
 				//障害物がある場合は移動させない
-				if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 75) {
+				if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
 					continue;
 				}
 				//最短距離の更新

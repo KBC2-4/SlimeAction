@@ -36,48 +36,48 @@ ELEMENT::ELEMENT() {
 				button.push_back(data);
 				break;
 
-				//ドア
-			case 64:
+				//閉まっているドアの下
+			case 66:
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.type = 1;
 				door.push_back(data);
 				break;
 
-				//トンネル(入口)
-			case 65:
+				//マンホールの蓋
+			case 68:
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.type = 1;
 				tunnel.push_back(data);
 				break;
 
-				//トンネル(中間)
-			case 66:
+				//マンホール(中間)
+			case 69:
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.type = 2;
 				tunnel.push_back(data);
 				break;
 
-				//トンネル(出口)
-			case 67:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.type = 3;
-				tunnel.push_back(data);
-				break;
+				//マンホール(出口)
+			//case 70:
+			//	data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+			//	data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+			//	data.type = 3;
+			//	tunnel.push_back(data);
+			//	break;
 
 				//酸
-			case 68:
+			/*case 68:
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.type = 1;
 				acid.push_back(data);
-				break;
+				break;*/
 
 				//フック
-			case 75:
+			case 72:
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.y = i * MAP_CEllSIZE + MAP_CEllSIZE / 2;
 				hook.push_back(data);
@@ -111,14 +111,14 @@ ELEMENT::ELEMENT() {
 }
 
 void ELEMENT::Draw() const {
-	static int animtimer = 0;
-	printfDx("%d", animtimer);
-	DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
-	DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
-	//デバッグ用
-	DrawFormatString(200, 250, 0xFFFFFF, "door.x%f\ndoor.y%f", door[0].x, door[0].y);
-	DrawFormatString(200, 300, 0xFFFFFF, "flg:%d", door[0].flg);
-	DrawFormatString(200, 350, 0xFFFFFF, ":%d", static_cast<int>((door[0].x / MAP_CEllSIZE)));
+	//static int animtimer = 0;
+	//printfDx("%d", animtimer);
+	//DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
+	//DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
+	////デバッグ用
+	//DrawFormatString(200, 250, 0xFFFFFF, "door.x%f\ndoor.y%f", door[0].x, door[0].y);
+	//DrawFormatString(200, 300, 0xFFFFFF, "flg:%d", door[0].flg);
+	//DrawFormatString(200, 350, 0xFFFFFF, ":%d", static_cast<int>((door[0].x / MAP_CEllSIZE)));
 	//DrawBox(button[1].x + scroll_x, button[1].y + scroll_y, button[1].x + scroll_x + MAP_CEllSIZE, button[1].y + scroll_y + MAP_CEllSIZE,0xff0000,TRUE);
 	for (int i = 0; i < button.size(); i++) {
 		if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
@@ -178,10 +178,9 @@ void ELEMENT::Door() {
 			door[i].animtimer++;
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
-			map_data[y][x] = 0;
-			map_data[y + 1][x] = 0;
+			map_data[y][x] = 64;
+			map_data[y - 1][x] = 65;
 		}
-		map_data[0][0] = 0;
 		//if (door[i].animtimer > 180) {
 		//	door[i].animtimer = 0;
 		//	door[i].flg = false;
@@ -190,8 +189,8 @@ void ELEMENT::Door() {
 			door[i].animtimer = 0;
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
-			map_data[y][x] = 1;
-			map_data[y + 1][x] = 1;
+			map_data[y][x] = 66;
+			map_data[y - 1][x] = 67;
 			door[i].flg = false;
 			
 		}
