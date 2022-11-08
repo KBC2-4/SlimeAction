@@ -496,7 +496,7 @@ void PLAYER::Throw() {
 		throw_y.clear();
 		int input_ry = PAD_INPUT::GetPadThumbRY();
 		int input_rx = PAD_INPUT::GetPadThumbRX();
-		if ((abs(input_rx) <= DEVIATION || abs(input_ry) <= DEVIATION) || input_ry < DEVIATION) {
+		if ((abs(input_rx) <= DEVIATION && abs(input_ry) <= DEVIATION) || input_ry < DEVIATION) {
 			is_throw = true;
 			is_throw_anim = false;
 			return;
