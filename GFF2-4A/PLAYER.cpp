@@ -29,7 +29,7 @@ PLAYER::PLAYER() {
 		// ‰Šú‘¬“x‚Í‚O
 		speed = 0;
 
-		ve = 100.0;
+		ve = 90.0;
 	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
 		throw "Resource/Images/Player/IdorSlime.png";
 	}
