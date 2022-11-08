@@ -9,6 +9,10 @@ private:
 	bool hitflg;
 	int shootcount;
 	double rads[2];
+	int animation_timer;
+	int animation_type;
+	int spawn_map_x;
+	int spawn_map_y;
 	ENEMYBULLET* bullet[3];
 public:
 	/// <summary>
@@ -19,7 +23,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="player">プレイヤーのアドレス</param>
-	GRAPEFRUIT(PLAYER* player/*,STAGE* stage*/);
+	GRAPEFRUIT(PLAYER* player,STAGE* stage,int,int);
 
 
 	/// <summary>

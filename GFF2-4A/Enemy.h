@@ -8,7 +8,7 @@ enum class ENEMY_STATE
 	STANDBY,	//”­ŽË€”õ
 	RETURN,		//”­ŽË‰Â”\ó‘Ô‚É–ß‚é
 	PRESS,		//”­ŽËó‘Ô
-	WALL,		//—Ž‰ºó‘Ô
+	FALL,		//—Ž‰ºó‘Ô
 	DETH		//Ž€–Só‘Ô
 };
 

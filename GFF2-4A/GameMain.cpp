@@ -10,7 +10,7 @@ GAMEMAIN::GAMEMAIN()
 	player = new PLAYER;
 	stage = new STAGE;
 	lemonner = new LEMON(player);
-	gurepon = new GRAPEFRUIT(player);
+	gurepon = nullptr;
 	tomaton = nullptr;
 
 	//とまトン生成する数を数える
@@ -37,6 +37,36 @@ GAMEMAIN::GAMEMAIN()
 			tomaton[i] = new TOMATO(player,stage, spawn_point[i][0],spawn_point[i][1]);
 		}
 	}
+
+	//スポーンポイントを削除
+	spawn_point.clear();
+
+	//グレポンを生成する数を数える
+	for (int i = 0, point = 0; i < MAP_HEIGHT; i++)
+	{
+		for (int j = 0; j < MAP_WIDTH; j++)
+		{
+			if (stage->GetMapDat(i, j) == 92)
+			{
+				gurepon_count++;
+				spawn_point.push_back(std::vector<int>(2));
+				spawn_point[point][0] = i;
+				spawn_point[point][1] = j;
+				point++;
+			}
+		}
+	}
+
+	//グレポンの生成
+	if (gurepon_count > 0)
+	{
+		gurepon = new GRAPEFRUIT * [gurepon_count];
+		for (int i = 0; i < gurepon_count; i++)
+		{
+			gurepon[i] = new GRAPEFRUIT(player, stage, spawn_point[i][0], spawn_point[i][1]);
+		}
+	}
+
 	element = new ELEMENT();
 }
 
@@ -50,13 +80,17 @@ GAMEMAIN::~GAMEMAIN()
 		delete tomaton[i];
 	}
 	delete[] tomaton;
+	//グレポンの削除
+	for (int i = 0; i < gurepon_count; i++) {
+		delete gurepon[i];
+	}
+	delete[] gurepon;
 	delete element;
 }
 
 AbstractScene* GAMEMAIN::Update()
 {
-	//stage->Update();
-	//player->Update();
+	
 	player->Update(element);
 	if (player->IsDeath()) {
 		return new GAMEMAIN();
@@ -65,6 +99,10 @@ AbstractScene* GAMEMAIN::Update()
 	for (int i = 0; i < tomaton_count; i++)
 	{
 		tomaton[i]->Update();
+	}
+	for (int i = 0; i < gurepon_count; i++)
+	{
+		gurepon[i]->Update();
 	}
 	element->Update(player);
 
@@ -88,6 +126,10 @@ void GAMEMAIN::Draw() const
 	{
 		tomaton[i]->Draw();
 	}
-	//プレイヤーの描画
+	//グレポンの描画
+	for (int i = 0; i < gurepon_count; i++)
+	{
+		gurepon[i]->Draw();
+	}
 	
 }

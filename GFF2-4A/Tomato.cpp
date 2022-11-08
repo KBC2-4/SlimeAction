@@ -53,9 +53,9 @@ void TOMATO::Update()
 		if ((fabsf(player->GetPlayerX() - (x + stage->GetScrollX())) < 240) && (state == ENEMY_STATE::IDOL))
 		{
 			animation_timer = 0; 
-			state = ENEMY_STATE::WALL;
+			state = ENEMY_STATE::FALL;
 		}
-		else if ((state != ENEMY_STATE::WALL) && (state != ENEMY_STATE::DETH))
+		else if ((state != ENEMY_STATE::FALL) && (state != ENEMY_STATE::DETH))
 		{
 			state = ENEMY_STATE::IDOL;
 		}
@@ -85,7 +85,7 @@ void TOMATO::Update()
 void TOMATO::Move()
 {
 	//落下状態の時の処理
-	if (state == ENEMY_STATE::WALL)
+	if (state == ENEMY_STATE::FALL)
 	{
 		y += WALL_SPEED;
 	}
@@ -95,7 +95,7 @@ void TOMATO::Move()
 void TOMATO::Hit()
 {
 	//地面やブロックとの当たり判定
-	if (state == ENEMY_STATE::WALL)
+	if (state == ENEMY_STATE::FALL)
 	{
 		if ((stage->GetMapDat(map_y, map_x) != 0) && stage->GetMapDat(map_y, map_x) != 93)
 		{
@@ -124,7 +124,7 @@ void TOMATO::Animation()
 			now_image = image[0];
 		}
 		//落下状態の時の画像の入れ替え
-		if (state == ENEMY_STATE::WALL)
+		if (state == ENEMY_STATE::FALL)
 		{
 			now_image = image[(++animation_type % 2) + 1];
 		}

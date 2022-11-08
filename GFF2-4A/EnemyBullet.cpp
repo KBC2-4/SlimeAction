@@ -23,10 +23,10 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* player ,int x,int y ,double dis)
 	this->player = player;
 	player_x = player->GetPlayerX();
 	player_y = player->GetPlayerY();
-	bullet_x = x;
+	bullet_x = x / 7;
 	bullet_y = y;
 	hypote = 0.0;
-	my_x = x;
+	my_x = x / 7;
 	my_y = y;
 	dis_x = 0.0;
 	dis_y = 0.0;
