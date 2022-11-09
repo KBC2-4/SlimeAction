@@ -40,9 +40,9 @@ void GAMEMAIN::Draw() const
 	//ステージの描画
 
 	player->Draw();
-	
-	stage->Draw();
 	element->Draw();
+	stage->Draw();
+	
 	//プレイヤーの描画
 	
 }
