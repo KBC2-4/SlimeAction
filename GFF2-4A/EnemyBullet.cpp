@@ -37,7 +37,7 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player ,int x,int y ,double dis ,float scr
 	scroll_x = scroll;
 }
 
-void ENEMYBULLET::Draw(STAGE* stage) const 
+void ENEMYBULLET::Draw() const 
 {
 	DrawBox(bullet_x + scroll_x, bullet_y, bullet_x + scroll_x + 40, bullet_y + 40, 0xff00ff, TRUE);
 }

@@ -79,7 +79,7 @@ void GRAPEFRUIT::Update()
 			{
 				for (int i = 0; i < 3; i++)
 				{
-					bullet[i] = nullptr;
+					delete bullet[i];
 				}
 				flag = false;
 			}
