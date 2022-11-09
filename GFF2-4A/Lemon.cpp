@@ -92,6 +92,13 @@ void LEMON::Move()
 
 void LEMON::Hit()
 {
+	ThrowSlime throw_slime;
+
+	for (int i = 0; i < player->GetThrowCnt();i++)
+	{
+		throw_slime = player->GetThrowSlime(i);
+		if(throw_slime.GetThrowX()
+	}
 
 }
 
