@@ -29,7 +29,7 @@ PLAYER::PLAYER() {
 		// èâä˙ë¨ìxÇÕÇO
 		speed = 0;
 
-		ve = 100.0;
+		ve = 90.0;
 	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
 		throw "Resource/Images/Player/IdorSlime.png";
 	}
@@ -491,7 +491,7 @@ void PLAYER::JumpMove(ELEMENT* element) {
 }
 
 void PLAYER::Throw() {
-	static bool is_throw = false;
+	static bool is_throw = true;
 	//ãOìπÇÃåvéZ
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
 		is_throw = false;
@@ -502,8 +502,15 @@ void PLAYER::Throw() {
 		throw_index = 0;
 		throw_x.clear();
 		throw_y.clear();
+		int input_ry = PAD_INPUT::GetPadThumbRY();
+		int input_rx = PAD_INPUT::GetPadThumbRX();
+		if ((abs(input_rx) <= DEVIATION && abs(input_ry) <= DEVIATION) || input_ry < DEVIATION) {
+			is_throw = true;
+			is_throw_anim = false;
+			return;
+		}
 		//äpìxéÊìæ
-		throw_rad = atan2(PAD_INPUT::GetPadThumbRY(), PAD_INPUT::GetPadThumbRX());
+		throw_rad = atan2(input_ry, input_rx);
 		float angle = throw_rad * 180.0f / M_PI;
 		//äpìxÇÃêßå¿
 		if (move_type == 0) {
@@ -538,20 +545,27 @@ void PLAYER::Throw() {
 		}
 	}
 	else {
-		if (!is_throw) {
-			throw_slime.push_back(ThrowSlime(throw_x, throw_y));
-			is_throw = true;
+		if (life > 1 || is_throw) {
+			if (!is_throw) {
+				throw_slime.push_back(ThrowSlime(throw_x, throw_y));
+				life--;
+				is_throw = true;
+			}
+			//ìäÇ∞ÇÈèàóù
+			if (is_throw_anim) {
+				int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
+				if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
+					is_throw_anim = false;
+				}
+				else {
+					animation_state = PLAYER_ANIM_STATE::THROW;
+					MoveAnimation();
+				}
+			}
 		}
-		//ìäÇ∞ÇÈèàóù
-		if (is_throw_anim) {
-			int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
-			if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
-				is_throw_anim = false;
-			}
-			else {
-				animation_state = PLAYER_ANIM_STATE::THROW;
-				MoveAnimation();
-			}
+		else {
+			is_throw = true;
+			is_throw_anim = false;
 		}
 	}
 }
