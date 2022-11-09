@@ -3,6 +3,7 @@
 ENEMYBULLET::ENEMYBULLET() 
 {
 	player = nullptr;
+	stage = nullptr;
 	player_x = 0.0;
 	player_y = 0.0;
 	bullet_x = 0.0;
@@ -16,9 +17,11 @@ ENEMYBULLET::ENEMYBULLET()
 	bullet_sy = 0.0;
 	bullet_flag = false;
 	rad_x = 0.0;
+	map_x = 0;
+	map_y = 0;
 }
 
-ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player ,int x,int y ,double dis ,float scroll) 
+ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player ,STAGE* aug_stage,int x,int y ,double dis ,float scroll) 
 {
 	player = argu_player;
 	player_x = player->GetPlayerX();
@@ -35,6 +38,8 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player ,int x,int y ,double dis ,float scr
 	bullet_flag = true;
 	rad_x = dis;
 	scroll_x = scroll;
+	map_x = 0;
+	map_y = 0;
 }
 
 void ENEMYBULLET::Draw() const 
@@ -62,7 +67,13 @@ void ENEMYBULLET::Move()
 	bullet_y += bullet_sy;
 
 	//弾が画面外に行ったら消えるフラグを真に
-	if (bullet_x < 0 || bullet_x>1280 || bullet_y < 0 || bullet_y>720)
+	mapd_x = (bullet_x - scroll_x) / 80;
+	mapd_y = bullet_y / 80;
+	
+	map_x = (int)floor(mapd_x);
+ 	map_y = (int)floor(mapd_y);
+
+	if (stage->HitMapDat(map_y + 1,map_x) != 0)
 		bullet_flag = true;
 }
 
