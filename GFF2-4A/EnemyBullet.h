@@ -32,7 +32,7 @@ public:
     /// アニメーション
     /// </summary>
     void Animation();
-    void Draw(STAGE* stage) const;
+    void Draw() const;
 
 };
 
