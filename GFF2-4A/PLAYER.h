@@ -35,6 +35,7 @@ enum class PLAYER_ANIM_STATE {
 	IDLE = 0,//アイドルアニメーション
 	MOVE,	 //移動アニメーション
 	THROW,	 //投げるアニメーション
+	JUMP,	//ジャンプアニメーション
 };
 
 class PLAYER

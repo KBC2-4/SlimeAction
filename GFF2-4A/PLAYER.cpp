@@ -39,8 +39,8 @@ PLAYER::PLAYER() {
 	if (LoadDivGraph("Resource/Images/Player/ThrowSlime.png", 7, 7, 1, 80, 80, images[2]) == -1) {
 		throw "Resource/Images/Player/ThrowSlime.png";
 	}
-	if (LoadDivGraph("Resource/Images/Player/JumpSlime.png", 10, 10, 1, 80, 80, images[3]) == -1) {
-		throw "Resource/Images/Player/JumpSlime.png";
+	if (LoadDivGraph("Resource/Images/Player/JumpSlime1.png", 10, 10, 1, 80, 80, images[3]) == -1) {
+		throw "Resource/Images/Player/JumpSlime1.png";
 	}
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
 		throw "Resource/Images/Player/SlimeBullet.png";
@@ -419,6 +419,8 @@ void PLAYER::JumpMove() {
 	}
 	//ƒWƒƒƒ“ƒv’†
 	if (is_jump) {
+		animation_state = PLAYER_ANIM_STATE::JUMP;
+		MoveAnimation();
 		velocity += 0.2f;
 		player_y += velocity;
 		bool is_block = false;
