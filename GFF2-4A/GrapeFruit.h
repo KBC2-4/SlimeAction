@@ -4,6 +4,12 @@
 #include"STAGE.h"
 #include<math.h>
 
+#define GURAFRU_W 80
+#define GURAFRU_H 80
+#define BALL_W 10
+#define BALL_H 10
+
+
 class GRAPEFRUIT :
 	public ENEMY
 {
@@ -17,7 +23,11 @@ private:
 	int spawn_map_x;
 	int spawn_map_y;
 	int bullet_count;
+	int check_hit_count;
+	bool hit_flg;
+	bool delete_flg;
 	ENEMYBULLET* bullet[3];
+	//ThrowSlime* throw_slime;
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -51,5 +61,7 @@ public:
 	/// 描画
 	/// </summary>
     void Draw()const override;
+
+	bool GetDeleteFlg() { return delete_flg; }
 };
 

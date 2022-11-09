@@ -1,6 +1,7 @@
 #pragma once
 #include"PLAYER.h"
 #include"STAGE.h"
+
 enum class ENEMY_STATE
 {
 	IDOL = 0,	//アイドル状態
@@ -23,6 +24,7 @@ protected:
 	ENEMY_STATE state;	//エネミーの状態
 	STAGE* stage;		//ステージ
 	PLAYER* player;		//ステージ
+
 	const int IMAGE_SIZE = 80;
 public:
 	/// <summary>

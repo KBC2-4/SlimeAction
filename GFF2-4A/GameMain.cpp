@@ -119,7 +119,8 @@ GAMEMAIN::~GAMEMAIN()
 	delete[] tomaton;
 	//グレポンの削除
 	for (int i = 0; i < gurepon_count; i++) {
-		delete gurepon[i];
+			delete gurepon[i];
+		
 	}
 	delete[] gurepon;
 	
@@ -144,7 +145,16 @@ AbstractScene* GAMEMAIN::Update()
 	}
 	for (int i = 0; i < gurepon_count; i++)
 	{
-		gurepon[i]->Update();
+		if (gurepon[i] != nullptr && gurepon[i]->GetDeleteFlg())
+		{
+			gurepon[i] = nullptr;
+		}
+		else if(gurepon[i] != nullptr && !gurepon[i]->GetDeleteFlg())
+		{
+			gurepon[i]->Update();
+		}
+		else
+		{}
 	}
 	element->Update(player);
 
@@ -176,7 +186,10 @@ void GAMEMAIN::Draw() const
 	//グレポンの描画
 	for (int i = 0; i < gurepon_count; i++)
 	{
-		gurepon[i]->Draw();
+		if (gurepon[i] != nullptr && gurepon[i]->GetDeleteFlg() == false)
+		{
+			gurepon[i]->Draw();
+		}
 	}
 	
 }

@@ -15,6 +15,7 @@ private:
 	int animation_type;
 	int spawn_map_x;
 	int spawn_map_y;
+
 	ENEMYBULLET* bullet;
 public:
     /// <summary>

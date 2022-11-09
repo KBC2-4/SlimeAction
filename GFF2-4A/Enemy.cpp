@@ -3,8 +3,6 @@
 #include<math.h>
 #include "Enemy.h"
 
-
-
 ENEMY::ENEMY()
 {
 	player = nullptr;

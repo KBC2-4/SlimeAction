@@ -105,7 +105,7 @@
       <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="ThrowSlime.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ソース ファイル\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
