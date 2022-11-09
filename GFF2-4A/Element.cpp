@@ -2,6 +2,7 @@
 #include "Element.h"
 #include "PLAYER.h"
 
+
 ELEMENT::ELEMENT() {
 
 	ELEMENT_DATA data;
@@ -85,18 +86,18 @@ ELEMENT::ELEMENT() {
 
 				//動く床
 			case 95:
-				data.x = (j * MAP_CEllSIZE) + MAP_CEllSIZE/2;
-				data.y = (i * MAP_CEllSIZE);
-				data.type = 1;
-				lift.push_back(data);
-				break;
-
-				//動く床(fast)
-			case 96:
 				data.x = (j * MAP_CEllSIZE);
 				data.y = (i * MAP_CEllSIZE);
 				data.type = 2;
 				lift.push_back(data);
+				break;
+
+				//動く床(ゴール)
+			case 96:
+				data.x = (j * MAP_CEllSIZE);
+				data.y = (i * MAP_CEllSIZE);
+				data.type = 0;
+				lift_goal.push_back(data);
 				break;
 
 		
@@ -111,7 +112,8 @@ ELEMENT::ELEMENT() {
 
 	player_map_x = 0;
 	player_map_y = 0;
-	lift_speed = 1.0f;
+	lift_vector = 1;
+	
 }
 
 void ELEMENT::Draw() const {
@@ -121,12 +123,9 @@ void ELEMENT::Draw() const {
 	//for (int j = 0; j < 16; j++) {
 	//	DrawLine(j * MAP_CEllSIZE, 0, j * MAP_CEllSIZE, 720, 0xffffff);
 	//}
-
 	
 	static int animtimer = 0;
 	//printfDx("%d", animtimer);
-	printfDx("%f",lift[0].x);
-	printfDx("%f", lift[0].y);
 	//DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
 	DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
 	//デバッグ用
@@ -142,7 +141,7 @@ void ELEMENT::Draw() const {
 	}
 
 	for (int i = 0; i < lift.size(); i++) {
-		DrawGraph(lift[i].x + scroll_x-40, lift[i].y +scroll_y-25, block_image1[94+i], TRUE);
+		DrawGraph(lift[i].x + scroll_x, lift[i].y +scroll_y-25, block_image1[94+i], TRUE);
 	}
 
 	for (int i = 0; i < door.size(); i++) {
@@ -229,18 +228,19 @@ void ELEMENT::Door() {
 /// </summary>
 void ELEMENT::Lift() {
 	for (int i = 0; i < lift.size(); i++) {
-		//if (-player_map_x<=scroll_x+MAP_CEllSIZE*3&&-player_map_x>=scroll_x-MAP_CEllSIZE*3) {
-		if (map_data[int(lift[i].y / MAP_CEllSIZE)][int(((lift[i].x -lift_speed*40) / MAP_CEllSIZE) + lift_speed)] == 0) {
-			lift[i].x += lift_speed;
+		 if (lift[i].flg) {
+			 static float lift_distance = lift_goal[i].x - lift[i].x;
+			if (lift[i].x != lift_goal[i].x) {
+				lift[i].x += lift_vector;
+			}
+			else if (lift[i].type == 2) {
+				lift_goal[i].x = lift_goal[i].x - lift_distance*lift_vector;
+				lift_vector *= -1;
+			}
 		}
-		else lift_speed *= -1;
-		if (!fmodf(lift[i].x, MAP_CEllSIZE)) 
-		{
-			if(map_data[int(lift[i].y / MAP_CEllSIZE)][int(lift[i].x / MAP_CEllSIZE - lift_speed)] == lift[i].type+94)
-			map_data[int(lift[i].y / MAP_CEllSIZE)][int(lift[i].x / MAP_CEllSIZE - lift_speed)] = 0;
-			//map_data[int(lift[i].y / MAP_CEllSIZE)][int(lift[i].x / MAP_CEllSIZE)] = lift[i].type+94;
-		}
+		
 	}
+	
 }
 
 /// <summary>
@@ -248,8 +248,9 @@ void ELEMENT::Lift() {
 /// </summary>
 bool ELEMENT::HitLift() {
 	for (int i = 0; i < lift.size(); i++) {
-		if (player_map_x+30 >= lift[i].x-40 && player_map_x-30 <= lift[i].x + 40
-			&& player_map_y<=lift[i].y&&player_map_y>=lift[i].y-MAP_CEllSIZE) {
+		if (player_map_x+40 >= lift[i].x && player_map_x-40 <= lift[i].x + MAP_CEllSIZE
+			&& player_map_y<=lift[i].y&&player_map_y>=lift[i].y-MAP_CEllSIZE/2) {
+			lift[i].flg = true;
 			return true;
 		}
 	}
