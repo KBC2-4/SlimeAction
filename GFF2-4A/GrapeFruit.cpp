@@ -120,7 +120,7 @@ void GRAPEFRUIT::Draw() const
 	{
 		for (int i = 0; i < 3; i++) 
 		{
-			bullet[i]->Draw(stage);
+			bullet[i]->Draw();
 		}
 	}
 }

@@ -71,7 +71,7 @@ GAMEMAIN::GAMEMAIN()
 
 	//スポーンポイントを削除
 	spawn_point.clear();
-	//とまトン生成する数を数える
+	//レモナー生成する数を数える
 	for (int i = 0, point = 0; i < MAP_HEIGHT; i++)
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
@@ -86,15 +86,16 @@ GAMEMAIN::GAMEMAIN()
 			}
 		}
 	}
-	//とまトンの生成
+	//レモナーの生成
 	if (lemoner_count > 0)
 	{
 		lemoner = new LEMON * [lemoner_count];
-		for (int i = 0; i < tomaton_count; i++)
+		for (int i = 0; i < lemoner_count; i++)
 		{
 			lemoner[i] = new LEMON(player, stage, spawn_point[i][0], spawn_point[i][1]);
 		}
 	}
+
 	element = new ELEMENT();
 }
 
@@ -102,6 +103,13 @@ GAMEMAIN::~GAMEMAIN()
 {
 	delete player;
 	delete stage;
+
+	//レモナーの削除
+	for (int i = 0; i < lemoner_count; i++) {
+		delete lemoner[i];
+	}
+	delete[] lemoner;
+
 	//とまトンの削除
 	for (int i = 0; i < tomaton_count; i++)
 	{
@@ -113,6 +121,7 @@ GAMEMAIN::~GAMEMAIN()
 		delete gurepon[i];
 	}
 	delete[] gurepon;
+	
 	delete element;
 }
 
