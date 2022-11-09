@@ -131,8 +131,14 @@ public:
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
 	bool IsDeath() { return is_death; }
-	static float GetPlayerX() { return player_x; };
-	static float GetPlayerY() { return player_y; };
+	static float GetPlayerX() { return player_x; }
+	static float GetPlayerY() { return player_y; }
+
+	void SetPlayerX(float x) { player_x = x; }
+	void SetPlayerY(float y) { player_y = y; }
+
+	int GetThrowCnt() { return throw_slime.size(); }
+	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
 	void SetLife(int);
 };

@@ -18,5 +18,7 @@ public:
 	void Update();
 	void Draw() const;
 	int HitBlock();
+	float GetThrowX() { return throw_x[0]; }
+	float GetThrowY() { return throw_y[0]; }
 };
 
