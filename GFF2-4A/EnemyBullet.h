@@ -3,8 +3,8 @@
 #include<math.h>
 #include"DxLib.h"
 #include"PLAYER.h"
-class ENEMYBULLET :
-    public ENEMY
+#include"STAGE.h"
+class ENEMYBULLET
 {
 private:    
     int my_x, my_y;                   //この敵の座標
@@ -14,20 +14,25 @@ private:
     double bullet_sx, bullet_sy;      //弾のX、Yそれぞれのスピード
     bool bullet_flag;                 //弾を消すかどうか
     double rad_x;                     //角度変更用変数
+    float scroll_x;
+    int i = 0;
+    double cos_x = 0.0;
+    double sin_y = 0.0;
+    PLAYER* player;
 
 public:
     ENEMYBULLET();
-    ENEMYBULLET(PLAYER* player,int x,int y , double dis);
+    ENEMYBULLET(PLAYER* player,int x,int y , double dis,float);
     ~ENEMYBULLET() {};
 
-    void Update() override;
-    void Move() override;
-    void Hit()override;
+    void Update();
+    void Move();
+    void Hit();
     /// <summary>
     /// アニメーション
     /// </summary>
-    void Animation()override;
-    void Draw() const override;
+    void Animation();
+    void Draw(STAGE* stage) const;
 
 };
 

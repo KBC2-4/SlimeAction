@@ -2,11 +2,14 @@
 #include"Enemy.h"
 #include"EnemyBullet.h"
 #include"STAGE.h"
+#include<math.h>
+
 class GRAPEFRUIT :
 	public ENEMY
 {
 private:
 	bool hitflg;
+	bool flag;
 	int shootcount;
 	double rads[2];
 	int animation_timer;
