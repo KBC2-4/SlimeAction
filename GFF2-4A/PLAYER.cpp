@@ -39,6 +39,9 @@ PLAYER::PLAYER() {
 	if (LoadDivGraph("Resource/Images/Player/ThrowSlime.png", 7, 7, 1, 80, 80, images[2]) == -1) {
 		throw "Resource/Images/Player/ThrowSlime.png";
 	}
+	if (LoadDivGraph("Resource/Images/Player/JumpSlime.png", 10, 10, 1, 80, 80, images[3]) == -1) {
+		throw "Resource/Images/Player/JumpSlime.png";
+	}
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
 		throw "Resource/Images/Player/SlimeBullet.png";
 	}
@@ -102,6 +105,8 @@ void PLAYER::Draw()const {
 		}
 	}
 	
+
+
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Draw();
