@@ -34,14 +34,14 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	spawn_map_x = spawn_x;
 	spawn_map_y = spawn_y;
 	x = (spawn_map_x * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-	y = spawn_map_y * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+	y = spawn_map_y * MAP_CEllSIZE;
 	flag = false;
 	
 	//‰æ‘œ‚ÌŽæ“¾
 	image = new int;
-	if ((*image = LoadGraph("Resource/Images/Enemy/gurepon.png")) == -1)
+	if ((*image = LoadGraph("Resource/Images/Enemy/lemoner.png")) == -1)
 	{
-		throw "Resource/Images/Enemy/gurepon.png";
+		throw "Resource/Images/Enemy/lemoner.png";
 	}
 	shootcount = 0;
 
@@ -59,6 +59,7 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 
 void LEMON::Update()
 {
+	ChangeAngle();
 	if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280)) {
 		if (++shootcount % 180 == 0) {
 			if (flag == false) {
@@ -74,6 +75,7 @@ void LEMON::Update()
 			if (flag)
 			{
 				delete bullet;
+				bullet = nullptr;
 				flag = false;
 			}
 		}
@@ -84,11 +86,6 @@ void LEMON::Update()
 	Hit();
 }
 void LEMON::Move()
-{
-
-}
-
-void LEMON::ShotFruitJuice()
 {
 
 }
@@ -106,5 +103,8 @@ void LEMON::Animation()
 void LEMON::Draw() const
 {
 	DrawRotaGraph2(x + stage->GetScrollX(), y, 40, 0, 1, rad + (-90 * (PI / 180)), image[0], TRUE);
-	bullet->Draw();
+	if (bullet != nullptr)
+	{
+		bullet->Draw();
+	}
 }

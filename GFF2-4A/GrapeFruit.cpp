@@ -96,10 +96,7 @@ void GRAPEFRUIT::Move()
 
 }
 
-void GRAPEFRUIT::ShotFruitJuice()
-{
 
-}
 
 void GRAPEFRUIT::Hit()
 {

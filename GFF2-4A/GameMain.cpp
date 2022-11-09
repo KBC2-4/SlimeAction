@@ -71,6 +71,7 @@ GAMEMAIN::GAMEMAIN()
 
 	//スポーンポイントを削除
 	spawn_point.clear();
+
 	//レモナー生成する数を数える
 	for (int i = 0, point = 0; i < MAP_HEIGHT; i++)
 	{
@@ -133,6 +134,10 @@ AbstractScene* GAMEMAIN::Update()
 		return new GAMEMAIN();
 	}
 	element->Update(player);
+	for (int i = 0; i < lemoner_count; i++)
+	{
+		lemoner[i]->Update();
+	}
 	for (int i = 0; i < tomaton_count; i++)
 	{
 		tomaton[i]->Update();
@@ -157,6 +162,12 @@ void GAMEMAIN::Draw() const
 	stage->Draw();
 	//プレイヤーの描画
 	player->Draw();
+
+	//レモナーの描画
+	for (int i = 0; i < lemoner_count; i++)
+	{
+		lemoner[i]->Draw();
+	}
 	//とまトンの描画
 	for (int i = 0; i < tomaton_count; i++)
 	{
