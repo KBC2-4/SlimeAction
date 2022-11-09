@@ -39,6 +39,10 @@ PLAYER::PLAYER() {
 	if (LoadDivGraph("Resource/Images/Player/ThrowSlime.png", 7, 7, 1, 80, 80, images[2]) == -1) {
 		throw "Resource/Images/Player/ThrowSlime.png";
 	}
+	if ((images[3][0] = LoadGraph("Resource/Images/Player/nobi.png")) == -1) {
+		throw "Resource/Images/Player/nobi.png";
+	}
+
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
 		throw "Resource/Images/Player/SlimeBullet.png";
 	}
@@ -96,9 +100,10 @@ void PLAYER::Draw()const {
 		if (player_state == PLAYER_MOVE_STATE::HOOK) 
 			DrawRotaGraphF(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 1.0, 0.0, now_image, TRUE, move_type);
 		else {
-			DrawRotaGraph3F(player_x, player_y, 40, 80,
-				1, hook_distance / (MAP_CEllSIZE / 2), (double)hook_angle,
-				now_image, TRUE, move_type);
+			float rad90 = 90 * M_PI / 180.0f;
+			DrawRotaGraph3F(player_x, player_y, 80, 80,
+				hook_distance / MAP_CEllSIZE / -2, 1, (double)hook_angle + rad90,
+				images[3][0], TRUE, move_type);
 		}
 	}
 	

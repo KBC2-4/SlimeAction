@@ -46,7 +46,7 @@ void ThrowSlime::Draw() const {
 
 int ThrowSlime::HitBlock() {
 	//if (throw_y[0] >= throw_y[throw_index + 1])throw_fall = true;
-	if (throw_fall == true && STAGE::HitMapDat((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) - MAP_CEllSIZE*2) / MAP_CEllSIZE)) {
+	if (throw_fall == true && STAGE::HitMapDat((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE))) {
 		throw_bottom = (static_cast<int>(throw_y[0]) - MAP_CEllSIZE) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
 		throw_y[0] -= throw_bottom+3;
 		return true;
