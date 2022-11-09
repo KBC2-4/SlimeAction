@@ -165,6 +165,8 @@ void GAMEMAIN::Draw() const
 {
 	DrawGraph(int(STAGE::GetScrollX()) % 3840 + 3840, /*scroll_y*/0, background_image[0], FALSE);
 	DrawTurnGraph(int(STAGE::GetScrollX()) % 3840, /*scroll_y*/0, background_image[0], FALSE);
+	DrawFormatString(0, 50, 0x000000, "%d", player->GetLife());
+
 
 	//ステージの描画
 

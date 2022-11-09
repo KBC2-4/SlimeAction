@@ -20,6 +20,8 @@ private:
     int i = 0;
     double cos_x = 0.0;
     double sin_y = 0.0;
+    bool hit_flg;
+    bool old_hit_flg;
     PLAYER* player;
     STAGE* stage;
 
