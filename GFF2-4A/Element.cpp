@@ -49,7 +49,7 @@ ELEMENT::ELEMENT() {
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.type = 1;
-				manhole.push_back(data);
+				tunnel.push_back(data);
 				break;
 
 				//マンホール(中間)
@@ -57,7 +57,7 @@ ELEMENT::ELEMENT() {
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.type = 2;
-				manhole.push_back(data);
+				tunnel.push_back(data);
 				break;
 
 				//マンホール(出口)
@@ -65,7 +65,7 @@ ELEMENT::ELEMENT() {
 			//	data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 			//	data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 			//	data.type = 3;
-			//	manhole.push_back(data);
+			//	tunnel.push_back(data);
 			//	break;
 
 				//酸

@@ -22,7 +22,7 @@ private:
 	std::vector<ELEMENT_DATA> button;		//ボタン
 	std::vector<ELEMENT_DATA> door;			//ドア
 	std::vector<ELEMENT_DATA> lift;			//動く床
-	std::vector<ELEMENT_DATA> manhole;		//マンホール
+	std::vector<ELEMENT_DATA> tunnel;		//トンネル
 	std::vector<ELEMENT_DATA> acid;			//酸
 	float player_map_x, player_map_y;
 	float lift_speed;
@@ -40,7 +40,7 @@ public:
 	std::vector<ELEMENT_DATA>GetButton() { return button; }
 	std::vector<ELEMENT_DATA>GetDoor() { return door; }
 	std::vector<ELEMENT_DATA>GetLift() { return lift; }
-	std::vector<ELEMENT_DATA>GetManhole() { return manhole; }
+	std::vector<ELEMENT_DATA>GetTunnel() { return tunnel; }
 	float GetLiftSpeed() { return lift_speed; }
 };
 
