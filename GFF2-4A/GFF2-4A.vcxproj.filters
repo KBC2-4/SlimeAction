@@ -54,9 +54,6 @@
     <ClCompile Include="GrapeFruit.cpp">
       <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Splash.cpp">
-      <Filter>ソース ファイル\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Tomato.cpp">
       <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
@@ -99,9 +96,6 @@
       <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Tomato.h">
-      <Filter>ヘッダー ファイル\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Splash.h">
       <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="EnemyBullet.h">

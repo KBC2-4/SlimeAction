@@ -10,7 +10,7 @@ private:
 	int spawn_map_y;		//スポーン地点(y)
 	double image_rate;			//画像サイズ
 	const int ANIMATION_TIME = 5;	//アニメーションの切り替え時間
-	const int WALL_SPEED = 10;		//落下速度
+	const int FALL_SPEED = 10;		//落下速度
 public:
 	/// <summary>
 	/// コンストラクタ
