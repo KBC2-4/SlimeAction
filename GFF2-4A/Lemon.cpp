@@ -63,7 +63,7 @@ void LEMON::Update()
 	if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280)) {
 		if (++shootcount % 180 == 0) {
 			if (flag == false) {
-				bullet= new ENEMYBULLET(player, x, y, 0.0, stage->GetScrollX());
+				bullet= new ENEMYBULLET(player,stage, x, y, 0.0, stage->GetScrollX());
 				flag = true;
 			}
 		}

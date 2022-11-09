@@ -4,6 +4,7 @@
 #include"STAGE.h"
 #include<math.h>
 
+
 class GRAPEFRUIT :
 	public ENEMY
 {
@@ -18,6 +19,7 @@ private:
 	int spawn_map_y;
 	int bullet_count;
 	ENEMYBULLET* bullet[3];
+	//ThrowSlime* throw_slime;
 public:
 	/// <summary>
 	/// コンストラクタ

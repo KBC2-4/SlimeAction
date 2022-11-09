@@ -3,7 +3,7 @@
 #include<math.h>
 #define _USE_MATH_DEFINES
 
-
+#include <vector>
 
 
 
@@ -23,6 +23,7 @@ GRAPEFRUIT::GRAPEFRUIT()
 	spawn_map_y = 0;
 	animation_timer = 0;
 	animation_type = 0;
+	throw_slime = nullptr;
 	
 	for (int i = 0; i < 3; i++) {
 		bullet[i] = nullptr;
@@ -50,6 +51,7 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	{
 		bullet[i] = nullptr;
 	}
+	throw_slime = nullptr;
 	this->player = player;
 	this->stage = stage;
 	bullet_count = 3;
@@ -102,7 +104,15 @@ void GRAPEFRUIT::Move()
 
 void GRAPEFRUIT::Hit()
 {
+	ThrowSlime throw_slime;
+	
+	for (int i = 0; i < player->GetThrowCnt(); i++)
+	{
+		throw_slime = player->GetThrowSlime(i);	
+		if(throw_slime.GetThrowX)
+	}
 
+	
 }
 
 void GRAPEFRUIT::Animation()
@@ -123,3 +133,4 @@ void GRAPEFRUIT::Draw() const
 		}
 	}
 }
+

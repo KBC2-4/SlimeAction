@@ -86,6 +86,7 @@ private:
 	std::vector<float>throw_y = {0};
 	int throw_index = 0;
 
+
 	float ve, vx0, vy0, vx, vy;
 	float g, dt, t,x0, y0;
 
