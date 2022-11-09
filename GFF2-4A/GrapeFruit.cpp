@@ -14,6 +14,7 @@ GRAPEFRUIT::GRAPEFRUIT()
 		throw "Resource/Images/Enemy/gurepon.png";
 	shootcount = 0;
 	hitflg = false;
+	delete_flg = false;
 	rad = 0.0;
 	for (int i = 0; i < 2; i++)
 		rads[i] = 0.0;
@@ -23,7 +24,8 @@ GRAPEFRUIT::GRAPEFRUIT()
 	spawn_map_y = 0;
 	animation_timer = 0;
 	animation_type = 0;
-	throw_slime = nullptr;
+	check_hit_count = 0;
+	hit_flg = false;
 	
 	for (int i = 0; i < 3; i++) {
 		bullet[i] = nullptr;
@@ -36,8 +38,9 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	spawn_map_x = spawn_x;
 	spawn_map_y = spawn_y;
 	x = (spawn_map_x * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-	y = spawn_map_y * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+	y = (spawn_map_y * MAP_CEllSIZE + MAP_CEllSIZE / 2) - 40;
 	flag = false;
+	delete_flg = false;
 	image = new int[100];
 	if (LoadDivGraph("Resource/Images/Enemy/gurepon.png", 1, 1, 1, 80, 80, image) == -1)
 		throw "Resource/Images/Enemy/gurepon.png";
@@ -51,53 +54,72 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	{
 		bullet[i] = nullptr;
 	}
-	throw_slime = nullptr;
 	this->player = player;
 	this->stage = stage;
 	bullet_count = 3;
+
+	hit_flg = false;
 }
 
 void GRAPEFRUIT::Update()
 {
-	ChangeAngle();
-	if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280)) {
-		if (++shootcount % 180 == 0) {
-			if (flag == false) {
-				bullet[0] = new ENEMYBULLET(player, stage, x, y, 0.0,stage->GetScrollX());
-				bullet[1] = new ENEMYBULLET(player, stage, x, y, 200.0, stage->GetScrollX());
-				bullet[2] = new ENEMYBULLET(player, stage, x, y, -200.0, stage->GetScrollX());
-				flag = true;
+	Hit();
+	if (hit_flg == false)
+	{
+		ChangeAngle();
+		if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280)) {
+			if (++shootcount % 180 == 0) {
+				if (flag == false) {
+					bullet[0] = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX());
+					bullet[1] = new ENEMYBULLET(player, stage, x, y, 200.0, stage->GetScrollX());
+					bullet[2] = new ENEMYBULLET(player, stage, x, y, -200.0, stage->GetScrollX());
+					flag = true;
+				}
 			}
-		}
-		if (flag)
-		{
-   			for (int i = 0; i < 3; i++)
+			if (flag)
 			{
-				bullet[i]->Update();
-			}
-		}
-		if (flag)
-		{
 				for (int i = 0; i < 3; i++)
 				{
-					if (bullet[i]->GetBulletFlg())
-					{
-						delete bullet[i];
-						bullet[i] = nullptr;
-					}
+					bullet[i]->Update();
 				}
-				flag = false;
-		}	
+			}
+			if (shootcount % 300 == 0)
+			{
+				if (flag)
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						if (bullet[i]->GetBulletFlg())
+						{
+							delete bullet[i];
+							bullet[i] = nullptr;
+						}
+					}
+					flag = false;
+				}
+			}
+		}
+	}
+	else
+	{
+	    Move();
 	}
 
-	Move();
 	Animation();
-	Hit();
 }
 
 void GRAPEFRUIT::Move()
 {
-
+	y += 1;
+	flag = false;
+	if (++check_hit_count % 80 == 0)
+	{
+		spawn_map_y++;
+	}
+	if (stage->GetMapDat(spawn_map_y + 1, spawn_map_x) != 0 && stage->GetMapDat(spawn_map_y + 1, map_x) != 93)
+	{
+		delete_flg = true;
+	}
 }
 
 
@@ -105,14 +127,28 @@ void GRAPEFRUIT::Move()
 void GRAPEFRUIT::Hit()
 {
 	ThrowSlime throw_slime;
-	
+	float bx1, by1, bx2, by2;
+	float gx1, gy1, gx2, gy2;
+
 	for (int i = 0; i < player->GetThrowCnt(); i++)
 	{
 		throw_slime = player->GetThrowSlime(i);	
-		if(throw_slime.GetThrowX)
+		//スライムのボールの当たり判定
+		bx1 = throw_slime.GetThrowX();
+		by1 = throw_slime.GetThrowY();
+		bx2 = throw_slime.GetThrowX() + BALL_W;
+		by2 = throw_slime.GetThrowY() - BALL_H;
+		//グレープフルーツの当たり判定
+		gx1 = x;
+		gy1 = y;
+		gx2 = gx1 + GURAFRU_W;
+		gy2 = gy1 + GURAFRU_H;
+		if(((bx2 >= gx1 && bx2 <= gx2) || (bx1 <= gx2 && bx1 >= gx1)) && ((by1 >= gy2 && by1 <= gy1) || (by2 >= gy1 && by2 <= gy2)))
+		{
+			hit_flg = true;
+			rad = 90 * (PI / 180);
+		}
 	}
-
-	
 }
 
 void GRAPEFRUIT::Animation()
@@ -123,7 +159,7 @@ void GRAPEFRUIT::Animation()
 
 void GRAPEFRUIT::Draw() const
 {
-	DrawRotaGraph2(x + stage->GetScrollX(), y, 40, 0, 1, rad + (-90*(PI/180)), image[0], TRUE);
+	DrawRotaGraph2(x + stage->GetScrollX(), y, 40, 0, 1, rad + ( -90 * (PI/180)), image[0], TRUE);
 	
 	if (flag)
 	{
