@@ -6,10 +6,12 @@ GAMEMAIN::GAMEMAIN()
 	std::vector<std::vector<int>> spawn_point;
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
 	time = 0.0;
+	lemoner_count = 0;
 	tomaton_count = 0;
+
 	player = new PLAYER;
 	stage = new STAGE;
-	lemonner = new LEMON(player);
+	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
 
@@ -67,6 +69,32 @@ GAMEMAIN::GAMEMAIN()
 		}
 	}
 
+	//スポーンポイントを削除
+	spawn_point.clear();
+	//とまトン生成する数を数える
+	for (int i = 0, point = 0; i < MAP_HEIGHT; i++)
+	{
+		for (int j = 0; j < MAP_WIDTH; j++)
+		{
+			if (stage->GetMapDat(i, j) == 91)
+			{
+				lemoner_count++;
+				spawn_point.push_back(std::vector<int>(2));
+				spawn_point[point][0] = i;
+				spawn_point[point][1] = j;
+				point++;
+			}
+		}
+	}
+	//とまトンの生成
+	if (lemoner_count > 0)
+	{
+		lemoner = new LEMON * [lemoner_count];
+		for (int i = 0; i < tomaton_count; i++)
+		{
+			lemoner[i] = new LEMON(player, stage, spawn_point[i][0], spawn_point[i][1]);
+		}
+	}
 	element = new ELEMENT();
 }
 

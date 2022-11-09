@@ -1,6 +1,5 @@
 #pragma once
 #include"Enemy.h"
-
 class LEMON :
     public ENEMY
 {
@@ -10,13 +9,19 @@ public:
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    /// <param name="player"></param>
     LEMON();
+
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="player">プレイヤーのアドレス</param>
+	/// <param name="stage">ステージのアドレス</param>
+	/// <param name="spawn_y">マップ上のスポーン地点(y)</param>
+	/// <param name="spawn_x">マップ上のスポーン地点(x)</param>
+	LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x);
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="player">プレイヤーのアドレス</param>
-	LEMON(PLAYER* player);
 
 	/// <summary>
 	/// 更新
