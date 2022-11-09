@@ -1,10 +1,21 @@
 #pragma once
 #include"Enemy.h"
+#include"EnemyBullet.h"
+#include"STAGE.h"
+
 class LEMON :
     public ENEMY
 {
 private:
-
+	bool hitflg;
+	bool flag;
+	int shootcount;
+	double rads[2];
+	int animation_timer;
+	int animation_type;
+	int spawn_map_x;
+	int spawn_map_y;
+	ENEMYBULLET* bullet;
 public:
     /// <summary>
     /// コンストラクタ

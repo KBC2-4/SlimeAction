@@ -166,7 +166,6 @@
     <ClCompile Include="PadInput.cpp" />
     <ClCompile Include="PLAYER.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="Splash.cpp" />
     <ClCompile Include="STAGE.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tomato.cpp" />
@@ -182,7 +181,6 @@
     <ClInclude Include="PadInput.h" />
     <ClInclude Include="PLAYER.h" />
     <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="Splash.h" />
     <ClInclude Include="STAGE.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tomato.h" />
