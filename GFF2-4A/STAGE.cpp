@@ -78,7 +78,13 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
+		|| block_type == 91 
+		|| block_type == 92 
+		|| block_type == 93
 		|| block_type == 95	//動く床
+
+		//応急処置
+		|| block_type == 19	//New アカシア木
 		) {
 		return false;
 	}

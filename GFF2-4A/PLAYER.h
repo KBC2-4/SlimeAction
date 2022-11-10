@@ -89,6 +89,7 @@ private:
 	std::vector<float>throw_y = {0};
 	int throw_index = 0;
 
+
 	float ve, vx0, vy0, vx, vy;
 	float g, dt, t,x0, y0;
 
@@ -148,7 +149,8 @@ public:
 	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
 	bool GetBullet();	//ƒhƒƒbƒv‚µ‚½‹Ê‚ğE‚¤ˆ—
-
+	double GetSpeed() { return speed; }
+	float GetMoveX() { return move_x; }
 	void SetLife(int);
 };
 

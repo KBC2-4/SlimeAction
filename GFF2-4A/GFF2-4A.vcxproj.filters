@@ -54,10 +54,10 @@
     <ClCompile Include="GrapeFruit.cpp">
       <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Splash.cpp">
+    <ClCompile Include="Tomato.cpp">
       <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Tomato.cpp">
+    <ClCompile Include="EnemyBullet.cpp">
       <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="ThrowSlime.cpp">
@@ -101,11 +101,11 @@
     <ClInclude Include="Tomato.h">
       <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Splash.h">
+    <ClInclude Include="EnemyBullet.h">
       <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="ThrowSlime.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ソース ファイル\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
