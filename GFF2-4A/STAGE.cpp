@@ -97,9 +97,9 @@ bool STAGE::HitThrowSlime(int y, int x) {
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
 		) {
-		return true;
-	}
 	return false;
+	}
+		return true;
 }
 
 /// <summary>

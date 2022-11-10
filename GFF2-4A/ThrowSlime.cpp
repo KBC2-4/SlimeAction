@@ -58,6 +58,7 @@ int ThrowSlime::HitBlock(STAGE* stage) {
  master*/
 		throw_bottom = (static_cast<int>(throw_y[0]) - MAP_CEllSIZE) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
 		throw_y[0] -= throw_bottom + 5;
+		printfDx("block: %d\n", stage->GetMapDat((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE)));
 		return true;
 	}
 	return false;
