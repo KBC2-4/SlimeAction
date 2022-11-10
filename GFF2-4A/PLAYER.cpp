@@ -25,11 +25,11 @@ PLAYER::PLAYER() {
 	is_death = false;
 	player_state = PLAYER_MOVE_STATE::IDLE;
 	// 初期位置は軸の真下から左方向に45度傾いた位置
-		x = CLENGTH / b;
-		// 初期速度は０
-		speed = 0;
+	x = CLENGTH / b;
+	// 初期速度は０
+	speed = 0;
 
-		ve = 90.0;
+	ve = 90.0;
 	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
 		throw "Resource/Images/Player/IdorSlime.png";
 	}
@@ -90,6 +90,11 @@ void PLAYER::Update(ELEMENT* element) {
 		image_type = static_cast<int>(animation_state);
 	}
 	now_image = images[image_type][animation_type[image_type]];
+
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_LEFT_THUMB) {
+		life = 5;
+	}
+
 }
 
 /// <summary>
@@ -101,21 +106,28 @@ void PLAYER::Draw()const {
 		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, now_image, TRUE, move_type);
 	}
 	else {
-		if (player_state == PLAYER_MOVE_STATE::HOOK) 
-			DrawRotaGraphF(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 1.0, 0.0, now_image, TRUE, move_type);
-		else {
-			float rad90 = 90 * M_PI / 180.0f;
-			DrawRotaGraph3F(player_x, player_y, 80, 80,
-				hook_distance / MAP_CEllSIZE / -2, 1, (double)hook_angle + rad90,
+		if (player_state == PLAYER_MOVE_STATE::HOOK) {
+			//DrawRotaGraphF(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 1.0, 0.0, now_image, TRUE, move_type);
+			float diff_x = ((hook_x + STAGE::GetScrollX() + nx) - player_x);
+			float diff_y = ((hook_y + ny) - player_y);
+			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
+			float angle = atan2(diff_y, diff_x) + DX_PI_F;
+			DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
+				distance / MAP_CEllSIZE / 2, 1, (double)angle,
 				images[3][0], TRUE, move_type);
 		}
+		else {
+			DrawRotaGraph3F(player_x, player_y, 40, 80,
+				1, hook_distance / (MAP_CEllSIZE / 2), (double)hook_angle,
+				now_image, TRUE, move_type);
+		}
 	}
-	
+
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Draw();
 	}
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB && life > 1) {
 		for (int i = 0; i < throw_x.size(); i += 5) {
 			//DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
@@ -217,7 +229,7 @@ void PLAYER::Move() {
 			MoveAnimation();
 		}
 		//ジャンプ中じゃないかったらステートを切り替える
-		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && 
+		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL &&
 			player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 			jump_move_x = 0;
 			player_state = PLAYER_MOVE_STATE::IDLE;	//ステートをIdleに切り替え
@@ -254,18 +266,18 @@ void PLAYER::HookMove(ELEMENT* element) {
 	static bool end_move = false;
 	//近くにフックがあるかどうか
 	bool is_hook = false;
-	
+
 	//スティック入力の取得
 	int input_lx = PAD_INPUT::GetPadThumbLX();
-	
-	
+
+
 	//Bボタン押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
 		//フックの座標
 		//float hook_y, hook_x;
 		//フックまでの距離
 		float min_distance = HOOK_MAX_DISTANCE;
-		
+
 		//フックの位置
 		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHookPos();
 		for (int i = 0; i < hook_pos.size(); i++) {
@@ -371,7 +383,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 					ny = 0;
 					speed = 0.0;
 				}
-				if (input_lx < 15000 && input_lx >- 15000) {	//離している間は角度を狭く、スピードを遅くしていく
+				if (input_lx < 15000 && input_lx >-15000) {	//離している間は角度を狭く、スピードを遅くしていく
 					if (speed > 0)speed -= 0.05;
 					if (speed < 0)speed += 0.05;
 				}
@@ -499,7 +511,7 @@ void PLAYER::Throw() {
 		is_throw_anim = true;
 		//アニメーションのリセット
 		animation_type[2] = 0;
-		
+
 		throw_index = 0;
 		throw_x.clear();
 		throw_y.clear();
@@ -546,7 +558,7 @@ void PLAYER::Throw() {
 		}
 	}
 	else {
-		if (life > 1 || is_throw) {
+		if ((life > 1 || is_throw) && is_throw_anim) {
 			if (!is_throw) {
 				throw_slime.push_back(ThrowSlime(throw_x, throw_y));
 				life--;
@@ -567,6 +579,9 @@ void PLAYER::Throw() {
 		else {
 			is_throw = true;
 			is_throw_anim = false;
+			if (animation_state == PLAYER_ANIM_STATE::THROW) {
+				animation_state = PLAYER_ANIM_STATE::IDLE;
+			}
 		}
 	}
 }
