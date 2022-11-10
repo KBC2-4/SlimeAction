@@ -162,7 +162,7 @@ void LEMON::Hit()
 	//地面やブロックとの当たり判定
 	if (state == ENEMY_STATE::FALL)
 	{
-		if ((stage->GetMapDat(map_y + 1, map_x) != 0) && stage->GetMapDat(map_y + 1, map_x) != 93)
+		if (stage->HitMapDat(map_y + 1,map_x))
 		{
 			state = ENEMY_STATE::DETH;
 			animation_timer = 0;
