@@ -10,6 +10,12 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player)
 {
 	this->player = player;
 }
+
+void GRAPEFRUIT::Update()
+{
+
+}
+
 void GRAPEFRUIT::Move()
 {
 }

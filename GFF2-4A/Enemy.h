@@ -1,6 +1,6 @@
 #pragma once
 #include"PLAYER.h"
-
+#include"STAGE.h"
 enum class ENEMY_STATE
 {
 	IDOL = 0,	//アイドル状態
@@ -8,6 +8,7 @@ enum class ENEMY_STATE
 	STANDBY,	//発射準備
 	RETURN,		//発射可能状態に戻る
 	PRESS,		//発射状態
+	WALL,		//落下状態
 	DETH		//死亡状態
 };
 
@@ -16,12 +17,13 @@ class ENEMY
 protected:
 	int x, y;			//座標
 	int map_x, map_y;	//マップ内での座標
-	int image;			//画像
-	int w, h;			//幅、高さ
-	int angle;			//角度
+	int* image;			//画像保存用
+	int now_image;		//使用している画像
+	double rad;          //ラジアン
 	ENEMY_STATE state;	//エネミーの状態
-
-	PLAYER* player;
+	STAGE* stage;		//ステージ
+	PLAYER* player;		//ステージ
+	const int IMAGE_SIZE = 80;
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -32,8 +34,11 @@ public:
 	/// </summary>
 	~ENEMY()
 	{
-		delete player;
 	}
+	/// <summary>
+	/// 更新
+	/// </summary>
+	virtual void Update() = 0;
 	/// <summary>
 	/// 移動
 	/// </summary>
@@ -42,10 +47,6 @@ public:
 	/// プレイヤーとの角度を求める
 	/// </summary>
 	void ChangeAngle();
-	/// <summary>
-	/// 果汁を発射
-	/// </summary>
-	virtual void ShotFruitJuice() = 0;
 	/// <summary>
 	/// 当たり判定
 	/// </summary>
@@ -63,7 +64,7 @@ public:
 	/// プレイヤーとの角度の取得
 	/// </summary>
 	/// <returns>角度</returns>
-	int GetAngle()const { return angle; }
+	double GetRadian()const { return rad; }
 	/// <summary>
 	/// X座標の取得
 	/// </summary>
