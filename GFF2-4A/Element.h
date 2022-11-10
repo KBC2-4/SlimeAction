@@ -33,7 +33,7 @@ public:
 	ELEMENT();
 	void Draw() const override;
 	void Update(PLAYER* player);
-	void Button();
+	void Button(PLAYER* player);
 	void Door();
 	void Lift();
 	bool HitLift();

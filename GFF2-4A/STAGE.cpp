@@ -42,38 +42,6 @@ void STAGE::Draw()const {
 	
 }
 
-//void STAGE::InitStage() {
-//	FILE *fp = NULL;
-//	if ((fopen_s(&fp, "Resource/Map_Data/MapData1.csv", "rt")) != 0) {
-//		
-//		throw "Resource/Map_Data/MapData1.csv";
-//	}
-//	for (int i = 0; i < MAP_HEIGHT; i++) {
-//		for (int j = 0; j < MAP_WIDTH; j++) {
-//			//char c;
-//			fscanf_s(fp, "%d", &map_data[i][j]);
-//			//map_data[i][j] = c - '0';
-//		}
-//	}
-//	fclose(fp);
-//	//if ((fopen_s(&fp, "Resource/Map_Data/MapData_res.csv", "a")) != 0) {
-//	//	
-//	//	throw "Resource/Map_Data/MapData_res.csv";
-//	//}
-//	//for (int i = 0; i < MAP_HEIGHT; i++) {
-//	//	for (int j = 0; j < MAP_WIDTH; j++) {
-//	//		//char c;
-//	//		//fscanf_s(fp, "%2d,", &map_data[i][j]);
-//	//		fprintf_s(fp, "%2d,", map_data[i][j]);
-//	//		//map_data[i][j] = c - '0';
-//	//	}
-//	//	fprintf_s(fp, "\n");
-//	//}
-//	//fclose(fp);
-//
-//
-//}
-
 
 
 void STAGE::HookProcess() {
@@ -100,14 +68,14 @@ bool STAGE::HitMapDat(int y, int x) {
 	if (CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
 	int block_type = GetMapDat(y, x);
 	if (
-		block_type == -1 
-		|| block_type == 0 
-		|| block_type == 15 
-		|| block_type == 14 
-		|| block_type == 13 
+		block_type == -1 //範囲外
+		|| block_type == 0	//水玉草
+		|| block_type == 15 //フロー木
+		|| block_type == 14 //アカシア木
+		|| block_type == 13 //オーク木
 		|| block_type == 64	//ドア 
 		|| block_type == 65	//ドア 
-		|| block_type == 62
+		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
@@ -116,7 +84,27 @@ bool STAGE::HitMapDat(int y, int x) {
 	}
 	return true;
 }
+/// <summary>
+/// スライムのかけらの当たり判定
+/// </summary>
+bool STAGE::HitThrowSlime(int y, int x) {
+	int block_type = GetMapDat(y, x);
+	if (
+		block_type == -1 //範囲外
+		|| block_type == 0	//水玉草
+		|| block_type == 62	//ボタン(感圧式)
+		|| block_type == 68	//マンホールの蓋
+		|| block_type == 69	//マンホールの中
+		|| block_type == 73	//ゴール
+		) {
+		return true;
+	}
+	return false;
+}
 
+/// <summary>
+/// マップデータの読み込み
+/// </summary>
 void STAGE::LoadMapData(void) {
 
 		std::ifstream ifs("Resource/Map_Data/MapData1.csv");

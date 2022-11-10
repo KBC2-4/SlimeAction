@@ -129,6 +129,7 @@ void ELEMENT::Draw() const {
 	for (int i = 0; i < button.size(); i++) {
 		if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		if (button[i].type == 2 && button[i].flg == true) { 
+			//エフェクト
 			DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30 + button[i].animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		}
 	}
@@ -148,7 +149,7 @@ void ELEMENT::Draw() const {
 void ELEMENT::Update(PLAYER* player) {
 	player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
 	player_map_y = floorf((player->GetPlayerY() + MAP_CEllSIZE / 2));
-	Button();
+	Button(player);
 	Door();
 	Lift();
 	
@@ -157,7 +158,7 @@ void ELEMENT::Update(PLAYER* player) {
 /// <summary>
 /// ボタンの処理
 /// </summary>
-void ELEMENT::Button() {
+void ELEMENT::Button(PLAYER* player) {
 	for (int i = 0; i < button.size(); i++) {
 		if(button[i].flg == true)button[i].animtimer++;
 		if (button[i].animtimer > 180) {
@@ -166,13 +167,20 @@ void ELEMENT::Button() {
 		}
 
 		if (button[i].type == 1) {
-			if ((player_map_x >= button[i].x - MAP_CEllSIZE / 2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
-				printfDx("1番に入ってるよ！");
+			int max_ball_num = player->GetThrowCnt();
+			for (int ball_num = 0; ball_num < max_ball_num; ball_num++) {
+				if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
+					//デバッグ
+					printfDx("1番に入ってるよ！");
+					door[i + 1].flg = true;
+				}
 			}
 		}
 			if (button[i].type == 2) {
 				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 + 50) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
-					printfDx("2番に入ってるよ！");
+					//デバッグ
+					//printfDx("2番に入ってるよ！");
+					player->SetPlayerY(button[i].y - 6.5f);
 					button[i].flg = true;		//ボタンを押した
 					door[i - 1].flg = true;
 				}
@@ -181,6 +189,7 @@ void ELEMENT::Button() {
 			//一回限り
 			if (button[i].type == 3) {
 				if ((player_map_x >= button[i].x-MAP_CEllSIZE/2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2)&& (player_map_y >= button[i].y - MAP_CEllSIZE / 2)&& (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
+					//デバッグ
 					printfDx("3番に入ってるよ！");
 				}
 			}
