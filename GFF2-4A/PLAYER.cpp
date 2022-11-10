@@ -123,7 +123,7 @@ void PLAYER::Draw()const {
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Draw();
 	}
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB && life > 1) {
 		for (int i = 0; i < throw_x.size(); i += 5) {
 			//DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
