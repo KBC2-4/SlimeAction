@@ -149,7 +149,7 @@ void ELEMENT::Draw() const {
 
 void ELEMENT::Update(PLAYER* player) {
 	player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
-	player_map_y = floorf((player->GetPlayerY() + MAP_CEllSIZE / 2));
+	player_map_y = floorf(player->GetPlayerY());
 	Button(player);
 	Door();
 	Lift();
@@ -178,7 +178,7 @@ void ELEMENT::Button(PLAYER* player) {
 			}
 		}
 			if (button[i].type == 2) {
-				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 + 50) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
+				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 ) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
 					//printfDx("2番に入ってるよ！");
 					player->SetPlayerY(button[i].y - 6.5f);
