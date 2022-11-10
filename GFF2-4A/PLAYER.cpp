@@ -113,7 +113,7 @@ void PLAYER::Draw()const {
 			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
 			float angle = atan2(diff_y, diff_x) + DX_PI_F;
 			DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
-				distance / MAP_CEllSIZE / 2, 1, (double)angle,
+				distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
 				images[3][0], TRUE, move_type);
 		}
 		else {
