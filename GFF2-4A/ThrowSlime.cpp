@@ -31,8 +31,14 @@ void ThrowSlime::Update(STAGE* stage) {
 			return;
 		}
 		if (throw_y[0] < throw_y[throw_index])throw_fall = true;
-		if(HitBlock(stage)) throw_end = true;
+
+		if (HitBlock(stage)) {
+			//Drop = true;
+			throw_end = true;
+		}
+
 	}
+	
 }
 
 void ThrowSlime::Draw() const {
@@ -45,10 +51,16 @@ void ThrowSlime::Draw() const {
 
 int ThrowSlime::HitBlock(STAGE* stage) {
 	//if (throw_y[0] >= throw_y[throw_index + 1])throw_fall = true;
-	if (throw_fall == true && stage->HitThrowSlime((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) - MAP_CEllSIZE*2) / MAP_CEllSIZE) == false) {
+
+	if (throw_fall == true &&  stage->HitThrowSlime((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE))) {
+
+	/*if (throw_fall == true && stage->HitThrowSlime((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) - MAP_CEllSIZE*2) / MAP_CEllSIZE) == false) {
+ master*/
 		throw_bottom = (static_cast<int>(throw_y[0]) - MAP_CEllSIZE) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
-		throw_y[0] -= throw_bottom+3;
+		throw_y[0] -= throw_bottom + 5;
 		return true;
 	}
 	return false;
 }
+
+
