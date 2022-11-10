@@ -100,17 +100,18 @@ bool STAGE::HitMapDat(int y, int x) {
 	if (CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
 	int block_type = GetMapDat(y, x);
 	if (
-		block_type == -1 
-		|| block_type == 0 
-		|| block_type == 15 
-		|| block_type == 14 
-		|| block_type == 13 
+		block_type == -1
+		|| block_type == 0
+		|| block_type == 15
+		|| block_type == 14
+		|| block_type == 13
 		|| block_type == 64	//ドア 
 		|| block_type == 65	//ドア 
 		|| block_type == 62
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
+		|| block_type == 95	//動く床
 		) {
 		return false;
 	}

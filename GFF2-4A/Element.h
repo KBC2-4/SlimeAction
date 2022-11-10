@@ -42,6 +42,6 @@ public:
 	std::vector<ELEMENT_DATA>GetDoor() { return door; }
 	std::vector<ELEMENT_DATA>GetLift() { return lift; }
 	std::vector<ELEMENT_DATA>GetTunnel() { return tunnel; }
-	float GetLiftSpeed() { return lift_vector; }
+	float GetLiftVector() { return lift_vector; }
 };
 

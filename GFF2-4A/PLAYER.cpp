@@ -84,7 +84,7 @@ void PLAYER::Update(ELEMENT* element) {
 	now_image = images[image_type][animation_type[image_type]];
 
 	if (element->HitLift()) {
-		x += element->GetLiftSpeed()*3;
+		player_x += element->GetLiftVector();
 	}
 }
 
@@ -95,6 +95,7 @@ void PLAYER::Draw()const {
 	//プレイヤーの表示
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, now_image, TRUE, move_type);
+		
 	}
 	else {
 		if (player_state == PLAYER_MOVE_STATE::HOOK) 
