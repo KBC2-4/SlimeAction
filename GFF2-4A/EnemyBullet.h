@@ -5,7 +5,7 @@
 #include"PLAYER.h"
 #include"STAGE.h"
 
-#define BULLET_SPEED 5
+#define BULLET_SPEED 10
 class ENEMYBULLET
 {
 private:
@@ -14,7 +14,7 @@ private:
     double player_x, player_y;
     float scroll_x;
     double rad;
-    bool hit_flg;
+    bool delete_flg;
     PLAYER* player;
     STAGE* stage;
 
@@ -32,7 +32,7 @@ public:
     void Animation();
     void Draw() const;
 
-    bool GetHitFlg(){return hit_flg;}
+    bool GetDeleteFlg(){return delete_flg;}
 
 };
 

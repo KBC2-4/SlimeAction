@@ -23,7 +23,7 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player ,STAGE* aug_stage,int x,int y ,doub
 	this->x = x;
 	this->y = y;
 	this->rad = rad;
-	hit_flg = false;
+	delete_flg = false;
 	scroll_x = scroll;
 	map_x = 0;
 	map_y = 0;
@@ -38,7 +38,7 @@ void ENEMYBULLET::Update()
 {
 	Move();
 	Hit();
-	if (hit_flg)
+	if (delete_flg)
 	{
 		if (player->GetLife() > 0)
 		{
@@ -82,11 +82,11 @@ void ENEMYBULLET::Hit()
 
 	if (((px2 >= bx1 && px1 <= bx1) || (px1 <= bx2 && px2 >= bx2)) && ((py1 <= by2 && py2 >= by2) || (by1 <= py2 && by1 >= py1)))
 	{
-		hit_flg = true;
+		delete_flg = true;
 	}
 
 	if (stage->HitMapDat(map_y, map_x))
 	{
-		hit_flg = true;
+		delete_flg = true;
 	}
 }
