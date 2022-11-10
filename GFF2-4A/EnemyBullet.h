@@ -14,12 +14,14 @@ private:
     double bullet_sx, bullet_sy;      //弾のX、Yそれぞれのスピード
     int map_x, map_y;
     float mapd_x, mapd_y;
-    bool Hit_flg;                 //弾を消すかどうか
+    bool bullet_flag;                 //弾を消すかどうか
     double rad_x;                     //角度変更用変数
     float scroll_x;
     int i = 0;
     double cos_x = 0.0;
     double sin_y = 0.0;
+    bool hit_flg;
+    bool old_hit_flg;
     PLAYER* player;
     STAGE* stage;
 
@@ -37,7 +39,7 @@ public:
     void Animation();
     void Draw() const;
 
-    bool GetHitFlg(){return Hit_flg;}
+    bool GetHitFlg(){return hit_flg;}
 
 };
 

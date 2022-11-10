@@ -145,6 +145,6 @@ public:
 	int GetThrowCnt() { return throw_slime.size(); }
 	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
-	void SetLife(int);
+	void SetLife(int a) { life = a; }
 };
 

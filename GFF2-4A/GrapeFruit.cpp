@@ -80,22 +80,15 @@ void GRAPEFRUIT::Update()
 			{
 				for (int i = 0; i < 3; i++)
 				{
-					bullet[i]->Update();
-				}
-			}
-			if (shootcount % 300 == 0)
-			{
-				if (flag)
-				{
-					for (int i = 0; i < 3; i++)
+					if (bullet[i] != nullptr)
 					{
-						if (bullet[i]->GetBulletFlg())
+						bullet[i]->Update();
+						if (bullet[i]->GetHitFlg())
 						{
 							delete bullet[i];
 							bullet[i] = nullptr;
 						}
 					}
-					flag = false;
 				}
 			}
 		}
@@ -165,7 +158,10 @@ void GRAPEFRUIT::Draw() const
 	{
 		for (int i = 0; i < bullet_count; i++) 
 		{
-			bullet[i]->Draw();
+			if (bullet[i] != nullptr)
+			{
+				bullet[i]->Draw();
+			}
 		}
 	}
 }
