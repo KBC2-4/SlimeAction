@@ -38,7 +38,7 @@ void ThrowSlime::Update(STAGE* stage) {
 void ThrowSlime::Draw() const {
 	//DrawGraph(throw_x[0] + STAGE::GetScrollX(), throw_y[0], image, TRUE);
 	DrawRotaGraph(throw_x[0] + STAGE::GetScrollX(), throw_y[0], 1, 1, image, TRUE);
-	printfDx("throw_y[0] = %f",throw_y[0]);
+	//printfDx("throw_y[0] = %f",throw_y[0]);
 	//printfDx("throw_bottom = %f", throw_bottom);
 	
 }

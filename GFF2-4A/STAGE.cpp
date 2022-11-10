@@ -27,7 +27,7 @@ STAGE::STAGE() {
 //}
 
 void STAGE::Draw()const {
-	printfDx("%f",scroll_x);
+	//printfDx("%f",scroll_x);
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
