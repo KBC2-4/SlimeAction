@@ -14,7 +14,6 @@ private:
     double bullet_sx, bullet_sy;      //弾のX、Yそれぞれのスピード
     int map_x, map_y;
     float mapd_x, mapd_y;
-    bool bullet_flag;                 //弾を消すかどうか
     double rad_x;                     //角度変更用変数
     float scroll_x;
     int i = 0;
@@ -39,7 +38,7 @@ public:
     void Animation();
     void Draw() const;
 
-    bool GetBulletFlg(){return bullet_flag;}
+    bool GetHitFlg(){return hit_flg;}
 
 };
 

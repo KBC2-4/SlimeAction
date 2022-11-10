@@ -98,7 +98,7 @@ bool STAGE::SetScrollPos(int move_x) {
 bool STAGE::HitMapDat(int y, int x) {
 	if (CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
 	int block_type = GetMapDat(y, x);
-	if (block_type == -1 || block_type == 0 || block_type == 15 || block_type == 64 || block_type == 62) {
+	if (block_type == -1 || block_type == 0 || block_type == 15 || block_type == 64 || block_type == 62 || block_type == 92 || block_type == 91 || block_type == 93) {
 		return false;
 	}
 	return true;
