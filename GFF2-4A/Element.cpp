@@ -135,7 +135,8 @@ void ELEMENT::Draw() const {
 	}
 
 	for (int i = 0; i < lift.size(); i++) {
-		DrawGraph(lift[i].x + scroll_x, lift[i].y +scroll_y-25, block_image1[94+i], TRUE);
+		DrawGraph(lift[i].x + scroll_x, lift[i].y - 25 + scroll_y, block_image1[94], TRUE);
+		
 	}
 
 	for (int i = 0; i < door.size(); i++) {
@@ -233,11 +234,13 @@ void ELEMENT::Lift() {
 			 static float lift_distance = lift_goal[i].x - lift[i].x;
 			if (lift[i].x != lift_goal[i].x) {
 				lift[i].x += lift_vector;
+				
 			}
 			else if (lift[i].type == 2) {
 				lift_goal[i].x = lift_goal[i].x - lift_distance*lift_vector;
 				lift_vector *= -1;
 			}
+			
 		}
 		
 	}
@@ -249,11 +252,12 @@ void ELEMENT::Lift() {
 /// </summary>
 bool ELEMENT::HitLift() {
 	for (int i = 0; i < lift.size(); i++) {
-		if (player_map_x+40 >= lift[i].x && player_map_x-40 <= lift[i].x + MAP_CEllSIZE
-			&& player_map_y<=lift[i].y&&player_map_y>=lift[i].y-MAP_CEllSIZE/2) {
+		if (player_map_x+MAP_CEllSIZE/2-20 >= lift[i].x && player_map_x-MAP_CEllSIZE/2+20 <= lift[i].x +MAP_CEllSIZE
+			&& player_map_y+MAP_CEllSIZE/2==lift[i].y) {
 			lift[i].flg = true;
 			return true;
 		}
 	}
+	
 	return false;
 }
