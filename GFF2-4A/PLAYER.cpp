@@ -83,7 +83,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	now_image = images[image_type][animation_type[image_type]];
 
 	if (element->HitLift()) {
-		player_x += element->GetLiftVector();
+		player_x += element->GetLiftVector()*2;
 	}
 }
 

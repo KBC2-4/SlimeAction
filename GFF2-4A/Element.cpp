@@ -231,13 +231,18 @@ void ELEMENT::Door() {
 void ELEMENT::Lift() {
 	for (int i = 0; i < lift.size(); i++) {
 		 if (lift[i].flg) {
-			 static float lift_distance = lift_goal[i].x - lift[i].x;
 			if (lift[i].x != lift_goal[i].x) {
-				lift[i].x += lift_vector;
+				lift[i].x += lift_vector*2;
 				
 			}
 			else if (lift[i].type == 2) {
-				lift_goal[i].x = lift_goal[i].x - lift_distance*lift_vector;
+				for (int lift_pos = lift[i].x-MAP_CEllSIZE*lift_vector; i >= 0; lift_pos-=lift_vector*MAP_CEllSIZE) {
+					if (map_data[int(lift[i].y)/MAP_CEllSIZE][lift_pos/MAP_CEllSIZE] == 95) {
+						lift_goal[i].x = lift_pos;
+						break;
+					}
+				}
+				map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 95;
 				lift_vector *= -1;
 			}
 			
