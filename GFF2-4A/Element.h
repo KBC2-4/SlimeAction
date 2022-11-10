@@ -23,7 +23,7 @@ private:
 	std::vector<ELEMENT_DATA> door;			//ドア
 	std::vector<ELEMENT_DATA> lift;			//動く床
 	std::vector<ELEMENT_DATA>lift_goal;		//動く床のゴール地点
-	std::vector<ELEMENT_DATA> tunnel;		//トンネル
+	std::vector<ELEMENT_DATA> manhole;		//マンホール
 	std::vector<ELEMENT_DATA> acid;			//酸
 	float player_map_x, player_map_y;
 	int lift_vector;
@@ -37,11 +37,12 @@ public:
 	void Door();
 	void Lift();
 	bool HitLift();
+	void Manhole(PLAYER* player);
 	std::vector<ELEMENT_DATA> GetHook() { return hook; }
 	std::vector<ELEMENT_DATA>GetButton() { return button; }
 	std::vector<ELEMENT_DATA>GetDoor() { return door; }
 	std::vector<ELEMENT_DATA>GetLift() { return lift; }
-	std::vector<ELEMENT_DATA>GetTunnel() { return tunnel; }
+	std::vector<ELEMENT_DATA>GetManhole() { return manhole; }
 	float GetLiftVector() { return lift_vector; }
 };
 
