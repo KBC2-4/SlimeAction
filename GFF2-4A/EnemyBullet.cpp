@@ -108,9 +108,12 @@ void ENEMYBULLET::Hit()
 	py2 = py1 + 40;
 
 	bx1 = bullet_x + scroll_x;
-	bx2 = bx1 + 40;
+	bx2 = bx1 + 20;
 	by1 = bullet_y;
-	by2 = by1 + 40;
+	by2 = by1 + 20;
+
+	DrawBox(px1, py1, px2, py2, 0x000000, TRUE);
+	DrawBox(bx1, by1, bx2, by2, 0xffffff, TRUE);
 
 	if (((px2 >= bx1 && px1 <= bx1) || (px1 <= bx2 && px2 >= bx2)) && ((py1 <= by2 && py2 >= by2) || (by1 <= py2 && by1 >= py1)))
 	{
@@ -119,7 +122,7 @@ void ENEMYBULLET::Hit()
 			hit_flg = true;
 		}
 	}
-	if (stage->HitMapDat(map_y + 1, map_x))
+	if (stage->HitMapDat(map_y, map_x))
 	{
 		hit_flg = true;
 	}

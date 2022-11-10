@@ -22,6 +22,7 @@ GRAPEFRUIT::GRAPEFRUIT()
 	x = 0;
 	spawn_map_x = 0;
 	spawn_map_y = 0;
+	target_x = 200;
 	animation_timer = 0;
 	animation_type = 0;
 	check_hit_count = 0;
@@ -45,6 +46,7 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	if (LoadDivGraph("Resource/Images/Enemy/gurepon.png", 1, 1, 1, 80, 80, image) == -1)
 		throw "Resource/Images/Enemy/gurepon.png";
 	shootcount = 0;
+	target_x = 200;
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -68,9 +70,11 @@ void GRAPEFRUIT::Update()
 	{
 		ChangeAngle();
 		if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280)) {
-			if (++shootcount % 180 == 0) {
-				if (flag == false) {
-					bullet[0] = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX());
+			if (++shootcount % 180 == 0) {			
+
+				if (flag == false) 
+				{
+				    bullet[0] = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX());
 					bullet[1] = new ENEMYBULLET(player, stage, x, y, 200.0, stage->GetScrollX());
 					bullet[2] = new ENEMYBULLET(player, stage, x, y, -200.0, stage->GetScrollX());
 					flag = true;
@@ -87,6 +91,7 @@ void GRAPEFRUIT::Update()
 						{
 							delete bullet[i];
 							bullet[i] = nullptr;
+							flag = false;
 						}
 					}
 				}
@@ -109,7 +114,7 @@ void GRAPEFRUIT::Move()
 	{
 		spawn_map_y++;
 	}
-	if (stage->GetMapDat(spawn_map_y + 1, spawn_map_x) != 0 && stage->GetMapDat(spawn_map_y + 1, map_x) != 93)
+	if (stage->GetMapDat(spawn_map_y + 1, spawn_map_x) != 0 && stage->GetMapDat(spawn_map_y + 1, map_x) != 92)
 	{
 		delete_flg = true;
 	}
@@ -126,11 +131,13 @@ void GRAPEFRUIT::Hit()
 	for (int i = 0; i < player->GetThrowCnt(); i++)
 	{
 		throw_slime = player->GetThrowSlime(i);	
+
 		//スライムのボールの当たり判定
 		bx1 = throw_slime.GetThrowX();
 		by1 = throw_slime.GetThrowY();
 		bx2 = throw_slime.GetThrowX() + BALL_W;
 		by2 = throw_slime.GetThrowY() - BALL_H;
+
 		//グレープフルーツの当たり判定
 		gx1 = x;
 		gy1 = y;

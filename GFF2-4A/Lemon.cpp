@@ -69,14 +69,15 @@ void LEMON::Update()
 		}
 		if (flag)
 		{
-			bullet->Update();
-		}
-		if (shootcount % 360 == 0) {
-			if (flag)
+			if (bullet != nullptr)
 			{
-				delete bullet;
-				bullet = nullptr;
-				flag = false;
+				bullet->Update();
+				if (bullet->GetHitFlg())
+				{
+					delete bullet;
+					bullet = nullptr;
+					flag = false;
+				}
 			}
 		}
 	}
