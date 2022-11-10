@@ -135,6 +135,7 @@ void ELEMENT::Draw() const {
 
 	for (int i = 0; i < lift.size(); i++) {
 		DrawGraph(lift[i].x + scroll_x, lift[i].y - 25 + scroll_y, block_image1[94], TRUE);
+		
 	}
 
 	for (int i = 0; i < door.size(); i++) {
@@ -147,7 +148,7 @@ void ELEMENT::Draw() const {
 
 void ELEMENT::Update(PLAYER* player) {
 	player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
-	player_map_y = floorf(player->GetPlayerY());
+	player_map_y = floorf(player->GetPlayerY() );
 	Button();
 	Door();
 	Lift();
@@ -171,7 +172,7 @@ void ELEMENT::Button() {
 			}
 		}
 			if (button[i].type == 2) {
-				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 + 50) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
+				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 ) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
 					printfDx("2”Ô‚É“ü‚Á‚Ä‚é‚æI");
 					button[i].flg = true;		//ƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚½
 					door[i - 1].flg = true;
