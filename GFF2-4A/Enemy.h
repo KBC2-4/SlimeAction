@@ -2,11 +2,14 @@
 #include"PLAYER.h"
 #include"STAGE.h"
 
+
+#define BALL_W 10
+#define BALL_H 10
+
 enum class ENEMY_STATE
 {
 	IDOL = 0,	//アイドル状態
 	MOVE,		//プレイヤーを標準を合わせ続けているとき
-	STANDBY,	//発射準備
 	RETURN,		//発射可能状態に戻る
 	PRESS,		//発射状態
 	FALL,		//落下状態
