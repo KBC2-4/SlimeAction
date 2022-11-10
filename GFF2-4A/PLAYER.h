@@ -1,6 +1,9 @@
 #pragma once
 #include"PadInput.h"
 #include "Element.h"
+#include <vector>
+#include "ThrowSlime.h"
+#include "STAGE.h"
 
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
 #define SPEED					3.0f	//プレイヤーのスピード
@@ -8,7 +11,7 @@
 //#define ANIMATION_SWITCH_FRAME	1		//画像を切り替えるタイミング(フレーム)
 //#define IMAGE_MAX_NUM			10		//画像の枚数
 #define JUMP_VELOCITY			-5.8f	//ジャンプスピード
-#define HOOK_MAX_DISTANCE		320
+#define HOOK_MAX_DISTANCE		280
 #define ANIMATION_TYPE			3
 
 #define PI 3.1415926535897932384626433832795
@@ -73,9 +76,18 @@ private:
 	//Throw
 	int throw_ball_image;
 	bool is_throw_anim;
-	double throw_x[100];// = 100;
-	double throw_y[100];// = 560;
+	//double throw_x[100];// = 100;
+	//double throw_y[100];// = 560;
 	float throw_rad;
+
+	/*bool pressBtn = false;*/
+	std::vector<ThrowSlime> throw_slime;
+	std::vector<float>throw_x = {0};
+	std::vector<float>throw_y = {0};
+	int throw_index = 0;
+
+	float ve, vx0, vy0, vx, vy;
+	float g, dt, t,x0, y0;
 
 	//画像を切り替えるタイミング(フレーム)
 	const int animation_switch_frame[ANIMATION_TYPE] = {
@@ -110,18 +122,24 @@ public:
 	void Move();
 	void Draw() const;
 	void HookMove(ELEMENT* element);
-	void JumpMove();
+	void JumpMove(ELEMENT* element);
 	void Throw();
 	void MoveAnimation();
-	void Update(ELEMENT*element);
+	void Update(ELEMENT*element, STAGE* stage);
 	void HitBlock();
 	void Scroll(float move_x);
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
 	bool IsDeath() { return is_death; }
-	static float GetPlayerX() { return player_x; };
-	static float GetPlayerY() { return player_y; };
+	static float GetPlayerX() { return player_x; }
+	static float GetPlayerY() { return player_y; }
+
+	void SetPlayerX(float x) { player_x = x; }
+	void SetPlayerY(float y) { player_y = y; }
+
+	int GetThrowCnt() { return throw_slime.size(); }
+	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
 	void SetLife(int);
 };

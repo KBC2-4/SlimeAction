@@ -8,11 +8,12 @@
 class STAGE
 {
 private:
-	int block_image1[100];		//ステージブロック画像
+	
 	int stage_image[5];			//ステージ背景画像
 	float map_x, map_y;			//マップ描画座標
 
 protected:
+	int block_image1[100];		//ステージブロック画像
 	static int map_data[MAP_HEIGHT][MAP_WIDTH];
 	static float scroll_x, scroll_y;	//マップスクロール量
 public:
@@ -28,11 +29,17 @@ public:
 	void PuddleProcess();
 	//フックの処理
 	void HookProcess();
-	////マップデータ取得関数
+	//////マップ配列の値を取得
 	static int GetMapDat(int y, int x) { return map_data[y][x]; }
-	static bool HitMapDat(int y, int x);
+	//マップの当たり判定 
+	static bool HitMapDat(int y, int x); 
+	//スライムのかけらの当たり判定
+	bool HitThrowSlime(int y, int x);
+	//画面スクロール座標Xをセット
 	static bool SetScrollPos(int move_x);
-	static float GetScrollX() { return scroll_x; };
-	void LoadMapData(void);
+	//画面スクロール座標Xの取得
+	static float GetScrollX() { return scroll_x; };	
+	//マップデータの読み込み
+	void LoadMapData(void);	
 };
 

@@ -55,7 +55,7 @@ GAMEMAIN::~GAMEMAIN()
 
 AbstractScene* GAMEMAIN::Update()
 {
-	player->Update(element);
+	player->Update(element,stage);
 	if (player->IsDeath()) {
 		return new GAMEMAIN();
 	}
@@ -76,6 +76,7 @@ void GAMEMAIN::Draw() const
 
 	element->Draw();
 	stage->Draw();
+	
 	//ƒvƒŒƒCƒ„[‚Ì•`‰æ
 	player->Draw();
 	//‚Æ‚Üƒgƒ“‚Ì•`‰æ

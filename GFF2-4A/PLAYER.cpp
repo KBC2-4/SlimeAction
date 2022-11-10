@@ -1,6 +1,5 @@
 #include "PLAYER.h"
 #include"DxLib.h"
-#include "STAGE.h"
 #include "Element.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -28,6 +27,8 @@ PLAYER::PLAYER() {
 		x = CLENGTH / b;
 		// 初期速度は０
 		speed = 0;
+
+		ve = 90.0;
 	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
 		throw "Resource/Images/Player/IdorSlime.png";
 	}
@@ -40,6 +41,7 @@ PLAYER::PLAYER() {
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
 		throw "Resource/Images/Player/SlimeBullet.png";
 	}
+
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	animation_frame = 0;
 	animation_mode = 0;
@@ -52,13 +54,18 @@ PLAYER::PLAYER() {
 /// <summary>
 /// プレイヤーの更新
 /// </summary>
-void PLAYER::Update(ELEMENT* element) {
+void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	clsDx();
 	Move();
-	JumpMove();
+	JumpMove(element);
 	HookMove(element);
 	Throw();
 	HitBlock();
+
+	int throw_cnt = throw_slime.size();
+	for (int i = 0; i < throw_cnt; i++) {
+		throw_slime[i].Update(stage);
+	}
 
 	if (STAGE::GetMapDat(map_y, map_x) == -1) {
 		is_death = true;
@@ -74,6 +81,10 @@ void PLAYER::Update(ELEMENT* element) {
 		image_type = static_cast<int>(animation_state);
 	}
 	now_image = images[image_type][animation_type[image_type]];
+
+	if (element->HitLift()) {
+		player_x += element->GetLiftVector();
+	}
 }
 
 /// <summary>
@@ -83,6 +94,7 @@ void PLAYER::Draw()const {
 	//プレイヤーの表示
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, now_image, TRUE, move_type);
+		
 	}
 	else {
 		if (player_state == PLAYER_MOVE_STATE::HOOK) 
@@ -93,19 +105,30 @@ void PLAYER::Draw()const {
 				now_image, TRUE, move_type);
 		}
 	}
+	
+	int throw_cnt = throw_slime.size();
+	for (int i = 0; i < throw_cnt; i++) {
+		throw_slime[i].Draw();
+	}
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < throw_x.size(); i += 5) {
 			//DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 		}
 	}
-	else {
-		//DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
-		DrawGraph(throw_x[0], throw_y[0], throw_ball_image, TRUE);
+	//else {
+	//	//DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
+	//	DrawGraph(throw_x[0], throw_y[0], throw_ball_image, TRUE);
+	//}
+
+
+	/*for (int i = 0; i < 10; i++) {
+		printfDx("throw_x[%d]: %f\n", i,throw_x[i]);
 	}
 	for (int i = 0; i < 10; i++) {
-		//printfDx("throw_x[%d]: %f\n", i,throw_x[i]);
-	}
+		printfDxThrowSlime("throw_y[%d]: %f\n", i, throw_y[i]);
+	}*/
+	//printfDx("throw_rad: %f\n", throw_rad);
 	//printfDx("hook: %f %f\n", hook_x, hook_y);
 	//printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
 
@@ -205,7 +228,7 @@ void PLAYER::Scroll(float move_x) {
 		//スクロールが端まで行ってない時
 		if (!(isScroll = STAGE::SetScrollPos(move_x))) {
 			//プレイヤーの位置を中心に戻す
-			rebound_x = SPEED * 2;
+			rebound_x = SPEED * 1.3f;
 			player_x -= move_x * rebound_x;
 		}
 	}
@@ -239,7 +262,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 		float min_distance = HOOK_MAX_DISTANCE;
 		
 		//フックの位置
-		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHookPos();
+		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
 		for (int i = 0; i < hook_pos.size(); i++) {
 			ELEMENT::ELEMENT_DATA pos = hook_pos[i];
 			//距離計算
@@ -265,7 +288,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 				int hook_map_x = x / MAP_CEllSIZE;
 				int hook_map_y = y / MAP_CEllSIZE;
 				//障害物がある場合は移動させない
-				if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 75) {
+				if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
 					continue;
 				}
 				//最短距離の更新
@@ -368,7 +391,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 /// <summary>
 /// プレイヤーのジャンプ処理
 /// </summary>
-void PLAYER::JumpMove() {
+void PLAYER::JumpMove(ELEMENT* element) {
 	if (CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
 	static bool is_jump = false;		//ジャンプ中か
 	static float jump_y = 0;			//ジャンプの高さ
@@ -391,6 +414,8 @@ void PLAYER::JumpMove() {
 				jump_mode = 2;
 			}
 			player_state = PLAYER_MOVE_STATE::JUMP;
+
+
 		}
 	}
 	//ジャンプ中
@@ -421,109 +446,128 @@ void PLAYER::JumpMove() {
 		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
 			STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_ground = true;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) is_ground = true;
-		//地面じゃない時は落下
-		if (!is_ground) {
-			velocity += 0.2f;
-			player_y += velocity;
-			player_state = PLAYER_MOVE_STATE::FALL;
-		}
+		if (element->HitLift()) is_ground = true;
+		
+			//地面じゃない時は落下
+			if (!is_ground) {
+				velocity += 0.2f;
+				player_y += velocity;
+				player_state = PLAYER_MOVE_STATE::FALL;
+			}
 		//地面についた時
-		else {
-			if ((player_state == PLAYER_MOVE_STATE::FALL || player_state == PLAYER_MOVE_STATE::JUMP) && !is_hook_move) {
-				float new_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
-				if (fabsf(player_y - new_y) <= 10) {
-					player_y = new_y;
-					velocity = 0;
-					player_state = PLAYER_MOVE_STATE::IDLE;
-				}
-				else {
-					bool is_wall = false;
-					if (move_x < 0 &&
-						STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
-						STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_wall = true;
-					if (move_x > 0 &&
-						STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
-						STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_wall = true;
-
-					if (!is_wall) {
+			else {
+				if ((player_state == PLAYER_MOVE_STATE::FALL || player_state == PLAYER_MOVE_STATE::JUMP) && !is_hook_move) {
+					float new_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+					if (fabsf(player_y - new_y) <= 10) {
 						player_y = new_y;
+						velocity = 0;
+						player_state = PLAYER_MOVE_STATE::IDLE;
 					}
+					else {
+						bool is_wall = false;
+						if (move_x < 0 &&
+							STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
+							STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_wall = true;
+						if (move_x > 0 &&
+							STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
+							STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_wall = true;
 
-					if (move_type == 0)
-						player_x -= SPEED;
-					else
-						player_x += SPEED;
+						if (!is_wall) {
+							player_y = new_y;
+						}
+
+						if (move_type == 0)
+							player_x -= SPEED;
+						else
+							player_x += SPEED;
+					}
+				}
+				if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
+					velocity = 0;
 				}
 			}
-			if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
-				velocity = 0;
-			}
-		}
 	}
 
 }
 
 void PLAYER::Throw() {
-	static bool push = false;
-	static int i = 0;
+	static bool is_throw = true;
 	//軌道の計算
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
-		push = true;
-		i = 0;
+		is_throw = false;
+		is_throw_anim = true;
 		//アニメーションのリセット
 		animation_type[2] = 0;
+		
+		throw_index = 0;
+		throw_x.clear();
+		throw_y.clear();
+		int input_ry = PAD_INPUT::GetPadThumbRY();
+		int input_rx = PAD_INPUT::GetPadThumbRX();
+		if ((abs(input_rx) <= DEVIATION && abs(input_ry) <= DEVIATION) || input_ry < DEVIATION) {
+			is_throw = true;
+			is_throw_anim = false;
+			return;
+		}
 		//角度取得
-		throw_rad = atan2(PAD_INPUT::GetPadThumbRY(), PAD_INPUT::GetPadThumbRX());
+		throw_rad = atan2(input_ry, input_rx);
 		float angle = throw_rad * 180.0f / M_PI;
-		if (angle > 120) throw_rad = 120.0f * M_PI / 180.0f;
-		else if (angle < 60) throw_rad = 60.0f * M_PI / 180.0f;
-		if ((move_type == 0 && angle > 90) || (move_type == 1 && angle < 90)) throw_rad = 90.0f * M_PI / 180.0f;
-		//初期位置
-		throw_x[0] = player_x;
-		throw_y[0] = player_y;
-		float V0 = 25; //初速度
-		for (int j = 0; j < 100; j++) {
-			//加速度の計算
-			float t = j * 0.1f;
-			float tmpX = V0 * cosf(throw_rad) * t;
-			float tmpY = V0 * sinf(throw_rad) * t - 0.5f * 9.8f * powf(t, 2);
-			if (j > 0) {
-				throw_x[j] = throw_x[j - 1];
-				throw_y[j] = throw_y[j - 1];
+		//角度の制限
+		if (move_type == 0) {
+			if (angle > 90) throw_rad = 90 * M_PI / 180.0f;
+			else if (angle < 60) throw_rad = 60 * M_PI / 180.0f;
+		}
+		else {
+			if (angle > 120) throw_rad = 120 * M_PI / 180.0f;
+			else if (angle < 90) throw_rad = 90 * M_PI / 180.0f;
+		}
+
+		vx0 = ve * (float)cos(throw_rad);
+		vy0 = ve * (float)sin(throw_rad);
+
+		g = 9.8;
+		dt = 0.15f;
+
+		x0 = player_x;
+		y0 = player_y;
+
+		vx = vx0; vy = vy0;
+
+		for (t = 0.0; y0 <= 720; t = t + dt) {
+			x0 = x0 + vx * dt;
+			y0 = y0 - vy * dt;
+			vy = vy - g * dt;
+			if (vy < 0) {
+				g += 0.2f;
 			}
-			if (j % 5 == 0) {
-				V0--;
-			}
-			throw_x[j] += tmpX;
-			throw_y[j] -= tmpY;
+			throw_x.push_back(x0);
+			throw_y.push_back(y0);
 		}
 	}
 	else {
-		//投げる処理
-		if (push) {
-			int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
-			if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
-				is_throw_anim = false;
+		if (life > 1 || is_throw) {
+			if (!is_throw) {
+				throw_slime.push_back(ThrowSlime(throw_x, throw_y));
+				life--;
+				is_throw = true;
 			}
-			else {
-				is_throw_anim = true;
-				animation_state = PLAYER_ANIM_STATE::THROW;
-				MoveAnimation();
-			}
-			throw_x[0] = throw_x[i];
-			throw_y[0] = throw_y[i];
-			if (++i >= 100) {
-				push = false;
+			//投げる処理
+			if (is_throw_anim) {
+				int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
+				if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
+					is_throw_anim = false;
+				}
+				else {
+					animation_state = PLAYER_ANIM_STATE::THROW;
+					MoveAnimation();
+				}
 			}
 		}
+		else {
+			is_throw = true;
+			is_throw_anim = false;
+		}
 	}
-	/*if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
-		int V = 30 - 0.1 * (i * 0.1);
-		x += 30 * cos(rad) * (i * 0.1);
-		y -= -9.8 * pow(i * 0.1, 2) / 2 + V * sin(rad) * (i * 0.1);
-		DrawCircle(x, y, 10, 0xFFFFFF, TRUE);
-		i++;
-	}*/
 }
 
 /// <summary>
