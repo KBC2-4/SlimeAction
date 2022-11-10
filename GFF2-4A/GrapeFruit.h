@@ -13,6 +13,12 @@ public:
 	/// </summary>
 	/// <param name="player">プレイヤーのアドレス</param>
 	GRAPEFRUIT(PLAYER* player);
+
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update()override;
 	/// <summary>
 	/// 移動
 	/// </summary>
@@ -20,7 +26,7 @@ public:
 	/// <summary>
 	/// 果汁を発射
 	/// </summary>
-	void ShotFruitJuice()override;
+	void ShotFruitJuice();
 	/// <summary>
 	/// 当たり判定
 	/// </summary>

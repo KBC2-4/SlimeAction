@@ -14,11 +14,14 @@ private:
 	int background_image[5];
 	float time;		//経過時間
 
+	//とまとんの数用の変数
+	int tomaton_count = 0;
+
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
 	LEMON* lemonner;	//レモナー
 	GRAPEFRUIT* gurepon;	//グレぽん
-	TOMATO* tomaton;	//とまとん
+	TOMATO** tomaton;	//とまトン
 	ELEMENT* element;	//ステージ内要素
 public:
 	/// <summary>

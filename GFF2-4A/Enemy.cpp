@@ -1,4 +1,5 @@
 #include "DxLib.h"
+#define _USE_MATH_DEFINES
 #include<math.h>
 #include "Enemy.h"
 
@@ -6,21 +7,20 @@
 
 ENEMY::ENEMY()
 {
-	this->player = nullptr;
+	player = nullptr;
+	stage = nullptr;
+	rad = 0.0;
 	x = 0;
 	y = 0;
 	map_x = 0;
 	map_y = 0;
-	w = 0;
-	h = 0;
-	angle = 0;
-	image = 0;
+	image = nullptr;
+	now_image = 0;
 	state = ENEMY_STATE::IDOL;
 }
 
 void ENEMY::ChangeAngle()
 {
-	float rad = atan2f(player->GetPlayerX() - x, player->GetPlayerY() - y);
-
-	//angle = 
+	//自分を原点にプレイヤーとの角度を計算
+	rad = atan2f(player->GetPlayerY() - y, player->GetPlayerX() - x);
 }
