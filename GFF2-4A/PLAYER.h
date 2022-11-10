@@ -3,6 +3,7 @@
 #include "Element.h"
 #include <vector>
 #include "ThrowSlime.h"
+#include "STAGE.h"
 
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
 #define SPEED					3.0f	//プレイヤーのスピード
@@ -124,7 +125,7 @@ public:
 	void JumpMove(ELEMENT* element);
 	void Throw();
 	void MoveAnimation();
-	void Update(ELEMENT*element);
+	void Update(ELEMENT*element, STAGE* stage);
 	void HitBlock();
 	void Scroll(float move_x);
 

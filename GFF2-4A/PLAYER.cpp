@@ -1,6 +1,5 @@
 #include "PLAYER.h"
 #include"DxLib.h"
-#include "STAGE.h"
 #include "Element.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -55,7 +54,7 @@ PLAYER::PLAYER() {
 /// <summary>
 /// プレイヤーの更新
 /// </summary>
-void PLAYER::Update(ELEMENT* element) {
+void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	clsDx();
 	Move();
 	JumpMove(element);
@@ -65,7 +64,7 @@ void PLAYER::Update(ELEMENT* element) {
 
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
-		throw_slime[i].Update();
+		throw_slime[i].Update(stage);
 	}
 
 	if (STAGE::GetMapDat(map_y, map_x) == -1) {
@@ -126,9 +125,9 @@ void PLAYER::Draw()const {
 		printfDx("throw_x[%d]: %f\n", i,throw_x[i]);
 	}
 	for (int i = 0; i < 10; i++) {
-		printfDx("throw_y[%d]: %f\n", i, throw_y[i]);
+		printfDxThrowSlime("throw_y[%d]: %f\n", i, throw_y[i]);
 	}*/
-	printfDx("throw_rad: %f\n", throw_rad);
+	//printfDx("throw_rad: %f\n", throw_rad);
 	//printfDx("hook: %f %f\n", hook_x, hook_y);
 	//printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
 
