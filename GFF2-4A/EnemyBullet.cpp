@@ -65,12 +65,12 @@ void ENEMYBULLET::Update()
 	{
 		if (player->GetLife() > 0)
 		{
-			player->SetLife(player->GetLife() - 1);
+			//player->SetLife(player->GetLife() - 1);
 			old_hit_flg = true;
 		}
 		else
 		{
-			player->SetLife(0);
+			//player->SetLife(0);
 		}
 	}
 

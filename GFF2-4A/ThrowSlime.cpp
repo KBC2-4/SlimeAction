@@ -1,6 +1,7 @@
 #include "ThrowSlime.h"
 #include "PadInput.h"
 #include"PLAYER.h"
+#include<math.h>
 
 ThrowSlime::ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y) {
 	if ((image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
@@ -52,13 +53,13 @@ void ThrowSlime::Draw() const {
 int ThrowSlime::HitBlock(STAGE* stage) {
 	//if (throw_y[0] >= throw_y[throw_index + 1])throw_fall = true;
 
-	if (throw_fall == true &&  stage->HitThrowSlime((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE))) {
+	if (throw_fall == true &&  stage->HitThrowSlime(static_cast<int>(floor((throw_y[0]) / MAP_CEllSIZE)), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE))) {
 
 	/*if (throw_fall == true && stage->HitThrowSlime((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) - MAP_CEllSIZE*2) / MAP_CEllSIZE) == false) {
  master*/
-		throw_bottom = (static_cast<int>(throw_y[0]) - MAP_CEllSIZE) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
+		throw_bottom = (static_cast<int>(throw_y[0])/* - MAP_CEllSIZE*/) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
 		throw_y[0] -= throw_bottom + 5;
-		printfDx("block: %d\n", stage->GetMapDat((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE)));
+		//printfDx("block: %d\n", stage->GetMapDat((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE)));
 		return true;
 	}
 	return false;
