@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include<math.h>
 #include "EnemyBullet.h"
 
 ENEMYBULLET::ENEMYBULLET() 
@@ -6,39 +8,22 @@ ENEMYBULLET::ENEMYBULLET()
 	stage = nullptr;
 	player_x = 0.0;
 	player_y = 0.0;
-	bullet_x = 0.0;
-	bullet_y = 0.0;
-	hypote = 0.0;
-	my_x = 0.0;
-	my_y = 0.0;
-	dis_x = 0.0;
-	dis_y = 0.0;
-	bullet_sx = 0.0;
-	bullet_sy = 0.0;
-	hit_flg = false;
-	old_hit_flg = false;
-	rad_x = 0.0;
+	x = 0;
+	y = 0;
+	rad = 0.0;
 	map_x = 0;
 	map_y = 0;
 }
 
-ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player ,STAGE* aug_stage,int x,int y ,double dis ,float scroll) 
+ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player ,STAGE* aug_stage,int x,int y ,double rad,float scroll)
 {
 	player = argu_player;
 	player_x = player->GetPlayerX();
 	player_y = player->GetPlayerY();
-	bullet_x = x;
-	bullet_y = y;
-	hypote = 0.0;
-	my_x = x;
-	my_y = y;
-	dis_x = 0.0;
-	dis_y = 0.0;
-	bullet_sx = 0.0;
-	bullet_sy = 0.0;
+	this->x = x;
+	this->y = y;
+	this->rad = rad;
 	hit_flg = false;
-	old_hit_flg = false;
-	rad_x = dis;
 	scroll_x = scroll;
 	map_x = 0;
 	map_y = 0;
@@ -46,28 +31,18 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player ,STAGE* aug_stage,int x,int y ,doub
 
 void ENEMYBULLET::Draw() const 
 {
-	DrawBox(bullet_x + scroll_x, bullet_y, bullet_x + scroll_x + 40, bullet_y + 40, 0xff00ff, TRUE);
+	DrawBox(x + scroll_x, y, x + scroll_x + 40, y + 40, 0xff00ff, TRUE);
 }
 
 void ENEMYBULLET::Update() 
 {
-   	dis_x = (player_x - rad_x) - (my_x + scroll_x);
-	dis_y = player_y - my_y;
-	
-	hypote = sqrt((dis_x*dis_x) + (dis_y*dis_y));
-
-	bullet_sx = dis_x / hypote * 20;
-	bullet_sy = dis_y / hypote * 20;
-
 	Move();
 	Hit();
-	if (hit_flg != old_hit_flg)
+	if (hit_flg)
 	{
 		if (player->GetLife() > 0)
 		{
 			//player->SetLife(player->GetLife() - 1);
-			old_hit_flg = true;
-
 		}
 		else
 		{
@@ -80,15 +55,8 @@ void ENEMYBULLET::Update()
 void ENEMYBULLET::Move() 
 {
 	//弾の移動
-	bullet_x += bullet_sx;
-	bullet_y += bullet_sy;
-
-	//弾が画面外に行ったら消えるフラグを真に
-	mapd_x = (bullet_x - scroll_x) / 80;
-	mapd_y = bullet_y / 80;
-	
-	map_x = (int)floor(mapd_x);
- 	map_y = (int)floor(mapd_y);
+	x += BULLET_SPEED * cos(rad);
+	y += BULLET_SPEED * sin(rad);
 
 }
 
@@ -99,29 +67,24 @@ void ENEMYBULLET::Animation()
 
 void ENEMYBULLET::Hit()
 {
-	float px1, py1, px2, py2;
-	float bx1, by1, bx2, by2;
+	double px1, py1, px2, py2;
+	double bx1, by1, bx2, by2;
 
 	px1 = player_x;
-	px2 = px1 + 80;
+	px2 = px1 + 80.0;
 	py1 = player_y;
-	py2 = py1 + 40;
+	py2 = py1 + 40.0;
 
-	bx1 = bullet_x + scroll_x;
-	bx2 = bx1 + 20;
-	by1 = bullet_y;
-	by2 = by1 + 20;
-
-	DrawBox(px1, py1, px2, py2, 0x000000, TRUE);
-	DrawBox(bx1, by1, bx2, by2, 0xffffff, TRUE);
+	bx1 = x + scroll_x;
+	bx2 = bx1 + 20.0;
+	by1 = y;
+	by2 = by1 + 20.0;
 
 	if (((px2 >= bx1 && px1 <= bx1) || (px1 <= bx2 && px2 >= bx2)) && ((py1 <= by2 && py2 >= by2) || (by1 <= py2 && by1 >= py1)))
 	{
-		if (!old_hit_flg)
-		{
-			hit_flg = true;
-		}
+		hit_flg = true;
 	}
+
 	if (stage->HitMapDat(map_y, map_x))
 	{
 		hit_flg = true;

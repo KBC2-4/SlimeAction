@@ -74,9 +74,9 @@ void GRAPEFRUIT::Update()
 
 				if (flag == false) 
 				{
-				    bullet[0] = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX());
+				   /* bullet[0] = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX());
 					bullet[1] = new ENEMYBULLET(player, stage, x, y, 200.0, stage->GetScrollX());
-					bullet[2] = new ENEMYBULLET(player, stage, x, y, -200.0, stage->GetScrollX());
+					bullet[2] = new ENEMYBULLET(player, stage, x, y, -200.0, stage->GetScrollX());*/
 					flag = true;
 				}
 			}
@@ -159,7 +159,7 @@ void GRAPEFRUIT::Animation()
 
 void GRAPEFRUIT::Draw() const
 {
-	DrawRotaGraph2(x + stage->GetScrollX(), y, 40, 0, 1, rad + ( -90 * (PI/180)), image[0], TRUE);
+	DrawRotaGraph2(x + stage->GetScrollX(), y, 40, 0, 1, rad, image[0], TRUE);
 	
 	if (flag)
 	{
