@@ -50,7 +50,7 @@ ELEMENT::ELEMENT() {
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.type = 1;
-				tunnel.push_back(data);
+				manhole.push_back(data);
 				break;
 
 				//マンホール(中間)
@@ -58,7 +58,7 @@ ELEMENT::ELEMENT() {
 				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.type = 2;
-				tunnel.push_back(data);
+				manhole.push_back(data);
 				break;
 
 				//マンホール(出口)
@@ -66,7 +66,7 @@ ELEMENT::ELEMENT() {
 			//	data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 			//	data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 			//	data.type = 3;
-			//	tunnel.push_back(data);
+			//	manhole.push_back(data);
 			//	break;
 
 				//酸
@@ -126,23 +126,35 @@ void ELEMENT::Draw() const {
 	//DrawFormatString(200, 300, 0xFFFFFF, "flg:%d", door[0].flg);
 	//DrawFormatString(200, 350, 0xFFFFFF, ":%d", static_cast<int>((door[0].x / MAP_CEllSIZE)));
 	//DrawBox(button[1].x + scroll_x, button[1].y + scroll_y, button[1].x + scroll_x + MAP_CEllSIZE, button[1].y + scroll_y + MAP_CEllSIZE,0xff0000,TRUE);
+
+	//ボタン
 	for (int i = 0; i < button.size(); i++) {
 		if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		if (button[i].type == 2 && button[i].flg == true) { 
-			//エフェクト
 			DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30 + button[i].animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		}
 	}
 
+	//動く床
 	for (int i = 0; i < lift.size(); i++) {
 		DrawGraph(lift[i].x + scroll_x, lift[i].y - 25 + scroll_y, block_image1[94], TRUE);
 		
 	}
 
+	//ドア
 	for (int i = 0; i < door.size(); i++) {
 		//if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		if (door[i].flg == true) {
+			//エフェクト
 			DrawOvalAA(door[i].x + scroll_x, door[i].y + scroll_y + 30 + door[i].animtimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+		}
+	}
+
+	//マンホール
+	for (int i = 0; i < manhole.size(); i++) {
+		if (manhole[i].flg == true) {
+			//DrawOvalAA(manhole[i].x + scroll_x, manhole[i].y + scroll_y + 30 + manhole[i].animtimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+			//DrawGraph(manhole[i].x + scroll_x + manhole[i].animtimer, manhole[i].y + scroll_y, block_image1[67], TRUE);
 		}
 	}
 }
@@ -153,6 +165,7 @@ void ELEMENT::Update(PLAYER* player) {
 	Button(player);
 	Door();
 	Lift();
+	Manhole(player);
 	
 }
 
@@ -162,17 +175,17 @@ void ELEMENT::Update(PLAYER* player) {
 void ELEMENT::Button(PLAYER* player) {
 	for (int i = 0; i < button.size(); i++) {
 		if(button[i].flg == true)button[i].animtimer++;
-		if (button[i].animtimer > 180) {
+		if (button[i].animtimer > 180 && !((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && !(player_map_x <= button[i].x + MAP_CEllSIZE - 25) && !(player_map_y >= button[i].y - MAP_CEllSIZE / 2) && !(player_map_y <= button[i].y + MAP_CEllSIZE / 2))) {
 			button[i].animtimer = 0;
 			button[i].flg = false;
-		}
+		}	
 
 		if (button[i].type == 1) {
 			int max_ball_num = player->GetThrowCnt();
 			for (int ball_num = 0; ball_num < max_ball_num; ball_num++) {
-				if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
+				if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2 + 33) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2 - 30) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
-					printfDx("1番に入ってるよ！");
+					//printfDx("1番に入ってるよ！");
 					door[i + 1].flg = true;
 				}
 			}
@@ -260,4 +273,21 @@ bool ELEMENT::HitLift() {
 	}
 	
 	return false;
+}
+
+void ELEMENT::Manhole(PLAYER* player) {
+	for (int i = 0; i < manhole.size(); i++) {
+		if (manhole[i].flg == true)manhole[i].animtimer++;
+		if (manhole[i].animtimer > 180) {
+			manhole[i].animtimer = 0;
+			manhole[i].flg = false;
+		}
+		if (manhole[i].type == 1) {
+			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE + 25) && (player_map_x <= manhole[i].x + MAP_CEllSIZE - 25) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
+				player->SetPlayerY(manhole[i].y - 10.5f);
+				manhole[i].flg = true;
+
+			}
+		}
+	}
 }
