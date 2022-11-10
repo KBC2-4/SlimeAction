@@ -62,6 +62,8 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 
 void LEMON::Update()
 {
+
+	
 	switch (state)
 	{
 	case ENEMY_STATE::IDOL:
@@ -71,6 +73,12 @@ void LEMON::Update()
 		if (++shootcount % 180 == 0)
 		{
 			state = ENEMY_STATE::PRESS;
+		}
+		break;
+	case ENEMY_STATE::RETURN:
+		if (ReturnAnimation())
+		{
+			state = ENEMY_STATE::MOVE;
 		}
 		break;
 	case ENEMY_STATE::PRESS:
@@ -88,7 +96,7 @@ void LEMON::Update()
 
 	//マップ上の座標の設定
 	map_x = x / MAP_CEllSIZE;
-	map_y = (y - IMAGE_SIZE / 2) / MAP_CEllSIZE;
+	map_y = y / MAP_CEllSIZE;
 
 	//弾が存在しているときに弾の処理を行う
 	if (bullet != nullptr)
@@ -103,24 +111,29 @@ void LEMON::Update()
 			bullet = nullptr;
 		}
 	}
-	//画面外に出るとアイドル状態にする
-	if ((x + stage->GetScrollX() < 0) || (x + stage->GetScrollX() > 1280))
+	
+	Hit();
+
+	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE))		//画面外に出るとアイドル状態にする
+
 	{
 		state = ENEMY_STATE::IDOL;
 	}
-	Hit();
-
-	Animation();
+	else if (state == ENEMY_STATE::IDOL)	//画面内にいて、アイドル状態のとき敵の方向を向くようにする
+	{
+		state = ENEMY_STATE::MOVE;
+	}
+	else
+	{ }
 }
 
 void LEMON::Move()
 {
-	y += 1;
+	y += 5;
 }
 
 void LEMON::Hit()
 {
-	
 	ThrowSlime throw_slime;
 
 	float bx1, by1, bx2, by2;
@@ -142,6 +155,7 @@ void LEMON::Hit()
 		if (((bx2 >= gx1 && bx2 <= gx2) || (bx1 <= gx2 && bx1 >= gx1)) && ((by1 >= gy2 && by1 <= gy1) || (by2 >= gy1 && by2 <= gy2)))
 		{
 			rad = 90 * (PI / 180);
+			state = ENEMY_STATE::FALL;
 		}
 	}
 
@@ -156,9 +170,17 @@ void LEMON::Hit()
 	}
 }
 
-void LEMON::Animation()
+bool LEMON::ReturnAnimation()
 {
-
+	bool ret = false;
+	if (++animation_timer < 120) //120フレーム間アニメーションをする
+	{
+	}
+	else //アニメーションの終了
+	{
+		ret = true;
+	}
+	return ret;
 }
 
 void LEMON::Draw() const
