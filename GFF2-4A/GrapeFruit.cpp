@@ -87,7 +87,7 @@ void GRAPEFRUIT::Update()
 					if (bullet[i] != nullptr)
 					{
 						bullet[i]->Update();
-						if (bullet[i]->GetHitFlg())
+						if (bullet[i]->GetDeleteFlg())
 						{
 							delete bullet[i];
 							bullet[i] = nullptr;

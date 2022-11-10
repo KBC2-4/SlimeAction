@@ -146,5 +146,7 @@ public:
 	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
 	void SetLife(int a) { life = a; }
+	double GetSpeed() { return speed; }
+	float GetMoveX() { return move_x; }
 };
 

@@ -16,11 +16,14 @@ private:
     float mapd_x, mapd_y;
     bool bullet_flag;                 //’e‚ğÁ‚·‚©‚Ç‚¤‚©
     double rad_x;                     //Šp“x•ÏX—p•Ï”
+    float now_scroll_x;
+    float old_scroll_x;
     float scroll_x;
+
     int i = 0;
     double cos_x = 0.0;
     double sin_y = 0.0;
-    bool hit_flg;
+    bool delete_flg;
     bool old_hit_flg;
     PLAYER* player;
     STAGE* stage;
@@ -39,7 +42,7 @@ public:
     void Animation();
     void Draw() const;
 
-    bool GetHitFlg(){return hit_flg;}
+    bool GetDeleteFlg(){return delete_flg;}
 
 };
 

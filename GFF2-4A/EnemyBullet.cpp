@@ -15,7 +15,7 @@ ENEMYBULLET::ENEMYBULLET()
 	dis_y = 0.0;
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
-	hit_flg = false;
+	delete_flg = false;
 	old_hit_flg = false;
 	rad_x = 0.0;
 	map_x = 0;
@@ -36,7 +36,7 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player ,STAGE* aug_stage,int x,int y ,doub
 	dis_y = 0.0;
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
-	hit_flg = false;
+	delete_flg = false;
 	old_hit_flg = false;
 	rad_x = dis;
 	scroll_x = scroll;
@@ -61,13 +61,12 @@ void ENEMYBULLET::Update()
 
 	Move();
 	Hit();
-	if (hit_flg != old_hit_flg)
+	if (delete_flg != old_hit_flg)
 	{
 		if (player->GetLife() > 0)
 		{
-			//player->SetLife(player->GetLife() - 1);
+			player->SetLife(player->GetLife() - 1);
 			old_hit_flg = true;
-
 		}
 		else
 		{
@@ -80,15 +79,19 @@ void ENEMYBULLET::Update()
 void ENEMYBULLET::Move() 
 {
 	//弾の移動
-	bullet_x += bullet_sx;
+	bullet_x += bullet_sx/* - player->GetMoveX()*/;
 	bullet_y += bullet_sy;
 
 	//弾が画面外に行ったら消えるフラグを真に
-	mapd_x = (bullet_x - scroll_x) / 80;
-	mapd_y = bullet_y / 80;
-	
-	map_x = (int)floor(mapd_x);
- 	map_y = (int)floor(mapd_y);
+	//mapd_x = (bullet_x - scroll_x) / 80;
+	//mapd_y = bullet_y / 80;
+	//
+	//map_x = (int)floor(mapd_x);
+ //	map_y = (int)floor(mapd_y);
+
+	if (bullet_x + scroll_x < 0 || bullet_x + scroll_x > 1280 || bullet_y < 0 || bullet_y >720) {
+     		delete_flg = true;
+	}
 
 }
 
@@ -119,11 +122,11 @@ void ENEMYBULLET::Hit()
 	{
 		if (!old_hit_flg)
 		{
-			hit_flg = true;
+			delete_flg = true;
 		}
 	}
-	if (stage->HitMapDat(map_y, map_x))
-	{
-		hit_flg = true;
-	}
+	//if (stage->HitMapDat(map_y, map_x))
+	//{
+	//	hit_flg = true;
+	//}
 }

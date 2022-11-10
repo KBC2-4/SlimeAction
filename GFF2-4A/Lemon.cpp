@@ -104,8 +104,7 @@ void LEMON::Update()
 		bullet->Update();
 
 		//’e‚ª‰æ–ÊŠO‚Éo‚é‚©A‰½‚©‚É“–‚½‚Á‚½‚ç’e‚ðíœ
-		if ((x + stage->GetScrollX() < 0) || (x + stage->GetScrollX() > 1280) || (y > 720) ||
-			bullet->GetHitFlg())
+        		if (bullet->GetDeleteFlg())
 		{
 			delete bullet;
 			bullet = nullptr;
