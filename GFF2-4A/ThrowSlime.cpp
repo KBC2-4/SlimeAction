@@ -32,8 +32,12 @@ void ThrowSlime::Update() {
 			return;
 		}
 		if (throw_y[0] < throw_y[throw_index])throw_fall = true;
-		if(HitBlock()) throw_end = true;
+		if (HitBlock()) {
+			//Drop = true;
+			throw_end = true;
+		}
 	}
+	
 }
 
 void ThrowSlime::Draw() const {
@@ -48,20 +52,10 @@ int ThrowSlime::HitBlock() {
 	//if (throw_y[0] >= throw_y[throw_index + 1])throw_fall = true;
 	if (throw_fall == true && STAGE::HitMapDat((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE))) {
 		throw_bottom = (static_cast<int>(throw_y[0]) - MAP_CEllSIZE) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
-		throw_y[0] -= throw_bottom+3;
+		throw_y[0] -= throw_bottom + 5;
 		return true;
 	}
 	return false;
 }
 
 
-bool ThrowSlime::HitBullet(int x, int y, int radius) {
-	float r1X, r1Y, r1XY;
-	r1X = throw_x[0] - x;
-	r1Y = throw_y[0] - y;
-	r1XY = sqrt(r1X * r1X + r1Y * r1Y);
-	if (r1XY <= radius + BULLETRADIUS) {
-		return true;
-	}
-	return false;
-}

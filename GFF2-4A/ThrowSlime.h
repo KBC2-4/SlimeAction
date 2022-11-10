@@ -19,8 +19,9 @@ public:
 	void Update();
 	void Draw() const;
 
-	bool HitBullet(int x, int y, int radius);	//エネミー中心座標とその半径渡してね
 
+	bool Get_throwend() { return throw_end; }
+	bool Get_throwfall() { return throw_fall; }
 	int HitBlock();
 	float GetThrowX() { return throw_x[0]; }
 	float GetThrowY() { return throw_y[0]; }

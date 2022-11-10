@@ -18,6 +18,8 @@
 #define CLENGTH     (LENGTH * 2 * PI)   // 紐を伸ばして一周させた場合に出来る円の円周の長さ
 #define G           9.81                // 重力加速度
 
+//ThrowSlime throw_slime;
+
 //移動ステート
 enum class PLAYER_MOVE_STATE {
 	IDLE = 0,//停止しているとき
@@ -144,7 +146,7 @@ public:
 	int GetThrowCnt() { return throw_slime.size(); }
 	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
-	
+	bool GetBullet();	//ドロップした玉を拾う処理
 
 	void SetLife(int);
 };

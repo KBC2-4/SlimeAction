@@ -66,7 +66,11 @@ void PLAYER::Update(ELEMENT* element) {
 	HookMove(element);
 	Throw();
 	HitBlock();
-
+	if (GetBullet()==true) {
+		/*throw_x.erase(throw_x.begin());
+		throw_y.erase(throw_y.begin());*/
+		throw_slime.erase(throw_slime.begin());
+	}
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Update();
@@ -643,4 +647,18 @@ void PLAYER::MoveAnimation() {
 			animation_phase[type] = (animation_phase[type] + 1) % 2;
 		}
 	}
+}
+
+bool PLAYER::GetBullet() {
+	float r1X, r1Y, r1XY;
+	for (int i = 0; i < throw_slime.size(); i++) {
+		r1X = throw_slime[i].GetThrowX() + STAGE::GetScrollX() - player_x;
+		r1Y = throw_slime[i].GetThrowY() - player_y;
+		r1XY = sqrt(r1X * r1X + r1Y * r1Y);
+		if (r1XY <= 40 + BULLETRADIUS && throw_slime[i].Get_throwfall() == true) {
+			++life;
+			return true;
+		}
+	}
+	return false;
 }
