@@ -57,10 +57,6 @@ public:
 	/// </summary>
 	virtual void Hit() = 0;
 	/// <summary>
-	/// アニメーション
-	/// </summary>
-	virtual void Animation() = 0;
-	/// <summary>
 	/// 描画
 	/// </summary>
 	virtual void Draw()const = 0;

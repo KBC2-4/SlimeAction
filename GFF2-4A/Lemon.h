@@ -48,9 +48,11 @@ public:
 	/// </summary>
 	void Hit() override;
 	/// <summary>
-	/// アニメーション
+	/// 元の形に戻るアニメーション
 	/// </summary>
-	void Animation() override;
+	/// <returns>アニメーションの終了判定</returns>
+	bool ReturnAnimation();
+
 	/// <summary>
 	/// 描画
 	/// </summary>
