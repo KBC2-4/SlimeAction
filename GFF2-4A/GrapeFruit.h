@@ -6,8 +6,6 @@
 
 #define GURAFRU_W 80
 #define GURAFRU_H 80
-#define BALL_W 10
-#define BALL_H 10
 
 
 class GRAPEFRUIT :

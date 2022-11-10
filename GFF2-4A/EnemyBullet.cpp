@@ -74,7 +74,6 @@ void ENEMYBULLET::Move()
  	map_y = (int)floor(mapd_y);
 
 	if (stage->HitMapDat(map_y + 1,map_x) != 0)
-		bullet_flag = true;
 }
 
 void ENEMYBULLET::Animation() 
