@@ -3,6 +3,7 @@
 #include "Element.h"
 #include <vector>
 #include "ThrowSlime.h"
+#include "STAGE.h"
 
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
 #define SPEED					3.0f	//プレイヤーのスピード
@@ -17,6 +18,8 @@
 #define LENGTH      200                 // 紐の長さ
 #define CLENGTH     (LENGTH * 2 * PI)   // 紐を伸ばして一周させた場合に出来る円の円周の長さ
 #define G           9.81                // 重力加速度
+
+//ThrowSlime throw_slime;
 
 //移動ステート
 enum class PLAYER_MOVE_STATE {
@@ -126,10 +129,10 @@ public:
 	void Move();
 	void Draw() const;
 	void HookMove(ELEMENT* element);
-	void JumpMove();
+	void JumpMove(ELEMENT* element);
 	void Throw();
 	void MoveAnimation();
-	void Update(ELEMENT*element);
+	void Update(ELEMENT*element, STAGE* stage);
 	void HitBlock();
 	void Scroll(float move_x);
 
@@ -145,8 +148,9 @@ public:
 	int GetThrowCnt() { return throw_slime.size(); }
 	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
-	void SetLife(int a) { life = a; }
+	bool GetBullet();	//ドロップした玉を拾う処理
 	double GetSpeed() { return speed; }
 	float GetMoveX() { return move_x; }
+	void SetLife(int);
 };
 
