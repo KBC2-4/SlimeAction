@@ -20,6 +20,7 @@ private:
 	int animation_type;
 	int spawn_map_x;
 	int spawn_map_y;
+	int target_x;
 	int bullet_count;
 	int check_hit_count;
 	bool hit_flg;
