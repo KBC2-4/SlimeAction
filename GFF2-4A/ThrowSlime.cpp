@@ -53,3 +53,15 @@ int ThrowSlime::HitBlock() {
 	}
 	return false;
 }
+
+
+bool ThrowSlime::HitBullet(int x, int y, int radius) {
+	float r1X, r1Y, r1XY;
+	r1X = throw_x[0] - x;
+	r1Y = throw_y[0] - y;
+	r1XY = sqrt(r1X * r1X + r1Y * r1Y);
+	if (r1XY <= radius + BULLETRADIUS) {
+		return true;
+	}
+	return false;
+}

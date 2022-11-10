@@ -644,4 +644,3 @@ void PLAYER::MoveAnimation() {
 		}
 	}
 }
-
