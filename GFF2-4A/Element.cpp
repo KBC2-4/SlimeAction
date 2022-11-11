@@ -14,16 +14,16 @@ ELEMENT::ELEMENT() {
 			{
 				//ボタン横
 			case 61:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25;
-				data.y = i * MAP_CEllSIZE + MAP_CEllSIZE / 2 ;
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25);
+				data.y = static_cast<float>(i * MAP_CEllSIZE + MAP_CEllSIZE / 2) ;
 				data.type = 1;
 				button.push_back(data);
 				break;
 					
 				//ボタン(下)
 			case 62:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 2;
 				button.push_back(data);
 				break;
@@ -31,71 +31,71 @@ ELEMENT::ELEMENT() {
 
 				//ボタン(ones)下
 			case 63:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25;
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25);
 				data.type = 3;
 				button.push_back(data);
 				break;
 
 				//閉まっているドアの下
 			case 66:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 1;
 				door.push_back(data);
 				break;
 
 				//マンホールの蓋
 			case 68:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 1;
 				manhole.push_back(data);
 				break;
 
 				//マンホール(中間)
 			case 69:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 2;
 				manhole.push_back(data);
 				break;
 
 				//マンホール(出口)
 			//case 70:
-			//	data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-			//	data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+			//	data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+			//	data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 			//	data.type = 3;
 			//	manhole.push_back(data);
 			//	break;
 
 				//酸
 			/*case 68:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 1;
 				acid.push_back(data);
 				break;*/
 
 				//フック
 			case 72:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = i * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				hook.push_back(data);
 				break;
 
 				//動く床
 			case 95:
-				data.x = (j * MAP_CEllSIZE);
-				data.y = (i * MAP_CEllSIZE);
+				data.x = static_cast<float>((j * MAP_CEllSIZE));
+				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 2;
 				lift.push_back(data);
 				break;
 
 				//動く床(ゴール)
 			case 96:
-				data.x = (j * MAP_CEllSIZE);
-				data.y = (i * MAP_CEllSIZE);
+				data.x = static_cast<float>((j * MAP_CEllSIZE));
+				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 0;
 				lift_goal.push_back(data);
 				break;
@@ -188,7 +188,11 @@ void ELEMENT::Button(PLAYER* player) {
 				if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2 + 33) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2 - 30) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
 					//printfDx("1番に入ってるよ！");
-					door[i + 1].flg = true;
+					if(i < door.size() && i >= 0){
+						int j = i + 1;
+						door[j].flg = true;
+					}
+					
 				}
 			}
 		}
@@ -198,7 +202,11 @@ void ELEMENT::Button(PLAYER* player) {
 					//printfDx("2番に入ってるよ！");
 					player->SetPlayerY(button[i].y - 6.5f);
 					button[i].flg = true;		//ボタンを押した
-					door[i - 1].flg = true;
+					if (i < door.size() && i >= 0) {
+						int j = i - 1;
+						door[j].flg = true;
+					}
+					
 				}
 			}
 

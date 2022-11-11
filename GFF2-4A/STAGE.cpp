@@ -6,6 +6,8 @@
 #include <string>
 #include <sstream>
 
+#include "PLAYER.h"
+
 int STAGE::map_data[MAP_HEIGHT][MAP_WIDTH];
 float STAGE::scroll_x = 0;
 float STAGE::scroll_y = 0;
@@ -19,11 +21,20 @@ STAGE::STAGE() {
 	LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1);
 	//InitStage();
 	LoadMapData();
+
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		for (int j = 0; j < MAP_WIDTH; j++) {
+			//クリア座標を代入
+			if (map_data[i][j] == 73) { clearbox[0] = i; clearbox[1] = j; }
+		}
+	}
 }
 	
 
-void STAGE::Update() {
-
+void STAGE::Update(PLAYER* player) {
+	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - STAGE::GetScrollX()));
+	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()));
+	//if()
 }
 
 void STAGE::Draw()const {
@@ -134,4 +145,12 @@ void STAGE::LoadMapData(void) {
 			j = 0;
 			i++;
 		}
+}
+
+
+/// <summary>
+/// ステージクリア時
+/// </summary>
+void StageClear(void) {
+	
 }
