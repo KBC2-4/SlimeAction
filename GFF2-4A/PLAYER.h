@@ -19,6 +19,8 @@
 #define CLENGTH     (LENGTH * 2 * PI)   // 紐を伸ばして一周させた場合に出来る円の円周の長さ
 #define G           9.81                // 重力加速度
 
+#define MIN_SIZE_SCALE		0.8f	//プレイヤーの最小サイズ(倍率)
+
 //ThrowSlime throw_slime;
 
 //移動ステート
@@ -148,9 +150,8 @@ public:
 	int GetThrowCnt() { return throw_slime.size(); }
 	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
-	bool GetBullet();	//ドロップした玉を拾う処理
+	bool GetBullet(int* bullet);	//ドロップした玉を拾う処理
 	double GetSpeed() { return speed; }
 	float GetMoveX() { return move_x; }
 	void SetLife(int a);
 };
-

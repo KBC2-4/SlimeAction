@@ -11,7 +11,7 @@ float PLAYER::player_x, PLAYER::player_y;
 /*コンストラクタ*/
 PLAYER::PLAYER() {
 	player_x = 20.0f;
-	player_y = 520.0f;
+	player_y = 500.0f;
 	rebound_x = SPEED;
 	map_x = 0;
 	map_y = 0;
@@ -41,11 +41,14 @@ PLAYER::PLAYER() {
 	if ((images[3][0] = LoadGraph("Resource/Images/Player/nobi.png")) == -1) {
 		throw "Resource/Images/Player/nobi.png";
 	}
-
-	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
-		throw "Resource/Images/Player/SlimeBullet.png";
+	if ((images[3][1] = LoadGraph("Resource/Images/Player/nobi2.png")) == -1) {
+		throw "Resource/Images/Player/nobi2.png";
 	}
 
+	if ((throw_ball_image = LoadGraph("Resource/Images/Player/Slime_Bullet.png")) == -1) {
+		throw "Resource/Images/Player/Slime_Bullet.png";
+	}
+	
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	animation_frame = 0;
 	animation_mode = 0;
@@ -60,22 +63,23 @@ PLAYER::PLAYER() {
 /// </summary>
 void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	//clsDx();
+	int bullet;
 	Move();
 	JumpMove(element);
 	HookMove(element);
 	Throw();
 	HitBlock();
-	if (GetBullet()==true) {
+	if (GetBullet(&bullet)==true) {
 		/*throw_x.erase(throw_x.begin());
 		throw_y.erase(throw_y.begin());*/
-		throw_slime.erase(throw_slime.begin());
+		throw_slime.erase(throw_slime.begin() + bullet);
 	}
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Update(stage);
 	}
 
-	if (STAGE::GetMapDat(map_y, map_x) == -1) {
+	if (STAGE::GetMapDat(map_y, map_x) == -1 /*|| life <= 0*/) {
 		is_death = true;
 	}
 
@@ -97,8 +101,12 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// </summary>
 void PLAYER::Draw()const {
 	//プレイヤーの表示
+	
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, now_image, TRUE, move_type);
+		
+		//printfDx("scale: %f\n", static_cast<float>(life) / static_cast<float>(MAX_LIFE));
+		float slime_size_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
+		DrawRotaGraphF(player_x, (player_y-20) + (1.6 - slime_size_scale) * 40, slime_size_scale, 0.0, now_image, TRUE, move_type);
 		
 	}
 	else {
@@ -108,9 +116,16 @@ void PLAYER::Draw()const {
 			float diff_y = ((hook_y + ny) - player_y);
 			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
 			float angle = atan2(diff_y, diff_x) + DX_PI_F;
-			DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
-				distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
-				images[3][0], TRUE, move_type);
+			if (move_type == 0) {
+				DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
+					distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
+					images[3][1], TRUE, move_type);
+			}
+			else {
+				DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
+					distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
+					images[3][0], TRUE, move_type);
+			}
 		}
 		else {
 			DrawRotaGraph3F(player_x, player_y, 40, 80,
@@ -129,6 +144,10 @@ void PLAYER::Draw()const {
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 		}
 	}
+	for (int i = 0; i < life - 1; i++) {
+		DrawRotaGraph(30 + 50 * i, 20, 1.5, 1, throw_ball_image, TRUE);
+	}
+	
 	//else {
 	//	//DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
 	//	DrawGraph(throw_x[0], throw_y[0], throw_ball_image, TRUE);
@@ -395,6 +414,8 @@ void PLAYER::HookMove(ELEMENT* element) {
 			player_x = hook_x + STAGE::GetScrollX() + nx;
 			player_y = hook_y + ny;
 			player_y += 1;
+			if (speed < 0)jump_move_x = 1;		//フック後のジャンプ方向の修正
+			if (speed >= 0)jump_move_x = -1;
 			jump_request = true;
 			player_state = PLAYER_MOVE_STATE::JUMP;
 		}
@@ -664,7 +685,7 @@ void PLAYER::MoveAnimation() {
 	}
 }
 
-bool PLAYER::GetBullet() {
+bool PLAYER::GetBullet(int *bullet) {
 	float r1X, r1Y, r1XY;
 	for (int i = 0; i < throw_slime.size(); i++) {
 		r1X = throw_slime[i].GetThrowX() + STAGE::GetScrollX() - player_x;
@@ -672,6 +693,7 @@ bool PLAYER::GetBullet() {
 		r1XY = sqrt(r1X * r1X + r1Y * r1Y);
 		if (r1XY <= 40 + BULLETRADIUS && throw_slime[i].Get_throwfall() == true) {
 			++life;
+			*bullet = i;
 			return true;
 		}
 	}
@@ -680,5 +702,5 @@ bool PLAYER::GetBullet() {
 
 void PLAYER::SetLife(int a) 
 {
-	life = a;
+	//life = a;
 }
