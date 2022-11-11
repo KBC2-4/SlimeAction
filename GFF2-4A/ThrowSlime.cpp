@@ -1,7 +1,7 @@
 #include "ThrowSlime.h"
 #include "PadInput.h"
-#include "STAGE.h"
 #include"PLAYER.h"
+#include<math.h>
 
 ThrowSlime::ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y) {
 	if ((image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
@@ -19,7 +19,7 @@ ThrowSlime::ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y) {
 	throw_fall = false;
 }
 
-void ThrowSlime::Update() {
+void ThrowSlime::Update(STAGE* stage) {
 	if (!throw_end) {
 		throw_x[0] = throw_x[throw_index];
 		throw_y[0] = throw_y[throw_index];
@@ -32,24 +32,37 @@ void ThrowSlime::Update() {
 			return;
 		}
 		if (throw_y[0] < throw_y[throw_index])throw_fall = true;
-		if(HitBlock()) throw_end = true;
+
+		if (HitBlock(stage)) {
+			//Drop = true;
+			throw_end = true;
+		}
+
 	}
+	
 }
 
 void ThrowSlime::Draw() const {
 	//DrawGraph(throw_x[0] + STAGE::GetScrollX(), throw_y[0], image, TRUE);
 	DrawRotaGraph(throw_x[0] + STAGE::GetScrollX(), throw_y[0], 1, 1, image, TRUE);
-	printfDx("throw_y[0] = %f",throw_y[0]);
-	printfDx("throw_bottom = %f", throw_bottom);
+	//printfDx("throw_y[0] = %f",throw_y[0]);
+	//printfDx("throw_bottom = %f", throw_bottom);
 	
 }
 
-int ThrowSlime::HitBlock() {
+int ThrowSlime::HitBlock(STAGE* stage) {
 	//if (throw_y[0] >= throw_y[throw_index + 1])throw_fall = true;
-	if (throw_fall == true && STAGE::HitMapDat((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) - MAP_CEllSIZE*2) / MAP_CEllSIZE)) {
-		throw_bottom = (static_cast<int>(throw_y[0]) - MAP_CEllSIZE) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
-		throw_y[0] -= throw_bottom+3;
+
+	if (throw_fall == true &&  stage->HitThrowSlime(static_cast<int>(floor((throw_y[0]) / MAP_CEllSIZE)), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE))) {
+
+	/*if (throw_fall == true && stage->HitThrowSlime((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) - MAP_CEllSIZE*2) / MAP_CEllSIZE) == false) {
+ master*/
+		throw_bottom = (static_cast<int>(throw_y[0])/* - MAP_CEllSIZE*/) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
+		throw_y[0] -= throw_bottom + 5;
+		//printfDx("block: %d\n", stage->GetMapDat((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE)));
 		return true;
 	}
 	return false;
 }
+
+

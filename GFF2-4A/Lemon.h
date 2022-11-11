@@ -1,38 +1,58 @@
 #pragma once
 #include"Enemy.h"
+#include"EnemyBullet.h"
+#include"STAGE.h"
 
 class LEMON :
     public ENEMY
 {
 private:
+	bool hitflg;
+	bool flag;
+	int shootcount;
+	double rads[2];
+	int animation_timer;
+	int animation_type;
+	int spawn_map_x;
+	int spawn_map_y;
 
+	ENEMYBULLET* bullet;
 public:
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    /// <param name="player"></param>
     LEMON();
+
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="player">プレイヤーのアドレス</param>
+	/// <param name="stage">ステージのアドレス</param>
+	/// <param name="spawn_y">マップ上のスポーン地点(y)</param>
+	/// <param name="spawn_x">マップ上のスポーン地点(x)</param>
+	LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x);
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="player">プレイヤーのアドレス</param>
-	LEMON(PLAYER* player);
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update()override;
 	/// <summary>
 	/// 移動
 	/// </summary>
 	void Move() override;
 	/// <summary>
-	/// 果汁を発射
-	/// </summary>
-	void ShotFruitJuice() override;
-	/// <summary>
 	/// 当たり判定
 	/// </summary>
 	void Hit() override;
 	/// <summary>
-	/// アニメーション
+	/// 元の形に戻るアニメーション
 	/// </summary>
-	void Animation() override;
+	/// <returns>アニメーションの終了判定</returns>
+	bool ReturnAnimation();
+
 	/// <summary>
 	/// 描画
 	/// </summary>

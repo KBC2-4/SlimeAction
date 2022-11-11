@@ -1,15 +1,14 @@
 #include "PLAYER.h"
 #include"DxLib.h"
-#include "STAGE.h"
 #include "Element.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-//’†S‚©‚ç240 ƒtƒbƒN
+//ä¸­å¿ƒã‹ã‚‰240 ãƒ•ãƒƒã‚¯
 
 float PLAYER::player_x, PLAYER::player_y;
 
-/*ƒRƒ“ƒXƒgƒ‰ƒNƒ^*/
+/*ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿*/
 PLAYER::PLAYER() {
 	player_x = 20.0f;
 	player_y = 520.0f;
@@ -24,12 +23,12 @@ PLAYER::PLAYER() {
 	is_throw_anim = false;
 	is_death = false;
 	player_state = PLAYER_MOVE_STATE::IDLE;
-	// ‰ŠúˆÊ’u‚Í²‚Ì^‰º‚©‚ç¶•ûŒü‚É45“xŒX‚¢‚½ˆÊ’u
-		x = CLENGTH / b;
-		// ‰Šú‘¬“x‚Í‚O
-		speed = 0;
+	// åˆæœŸä½ç½®ã¯è»¸ã®çœŸä¸‹ã‹ã‚‰å·¦æ–¹å‘ã«45åº¦å‚¾ã„ãŸä½ç½®
+	x = CLENGTH / b;
+	// åˆæœŸé€Ÿåº¦ã¯ï¼
+	speed = 0;
 
-		ve = 90.0;
+	ve = 90.0;
 	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
 		throw "Resource/Images/Player/IdorSlime.png";
 	}
@@ -39,6 +38,10 @@ PLAYER::PLAYER() {
 	if (LoadDivGraph("Resource/Images/Player/ThrowSlime.png", 7, 7, 1, 80, 80, images[2]) == -1) {
 		throw "Resource/Images/Player/ThrowSlime.png";
 	}
+	if ((images[3][0] = LoadGraph("Resource/Images/Player/nobi.png")) == -1) {
+		throw "Resource/Images/Player/nobi.png";
+	}
+
 	if (LoadDivGraph("Resource/Images/Player/JumpSlime1.png", 10, 10, 1, 80, 80, images[3]) == -1) {
 		throw "Resource/Images/Player/JumpSlime1.png";
 	}
@@ -56,62 +59,79 @@ PLAYER::PLAYER() {
 }
 
 /// <summary>
-/// ƒvƒŒƒCƒ„[‚ÌXV
+/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ›´æ–°
 /// </summary>
-void PLAYER::Update(ELEMENT* element) {
-	clsDx();
+void PLAYER::Update(ELEMENT* element, STAGE* stage) {
+	//clsDx();
 	Move();
-	JumpMove();
+	JumpMove(element);
 	HookMove(element);
 	Throw();
 	HitBlock();
-
+	if (GetBullet()==true) {
+		/*throw_x.erase(throw_x.begin());
+		throw_y.erase(throw_y.begin());*/
+		throw_slime.erase(throw_slime.begin());
+	}
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
-		throw_slime[i].Update();
+		throw_slime[i].Update(stage);
 	}
 
-	if (STAGE::GetMapDat(map_y, map_x) == -1) {
+	if (STAGE::GetMapDat(map_y, map_x) == -1 || life <= 0) {
 		is_death = true;
 	}
 
-	//‰æ–Ê’[‚Ì”»’è
+	//ç”»é¢ç«¯ã®åˆ¤å®š
 	if (player_left <= 0) player_x = 40;
 	if (player_right + STAGE::GetScrollX() >= 1280) player_x = 1240;
 
-	//•`‰æ‚·‚é‰æ‘œ‚ÌƒZƒbƒg
+	//æç”»ã™ã‚‹ç”»åƒã®ã‚»ãƒƒãƒˆ
 	int image_type = 0;
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		image_type = static_cast<int>(animation_state);
 	}
 	now_image = images[image_type][animation_type[image_type]];
+
+
+	if (element->HitLift()) {
+		player_x += element->GetLiftVector()*2;
+	}
+
 }
 
 /// <summary>
-/// ƒvƒŒƒCƒ„[‚Ì•\¦
+/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¡¨ç¤º
 /// </summary>
 void PLAYER::Draw()const {
-	//ƒvƒŒƒCƒ„[‚Ì•\¦
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¡¨ç¤º
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, now_image, TRUE, move_type);
+		
 	}
 	else {
-		if (player_state == PLAYER_MOVE_STATE::HOOK) 
-			DrawRotaGraphF(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 1.0, 0.0, now_image, TRUE, move_type);
+		if (player_state == PLAYER_MOVE_STATE::HOOK) {
+			//DrawRotaGraphF(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 1.0, 0.0, now_image, TRUE, move_type);
+			float diff_x = ((hook_x + STAGE::GetScrollX() + nx) - player_x);
+			float diff_y = ((hook_y + ny) - player_y);
+			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
+			float angle = atan2(diff_y, diff_x) + DX_PI_F;
+			DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
+				distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
+				images[3][0], TRUE, move_type);
+		}
 		else {
 			DrawRotaGraph3F(player_x, player_y, 40, 80,
 				1, hook_distance / (MAP_CEllSIZE / 2), (double)hook_angle,
 				now_image, TRUE, move_type);
 		}
 	}
-	
-
 
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Draw();
 	}
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB && life > 1) {
 		for (int i = 0; i < throw_x.size(); i += 5) {
 			//DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
@@ -127,65 +147,65 @@ void PLAYER::Draw()const {
 		printfDx("throw_x[%d]: %f\n", i,throw_x[i]);
 	}
 	for (int i = 0; i < 10; i++) {
-		printfDx("throw_y[%d]: %f\n", i, throw_y[i]);
+		printfDxThrowSlime("throw_y[%d]: %f\n", i, throw_y[i]);
 	}*/
-	printfDx("throw_rad: %f\n", throw_rad);
+	//printfDx("throw_rad: %f\n", throw_rad);
 	//printfDx("hook: %f %f\n", hook_x, hook_y);
 	//printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
 
-	//ƒOƒŠƒbƒh‚Ì•\¦(ƒfƒoƒbƒO—p)
+	//ã‚°ãƒªãƒƒãƒ‰ã®è¡¨ç¤º(ãƒ‡ãƒãƒƒã‚°ç”¨)
 	//for (int i = 0; i < 128; i++) {
-	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//‰¡
-	//	DrawLine(i * 80 + STAGE::GetScrollX(), 0, i * 80 + STAGE::GetScrollX(),  720,0xFFFFFF, 2);		//c
+	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//æ¨ª
+	//	DrawLine(i * 80 + STAGE::GetScrollX(), 0, i * 80 + STAGE::GetScrollX(),  720,0xFFFFFF, 2);		//ç¸¦
 	//}
 
-	//À•W(ƒfƒoƒbƒO—p)
+	//åº§æ¨™(ãƒ‡ãƒãƒƒã‚°ç”¨)
 	/*printfDx("x1: %d, x2: %d\n", (int)(player_left / MAP_CEllSIZE), (int)player_right / MAP_CEllSIZE);
 	printfDx("y1: %d, y2: %d\n", (int)(player_top / MAP_CEllSIZE), (int)player_bottom / MAP_CEllSIZE);
 	printfDx("x : %d, y : %d\n", (int)(player_x / MAP_CEllSIZE), (int)player_y / MAP_CEllSIZE);*/
 
-	//ƒ}ƒbƒvƒ`ƒbƒv‚ÌÀ•W‚Ì•\¦(ƒfƒoƒbƒO—p)
+	//ãƒãƒƒãƒ—ãƒãƒƒãƒ—ã®åº§æ¨™ã®è¡¨ç¤º(ãƒ‡ãƒãƒƒã‚°ç”¨)
 	/*SetFontSize(40);
 	DrawFormatString(0, 0, 0xFF, "%d, %d: %d", map_x, map_y, STAGE::GetMapDat(map_y, map_x));*/
 }
 
 /// <summary>
-/// ƒvƒŒƒCƒ„[‚ÌˆÚ“®
+/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç§»å‹•
 /// </summary>
 void PLAYER::Move() {
 	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
 	if (is_throw_anim) return;
-	//ƒXƒeƒBƒbƒN“ü—Í‚Ìæ“¾
+	//ã‚¹ãƒ†ã‚£ãƒƒã‚¯å…¥åŠ›ã®å–å¾—
 	int input_lx = PAD_INPUT::GetPadThumbLX();
-	//ˆÚ“®‚·‚é‚Æ‚«
-	move_x = input_lx > 0 ? 1.0f : -1.0f;	//ˆÚ“®•ûŒü‚ÌƒZƒbƒg
+	//ç§»å‹•ã™ã‚‹ã¨ã
+	move_x = input_lx > 0 ? 1.0f : -1.0f;	//ç§»å‹•æ–¹å‘ã®ã‚»ãƒƒãƒˆ
 	if ((input_lx < -DEVIATION || input_lx > DEVIATION) && player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		animation_state = PLAYER_ANIM_STATE::MOVE;
-		animation_mode = 1;							//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌØ‚è‘Ö‚¦
-		move_type = move_x > 0 ? 0 : 1;				//ˆÚ“®Œü‚«‚ÌƒZƒbƒg(0: ‰E, 1: ¶)
+		animation_mode = 1;							//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®åˆ‡ã‚Šæ›¿ãˆ
+		move_type = move_x > 0 ? 0 : 1;				//ç§»å‹•å‘ãã®ã‚»ãƒƒãƒˆ(0: å³, 1: å·¦)
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL) {
-			//ƒAƒjƒ[ƒVƒ‡ƒ“‚ª‘O”¼‚Ì‚Æ‚«
+			//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå‰åŠã®ã¨ã
 			if (animation_phase == 0 || true) {
 				player_x += move_x * SPEED;
 			}
-			//ƒAƒjƒ[ƒVƒ‡ƒ“‚ªŒã”¼‚Ì‚Æ‚«
+			//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå¾ŒåŠã®ã¨ã
 			else {
 				player_x += move_x * SPEED / 2;
 			}
 			jump_move_x = move_x;
-			player_state = PLAYER_MOVE_STATE::MOVE;	//ƒXƒe[ƒg‚ğMove‚ÉØ‚è‘Ö‚¦
+			player_state = PLAYER_MOVE_STATE::MOVE;	//ã‚¹ãƒ†ãƒ¼ãƒˆã‚’Moveã«åˆ‡ã‚Šæ›¿ãˆ
 		}
 		else {
 			if (jump_move_x == 0) jump_move_x = move_x;
 			move_type = jump_move_x > 0 ? 0 : 1;
-			//’â~ƒWƒƒƒ“ƒv‚¾‚Á‚½
+			//åœæ­¢ã‚¸ãƒ£ãƒ³ãƒ—ã ã£ãŸæ™‚
 			if (jump_mode == 1) {
 				player_x += jump_move_x * SPEED / 2;
 			}
-			//ˆÚ“®ƒWƒƒƒ“ƒv‚¾‚Á‚½
+			//ç§»å‹•ã‚¸ãƒ£ãƒ³ãƒ—ã ã£ãŸæ™‚
 			else {
 				move_type = jump_move_x > 0 ? 0 : 1;
-				//ƒWƒƒƒ“ƒv’†‚É”½‘Î•ûŒü‚ÉˆÚ“®‚·‚é‚Æ‚«
+				//ã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã«åå¯¾æ–¹å‘ã«ç§»å‹•ã™ã‚‹ã¨ã
 				if (jump_move_x != move_x) {
 					player_x += jump_move_x * SPEED / 2;
 				}
@@ -198,152 +218,152 @@ void PLAYER::Move() {
 		Scroll(move_x);
 	}
 
-	//ˆÚ“®‚µ‚Ä‚È‚¢
+	//ç§»å‹•ã—ã¦ãªã„æ™‚
 	else {
 		move_x = 0;
-		//ˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“‚ğŒã”¼‚ÖˆÚs
+		//ç§»å‹•ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å¾ŒåŠã¸ç§»è¡Œ
 		if (animation_type[1] > 1) {
 			animation_phase[1] = 1;
 			MoveAnimation();
 		}
-		//ˆÚ“®ƒAƒjƒ[ƒVƒ‡ƒ“‚ªI‚í‚Á‚½‚çƒAƒCƒhƒ‹ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+		//ç§»å‹•ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚ã‚ã£ãŸã‚‰ã‚¢ã‚¤ãƒ‰ãƒ«ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”Ÿ
 		else {
 			animation_state = PLAYER_ANIM_STATE::IDLE;
 			animation_mode = 0;
 			MoveAnimation();
 		}
-		//ƒWƒƒƒ“ƒv’†‚¶‚á‚È‚¢‚©‚Á‚½‚çƒXƒe[ƒg‚ğØ‚è‘Ö‚¦‚é
-		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && 
+		//ã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã˜ã‚ƒãªã„ã‹ã£ãŸã‚‰ã‚¹ãƒ†ãƒ¼ãƒˆã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL &&
 			player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 			jump_move_x = 0;
-			player_state = PLAYER_MOVE_STATE::IDLE;	//ƒXƒe[ƒg‚ğIdle‚ÉØ‚è‘Ö‚¦
+			player_state = PLAYER_MOVE_STATE::IDLE;	//ã‚¹ãƒ†ãƒ¼ãƒˆã‚’Idleã«åˆ‡ã‚Šæ›¿ãˆ
 		}
 	}
 }
 
 void PLAYER::Scroll(float move_x) {
-	//ƒXƒNƒ[ƒ‹‚Ìˆ—
+	//ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã®å‡¦ç†
 	bool isScroll = false;
-	//ƒvƒŒƒCƒ„[‚ÌˆÊ’u‚ª’†S‚¾‚Á‚½‚ç
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ãŒä¸­å¿ƒã ã£ãŸã‚‰
 	if (move_x > 0 && player_x >= 680 || move_x < 0 && player_x <= 600) {
-		//ƒXƒNƒ[ƒ‹‚ª’[‚Ü‚Ås‚Á‚Ä‚È‚¢
+		//ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ãŒç«¯ã¾ã§è¡Œã£ã¦ãªã„æ™‚
 		if (!(isScroll = STAGE::SetScrollPos(move_x))) {
-			//ƒvƒŒƒCƒ„[‚ÌˆÊ’u‚ğ’†S‚É–ß‚·
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ã‚’ä¸­å¿ƒã«æˆ»ã™
 			rebound_x = SPEED * 1.3f;
 			player_x -= move_x * rebound_x;
 		}
 	}
-	//ƒXƒNƒ[ƒ‹‚µ‚Ä‚È‚¢
+	//ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã—ã¦ãªã„æ™‚
 	if (!isScroll) {
-		rebound_x = SPEED; //”½”­—Í‚ğ•ÏX
+		rebound_x = SPEED; //åç™ºåŠ›ã‚’å¤‰æ›´
 	}
 }
 
 /// <summary>
-/// ƒtƒbƒN‚ÌˆÚ“®ˆ—
+/// ãƒ•ãƒƒã‚¯ã®ç§»å‹•å‡¦ç†
 /// </summary>
 void PLAYER::HookMove(ELEMENT* element) {
-	//ƒtƒbƒN‚ÌˆÚ“®•ûŒü
+	//ãƒ•ãƒƒã‚¯ã®ç§»å‹•æ–¹å‘
 	static float move_x = 0;
 	static float move_y = 0;
-	//ƒtƒbƒN‚Ü‚Å‚ÌˆÚ“®I—¹”»’è
+	//ãƒ•ãƒƒã‚¯ã¾ã§ã®ç§»å‹•çµ‚äº†åˆ¤å®š
 	static bool end_move = false;
-	//‹ß‚­‚ÉƒtƒbƒN‚ª‚ ‚é‚©‚Ç‚¤‚©
+	//è¿‘ãã«ãƒ•ãƒƒã‚¯ãŒã‚ã‚‹ã‹ã©ã†ã‹
 	bool is_hook = false;
-	
-	//ƒXƒeƒBƒbƒN“ü—Í‚Ìæ“¾
+
+	//ã‚¹ãƒ†ã‚£ãƒƒã‚¯å…¥åŠ›ã®å–å¾—
 	int input_lx = PAD_INPUT::GetPadThumbLX();
-	
-	
-	//Bƒ{ƒ^ƒ“‰Ÿ‚µ‚½‚Æ‚«
+
+
+	//Bãƒœã‚¿ãƒ³æŠ¼ã—ãŸã¨ã
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
-		//ƒtƒbƒN‚ÌÀ•W
+		//ãƒ•ãƒƒã‚¯ã®åº§æ¨™
 		//float hook_y, hook_x;
-		//ƒtƒbƒN‚Ü‚Å‚Ì‹——£
+		//ãƒ•ãƒƒã‚¯ã¾ã§ã®è·é›¢
 		float min_distance = HOOK_MAX_DISTANCE;
-		
-		//ƒtƒbƒN‚ÌˆÊ’u
-		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHookPos();
+
+		//ãƒ•ãƒƒã‚¯ã®ä½ç½®
+		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
 		for (int i = 0; i < hook_pos.size(); i++) {
 			ELEMENT::ELEMENT_DATA pos = hook_pos[i];
-			//‹——£ŒvZ
+			//è·é›¢è¨ˆç®—
 			float diff_x = pos.x - (player_x - STAGE::GetScrollX());
 			float diff_y = pos.y - player_y;
 			float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
-			//‹——£‚ªÅ’Z‹——£‚æ‚è‹ß‚¢‚Æ‚«
+			//è·é›¢ãŒæœ€çŸ­è·é›¢ã‚ˆã‚Šè¿‘ã„ã¨ã
 			if (distance <= min_distance) {
-				//ƒtƒbƒN‚ÌŠp“x
+				//ãƒ•ãƒƒã‚¯ã®è§’åº¦
 				float angle = atan2f(diff_y, diff_x);
-				//ˆÚ“®‚ÌŒvZ
+				//ç§»å‹•ã®è¨ˆç®—
 				move_x = cosf(angle) * SPEED * 3;
 				move_y = sinf(angle) * SPEED * 3;
-				//ƒvƒŒƒCƒ„[‚ÌŒ»İ‚ÌˆÊ’u
+				//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨ã®ä½ç½®
 				float x = player_x - STAGE::GetScrollX();
 				float y = player_y;
-				//ƒtƒbƒN‚Ü‚Å‚ÌˆÚ“®Œo˜H‚ÉáŠQ•¨‚ª‚È‚¢‚©
+				//ãƒ•ãƒƒã‚¯ã¾ã§ã®ç§»å‹•çµŒè·¯ã«éšœå®³ç‰©ãŒãªã„ã‹
 				while (!STAGE::HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
 					x += move_x;
 					y += move_y;
 				}
-				//”z—ñ‚É•ÏŠ·
+				//é…åˆ—ã«å¤‰æ›
 				int hook_map_x = x / MAP_CEllSIZE;
 				int hook_map_y = y / MAP_CEllSIZE;
-				//áŠQ•¨‚ª‚ ‚éê‡‚ÍˆÚ“®‚³‚¹‚È‚¢
-				if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 75) {
+				//éšœå®³ç‰©ãŒã‚ã‚‹å ´åˆã¯ç§»å‹•ã•ã›ãªã„
+				if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 72) {		//ãƒ•ãƒƒã‚¯ã®é…åˆ—ç•ªå·ã‚’å…¥ã‚Œã‚‹
 					continue;
 				}
-				//Å’Z‹——£‚ÌXV
+				//æœ€çŸ­è·é›¢ã®æ›´æ–°
 				min_distance = distance;
-				//ƒtƒbƒN‚ÌÀ•W‚ÌXV
+				//ãƒ•ãƒƒã‚¯ã®åº§æ¨™ã®æ›´æ–°
 				hook_x = pos.x;
 				hook_y = pos.y;
-				//ƒtƒbƒN‚ªŒ©‚Â‚©‚Á‚½”»’è‚ğtrue
+				//ãƒ•ãƒƒã‚¯ãŒè¦‹ã¤ã‹ã£ãŸåˆ¤å®šã‚’true
 				is_hook = true;
 			}
 		}
-		//ƒtƒbƒN‚ªŒ©‚Â‚©‚Á‚½
+		//ãƒ•ãƒƒã‚¯ãŒè¦‹ã¤ã‹ã£ãŸæ™‚
 		if (is_hook) {
-			//ˆÚ“®’†‚Ì
+			//ç§»å‹•ä¸­ã®æ™‚
 			if (!end_move) {
-				//ƒtƒbƒN‚Ü‚Å‚Ì‹——£‚ÌŒvZ
+				//ãƒ•ãƒƒã‚¯ã¾ã§ã®è·é›¢ã®è¨ˆç®—
 				float y = hook_y - player_y;
 				float x = hook_x - (player_x - STAGE::GetScrollX());
 				hook_distance = sqrt(x * x + y * y);
-				//ƒtƒbƒNˆÚ“®‚µ‚Ä‚È‚¢
+				//ãƒ•ãƒƒã‚¯ç§»å‹•ã—ã¦ãªã„æ™‚
 				if (!is_hook_move) {
-					//Šp“x‚ÌŒvZ
+					//è§’åº¦ã®è¨ˆç®—
 					hook_angle = atan2f(y, x) + 90.0f * (DX_PI_F / 180.0f);
-					//ˆÚ“®•ûŒü‚ÌŒvZ
+					//ç§»å‹•æ–¹å‘ã®è¨ˆç®—
 					move_x = cosf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
 					move_y = sinf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
-					//Šµ«“I‚È“z
+					//æ…£æ€§çš„ãªå¥´
 					jump_move_x = move_x > 0 ? 1 : -1;
 					jump_mode == 2;
 				}
-				//ƒtƒbƒN‚É‚Â‚¢‚Ä‚È‚¢
+				//ãƒ•ãƒƒã‚¯ã«ã¤ã„ã¦ãªã„æ™‚
 				if (hook_distance > 40) {
 					player_x += move_x;
 					player_y += move_y;
 					Scroll(jump_move_x);
 				}
-				//ƒtƒbƒN‚É‚Â‚¢‚½‚çˆÚ“®ˆ—‚ÌI—¹
+				//ãƒ•ãƒƒã‚¯ã«ã¤ã„ãŸã‚‰ç§»å‹•å‡¦ç†ã®çµ‚äº†
 				else end_move = true;
-				//ƒtƒbƒN‚Ü‚Å‚ÌˆÚ“®”»’è
+				//ãƒ•ãƒƒã‚¯ã¾ã§ã®ç§»å‹•åˆ¤å®š
 				is_hook_move = true;
 			}
-			//ˆÚ“®‚ªI‚í‚Á‚½
+			//ç§»å‹•ãŒçµ‚ã‚ã£ãŸæ™‚
 			else {
-				//ƒtƒbƒN‚Ü‚Å‚ÌˆÚ“®”»’è
+				//ãƒ•ãƒƒã‚¯ã¾ã§ã®ç§»å‹•åˆ¤å®š
 				is_hook_move = false;
-				//ƒXƒe[ƒg‚Ì•ÏX
+				//ã‚¹ãƒ†ãƒ¼ãƒˆã®å¤‰æ›´
 				player_state = PLAYER_MOVE_STATE::HOOK;
-				//ƒtƒbƒN‚ÌÀ•W‚ÉƒvƒŒƒCƒ„[‚ğˆÚ“®
+				//ãƒ•ãƒƒã‚¯ã®åº§æ¨™ã«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ç§»å‹•
 				//player_x = hook_x + STAGE::GetScrollX();
 				//player_y = hook_y;
-				// ‘¬“x‚ğ‰ÁZ
+				// é€Ÿåº¦ã‚’åŠ ç®—
 				speed += -mass * (G / 60) * sin(x / LENGTH);
 				x += speed;
-				// ²‚ğŒ´“_‚Æ‚µ‚Ä‚Ô‚ç‰º‚ª‚Á‚Ä‚¢‚é•¨‚ÌÀ•W‚ğŒvZ
+				// è»¸ã‚’åŸç‚¹ã¨ã—ã¦ã¶ã‚‰ä¸‹ãŒã£ã¦ã„ã‚‹ç‰©ã®åº§æ¨™ã‚’è¨ˆç®—
 				angle = x / LENGTH + PI / 2.0;
 				nx = cos(angle) * LENGTH;
 				ny = sin(angle) * LENGTH;
@@ -367,16 +387,16 @@ void PLAYER::HookMove(ELEMENT* element) {
 					ny = 0;
 					speed = 0.0;
 				}
-				if (input_lx < 15000 && input_lx >- 15000) {	//—£‚µ‚Ä‚¢‚éŠÔ‚ÍŠp“x‚ğ‹·‚­AƒXƒs[ƒh‚ğ’x‚­‚µ‚Ä‚¢‚­
+				if (input_lx < 15000 && input_lx >-15000) {	//é›¢ã—ã¦ã„ã‚‹é–“ã¯è§’åº¦ã‚’ç‹­ãã€ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’é…ãã—ã¦ã„ã
 					if (speed > 0)speed -= 0.05;
 					if (speed < 0)speed += 0.05;
 				}
 			}
 		}
 	}
-	//ƒtƒbƒN‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½‚ç
+	//ãƒ•ãƒƒã‚¯ãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸã‚‰
 	if (!is_hook) {
-		//‰Šú‰»
+		//åˆæœŸåŒ–
 		end_move = false;
 		is_hook_move = false;
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
@@ -390,34 +410,36 @@ void PLAYER::HookMove(ELEMENT* element) {
 }
 
 /// <summary>
-/// ƒvƒŒƒCƒ„[‚ÌƒWƒƒƒ“ƒvˆ—
+/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¸ãƒ£ãƒ³ãƒ—å‡¦ç†
 /// </summary>
-void PLAYER::JumpMove() {
-	if (CheckHitKey(KEY_INPUT_SPACE))return;		//ƒfƒoƒbƒO—p
-	static bool is_jump = false;		//ƒWƒƒƒ“ƒv’†‚©
-	static float jump_y = 0;			//ƒWƒƒƒ“ƒv‚Ì‚‚³
-	static float velocity = 0.0f;	//ƒWƒƒƒ“ƒv‚Æ—‰º‚ÌƒXƒs[ƒh
-	//Aƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚Æ‚«
+void PLAYER::JumpMove(ELEMENT* element) {
+	if (CheckHitKey(KEY_INPUT_SPACE))return;		//ãƒ‡ãƒãƒƒã‚°ç”¨
+	static bool is_jump = false;		//ã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã‹
+	static float jump_y = 0;			//ã‚¸ãƒ£ãƒ³ãƒ—ã®é«˜ã•
+	static float velocity = 0.0f;	//ã‚¸ãƒ£ãƒ³ãƒ—ã¨è½ä¸‹ã®ã‚¹ãƒ”ãƒ¼ãƒ‰
+	//Aãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã¨ã
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A || jump_request) {
-		//ƒWƒƒƒ“ƒv’†‚¶‚á‚È‚¢‚Æ‚«
+		//ã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã˜ã‚ƒãªã„ã¨ã
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && player_state != PLAYER_MOVE_STATE::HOOK
 			|| jump_request) {
 			jump_request = false;
-			is_jump = true;			//ƒWƒƒƒ“ƒv’†‚ÉˆÚs
-			jump_y = player_y - MAP_CEllSIZE; //ƒWƒƒƒ“ƒv‚Ì‚‚³‚ÌƒZƒbƒg
+			is_jump = true;			//ã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã«ç§»è¡Œ
+			jump_y = player_y - MAP_CEllSIZE; //ã‚¸ãƒ£ãƒ³ãƒ—ã®é«˜ã•ã®ã‚»ãƒƒãƒˆ
 			velocity = JUMP_VELOCITY;
-			//‰¡ˆÚ“®‚µ‚Ä‚È‚¢
+			//æ¨ªç§»å‹•ã—ã¦ãªã„æ™‚
 			if (player_state == PLAYER_MOVE_STATE::IDLE) {
 				jump_mode = 1;
 			}
-			//‰¡ˆÚ“®‚µ‚Ä‚é‚Æ‚«
+			//æ¨ªç§»å‹•ã—ã¦ã‚‹ã¨ã
 			else if (player_state == PLAYER_MOVE_STATE::MOVE) {
 				jump_mode = 2;
 			}
 			player_state = PLAYER_MOVE_STATE::JUMP;
+
+
 		}
 	}
-	//ƒWƒƒƒ“ƒv’†
+	//ã‚¸ãƒ£ãƒ³ãƒ—ä¸­
 	if (is_jump) {
 		animation_state = PLAYER_ANIM_STATE::JUMP;
 		MoveAnimation();
@@ -438,66 +460,68 @@ void PLAYER::JumpMove() {
 			velocity = 0;
 		}
 	}
-	//—‰º’†
+	//è½ä¸‹ä¸­
 	else {
-		//’n–Ê‚Ì”»’è
+		//åœ°é¢ã®åˆ¤å®š
 		bool is_ground = false;
 		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
 			STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_ground = true;
 		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
 			STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_ground = true;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) is_ground = true;
-		//’n–Ê‚¶‚á‚È‚¢‚Í—‰º
-		if (!is_ground) {
-			velocity += 0.2f;
-			player_y += velocity;
-			player_state = PLAYER_MOVE_STATE::FALL;
-		}
-		//’n–Ê‚É‚Â‚¢‚½
-		else {
-			if ((player_state == PLAYER_MOVE_STATE::FALL || player_state == PLAYER_MOVE_STATE::JUMP) && !is_hook_move) {
-				float new_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
-				if (fabsf(player_y - new_y) <= 10) {
-					player_y = new_y;
-					velocity = 0;
-					player_state = PLAYER_MOVE_STATE::IDLE;
-				}
-				else {
-					bool is_wall = false;
-					if (move_x < 0 &&
-						STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
-						STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_wall = true;
-					if (move_x > 0 &&
-						STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
-						STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_wall = true;
-
-					if (!is_wall) {
+		if (element->HitLift()) is_ground = true;
+		
+			//åœ°é¢ã˜ã‚ƒãªã„æ™‚ã¯è½ä¸‹
+			if (!is_ground) {
+				velocity += 0.2f;
+				player_y += velocity;
+				player_state = PLAYER_MOVE_STATE::FALL;
+			}
+		//åœ°é¢ã«ã¤ã„ãŸæ™‚
+			else {
+				if ((player_state == PLAYER_MOVE_STATE::FALL || player_state == PLAYER_MOVE_STATE::JUMP) && !is_hook_move) {
+					float new_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+					if (fabsf(player_y - new_y) <= 10) {
 						player_y = new_y;
+						velocity = 0;
+						player_state = PLAYER_MOVE_STATE::IDLE;
 					}
+					else {
+						bool is_wall = false;
+						if (move_x < 0 &&
+							STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
+							STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) == 0) is_wall = true;
+						if (move_x > 0 &&
+							STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
+							STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_wall = true;
 
-					if (move_type == 0)
-						player_x -= SPEED;
-					else
-						player_x += SPEED;
+						if (!is_wall) {
+							player_y = new_y;
+						}
+
+						if (move_type == 0)
+							player_x -= SPEED;
+						else
+							player_x += SPEED;
+					}
+				}
+				if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
+					velocity = 0;
 				}
 			}
-			if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
-				velocity = 0;
-			}
-		}
 	}
 
 }
 
 void PLAYER::Throw() {
 	static bool is_throw = true;
-	//‹O“¹‚ÌŒvZ
+	//è»Œé“ã®è¨ˆç®—
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
 		is_throw = false;
 		is_throw_anim = true;
-		//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒŠƒZƒbƒg
+		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒªã‚»ãƒƒãƒˆ
 		animation_type[2] = 0;
-		
+
 		throw_index = 0;
 		throw_x.clear();
 		throw_y.clear();
@@ -508,10 +532,10 @@ void PLAYER::Throw() {
 			is_throw_anim = false;
 			return;
 		}
-		//Šp“xæ“¾
+		//è§’åº¦å–å¾—
 		throw_rad = atan2(input_ry, input_rx);
 		float angle = throw_rad * 180.0f / M_PI;
-		//Šp“x‚Ì§ŒÀ
+		//è§’åº¦ã®åˆ¶é™
 		if (move_type == 0) {
 			if (angle > 90) throw_rad = 90 * M_PI / 180.0f;
 			else if (angle < 60) throw_rad = 60 * M_PI / 180.0f;
@@ -544,13 +568,13 @@ void PLAYER::Throw() {
 		}
 	}
 	else {
-		if (life > 1 || is_throw) {
+		if ((life > 1 || is_throw) && is_throw_anim) {
 			if (!is_throw) {
 				throw_slime.push_back(ThrowSlime(throw_x, throw_y));
 				life--;
 				is_throw = true;
 			}
-			//“Š‚°‚éˆ—
+			//æŠ•ã’ã‚‹å‡¦ç†
 			if (is_throw_anim) {
 				int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
 				if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
@@ -565,15 +589,18 @@ void PLAYER::Throw() {
 		else {
 			is_throw = true;
 			is_throw_anim = false;
+			if (animation_state == PLAYER_ANIM_STATE::THROW) {
+				animation_state = PLAYER_ANIM_STATE::IDLE;
+			}
 		}
 	}
 }
 
 /// <summary>
-/// ‰¡ˆÚ“®‚Ì“–‚½‚è”»’è
+/// æ¨ªç§»å‹•ã®å½“ãŸã‚Šåˆ¤å®š
 /// </summary>
 void PLAYER::HitBlock() {
-	//ƒ}ƒbƒvƒ`ƒbƒv‚ÌÀ•W‚ÌƒZƒbƒg
+	//ãƒãƒƒãƒ—ãƒãƒƒãƒ—ã®åº§æ¨™ã®ã‚»ãƒƒãƒˆ
 	map_x = (int)roundf((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
 	player_left = (player_x - STAGE::GetScrollX() - 35);
@@ -620,17 +647,17 @@ void PLAYER::HitBlock() {
 }
 
 /// <summary>
-/// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌØ‚è‘Ö‚¦
+/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®åˆ‡ã‚Šæ›¿ãˆ
 /// </summary>
 void PLAYER::MoveAnimation() {
-	//‰æ‘œ‚ÌØ‚è‘Ö‚¦ƒ^ƒCƒ~ƒ“ƒO‚Ì‚Æ‚«
+	//ç”»åƒã®åˆ‡ã‚Šæ›¿ãˆã‚¿ã‚¤ãƒŸãƒ³ã‚°ã®ã¨ã
 	int type = static_cast<int>(animation_state);
 	if (++animation_frame % animation_switch_frame[type] == 0) {
-		//‘O”¼‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
+		//å‰åŠã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 		if (animation_phase[type] == 0) {
 			animation_type[type]++;
 		}
-		//Œã”¼‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
+		//å¾ŒåŠã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 		else {
 			if (animation_play_type[type] == 0) {
 				animation_type[type]--;
@@ -640,10 +667,28 @@ void PLAYER::MoveAnimation() {
 				animation_type[type] = 1;
 			}
 		}
-		//‘O”¼‚ÆŒã”¼‚ÌØ‚è‘Ö‚¦
+		//å‰åŠã¨å¾ŒåŠã®åˆ‡ã‚Šæ›¿ãˆ
 		if (animation_type[type] >= animation_image_num[type] - 1 || animation_type[type] <= 0) {
 			animation_phase[type] = (animation_phase[type] + 1) % 2;
 		}
 	}
 }
 
+bool PLAYER::GetBullet() {
+	float r1X, r1Y, r1XY;
+	for (int i = 0; i < throw_slime.size(); i++) {
+		r1X = throw_slime[i].GetThrowX() + STAGE::GetScrollX() - player_x;
+		r1Y = throw_slime[i].GetThrowY() - player_y;
+		r1XY = sqrt(r1X * r1X + r1Y * r1Y);
+		if (r1XY <= 40 + BULLETRADIUS && throw_slime[i].Get_throwfall() == true) {
+			++life;
+			return true;
+		}
+	}
+	return false;
+}
+
+void PLAYER::SetLife(int a) 
+{
+	life = a;
+}

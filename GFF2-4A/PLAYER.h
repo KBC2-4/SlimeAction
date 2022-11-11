@@ -3,6 +3,7 @@
 #include "Element.h"
 #include <vector>
 #include "ThrowSlime.h"
+#include "STAGE.h"
 
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
 #define SPEED					3.0f	//プレイヤーのスピード
@@ -17,6 +18,8 @@
 #define LENGTH      200                 // 紐の長さ
 #define CLENGTH     (LENGTH * 2 * PI)   // 紐を伸ばして一周させた場合に出来る円の円周の長さ
 #define G           9.81                // 重力加速度
+
+//ThrowSlime throw_slime;
 
 //移動ステート
 enum class PLAYER_MOVE_STATE {
@@ -35,6 +38,7 @@ enum class PLAYER_ANIM_STATE {
 	IDLE = 0,//アイドルアニメーション
 	MOVE,	 //移動アニメーション
 	THROW,	 //投げるアニメーション
+	HOOK,
 	JUMP,	//ジャンプアニメーション
 };
 
@@ -86,6 +90,7 @@ private:
 	std::vector<float>throw_y = {0};
 	int throw_index = 0;
 
+
 	float ve, vx0, vy0, vx, vy;
 	float g, dt, t,x0, y0;
 
@@ -94,6 +99,7 @@ private:
 		3,	//アイドル
 		1,	//移動
 		3,	//投げる
+		1,
 		2,	//ジャンプ
 	};
 
@@ -104,6 +110,7 @@ private:
 		1,	//アイドル
 		0,	//移動
 		1,	//投げる
+		2,
 		1,	//ジャンプ
 	};
 
@@ -112,6 +119,7 @@ private:
 		9,	//アイドル
 		10,	//移動
 		7,	//投げる
+		1,
 		20,	//ジャンプ
 	};
 
@@ -125,19 +133,28 @@ public:
 	void Move();
 	void Draw() const;
 	void HookMove(ELEMENT* element);
-	void JumpMove();
+	void JumpMove(ELEMENT* element);
 	void Throw();
 	void MoveAnimation();
-	void Update(ELEMENT*element);
+	void Update(ELEMENT*element, STAGE* stage);
 	void HitBlock();
 	void Scroll(float move_x);
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
 	bool IsDeath() { return is_death; }
-	static float GetPlayerX() { return player_x; };
-	static float GetPlayerY() { return player_y; };
+	static float GetPlayerX() { return player_x; }
+	static float GetPlayerY() { return player_y; }
 
-	void SetLife(int);
+	void SetPlayerX(float x) { player_x = x; }
+	void SetPlayerY(float y) { player_y = y; }
+
+	int GetThrowCnt() { return throw_slime.size(); }
+	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
+
+	bool GetBullet();	//ドロップした玉を拾う処理
+	double GetSpeed() { return speed; }
+	float GetMoveX() { return move_x; }
+	void SetLife(int a);
 };
 

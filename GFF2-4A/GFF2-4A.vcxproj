@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="GrapeFruit.cpp" />
     <ClCompile Include="Lemon.cpp" />
@@ -165,7 +166,6 @@
     <ClCompile Include="PadInput.cpp" />
     <ClCompile Include="PLAYER.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="Splash.cpp" />
     <ClCompile Include="STAGE.cpp" />
     <ClCompile Include="ThrowSlime.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -175,17 +175,20 @@
     <ClInclude Include="AbstractScene.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="GrapeFruit.h" />
     <ClInclude Include="Lemon.h" />
     <ClInclude Include="PadInput.h" />
     <ClInclude Include="PLAYER.h" />
     <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="Splash.h" />
     <ClInclude Include="STAGE.h" />
     <ClInclude Include="ThrowSlime.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tomato.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
