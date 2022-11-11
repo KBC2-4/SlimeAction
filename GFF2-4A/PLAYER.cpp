@@ -75,7 +75,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 		throw_slime[i].Update(stage);
 	}
 
-	if (STAGE::GetMapDat(map_y, map_x) == -1) {
+	if (STAGE::GetMapDat(map_y, map_x) == -1 || life <= 0) {
 		is_death = true;
 	}
 
