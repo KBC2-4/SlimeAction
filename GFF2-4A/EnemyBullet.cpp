@@ -54,7 +54,7 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, do
 	image_indx = index;
 
 	stage = aug_stage;
-	dis_x = (player_x - rad_x) - (my_x - scroll_x);
+	dis_x = (player_x + rad_x) - (my_x - static_cast<double>(scroll_x));
 	dis_y = player_y - my_y;
 
 	hypote = sqrt((dis_x * dis_x) + (dis_y * dis_y));
@@ -93,6 +93,11 @@ void ENEMYBULLET::Move()
 	bullet_x += bullet_sx;
 	bullet_y += bullet_sy;
 
+	if (GetDrawX() < 0 || GetDrawX() > 1280) 
+	{
+		delete_flg = true;
+	}
+
 	//弾が画面外に行ったら消えるフラグを真に
 	mapd_x = bullet_x / MAP_CEllSIZE;
 	mapd_y = bullet_y / MAP_CEllSIZE;
@@ -123,7 +128,7 @@ void ENEMYBULLET::Hit()
 	by1 = bullet_y;
    	by2 = by1 + 20;
 
-	if (((px2 >= bx1 && px1 <= bx1) || (px1 <= bx2 && px2 >= bx2)) && ((py1 <= by2 && py2 >= by2) || (by1 <= py2 && by1 >= py1)))
+	if (px1 < bx2 && bx1 < px2 && py1 < by2 && by1 < py2)
 	{
 		delete_flg = true;
 		hit_flg = true;

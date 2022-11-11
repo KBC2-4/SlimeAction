@@ -19,7 +19,7 @@ protected:
 public:
 	STAGE();
 	//マップ情報の更新
-	//void Update();
+	void Update();
 	//ステージの描画
 	virtual void Draw() const;
 	//ステージの初期化
@@ -41,5 +41,7 @@ public:
 	static float GetScrollX() { return scroll_x; };	
 	//マップデータの読み込み
 	void LoadMapData(void);	
+
+	void StageClear(void);
 };
 
