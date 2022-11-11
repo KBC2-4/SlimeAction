@@ -11,7 +11,7 @@ float PLAYER::player_x, PLAYER::player_y;
 /*コンストラクタ*/
 PLAYER::PLAYER() {
 	player_x = 20.0f;
-	player_y = 520.0f;
+	player_y = 500.0f;
 	rebound_x = SPEED;
 	map_x = 0;
 	map_y = 0;
@@ -106,10 +106,12 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// </summary>
 void PLAYER::Draw()const {
 	//プレイヤーの表示
+	
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
+		
 		//printfDx("scale: %f\n", static_cast<float>(life) / static_cast<float>(MAX_LIFE));
 		float slime_size_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
-		DrawRotaGraphF(player_x, player_y, slime_size_scale, 0.0, now_image, TRUE, move_type);
+		DrawRotaGraphF(player_x, (player_y-20) + (1.6 - slime_size_scale) * 40, slime_size_scale, 0.0, now_image, TRUE, move_type);
 		
 	}
 	else {
@@ -150,6 +152,7 @@ void PLAYER::Draw()const {
 	for (int i = 0; i < life - 1; i++) {
 		DrawRotaGraph(30 + 50 * i, 20, 1.5, 1, throw_ball_image, TRUE);
 	}
+	
 	//else {
 	//	//DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
 	//	DrawGraph(throw_x[0], throw_y[0], throw_ball_image, TRUE);
