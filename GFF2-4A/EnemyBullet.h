@@ -19,18 +19,14 @@ private:
     float now_scroll_x;
     float old_scroll_x;
     float scroll_x;
-
-    int i = 0;
-    double cos_x = 0.0;
-    double sin_y = 0.0;
+    float GetDrawX() const;
     bool delete_flg;
-    bool old_hit_flg;
     PLAYER* player;
     STAGE* stage;
 
 public:
     ENEMYBULLET();
-    ENEMYBULLET(PLAYER* player, STAGE*, int x, int y, double dis, float);
+    ENEMYBULLET(PLAYER* player, STAGE* aug_stage, int x, int y, double dis, float scroll);
     ~ENEMYBULLET() {};
 
     void Update();
@@ -43,6 +39,5 @@ public:
     void Draw() const;
 
     bool GetDeleteFlg(){return delete_flg;}
-
 };
 

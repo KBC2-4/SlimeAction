@@ -682,3 +682,8 @@ bool PLAYER::GetBullet() {
 	}
 	return false;
 }
+
+void PLAYER::SetLife(int a) 
+{
+	life = a;
+}

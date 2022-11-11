@@ -18,7 +18,7 @@ GRAPEFRUIT::GRAPEFRUIT()
 	rad = 0.0;
 	for (int i = 0; i < 2; i++)
 		rads[i] = 0.0;
-	flag = false;
+	flag[3] = false;
 	x = 0;
 	spawn_map_x = 0;
 	spawn_map_y = 0;
@@ -40,7 +40,10 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	spawn_map_y = spawn_y;
 	x = (spawn_map_x * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 	y = (spawn_map_y * MAP_CEllSIZE + MAP_CEllSIZE / 2) - 40;
-	flag = false;
+	for (int i = 0; i < 3; i++)
+	{
+		flag[i] = false;
+	}
 	delete_flg = false;
 	image = new int[100];
 	if (LoadDivGraph("Resource/Images/Enemy/gurepon.png", 1, 1, 1, 80, 80, image) == -1)
@@ -71,13 +74,16 @@ void GRAPEFRUIT::Update()
 		ChangeAngle();
 		if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280)) {
 			if (++shootcount % 180 == 0) {			
-
-				if (flag == false) 
+				for (int i = 0; i < 3; i++)
 				{
-				    bullet[0] = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX());
-					bullet[1] = new ENEMYBULLET(player, stage, x, y, 200.0, stage->GetScrollX());
-					bullet[2] = new ENEMYBULLET(player, stage, x, y, -200.0, stage->GetScrollX());
-					flag = true;
+					if (flag[i] == false)
+					{
+						//bullet[0] = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX());
+						//bullet[1] = new ENEMYBULLET(player, stage, x, y, 200.0, stage->GetScrollX());
+						//bullet[2] = new ENEMYBULLET(player, stage, x, y, 100.0, stage->GetScrollX());
+						bullet[i] = new ENEMYBULLET(player, stage, x, y, i * 100.0, stage->GetScrollX());
+						flag[i] = true;
+					}
 				}
 			}
 			if (flag)
@@ -91,7 +97,7 @@ void GRAPEFRUIT::Update()
 						{
 							delete bullet[i];
 							bullet[i] = nullptr;
-							flag = false;
+							flag[i] = false;
 						}
 					}
 				}
@@ -109,7 +115,10 @@ void GRAPEFRUIT::Update()
 void GRAPEFRUIT::Move()
 {
 	y += 1;
-	flag = false;
+	for (int i = 0; i < 3; i++)
+	{
+		flag[i] = false;
+	}
 	if (++check_hit_count % 80 == 0)
 	{
 		spawn_map_y++;
