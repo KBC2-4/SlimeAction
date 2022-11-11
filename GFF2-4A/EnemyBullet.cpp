@@ -21,14 +21,17 @@ ENEMYBULLET::ENEMYBULLET()
 	rad_x = 0.0;
 	map_x = 0;
 	map_y = 0;
-	test1_x = 0;
-	test1_y = 0;
-	test2_x = 0;
-	test2_y = 0;
+	image_indx = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		bullet_images[i] = 0;
+	}
 }
 
-ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, double dis, float scroll)
+ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, double dis, float scroll,double p_rad,int index)
 {
+	if (LoadDivGraph("Resource/images/Enemy/Enemy_Bullet.png",4,4,1,20,20,bullet_images)== -1)
+		throw "Resource/Images/Enemy/Enemy_Bullet.png";
 	player = argu_player;
 	player_x = player->GetPlayerX();
 	player_y = player->GetPlayerY();
@@ -47,6 +50,8 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, do
 	scroll_x = abs(scroll);
 	map_x = 0;
 	map_y = 0;
+	rad = p_rad;
+	image_indx = index;
 
 	stage = aug_stage;
 	dis_x = (player_x - rad_x) - (my_x - scroll_x);
@@ -60,9 +65,7 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, do
 
 void ENEMYBULLET::Draw() const
 {
-
-	DrawBox(static_cast<int>(GetDrawX()), bullet_y, static_cast<int>(GetDrawX()) + 40, bullet_y + 40, 0xff00ff, TRUE);
-	DrawBox(test1_x, test1_y, test2_x, test2_y, 0xffffff, false);
+	DrawRotaGraph(static_cast<int>(GetDrawX()), bullet_y, 2, rad + (-90 * (PI / 180)), bullet_images[image_indx], TRUE);
 }
 
 void ENEMYBULLET::Update()
@@ -87,7 +90,7 @@ void ENEMYBULLET::Update()
 void ENEMYBULLET::Move()
 {
 	//弾の移動
-	bullet_x += bullet_sx/* - player->GetMoveX()*/;
+	bullet_x += bullet_sx;
 	bullet_y += bullet_sy;
 
 	//弾が画面外に行ったら消えるフラグを真に
@@ -119,13 +122,6 @@ void ENEMYBULLET::Hit()
 	bx2 = bx1 + 20;
 	by1 = bullet_y;
    	by2 = by1 + 20;
-
-	test1_x = px1;
-	test1_y = py1;
-	test2_x = px2;
-	test2_y = py2;
-
-	
 
 	if (((px2 >= bx1 && px1 <= bx1) || (px1 <= bx2 && px2 >= bx2)) && ((py1 <= by2 && py2 >= by2) || (by1 <= py2 && by1 >= py1)))
 	{

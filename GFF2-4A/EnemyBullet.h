@@ -22,13 +22,15 @@ private:
     float GetDrawX() const;
     bool delete_flg;
     bool hit_flg;
-    double test1_x, test1_y, test2_x, test2_y;
+    int bullet_images[4];
+    double rad;
+    int image_indx;
     PLAYER* player;
     STAGE* stage;
 
 public:
     ENEMYBULLET();
-    ENEMYBULLET(PLAYER* player, STAGE* aug_stage, int x, int y, double dis, float scroll);
+    ENEMYBULLET(PLAYER* player, STAGE* aug_stage, int x, int y, double dis, float scroll,double,int);
     ~ENEMYBULLET() {};
 
     void Update();
