@@ -15,9 +15,8 @@ AbstractScene* RESULT::Update() {
 	if ((GetNowCount() - count) > 3000) {
 		count = GetNowCount();
 		return new GAMEMAIN();
-		
-	}
 
+	}
 	return this;
 }
 

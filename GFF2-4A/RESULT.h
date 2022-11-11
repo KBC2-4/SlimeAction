@@ -1,14 +1,15 @@
 #pragma once
 #include "AbstractScene.h"
+
 class RESULT : public AbstractScene
 {
 private:
-	int timer;
 	int background_image;
+	int timer;
 
 public:
 	RESULT();
 	AbstractScene* Update() override;
-	virtual void Draw() const override;
+	void Draw() const override;
 };
 
