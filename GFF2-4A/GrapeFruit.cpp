@@ -71,13 +71,15 @@ void GRAPEFRUIT::Update()
 		ChangeAngle();
 		if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280)) {
 			if (++shootcount % 180 == 0) {			
-
-				if (flag == false) 
+				for (int i = 0; i < 3; i++)
 				{
-				    bullet[0] = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX());
-					bullet[1] = new ENEMYBULLET(player, stage, x, y, 200.0, stage->GetScrollX());
-					bullet[2] = new ENEMYBULLET(player, stage, x, y, -200.0, stage->GetScrollX());
-					flag = true;
+					if (flag[i] == false)
+					{
+						bullet[0] = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX());
+						bullet[1] = new ENEMYBULLET(player, stage, x, y, 200.0, stage->GetScrollX());
+						bullet[2] = new ENEMYBULLET(player, stage, x, y, -200.0, stage->GetScrollX());
+						flag[i] = true;
+					}
 				}
 			}
 			if (flag)
@@ -91,7 +93,7 @@ void GRAPEFRUIT::Update()
 						{
 							delete bullet[i];
 							bullet[i] = nullptr;
-							flag = false;
+							flag[i] = false;
 						}
 					}
 				}
