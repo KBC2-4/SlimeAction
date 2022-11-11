@@ -42,7 +42,11 @@ PLAYER::PLAYER() {
 		throw "Resource/Images/Player/nobi.png";
 	}
 
-	if (LoadDivGraph("Resource/Images/Player/JumpSlime1.png", 10, 10, 1, 80, 80, images[3]) == -1) {
+	if (LoadDivGraph("Resource/Images/Player/JumpSlime1.png", 10, 10, 1, 80, 80, images[4]) == -1) {
+		throw "Resource/Images/Player/JumpSlime1.png";
+	}
+
+	if (LoadDivGraph("Resource/Images/Player/JumpSlime2.png", 10, 10, 1, 80, 80, images[5]) == -1) {
 		throw "Resource/Images/Player/JumpSlime1.png";
 	}
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
@@ -180,7 +184,9 @@ void PLAYER::Move() {
 	//移動するとき
 	move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 	if ((input_lx < -DEVIATION || input_lx > DEVIATION) && player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		animation_state = PLAYER_ANIM_STATE::MOVE;
+		if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::LANDING) {
+			animation_state = PLAYER_ANIM_STATE::MOVE;
+		}
 		animation_mode = 1;							//アニメーションの切り替え
 		move_type = move_x > 0 ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL) {
@@ -228,9 +234,11 @@ void PLAYER::Move() {
 		}
 		//移動アニメーションが終わったらアイドルアニメーションの再生
 		else {
-			animation_state = PLAYER_ANIM_STATE::IDLE;
-			animation_mode = 0;
-			MoveAnimation();
+			if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::LANDING) {
+				animation_state = PLAYER_ANIM_STATE::IDLE;
+				animation_mode = 0;
+				MoveAnimation();
+			}
 		}
 		//ジャンプ中じゃないかったらステートを切り替える
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL &&
@@ -435,13 +443,14 @@ void PLAYER::JumpMove(ELEMENT* element) {
 				jump_mode = 2;
 			}
 			player_state = PLAYER_MOVE_STATE::JUMP;
-
+			animation_state = PLAYER_ANIM_STATE::JUMP;
+			animation_type[static_cast<int>(animation_state)] = 0;
 
 		}
 	}
 	//ジャンプ中
 	if (is_jump) {
-		animation_state = PLAYER_ANIM_STATE::JUMP;
+		//animation_state = PLAYER_ANIM_STATE::JUMP;
 		MoveAnimation();
 		velocity += 0.2f;
 		player_y += velocity;
@@ -485,6 +494,7 @@ void PLAYER::JumpMove(ELEMENT* element) {
 						player_y = new_y;
 						velocity = 0;
 						player_state = PLAYER_MOVE_STATE::IDLE;
+						animation_state = PLAYER_ANIM_STATE::LANDING;
 					}
 					else {
 						bool is_wall = false;
@@ -507,6 +517,12 @@ void PLAYER::JumpMove(ELEMENT* element) {
 				}
 				if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 					velocity = 0;
+				}
+				if (animation_state == PLAYER_ANIM_STATE::LANDING) {
+					MoveAnimation();
+					if (animation_type[static_cast<int>(animation_state)] >= 9) {
+						animation_state = PLAYER_ANIM_STATE::IDLE;
+					}
 				}
 			}
 	}
