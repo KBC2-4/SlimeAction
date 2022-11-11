@@ -410,6 +410,8 @@ void PLAYER::HookMove(ELEMENT* element) {
 			player_x = hook_x + STAGE::GetScrollX() + nx;
 			player_y = hook_y + ny;
 			player_y += 1;
+			if (speed < 0)jump_move_x = 1;
+			if (speed >= 0)jump_move_x = -1;
 			jump_request = true;
 			player_state = PLAYER_MOVE_STATE::JUMP;
 		}
