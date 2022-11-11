@@ -14,6 +14,7 @@ private:
 	int stage_image[5];			//ステージ背景画像
 	float map_x, map_y;			//マップ描画座標
 	int clearbox[2];		//クリアになるボックス状範囲	0=x,1=y
+	bool clearflg;			//クリア判定フラグ
 
 protected:
 	int block_image1[100];		//ステージブロック画像

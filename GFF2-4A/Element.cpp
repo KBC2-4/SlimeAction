@@ -122,10 +122,6 @@ void ELEMENT::Draw() const {
 	//DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
 	//DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
 	////デバッグ用
-	//DrawFormatString(200, 250, 0xFFFFFF, "door.x%f\ndoor.y%f", door[0].x, door[0].y);
-	//DrawFormatString(200, 300, 0xFFFFFF, "flg:%d", door[0].flg);
-	//DrawFormatString(200, 350, 0xFFFFFF, ":%d", static_cast<int>((door[0].x / MAP_CEllSIZE)));
-	//DrawBox(button[1].x + scroll_x, button[1].y + scroll_y, button[1].x + scroll_x + MAP_CEllSIZE, button[1].y + scroll_y + MAP_CEllSIZE,0xff0000,TRUE);
 
 	//ボタン
 	for (int i = 0; i < button.size(); i++) {
@@ -180,7 +176,7 @@ void ELEMENT::Button(PLAYER* player) {
 			button[i].flg = false;
 		}	
 
-		if (button[i].type == 1) {
+		if (button[i].type == 1) {		//横ボタン
 			int max_ball_num = player->GetThrowCnt();
 			for (int ball_num = 0; ball_num < max_ball_num; ball_num++) {
 				if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2 + 33) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2 - 30) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
@@ -194,7 +190,7 @@ void ELEMENT::Button(PLAYER* player) {
 				}
 			}
 		}
-			if (button[i].type == 2) {
+			if (button[i].type == 2) {	//ボタン
 				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 ) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
 					//printfDx("2番に入ってるよ！");
@@ -209,7 +205,7 @@ void ELEMENT::Button(PLAYER* player) {
 			}
 
 			//一回限り
-			if (button[i].type == 3) {
+			if (button[i].type == 3) {	//Onecボタン
 				if ((player_map_x >= button[i].x-MAP_CEllSIZE/2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2)&& (player_map_y >= button[i].y - MAP_CEllSIZE / 2)&& (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
 					//printfDx("3番に入ってるよ！");
@@ -288,6 +284,10 @@ bool ELEMENT::HitLift() {
 	return false;
 }
 
+
+/// <summary>
+/// マンホールの処理
+/// </summary>
 void ELEMENT::Manhole(PLAYER* player) {
 	for (int i = 0; i < manhole.size(); i++) {
 		if (manhole[i].flg == true)manhole[i].animtimer++;
@@ -297,7 +297,7 @@ void ELEMENT::Manhole(PLAYER* player) {
 		}
 		if (manhole[i].type == 1) {
 			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE + 25) && (player_map_x <= manhole[i].x + MAP_CEllSIZE - 25) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
-				player->SetPlayerY(manhole[i].y - 10.5f);
+				player->SetPlayerY(player->GetPlayerY() - 10.5f);
 				manhole[i].flg = true;
 
 			}

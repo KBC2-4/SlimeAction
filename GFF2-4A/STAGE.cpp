@@ -16,16 +16,19 @@ STAGE::STAGE() {
 	**map_data = 0;
 	*block_image1 = 0;
 	*stage_image = 0;
+	//scroll_x = -8640;
 	scroll_x = 0;
 	scroll_y = 0;
 	LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1);
 	//InitStage();
 	LoadMapData();
+	clearflg = false;
+	*clearbox = 0;
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			//クリア座標を代入
-			if (map_data[i][j] == 73) { clearbox[0] = i; clearbox[1] = j; }
+			if (map_data[i][j] == 73) { clearbox[0] = j * MAP_CEllSIZE; clearbox[1] = i * MAP_CEllSIZE; }
 		}
 	}
 }
@@ -34,10 +37,18 @@ STAGE::STAGE() {
 void STAGE::Update(PLAYER* player) {
 	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - STAGE::GetScrollX()));
 	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()));
-	//if()
+	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox[0], clearbox[1]);
+
+	//旗に触れるとゲームクリア
+	if ((player_map_x >= clearbox[0] - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox[0] + MAP_CEllSIZE + 30) && (player_map_y >= clearbox[1] - MAP_CEllSIZE / 2) && (player_map_y <= clearbox[1] + MAP_CEllSIZE / 2)) {
+		StageClear();
+	}
 }
 
 void STAGE::Draw()const {
+	//ゲームクリア時
+	if (clearflg == true) {DrawExtendString(500, 200, 10.0f, 10.0f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
+	
 	//printfDx("%f",scroll_x);
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
@@ -151,6 +162,11 @@ void STAGE::LoadMapData(void) {
 /// <summary>
 /// ステージクリア時
 /// </summary>
-void StageClear(void) {
-	
+void STAGE::StageClear(void) {
+	int count = GetNowCount();
+	clearflg = true;
+	if ((GetNowCount() - count) > 10) {
+		
+	}
+	//printfDx("%d\n",count,GetNowCount());
 }
