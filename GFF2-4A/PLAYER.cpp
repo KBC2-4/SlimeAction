@@ -107,7 +107,9 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 void PLAYER::Draw()const {
 	//プレイヤーの表示
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, now_image, TRUE, move_type);
+		//printfDx("scale: %f\n", static_cast<float>(life) / static_cast<float>(MAX_LIFE));
+		float slime_size_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
+		DrawRotaGraphF(player_x, player_y, slime_size_scale, 0.0, now_image, TRUE, move_type);
 		
 	}
 	else {
