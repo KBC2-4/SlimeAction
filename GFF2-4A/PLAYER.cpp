@@ -106,17 +106,13 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// </summary>
 void PLAYER::Draw()const {
 	//プレイヤーの表示
-	
+	float slime_size_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		
-		//printfDx("scale: %f\n", static_cast<float>(life) / static_cast<float>(MAX_LIFE));
-		float slime_size_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
 		DrawRotaGraphF(player_x, (player_y-20) + (1.6 - slime_size_scale) * 40, slime_size_scale, 0.0, now_image, TRUE, move_type);
 		
 	}
 	else {
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
-			//DrawRotaGraphF(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 1.0, 0.0, now_image, TRUE, move_type);
 			float diff_x = ((hook_x + STAGE::GetScrollX() + nx) - player_x);
 			float diff_y = ((hook_y + ny) - player_y);
 			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
@@ -134,7 +130,7 @@ void PLAYER::Draw()const {
 		}
 		else {
 			DrawRotaGraph3F(player_x, player_y, 40, 80,
-				1, hook_distance / (MAP_CEllSIZE / 2), (double)hook_angle,
+				1* slime_size_scale, (hook_distance / (MAP_CEllSIZE / 2))* slime_size_scale, (double)hook_angle,
 				now_image, TRUE, move_type);
 		}
 	}
@@ -145,44 +141,12 @@ void PLAYER::Draw()const {
 	}
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB && life > 1) {
 		for (int i = 0; i < throw_x.size(); i += 5) {
-			//DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 		}
 	}
 	for (int i = 0; i < life - 1; i++) {
 		DrawRotaGraph(30 + 50 * i, 20, 1.5, 1, throw_ball_image, TRUE);
 	}
-	
-	//else {
-	//	//DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
-	//	DrawGraph(throw_x[0], throw_y[0], throw_ball_image, TRUE);
-	//}
-
-
-	/*for (int i = 0; i < 10; i++) {
-		printfDx("throw_x[%d]: %f\n", i,throw_x[i]);
-	}
-	for (int i = 0; i < 10; i++) {
-		printfDxThrowSlime("throw_y[%d]: %f\n", i, throw_y[i]);
-	}*/
-	//printfDx("throw_rad: %f\n", throw_rad);
-	//printfDx("hook: %f %f\n", hook_x, hook_y);
-	//printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
-
-	//グリッドの表示(デバッグ用)
-	//for (int i = 0; i < 128; i++) {
-	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
-	//	DrawLine(i * 80 + STAGE::GetScrollX(), 0, i * 80 + STAGE::GetScrollX(),  720,0xFFFFFF, 2);		//縦
-	//}
-
-	//座標(デバッグ用)
-	/*printfDx("x1: %d, x2: %d\n", (int)(player_left / MAP_CEllSIZE), (int)player_right / MAP_CEllSIZE);
-	printfDx("y1: %d, y2: %d\n", (int)(player_top / MAP_CEllSIZE), (int)player_bottom / MAP_CEllSIZE);
-	printfDx("x : %d, y : %d\n", (int)(player_x / MAP_CEllSIZE), (int)player_y / MAP_CEllSIZE);*/
-
-	//マップチップの座標の表示(デバッグ用)
-	/*SetFontSize(40);
-	DrawFormatString(0, 0, 0xFF, "%d, %d: %d", map_x, map_y, STAGE::GetMapDat(map_y, map_x));*/
 }
 
 /// <summary>
@@ -707,5 +671,5 @@ bool PLAYER::GetBullet(int *bullet) {
 
 void PLAYER::SetLife(int a) 
 {
-	//life = a;
+	life = a;
 }
