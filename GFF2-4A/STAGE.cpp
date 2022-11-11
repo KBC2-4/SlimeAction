@@ -22,9 +22,9 @@ STAGE::STAGE() {
 }
 	
 
-//void STAGE::Update() {
-//
-//}
+void STAGE::Update() {
+
+}
 
 void STAGE::Draw()const {
 	//printfDx("%f",scroll_x);
@@ -56,12 +56,16 @@ void STAGE::PuddleProcess(){
 /// </summary>
 bool STAGE::SetScrollPos(int move_x) {
 	scroll_x -= 5 * move_x;
-	if (scroll_x >= 0 || scroll_x <= -7680) {
+	if (scroll_x >= 0 || scroll_x <= -8080) {
 		scroll_x += 5 * move_x;
 		return true;
 	}
 	return false;
 }
+
+/// <summary>
+/// プレイヤーとブロックの当たり判定
+/// </summary>
 
 bool STAGE::HitMapDat(int y, int x) {
 	if (CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用

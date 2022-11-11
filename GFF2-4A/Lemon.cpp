@@ -82,7 +82,7 @@ void LEMON::Update()
 		}
 		break;
 	case ENEMY_STATE::PRESS:
-		bullet = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX());
+		bullet = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX() ,rad,2);
 		state = ENEMY_STATE::RETURN;
 		break;
 	case ENEMY_STATE::FALL:
