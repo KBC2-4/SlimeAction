@@ -21,6 +21,8 @@ private:
     float scroll_x;
     float GetDrawX() const;
     bool delete_flg;
+    bool hit_flg;
+    double test1_x, test1_y, test2_x, test2_y;
     PLAYER* player;
     STAGE* stage;
 

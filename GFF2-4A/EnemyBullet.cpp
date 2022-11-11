@@ -17,9 +17,14 @@ ENEMYBULLET::ENEMYBULLET()
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
 	delete_flg = false;
+	hit_flg = false;
 	rad_x = 0.0;
 	map_x = 0;
 	map_y = 0;
+	test1_x = 0;
+	test1_y = 0;
+	test2_x = 0;
+	test2_y = 0;
 }
 
 ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, double dis, float scroll)
@@ -37,6 +42,7 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, do
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
 	delete_flg = false;
+	hit_flg = false;
 	rad_x = dis;
 	scroll_x = abs(scroll);
 	map_x = 0;
@@ -56,19 +62,24 @@ void ENEMYBULLET::Draw() const
 {
 
 	DrawBox(static_cast<int>(GetDrawX()), bullet_y, static_cast<int>(GetDrawX()) + 40, bullet_y + 40, 0xff00ff, TRUE);
+	DrawBox(test1_x, test1_y, test2_x, test2_y, 0xffffff, false);
 }
 
 void ENEMYBULLET::Update()
 {
 	Move();
 	Hit();
-	if (player->GetLife() > 0)
+
+	if (hit_flg)
 	{
-		player->SetLife(player->GetLife() - 1);
-	}
-	else
-	{
-		player->SetLife(0);
+		if (player->GetLife() > 0)
+		{
+			player->SetLife(player->GetLife() - 1);
+		}
+		else
+		{
+			player->SetLife(0);
+		}
 	}
 
 }
@@ -86,10 +97,6 @@ void ENEMYBULLET::Move()
 	map_x = (int)floor(mapd_x);
 	map_y = (int)floor(mapd_y);
 
-	/*if (GetDrawX() < 0 || GetDrawX() > 1280 || bullet_y < 0 || bullet_y >720) {
-		delete_flg = true;
-	}*/
-
 }
 
 void ENEMYBULLET::Animation()
@@ -99,25 +106,31 @@ void ENEMYBULLET::Animation()
 
 void ENEMYBULLET::Hit()
 {
+	
 	float px1, py1, px2, py2;
 	float bx1, by1, bx2, by2;
 
-	px1 = player_x;
-	px2 = px1 + 80;
+	px1 = player->GetPlayerX() - 30;
+	px2 = px1 + 60;
 	py1 = player_y;
 	py2 = py1 + 40;
 
 	bx1 = GetDrawX();
 	bx2 = bx1 + 20;
 	by1 = bullet_y;
-	by2 = by1 + 20;
+   	by2 = by1 + 20;
 
-	DrawBox(px1, py1, px2, py2, 0x000000, TRUE);
-	DrawBox(bx1, by1, bx2, by2, 0xffffff, TRUE);
+	test1_x = px1;
+	test1_y = py1;
+	test2_x = px2;
+	test2_y = py2;
+
+	
 
 	if (((px2 >= bx1 && px1 <= bx1) || (px1 <= bx2 && px2 >= bx2)) && ((py1 <= by2 && py2 >= by2) || (by1 <= py2 && by1 >= py1)))
 	{
 		delete_flg = true;
+		hit_flg = true;
 	}
 	if (stage->HitMapDat(map_y, map_x))
 	{

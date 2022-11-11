@@ -73,7 +73,7 @@ void GRAPEFRUIT::Update()
 	{
 		ChangeAngle();
 		if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280)) {
-			if (++shootcount % 180 == 0) {
+			if (++shootcount % 300 == 0) {
 				for (int i = 0; i < 3; i++)
 				{
 					if (flag[i] == false)
