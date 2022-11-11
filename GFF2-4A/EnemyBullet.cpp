@@ -17,13 +17,21 @@ ENEMYBULLET::ENEMYBULLET()
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
 	delete_flg = false;
+	hit_flg = false;
 	rad_x = 0.0;
 	map_x = 0;
 	map_y = 0;
+	image_indx = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		bullet_images[i] = 0;
+	}
 }
 
-ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, double dis, float scroll)
+ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, double dis, float scroll,double p_rad,int index)
 {
+	if (LoadDivGraph("Resource/images/Enemy/Enemy_Bullet.png",4,4,1,20,20,bullet_images)== -1)
+		throw "Resource/Images/Enemy/Enemy_Bullet.png";
 	player = argu_player;
 	player_x = player->GetPlayerX();
 	player_y = player->GetPlayerY();
@@ -37,10 +45,13 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, do
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
 	delete_flg = false;
+	hit_flg = false;
 	rad_x = dis;
 	scroll_x = abs(scroll);
 	map_x = 0;
 	map_y = 0;
+	rad = p_rad;
+	image_indx = index;
 
 	stage = aug_stage;
 	dis_x = (player_x - rad_x) - (my_x - scroll_x);
@@ -54,21 +65,24 @@ ENEMYBULLET::ENEMYBULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, do
 
 void ENEMYBULLET::Draw() const
 {
-
-	DrawBox(static_cast<int>(GetDrawX()), bullet_y, static_cast<int>(GetDrawX()) + 40, bullet_y + 40, 0xff00ff, TRUE);
+	DrawRotaGraph(static_cast<int>(GetDrawX()), bullet_y, 2, rad + (-90 * (PI / 180)), bullet_images[image_indx], TRUE);
 }
 
 void ENEMYBULLET::Update()
 {
 	Move();
 	Hit();
-	if (player->GetLife() > 0)
+
+	if (hit_flg)
 	{
-		player->SetLife(player->GetLife() - 1);
-	}
-	else
-	{
-		player->SetLife(0);
+		if (player->GetLife() > 0)
+		{
+			player->SetLife(player->GetLife() - 1);
+		}
+		else
+		{
+			player->SetLife(0);
+		}
 	}
 
 }
@@ -76,7 +90,7 @@ void ENEMYBULLET::Update()
 void ENEMYBULLET::Move()
 {
 	//弾の移動
-	bullet_x += bullet_sx/* - player->GetMoveX()*/;
+	bullet_x += bullet_sx;
 	bullet_y += bullet_sy;
 
 	//弾が画面外に行ったら消えるフラグを真に
@@ -85,10 +99,6 @@ void ENEMYBULLET::Move()
 
 	map_x = (int)floor(mapd_x);
 	map_y = (int)floor(mapd_y);
-
-	/*if (GetDrawX() < 0 || GetDrawX() > 1280 || bullet_y < 0 || bullet_y >720) {
-		delete_flg = true;
-	}*/
 
 }
 
@@ -99,25 +109,24 @@ void ENEMYBULLET::Animation()
 
 void ENEMYBULLET::Hit()
 {
+	
 	float px1, py1, px2, py2;
 	float bx1, by1, bx2, by2;
 
-	px1 = player_x;
-	px2 = px1 + 80;
+	px1 = player->GetPlayerX() - 30;
+	px2 = px1 + 60;
 	py1 = player_y;
 	py2 = py1 + 40;
 
 	bx1 = GetDrawX();
 	bx2 = bx1 + 20;
 	by1 = bullet_y;
-	by2 = by1 + 20;
-
-	DrawBox(px1, py1, px2, py2, 0x000000, TRUE);
-	DrawBox(bx1, by1, bx2, by2, 0xffffff, TRUE);
+   	by2 = by1 + 20;
 
 	if (((px2 >= bx1 && px1 <= bx1) || (px1 <= bx2 && px2 >= bx2)) && ((py1 <= by2 && py2 >= by2) || (by1 <= py2 && by1 >= py1)))
 	{
 		delete_flg = true;
+		hit_flg = true;
 	}
 	if (stage->HitMapDat(map_y, map_x))
 	{
