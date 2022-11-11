@@ -117,7 +117,7 @@ void ENEMYBULLET::Hit()
 
 	if (((px2 >= bx1 && px1 <= bx1) || (px1 <= bx2 && px2 >= bx2)) && ((py1 <= by2 && py2 >= by2) || (by1 <= py2 && by1 >= py1)))
 	{
-		//delete_flg = true;
+		delete_flg = true;
 	}
 	if (stage->HitMapDat(map_y, map_x))
 	{
