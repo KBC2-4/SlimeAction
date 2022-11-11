@@ -33,11 +33,11 @@ public:
 	ELEMENT();
 	void Draw() const override;
 	void Update(PLAYER* player);
-	void Button(PLAYER* player);
-	void Door();
-	void Lift(PLAYER* player);
-	bool HitLift();
-	void Manhole(PLAYER* player);
+	void Button(PLAYER* player);		//3種類のボタン
+	void Door();						//ドアの処理
+	void Lift(PLAYER* player);			//動く床の処理
+	bool HitLift();						//動く床の当たり判定
+	void Manhole(PLAYER* player);		//マンホールの処理
 	std::vector<ELEMENT_DATA> GetHook() { return hook; }
 	std::vector<ELEMENT_DATA>GetButton() { return button; }
 	std::vector<ELEMENT_DATA>GetDoor() { return door; }
