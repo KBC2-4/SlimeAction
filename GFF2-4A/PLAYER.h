@@ -151,6 +151,8 @@ public:
 	bool GetBullet();	//ƒhƒƒbƒv‚µ‚½‹Ê‚ğE‚¤ˆ—
 	double GetSpeed() { return speed; }
 	float GetMoveX() { return move_x; }
-	void SetLife(int);
+	void SetLife(int a) {
+		life = a;
+	};
 };
 
