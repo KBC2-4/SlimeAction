@@ -45,10 +45,10 @@ PLAYER::PLAYER() {
 		throw "Resource/Images/Player/nobi2.png";
 	}
 
-	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
-		throw "Resource/Images/Player/SlimeBullet.png";
+	if ((throw_ball_image = LoadGraph("Resource/Images/Player/Slime_Bullet.png")) == -1) {
+		throw "Resource/Images/Player/Slime_Bullet.png";
 	}
-
+	
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	animation_frame = 0;
 	animation_mode = 0;
@@ -63,15 +63,16 @@ PLAYER::PLAYER() {
 /// </summary>
 void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	//clsDx();
+	int bullet;
 	Move();
 	JumpMove(element);
 	HookMove(element);
 	Throw();
 	HitBlock();
-	if (GetBullet()==true) {
+	if (GetBullet(&bullet)==true) {
 		/*throw_x.erase(throw_x.begin());
 		throw_y.erase(throw_y.begin());*/
-		throw_slime.erase(throw_slime.begin());
+		throw_slime.erase(throw_slime.begin() + bullet);
 	}
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
@@ -143,6 +144,9 @@ void PLAYER::Draw()const {
 			//DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 		}
+	}
+	for (int i = 0; i < life - 1; i++) {
+		DrawRotaGraph(30 + 50 * i, 20, 1.5, 1, throw_ball_image, TRUE);
 	}
 	//else {
 	//	//DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
@@ -410,7 +414,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 			player_x = hook_x + STAGE::GetScrollX() + nx;
 			player_y = hook_y + ny;
 			player_y += 1;
-			if (speed < 0)jump_move_x = 1;
+			if (speed < 0)jump_move_x = 1;		//フック後のジャンプ方向の修正
 			if (speed >= 0)jump_move_x = -1;
 			jump_request = true;
 			player_state = PLAYER_MOVE_STATE::JUMP;
@@ -681,7 +685,7 @@ void PLAYER::MoveAnimation() {
 	}
 }
 
-bool PLAYER::GetBullet() {
+bool PLAYER::GetBullet(int *bullet) {
 	float r1X, r1Y, r1XY;
 	for (int i = 0; i < throw_slime.size(); i++) {
 		r1X = throw_slime[i].GetThrowX() + STAGE::GetScrollX() - player_x;
@@ -689,6 +693,7 @@ bool PLAYER::GetBullet() {
 		r1XY = sqrt(r1X * r1X + r1Y * r1Y);
 		if (r1XY <= 40 + BULLETRADIUS && throw_slime[i].Get_throwfall() == true) {
 			++life;
+			*bullet = i;
 			return true;
 		}
 	}

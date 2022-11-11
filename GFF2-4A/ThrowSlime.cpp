@@ -4,8 +4,8 @@
 #include<math.h>
 
 ThrowSlime::ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y) {
-	if ((image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
-		throw "Resource/Images/Player/SlimeBullet.png";
+	if ((image = LoadGraph("Resource/Images/Player/Slime_Bullet.png")) == -1) {
+		throw "Resource/Images/Player/Slime_Bullet.png";
 	}
 
 	throw_x = _throw_x;
@@ -58,7 +58,7 @@ int ThrowSlime::HitBlock(STAGE* stage) {
 	/*if (throw_fall == true && stage->HitThrowSlime((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) - MAP_CEllSIZE*2) / MAP_CEllSIZE) == false) {
  master*/
 		throw_bottom = (static_cast<int>(throw_y[0])/* - MAP_CEllSIZE*/) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
-		throw_y[0] -= throw_bottom + 5;
+		throw_y[0] -= throw_bottom + 10;
 		//printfDx("block: %d\n", stage->GetMapDat((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE)));
 		return true;
 	}
