@@ -99,12 +99,16 @@ void TOMATO::Hit()
 	float px1, py1, px2, py2;
 	float bx1, by1, bx2, by2;
 
-	px1 = player->GetPlayerX();
-	px2 = px1 + 80;
+	px1 = player->GetPlayerX() - 30;
+	px2 = px1 + 60;
 	py1 = player->GetPlayerY();
 	py2 = py1 + 40;
 
-	
+	bx1 = x - IMAGE_SIZE / 2;
+	bx2 = bx1 + IMAGE_SIZE;
+	by1 = y;
+	by2 = by1 + IMAGE_SIZE / 2;
+
 	//プレイヤーとの当たり判定
 	if (((px2 >= bx1 && px1 <= bx1) || (px1 <= bx2 && px2 >= bx2)) && ((py1 <= by2 && py2 >= by2) || (by1 <= py2 && by1 >= py1)))
 	{
@@ -168,7 +172,7 @@ bool TOMATO::DethAnimation()
 void TOMATO::Draw()const
 {
 	//画面外に出たら描画しない
-	if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280))
+	if ((x + stage->GetScrollX() > -IMAGE_SIZE) && (x + stage->GetScrollX() < 1280 + IMAGE_SIZE))
 	{
 		DrawRotaGraph(x + stage->GetScrollX(), y, image_rate, 0, now_image, TRUE);
 	}

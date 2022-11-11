@@ -78,13 +78,15 @@ void LEMON::Update()
 		
 		break;
 	case ENEMY_STATE::RETURN:
+		ChangeAngle();
 		if (ReturnAnimation())
 		{
 			state = ENEMY_STATE::MOVE;
 		}
 		break;
 	case ENEMY_STATE::PRESS:
-		bullet = new ENEMYBULLET(player, stage, x, y, rad, stage->GetScrollX());
+		ChangeAngle();
+		bullet = new ENEMYBULLET(player, stage, x, y, 0, stage->GetScrollX(),rad,2);
 		state = ENEMY_STATE::RETURN;
 		break;
 	case ENEMY_STATE::FALL:
