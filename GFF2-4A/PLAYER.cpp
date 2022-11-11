@@ -41,6 +41,9 @@ PLAYER::PLAYER() {
 	if ((images[3][0] = LoadGraph("Resource/Images/Player/nobi.png")) == -1) {
 		throw "Resource/Images/Player/nobi.png";
 	}
+	if ((images[3][1] = LoadGraph("Resource/Images/Player/nobi2.png")) == -1) {
+		throw "Resource/Images/Player/nobi2.png";
+	}
 
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
 		throw "Resource/Images/Player/SlimeBullet.png";
@@ -75,7 +78,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 		throw_slime[i].Update(stage);
 	}
 
-	if (STAGE::GetMapDat(map_y, map_x) == -1 || life <= 0) {
+	if (STAGE::GetMapDat(map_y, map_x) == -1 /*|| life <= 0*/) {
 		is_death = true;
 	}
 
@@ -113,9 +116,16 @@ void PLAYER::Draw()const {
 			float diff_y = ((hook_y + ny) - player_y);
 			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
 			float angle = atan2(diff_y, diff_x) + DX_PI_F;
-			DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
-				distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
-				images[3][0], TRUE, move_type);
+			if (move_type == 0) {
+				DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
+					distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
+					images[3][1], TRUE, move_type);
+			}
+			else {
+				DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
+					distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
+					images[3][0], TRUE, move_type);
+			}
 		}
 		else {
 			DrawRotaGraph3F(player_x, player_y, 40, 80,
@@ -685,5 +695,5 @@ bool PLAYER::GetBullet() {
 
 void PLAYER::SetLife(int a) 
 {
-	life = a;
+	//life = a;
 }

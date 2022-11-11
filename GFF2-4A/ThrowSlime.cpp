@@ -52,9 +52,9 @@ void ThrowSlime::Draw() const {
 
 int ThrowSlime::HitBlock(STAGE* stage) {
 	//if (throw_y[0] >= throw_y[throw_index + 1])throw_fall = true;
-
-	if (throw_fall == true &&  stage->HitThrowSlime(static_cast<int>(floor((throw_y[0]) / MAP_CEllSIZE)), (static_cast<int>(throw_x[0]) / MAP_CEllSIZE))) {
-
+	int enemy = stage->GetMapDat(static_cast<int>(floor((throw_y[0] / MAP_CEllSIZE))), static_cast<int>(throw_x[0] / MAP_CEllSIZE));
+	if (throw_fall == true &&  stage->HitThrowSlime(static_cast<int>(floor(throw_y[0] / MAP_CEllSIZE)), static_cast<int>(throw_x[0] / MAP_CEllSIZE))) {
+		if (enemy == 91 || enemy == 92) { return false; }
 	/*if (throw_fall == true && stage->HitThrowSlime((static_cast<int>(throw_y[0]) / MAP_CEllSIZE), (static_cast<int>(throw_x[0]) - MAP_CEllSIZE*2) / MAP_CEllSIZE) == false) {
  master*/
 		throw_bottom = (static_cast<int>(throw_y[0])/* - MAP_CEllSIZE*/) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
