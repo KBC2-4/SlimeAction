@@ -1,9 +1,11 @@
 #pragma once
 
+
 #define MAP_HEIGHT 14
 #define MAP_WIDTH 117
 #define MAP_CEllSIZE 80
 
+class PLAYER;
 
 class STAGE
 {
@@ -11,6 +13,7 @@ private:
 	
 	int stage_image[5];			//ステージ背景画像
 	float map_x, map_y;			//マップ描画座標
+	int clearbox[2];		//クリアになるボックス状範囲	0=x,1=y
 
 protected:
 	int block_image1[100];		//ステージブロック画像
@@ -19,7 +22,7 @@ protected:
 public:
 	STAGE();
 	//マップ情報の更新
-	void Update();
+	void Update(PLAYER *player);
 	//ステージの描画
 	virtual void Draw() const;
 	//ステージの初期化

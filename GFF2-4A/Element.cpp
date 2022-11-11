@@ -186,7 +186,11 @@ void ELEMENT::Button(PLAYER* player) {
 				if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2 + 33) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2 - 30) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
 					//printfDx("1番に入ってるよ！");
-					door[i + 1].flg = true;
+					if(i < door.size() && i >= 0){
+						int j = i + 1;
+						door[j].flg = true;
+					}
+					
 				}
 			}
 		}
@@ -196,7 +200,11 @@ void ELEMENT::Button(PLAYER* player) {
 					//printfDx("2番に入ってるよ！");
 					player->SetPlayerY(button[i].y - 6.5f);
 					button[i].flg = true;		//ボタンを押した
-					door[i - 1].flg = true;
+					if (i < door.size() && i >= 0) {
+						int j = i - 1;
+						door[j].flg = true;
+					}
+					
 				}
 			}
 
