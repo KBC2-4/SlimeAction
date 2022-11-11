@@ -35,7 +35,7 @@ public:
 	void Update(PLAYER* player);
 	void Button(PLAYER* player);
 	void Door();
-	void Lift();
+	void Lift(PLAYER* player);
 	bool HitLift();
 	void Manhole(PLAYER* player);
 	std::vector<ELEMENT_DATA> GetHook() { return hook; }
@@ -43,6 +43,5 @@ public:
 	std::vector<ELEMENT_DATA>GetDoor() { return door; }
 	std::vector<ELEMENT_DATA>GetLift() { return lift; }
 	std::vector<ELEMENT_DATA>GetManhole() { return manhole; }
-	float GetLiftVector() { return lift_vector; }
 };
 
