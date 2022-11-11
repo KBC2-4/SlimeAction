@@ -61,7 +61,7 @@
       <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="ThrowSlime.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -105,7 +105,7 @@
       <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="ThrowSlime.h">
-      <Filter>ソース ファイル\Enemy</Filter>
+      <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
