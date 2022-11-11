@@ -110,15 +110,12 @@ void GRAPEFRUIT::Update()
 
 void GRAPEFRUIT::Move()
 {
-	y += 1;
+	y += 5;
 	for (int i = 0; i < 3; i++)
 	{
 		flag[i] = false;
 	}
-	if (++check_hit_count % 80 == 0)
-	{
-		spawn_map_y++;
-	}
+	spawn_map_y = y / 80;
 	if (stage->GetMapDat(spawn_map_y + 1, spawn_map_x) != 0 && stage->GetMapDat(spawn_map_y + 1, map_x) != 92)
 	{
 		delete_flg = true;
