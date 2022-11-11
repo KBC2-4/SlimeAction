@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "PLAYER.h"
+#include "RESULT.h"
 
 int STAGE::map_data[MAP_HEIGHT][MAP_WIDTH];
 float STAGE::scroll_x = 0;
@@ -16,10 +17,12 @@ STAGE::STAGE() {
 	**map_data = 0;
 	*block_image1 = 0;
 	*stage_image = 0;
-	//scroll_x = -8640;
-	scroll_x = 0;
+	scroll_x = -8640;
+	//scroll_x = 0;
 	scroll_y = 0;
-	LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1);
+	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1) == -1) {
+		throw "Resource/Images/Stage/map_chips.png";
+	}
 	//InitStage();
 	LoadMapData();
 	clearflg = false;
@@ -35,19 +38,12 @@ STAGE::STAGE() {
 	
 
 void STAGE::Update(PLAYER* player) {
-	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - STAGE::GetScrollX()));
-	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()));
-	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox[0], clearbox[1]);
-
-	//旗に触れるとゲームクリア
-	if ((player_map_x >= clearbox[0] - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox[0] + MAP_CEllSIZE + 30) && (player_map_y >= clearbox[1] - MAP_CEllSIZE / 2) && (player_map_y <= clearbox[1] + MAP_CEllSIZE / 2)) {
-		StageClear();
-	}
+	StageClear(player);
 }
 
 void STAGE::Draw()const {
 	//ゲームクリア時
-	if (clearflg == true) {DrawExtendString(500, 200, 10.0f, 10.0f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
+	if (clearflg == true) {DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
 	
 	//printfDx("%f",scroll_x);
 
@@ -162,11 +158,23 @@ void STAGE::LoadMapData(void) {
 /// <summary>
 /// ステージクリア時
 /// </summary>
-void STAGE::StageClear(void) {
-	int count = GetNowCount();
-	clearflg = true;
-	if ((GetNowCount() - count) > 10) {
-		
+void STAGE::StageClear(PLAYER *player) {
+	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - STAGE::GetScrollX()));
+	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()));
+	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox[0], clearbox[1]);
+
+	//旗に触れるとゲームクリア
+	if ((player_map_x >= clearbox[0] - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox[0] + MAP_CEllSIZE + 30) && (player_map_y >= clearbox[1] - MAP_CEllSIZE / 2) && (player_map_y <= clearbox[1] + MAP_CEllSIZE / 2)) {
+		clearflg = true;
 	}
-	//printfDx("%d\n",count,GetNowCount());
+
+	if (clearflg == true) {
+		static int count = GetNowCount();
+		if ((GetNowCount() - count) > 3000) {
+			clearflg = false;
+			count = GetNowCount();
+		}
+		/*if (GetNowCount() % 30 == 0)printfDx("%d:::::%d\n", count, GetNowCount());*/
+	}
+	
 }

@@ -11,6 +11,7 @@ GAMEMAIN::GAMEMAIN()
 
 	player = new PLAYER;
 	stage = new STAGE;
+	result = new RESULT;
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
@@ -133,6 +134,7 @@ AbstractScene* GAMEMAIN::Update()
 	if (player->IsDeath()) {
 		return new GAMEMAIN();
 	}
+	
 	element->Update(player);
 	for (int i = 0; i < lemoner_count; i++)
 	{
@@ -158,6 +160,8 @@ AbstractScene* GAMEMAIN::Update()
 	}
 	stage->Update(player);	//ステージクリア用
 	element->Update(player);
+
+	if (stage->GetClearFlg()) { return new RESULT(); };
 
 	return this;
 }

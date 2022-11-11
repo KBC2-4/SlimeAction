@@ -46,6 +46,8 @@ public:
 	//マップデータの読み込み
 	void LoadMapData(void);	
 
-	void StageClear(void);
+	void StageClear(PLAYER* player);
+
+	bool GetClearFlg(void) { return clearflg; };
 };
 

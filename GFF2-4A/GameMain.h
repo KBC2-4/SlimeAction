@@ -6,6 +6,7 @@
 #include"GrapeFruit.h"
 #include"Tomato.h"
 #include "Element.h"
+#include "RESULT.h"
 
 class GAMEMAIN :
     public AbstractScene
@@ -25,6 +26,7 @@ private:
 
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
+	RESULT* result;
 	LEMON** lemoner;	//レモナー
 	GRAPEFRUIT** gurepon;	//グレぽん
 	TOMATO** tomaton;	//とまトン
