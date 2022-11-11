@@ -5,7 +5,7 @@
 TOMATO::TOMATO()
 {
 	x = 0;
-	image_rate = 0.;
+	image_rate = 0.1;
 	spawn_map_x = 0;
 	spawn_map_y = 0;
 	animation_timer = 0;
@@ -28,7 +28,7 @@ TOMATO::TOMATO(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	this->player = player;
 	this->stage = stage;
 
-	image_rate = 0.;
+	image_rate = 0.1;
 	animation_timer = 0;
 	animation_type = 0;
 	state = ENEMY_STATE::IDOL;
@@ -51,102 +51,131 @@ TOMATO::~TOMATO()
 }
 void TOMATO::Update()
 {
-	//画像サイズが元の大きさ一定以上になったら
-	if (image_rate >= 1)
+	++animation_timer;
+	switch (state)
 	{
+	case ENEMY_STATE::IDOL:
 		//プレイヤーが一定範囲以内に入っている間落ちる
-		if ((fabsf(player->GetPlayerX() - (x + stage->GetScrollX())) < 240) && (state == ENEMY_STATE::IDOL))
+		if ((IdolAnimation()) && (fabsf(player->GetPlayerX() - (x + stage->GetScrollX())) < 240))
 		{
-			animation_timer = 0; 
+			animation_timer = 0;
 			state = ENEMY_STATE::FALL;
 		}
-		else if ((state != ENEMY_STATE::FALL) && (state != ENEMY_STATE::DETH))
+		break;
+	case ENEMY_STATE::FALL:
+		Move();
+		Hit();
+		FallAnimation();
+		break;
+	case ENEMY_STATE::DETH:
+		//爆発し終え時または、画面外に出たらアイドル状態にする
+		if(DethAnimation() || (y > 720))
 		{
 			state = ENEMY_STATE::IDOL;
+			image_rate = 0;
+			//スポーン地点に移動
+			x = spawn_map_x * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+			y = spawn_map_y * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+
 		}
+		break;
+	default:
+		break;
 	}
 	//マップ上の座標の設定
 	map_x = x / MAP_CEllSIZE;
 	map_y = (y - IMAGE_SIZE / 2) / MAP_CEllSIZE;
-	
-	Move();
-	Animation();
-	Hit();
 
-	//爆発し終え時または、画面外に出たらアイドル状態にする
-	if(((state==ENEMY_STATE::DETH) && (animation_timer > 30)) || (y > 720))
-	{
-		state = ENEMY_STATE::IDOL;
-		image_rate = 0;
-		//スポーン地点に移動
-		x = spawn_map_x * MAP_CEllSIZE + MAP_CEllSIZE / 2;
-		y = spawn_map_y * MAP_CEllSIZE + MAP_CEllSIZE / 2;
-
-	}
-
-	
 }
 
 void TOMATO::Move()
 {
-	//落下状態の時の処理
-	if (state == ENEMY_STATE::FALL)
-	{
-		y += FALL_SPEED;
-	}
+	y += FALL_SPEED;
 }
 
 
 void TOMATO::Hit()
 {
-	//地面やブロックとの当たり判定
-	if (state == ENEMY_STATE::FALL)
+	float px1, py1, px2, py2;
+	float bx1, by1, bx2, by2;
+
+	px1 = player->GetPlayerX() - 30 - stage->GetScrollX();
+	px2 = px1 + 60;
+	py1 = player->GetPlayerY();
+	py2 = py1 + 40;
+
+	bx1 = x - IMAGE_SIZE / 2;
+	bx2 = bx1 + IMAGE_SIZE;
+	by1 = y - IMAGE_SIZE / 2.5;
+	by2 = by1 + IMAGE_SIZE / 2;
+
+	//プレイヤーとの当たり判定
+	if ((px1 < bx2) && (bx1 < px2) && (py1 < by2) && (by1 < py2))
 	{
-		if ((stage->GetMapDat(map_y + 1, map_x) != 0) && stage->GetMapDat(map_y + 1, map_x) != 93)
-		{
-			state = ENEMY_STATE::DETH;
-			animation_timer = 0;
-		}
+		player->SetLife(player->GetLife() - 2);
+	}
+
+	//地面やブロックとの当たり判定
+	if ((stage->GetMapDat(map_y + 1, map_x) != 0) && stage->GetMapDat(map_y + 1, map_x) != 93)
+	{
+		state = ENEMY_STATE::DETH;
+		animation_timer = 0;
 	}
 }
 
-void TOMATO::Animation()
+bool TOMATO::IdolAnimation()
 {
-
-	if (++animation_timer % ANIMATION_TIME == 0)
+	bool ret = false;
+	//アニメーション
+	if (animation_timer % ANIMATION_TIME == 0)
 	{
-		//アイドル状態ならアイドルの時の画像を使用
-		if (state == ENEMY_STATE::IDOL)
+		if (image_rate < 1.0) //とまとんのサイズを大きくする
 		{
-			if (image_rate < 1.0)
-			{
-				image_rate += 0.1;
-			}
-			else
-			{
-				image_rate = 1.0;
-			}
-			now_image = image[0];
+			image_rate += 0.1;
 		}
-		//落下状態の時の画像の入れ替え
-		if (state == ENEMY_STATE::FALL)
+		else //とまとんのサイズが元のサイズより大きくなったら元のサイズに戻す
 		{
-			now_image = image[(++animation_type % 2) + 1];
+			image_rate = 1.0;
+			ret = true;
 		}
-		//ブロックに当たった時
-		if (state == ENEMY_STATE::DETH)
-		{
-			now_image = image[(++animation_type % 6) + 3];
-		}
+		now_image = image[0];
 	}
+	return ret;
+}
+void TOMATO::FallAnimation()
+{
+	//アニメーション
+	if (animation_timer % ANIMATION_TIME == 0)
+	{
+		now_image = image[(++animation_type % 2) + 1];
+	}
+}
+
+
+bool TOMATO::DethAnimation()
+{
+	bool ret = false;
+	//アニメーション
+	if (animation_timer % ANIMATION_TIME == 0)
+	{
+		now_image = image[(++animation_type % 6) + 1];
+	}
+	//アニメーションの終了
+	if (animation_timer > 15)
+	{
+		ret = true;
+	}
+
+	return ret;
 }
 
 
 void TOMATO::Draw()const
 {
 	//画面外に出たら描画しない
-	if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280))
+	if ((x + stage->GetScrollX() > -IMAGE_SIZE) && (x + stage->GetScrollX() < 1280 + IMAGE_SIZE))
 	{
 		DrawRotaGraph(x + stage->GetScrollX(), y, image_rate, 0, now_image, TRUE);
 	}
+
 }

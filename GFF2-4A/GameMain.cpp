@@ -136,7 +136,15 @@ AbstractScene* GAMEMAIN::Update()
 	element->Update(player);
 	for (int i = 0; i < lemoner_count; i++)
 	{
-		lemoner[i]->Update();
+		if (lemoner[i] != nullptr)
+		{
+			lemoner[i]->Update();
+			if (lemoner[i]->GetDeleteFlag())
+			{
+				delete lemoner[i];
+				lemoner[i] = nullptr;
+			}
+		}
 	}
 	for (int i = 0; i < tomaton_count; i++)
 	{
@@ -163,13 +171,11 @@ AbstractScene* GAMEMAIN::Update()
 
 void GAMEMAIN::Draw() const
 {
-	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
-	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
-	DrawFormatString(0, 50, 0x000000, "%d", player->GetLife());	
+	DrawGraph(int(STAGE::GetScrollX()) % 3840 + 3840, /*scroll_y*/0, background_image[0], FALSE);
+	DrawTurnGraph(int(STAGE::GetScrollX()) % 3840, /*scroll_y*/0, background_image[0], FALSE);
 
 
 	//ステージの描画
-
 	element->Draw();
 	stage->Draw();
 	
@@ -179,7 +185,11 @@ void GAMEMAIN::Draw() const
 	//レモナーの描画
 	for (int i = 0; i < lemoner_count; i++)
 	{
-		lemoner[i]->Draw();
+		if (lemoner[i] != nullptr)
+		{
+			lemoner[i]->Draw();
+
+		}
 	}
 	//とまトンの描画
 	for (int i = 0; i < tomaton_count; i++)
@@ -194,5 +204,6 @@ void GAMEMAIN::Draw() const
 			gurepon[i]->Draw();
 		}
 	}
-	
+	DrawFormatString(0, 50, 0x000000, "%d", player->GetLife());
+
 }
