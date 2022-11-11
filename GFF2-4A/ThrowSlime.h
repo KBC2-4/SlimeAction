@@ -2,6 +2,11 @@
 
 #include <vector>
 
+#define BULLETRADIUS 5
+
+#include "STAGE.h"
+
+
 class ThrowSlime
 {
 private:
@@ -16,9 +21,17 @@ private:
 public:
 	ThrowSlime() {};
 	ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y);
-	void Update();
+	void Update(STAGE* stage);
 	void Draw() const;
-	int HitBlock();
+
+
+
+	bool Get_throwend() { return throw_end; }
+	bool Get_throwfall() { return throw_fall; }
+	int HitBlock(STAGE* stage);
+
+	/*int HitBlock(STAGE* stage);
+master*/
 	float GetThrowX() { return throw_x[0]; }
 	float GetThrowY() { return throw_y[0]; }
 };

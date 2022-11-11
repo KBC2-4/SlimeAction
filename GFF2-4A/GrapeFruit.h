@@ -13,7 +13,7 @@ class GRAPEFRUIT :
 {
 private:
 	bool hitflg;
-	bool flag;
+	bool flag[3];
 	int shootcount;
 	double rads[2];
 	int animation_timer;

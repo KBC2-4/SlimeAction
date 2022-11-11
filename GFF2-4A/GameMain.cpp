@@ -129,8 +129,7 @@ GAMEMAIN::~GAMEMAIN()
 
 AbstractScene* GAMEMAIN::Update()
 {
-	
-	player->Update(element);
+	player->Update(element,stage);
 	if (player->IsDeath()) {
 		return new GAMEMAIN();
 	}
@@ -147,6 +146,7 @@ AbstractScene* GAMEMAIN::Update()
 	{
 		if (gurepon[i] != nullptr && gurepon[i]->GetDeleteFlg())
 		{
+			delete gurepon[i];
 			gurepon[i] = nullptr;
 		}
 		else if(gurepon[i] != nullptr && !gurepon[i]->GetDeleteFlg())
@@ -172,6 +172,7 @@ void GAMEMAIN::Draw() const
 
 	element->Draw();
 	stage->Draw();
+	
 	//ƒvƒŒƒCƒ„[‚Ì•`‰æ
 	player->Draw();
 
