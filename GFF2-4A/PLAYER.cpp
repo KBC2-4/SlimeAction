@@ -92,7 +92,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 
 
 	if (element->HitLift()) {
-		player_x += element->GetLiftVector();
+		player_x += element->GetLiftVector()*2;
 	}
 
 }
