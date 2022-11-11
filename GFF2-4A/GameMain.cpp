@@ -14,6 +14,7 @@ GAMEMAIN::GAMEMAIN()
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
+	item = nullptr;
 
 	//‚Æ‚Üƒgƒ“¶¬‚·‚é”‚ğ”‚¦‚é
 	for (int i = 0,point = 0 ; i < MAP_HEIGHT; i++)
