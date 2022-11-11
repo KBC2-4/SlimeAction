@@ -204,7 +204,7 @@ void ELEMENT::Button(PLAYER* player) {
 			if (button[i].type == 3) {
 				if ((player_map_x >= button[i].x-MAP_CEllSIZE/2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2)&& (player_map_y >= button[i].y - MAP_CEllSIZE / 2)&& (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
-					printfDx("3番に入ってるよ！");
+					//printfDx("3番に入ってるよ！");
 				}
 			}
 	}
