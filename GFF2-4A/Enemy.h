@@ -1,14 +1,18 @@
 #pragma once
 #include"PLAYER.h"
 #include"STAGE.h"
+
+
+#define BALL_W 10
+#define BALL_H 10
+
 enum class ENEMY_STATE
 {
 	IDOL = 0,	//アイドル状態
 	MOVE,		//プレイヤーを標準を合わせ続けているとき
-	STANDBY,	//発射準備
 	RETURN,		//発射可能状態に戻る
 	PRESS,		//発射状態
-	WALL,		//落下状態
+	FALL,		//落下状態
 	DETH		//死亡状態
 };
 
@@ -23,6 +27,7 @@ protected:
 	ENEMY_STATE state;	//エネミーの状態
 	STAGE* stage;		//ステージ
 	PLAYER* player;		//ステージ
+
 	const int IMAGE_SIZE = 80;
 public:
 	/// <summary>
@@ -52,10 +57,6 @@ public:
 	/// </summary>
 	virtual void Hit() = 0;
 	/// <summary>
-	/// アニメーション
-	/// </summary>
-	virtual void Animation() = 0;
-	/// <summary>
 	/// 描画
 	/// </summary>
 	virtual void Draw()const = 0;
@@ -76,4 +77,3 @@ public:
 	/// <returns>y座標</returns>
 	int GetY()const { return y; }
 };
-

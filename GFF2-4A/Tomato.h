@@ -43,7 +43,7 @@ public:
 	/// <summary>
 	/// アニメーション
 	/// </summary>
-	void Animation() override;
+	void Animation();
 	/// <summary>
 	/// 描画
 	/// </summary>

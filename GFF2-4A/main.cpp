@@ -8,7 +8,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
 	double dNextTime = GetNowCount();
 
-	SetMainWindowText("");
+	SetMainWindowText("スライムアクション");
+	SetWindowIconID(01);
 
 	ChangeWindowMode(TRUE);		// ウィンドウモードで起動
 	SetGraphMode(1280, 720, 32);
