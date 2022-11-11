@@ -22,9 +22,9 @@ STAGE::STAGE() {
 }
 	
 
-//void STAGE::Update() {
-//
-//}
+void STAGE::Update() {
+
+}
 
 void STAGE::Draw()const {
 	//printfDx("%f",scroll_x);
