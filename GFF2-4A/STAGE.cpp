@@ -17,8 +17,8 @@ STAGE::STAGE() {
 	**map_data = 0;
 	*block_image1 = 0;
 	*stage_image = 0;
-	scroll_x = -8640;
-	//scroll_x = 0;
+	//scroll_x = -8640;
+	scroll_x = 0;
 	scroll_y = 0;
 	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1) == -1) {
 		throw "Resource/Images/Stage/map_chips.png";
