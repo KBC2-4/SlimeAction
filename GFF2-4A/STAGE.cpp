@@ -32,8 +32,8 @@ STAGE::STAGE() {
 	
 
 void STAGE::Update(PLAYER* player) {
-	int player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
-	int player_map_y = floorf(player->GetPlayerY());
+	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - STAGE::GetScrollX()));
+	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()));
 	//if()
 }
 
