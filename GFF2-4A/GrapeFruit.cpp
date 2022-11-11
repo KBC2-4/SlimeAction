@@ -27,7 +27,7 @@ GRAPEFRUIT::GRAPEFRUIT()
 	animation_type = 0;
 	check_hit_count = 0;
 	hit_flg = false;
-	
+
 	for (int i = 0; i < 3; i++) {
 		bullet[i] = nullptr;
 	}
@@ -73,32 +73,13 @@ void GRAPEFRUIT::Update()
 	{
 		ChangeAngle();
 		if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280)) {
-			if (++shootcount % 180 == 0) {			
+			if (++shootcount % 180 == 0) {
 				for (int i = 0; i < 3; i++)
 				{
 					if (flag[i] == false)
 					{
-						//bullet[0] = new ENEMYBULLET(player, stage, x, y, 0.0, stage->GetScrollX());
-						//bullet[1] = new ENEMYBULLET(player, stage, x, y, 200.0, stage->GetScrollX());
-						//bullet[2] = new ENEMYBULLET(player, stage, x, y, 100.0, stage->GetScrollX());
 						bullet[i] = new ENEMYBULLET(player, stage, x, y, i * 100.0, stage->GetScrollX());
 						flag[i] = true;
-					}
-				}
-			}
-			if (flag)
-			{
-				for (int i = 0; i < 3; i++)
-				{
-					if (bullet[i] != nullptr)
-					{
-						bullet[i]->Update();
-						if (bullet[i]->GetDeleteFlg())
-						{
-							delete bullet[i];
-							bullet[i] = nullptr;
-							flag[i] = false;
-						}
 					}
 				}
 			}
@@ -106,8 +87,23 @@ void GRAPEFRUIT::Update()
 	}
 	else
 	{
-	    Move();
+		Move();
 	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (bullet[i] != nullptr)
+		{
+			bullet[i]->Update();
+			if (bullet[i]->GetDeleteFlg())
+			{
+				delete bullet[i];
+				bullet[i] = nullptr;
+				flag[i] = false;
+			}
+		}
+	}
+
 
 	Animation();
 }
@@ -139,7 +135,7 @@ void GRAPEFRUIT::Hit()
 
 	for (int i = 0; i < player->GetThrowCnt(); i++)
 	{
-		throw_slime = player->GetThrowSlime(i);	
+		throw_slime = player->GetThrowSlime(i);
 
 		//スライムのボールの当たり判定
 		bx1 = throw_slime.GetThrowX();
@@ -152,7 +148,7 @@ void GRAPEFRUIT::Hit()
 		gy1 = y;
 		gx2 = gx1 + GURAFRU_W;
 		gy2 = gy1 + GURAFRU_H;
-		if(((bx2 >= gx1 && bx2 <= gx2) || (bx1 <= gx2 && bx1 >= gx1)) && ((by1 >= gy2 && by1 <= gy1) || (by2 >= gy1 && by2 <= gy2)))
+		if (((bx2 >= gx1 && bx2 <= gx2) || (bx1 <= gx2 && bx1 >= gx1)) && ((by1 >= gy2 && by1 <= gy1) || (by2 >= gy1 && by2 <= gy2)))
 		{
 			hit_flg = true;
 			rad = 90 * (PI / 180);
@@ -168,11 +164,11 @@ void GRAPEFRUIT::Animation()
 
 void GRAPEFRUIT::Draw() const
 {
-	DrawRotaGraph2(x + stage->GetScrollX(), y, 40, 0, 1, rad + ( -90 * (PI/180)), image[0], TRUE);
-	
+	DrawRotaGraph2(x + stage->GetScrollX(), y, 40, 0, 1, rad + (-90 * (PI / 180)), image[0], TRUE);
+
 	if (flag)
 	{
-		for (int i = 0; i < bullet_count; i++) 
+		for (int i = 0; i < bullet_count; i++)
 		{
 			if (bullet[i] != nullptr)
 			{
