@@ -19,6 +19,7 @@ private:
 	bool throw_fall;
 	float throw_bottom;
 public:
+	ThrowSlime() {};
 	ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y);
 	void Update(STAGE* stage);
 	void Draw() const;

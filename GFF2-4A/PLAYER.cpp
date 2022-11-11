@@ -59,7 +59,7 @@ PLAYER::PLAYER() {
 /// プレイヤーの更新
 /// </summary>
 void PLAYER::Update(ELEMENT* element, STAGE* stage) {
-	clsDx();
+	//clsDx();
 	Move();
 	JumpMove(element);
 	HookMove(element);
@@ -681,4 +681,9 @@ bool PLAYER::GetBullet() {
 		}
 	}
 	return false;
+}
+
+void PLAYER::SetLife(int a) 
+{
+	life = a;
 }

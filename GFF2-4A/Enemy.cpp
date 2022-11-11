@@ -3,8 +3,6 @@
 #include<math.h>
 #include "Enemy.h"
 
-
-
 ENEMY::ENEMY()
 {
 	player = nullptr;
@@ -22,5 +20,5 @@ ENEMY::ENEMY()
 void ENEMY::ChangeAngle()
 {
 	//自分を原点にプレイヤーとの角度を計算
-	rad = atan2f(player->GetPlayerY() - y, player->GetPlayerX() - x);
+	rad = atan2f(player->GetPlayerY() - y, player->GetPlayerX() - (x + stage->GetScrollX()));
 }

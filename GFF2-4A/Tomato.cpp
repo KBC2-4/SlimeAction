@@ -33,11 +33,16 @@ TOMATO::TOMATO(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	animation_type = 0;
 	state = ENEMY_STATE::IDOL;
 
-	image = new int[3];
+	image = new int[9];
 	if (LoadDivGraph("Resource/Images/Enemy/tomaton.png", 3, 3, 1, 80, 80, image) == -1)
 	{
 		throw "Resource/Images/Enemy/tomaton.png";
 	}
+	if (LoadDivGraph("Resource/Images/Enemy/tomaton_Break.png", 6, 6, 1, 80, 80, image + 3) == -1)
+	{
+		throw "Resource/Images/Enemy/tomaton_Break.png";
+	}
+
 }
 
 TOMATO::~TOMATO()
@@ -53,23 +58,23 @@ void TOMATO::Update()
 		if ((fabsf(player->GetPlayerX() - (x + stage->GetScrollX())) < 240) && (state == ENEMY_STATE::IDOL))
 		{
 			animation_timer = 0; 
-			state = ENEMY_STATE::WALL;
+			state = ENEMY_STATE::FALL;
 		}
-		else if ((state != ENEMY_STATE::WALL) && (state != ENEMY_STATE::DETH))
+		else if ((state != ENEMY_STATE::FALL) && (state != ENEMY_STATE::DETH))
 		{
 			state = ENEMY_STATE::IDOL;
 		}
 	}
 	//マップ上の座標の設定
 	map_x = x / MAP_CEllSIZE;
-	map_y = y / MAP_CEllSIZE;
+	map_y = (y - IMAGE_SIZE / 2) / MAP_CEllSIZE;
 	
 	Move();
 	Animation();
 	Hit();
 
 	//爆発し終え時または、画面外に出たらアイドル状態にする
-	if(((state==ENEMY_STATE::DETH) && (animation_timer > 60)) || (y > 720))
+	if(((state==ENEMY_STATE::DETH) && (animation_timer > 30)) || (y > 720))
 	{
 		state = ENEMY_STATE::IDOL;
 		image_rate = 0;
@@ -85,7 +90,7 @@ void TOMATO::Update()
 void TOMATO::Move()
 {
 	//落下状態の時の処理
-	if (state == ENEMY_STATE::WALL)
+	if (state == ENEMY_STATE::FALL)
 	{
 		y += FALL_SPEED;
 	}
@@ -95,9 +100,9 @@ void TOMATO::Move()
 void TOMATO::Hit()
 {
 	//地面やブロックとの当たり判定
-	if (state == ENEMY_STATE::WALL)
+	if (state == ENEMY_STATE::FALL)
 	{
-		if ((stage->GetMapDat(map_y, map_x) != 0) && stage->GetMapDat(map_y, map_x) != 93)
+		if ((stage->GetMapDat(map_y + 1, map_x) != 0) && stage->GetMapDat(map_y + 1, map_x) != 93)
 		{
 			state = ENEMY_STATE::DETH;
 			animation_timer = 0;
@@ -124,14 +129,14 @@ void TOMATO::Animation()
 			now_image = image[0];
 		}
 		//落下状態の時の画像の入れ替え
-		if (state == ENEMY_STATE::WALL)
+		if (state == ENEMY_STATE::FALL)
 		{
 			now_image = image[(++animation_type % 2) + 1];
 		}
 		//ブロックに当たった時
 		if (state == ENEMY_STATE::DETH)
 		{
-	
+			now_image = image[(++animation_type % 6) + 3];
 		}
 	}
 }
