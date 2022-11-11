@@ -62,18 +62,20 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 
 void LEMON::Update()
 {
-
-	
 	switch (state)
 	{
 	case ENEMY_STATE::IDOL:
 		break;
 	case ENEMY_STATE::MOVE:
 		ChangeAngle();
-		if (++shootcount % 180 == 0)
+		if((x+stage->GetScrollX() > 0) && (x + stage->GetScrollX()<1280))
 		{
-			state = ENEMY_STATE::PRESS;
+			if (++shootcount % 180 == 0)
+			{
+				state = ENEMY_STATE::PRESS;
+			}
 		}
+		
 		break;
 	case ENEMY_STATE::RETURN:
 		if (ReturnAnimation())
