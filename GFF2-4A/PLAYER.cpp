@@ -90,11 +90,6 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	}
 	now_image = images[image_type][animation_type[image_type]];
 
-
-	if (element->HitLift()) {
-		player_x += element->GetLiftVector()*2;
-	}
-
 }
 
 /// <summary>
@@ -464,7 +459,7 @@ void PLAYER::JumpMove(ELEMENT* element) {
 		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
 			STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_ground = true;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) is_ground = true;
-		if (element->HitLift()) is_ground = true;
+		if (element->HitLift())is_ground = true;
 		
 			//地面じゃない時は落下
 			if (!is_ground) {

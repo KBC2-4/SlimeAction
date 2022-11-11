@@ -156,11 +156,13 @@ void ELEMENT::Draw() const {
 }
 
 void ELEMENT::Update(PLAYER* player) {
+	//プレイヤーのマップ内座標を設定
 	player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
 	player_map_y = floorf(player->GetPlayerY());
+
 	Button(player);
 	Door();
-	Lift();
+	Lift(player);
 	Manhole(player);
 	
 }
@@ -245,16 +247,22 @@ void ELEMENT::Door() {
 /// <summary>
 /// 動く床の処理
 /// </summary>
-void ELEMENT::Lift() {
+void ELEMENT::Lift(PLAYER* player) {
 	for (int i = 0; i < lift.size(); i++) {
-		 if (lift[i].flg) {
+		if (player_map_x>lift[i].x - 1280 && player_map_x<lift[i].x + 1280) {
+			lift[i].flg = true;
+		}
+		if (lift[i].flg) {
 			if (lift[i].x != lift_goal[i].x) {
-				lift[i].x += lift_vector*2;
-				
+				lift[i].x += lift_vector * 2.0;
+				if (HitLift()) {
+					player->SetPlayerX(player->GetPlayerX() + lift_vector * 2.0);
+				}
+
 			}
 			else if (lift[i].type == 2) {
-				for (int lift_pos = lift[i].x-MAP_CEllSIZE*lift_vector; i >= 0; lift_pos-=lift_vector*MAP_CEllSIZE) {
-					if (map_data[int(lift[i].y)/MAP_CEllSIZE][lift_pos/MAP_CEllSIZE] == 95) {
+				for (int lift_pos = lift[i].x - MAP_CEllSIZE * lift_vector; i >= 0; lift_pos -= lift_vector * MAP_CEllSIZE) {
+					if (map_data[int(lift[i].y) / MAP_CEllSIZE][lift_pos / MAP_CEllSIZE] == 95) {
 						lift_goal[i].x = lift_pos;
 						break;
 					}
@@ -262,7 +270,7 @@ void ELEMENT::Lift() {
 				map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 95;
 				lift_vector *= -1;
 			}
-			
+
 		}
 		
 	}
@@ -274,13 +282,11 @@ void ELEMENT::Lift() {
 /// </summary>
 bool ELEMENT::HitLift() {
 	for (int i = 0; i < lift.size(); i++) {
-		if (player_map_x+MAP_CEllSIZE/2-20 >= lift[i].x && player_map_x-MAP_CEllSIZE/2+20 <= lift[i].x +MAP_CEllSIZE
+		if (player_map_x >= lift[i].x && player_map_x <= lift[i].x +MAP_CEllSIZE
 			&& player_map_y+MAP_CEllSIZE/2==lift[i].y) {
-			lift[i].flg = true;
 			return true;
 		}
 	}
-	
 	return false;
 }
 
