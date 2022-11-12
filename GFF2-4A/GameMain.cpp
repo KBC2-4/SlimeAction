@@ -3,6 +3,7 @@
 
 GAMEMAIN::GAMEMAIN()
 {
+	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 	std::vector<std::vector<int>> spawn_point;
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
 	time = 0.0;
@@ -11,7 +12,6 @@ GAMEMAIN::GAMEMAIN()
 
 	player = new PLAYER;
 	stage = new STAGE;
-	result = new RESULT;
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;

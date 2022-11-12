@@ -6,6 +6,12 @@ RESULT::RESULT() {
 	if ((background_image = LoadGraph("Resource/Images/Enemy/gurepon.png")) == -1) {
 		throw "Resource/Images/Enemy/gurepon.png";
 	}
+
+	timer = 0;
+}
+
+RESULT::~RESULT() {
+	DeleteGraph(background_image);
 }
 
 AbstractScene* RESULT::Update() {

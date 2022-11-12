@@ -9,6 +9,7 @@ private:
 
 public:
 	RESULT();
+	~RESULT();
 	AbstractScene* Update() override;
 	void Draw() const override;
 };

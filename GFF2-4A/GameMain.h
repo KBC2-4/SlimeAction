@@ -26,7 +26,6 @@ private:
 
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
-	RESULT* result;
 	LEMON** lemoner;	//レモナー
 	GRAPEFRUIT** gurepon;	//グレぽん
 	TOMATO** tomaton;	//とまトン
