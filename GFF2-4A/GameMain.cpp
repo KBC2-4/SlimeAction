@@ -6,7 +6,7 @@ GAMEMAIN::GAMEMAIN()
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 	std::vector<std::vector<int>> spawn_point;
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
-	time = 0.0;
+	time = GetNowCount();
 	lemoner_count = 0;
 	tomaton_count = 0;
 
@@ -172,7 +172,7 @@ AbstractScene* GAMEMAIN::Update()
 	}
 
 	//ステージクリア
-	if (stage->GetClearFlg()) { return new RESULT(true); };
+	if (stage->GetClearFlg()) { return new RESULT(true,time); };
 
 	return this;
 }
@@ -216,5 +216,5 @@ void GAMEMAIN::Draw() const
 	}
 
 	//デバッグ
-	DrawFormatString(200, 300, 0xffffff, "GetPlayerY:%f", player->GetPlayerY);
+	//DrawFormatString(200, 300, 0xffffff, "GetPlayerY:%f", player->GetPlayerY);
 }
