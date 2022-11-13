@@ -25,8 +25,9 @@ AbstractScene* Title::Update()
 {
 	static int input_margin;
 	input_margin++;
-	if (PAD_INPUT::GetPadThumbLY() > 300 && input_margin > 10) { selectmenu = (selectmenu + 2) % 3; input_margin = 0; }
-	if (PAD_INPUT::GetPadThumbLY() < -300 && input_margin > 10) { selectmenu = (selectmenu + 1) % 3; input_margin = 0; }
+	if (PAD_INPUT::GetPadThumbLY() > 1000 && input_margin > 20) { selectmenu = (selectmenu + 2) % 3; input_margin = 0; StartJoypadVibration(DX_INPUT_PAD1, 150, 160, -1); }
+	if (PAD_INPUT::GetPadThumbLY() < -1000 && input_margin > 20) { selectmenu = (selectmenu + 1) % 3; input_margin = 0; StartJoypadVibration(DX_INPUT_PAD1, 150, 160, -1);
+	}
 
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B)return new GAMEMAIN();
 	return this;
