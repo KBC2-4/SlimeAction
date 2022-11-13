@@ -131,9 +131,6 @@ GAMEMAIN::~GAMEMAIN()
 AbstractScene* GAMEMAIN::Update()
 {
 	player->Update(element,stage);
-	if (player->IsDeath()) {
-		return new GAMEMAIN();
-	}
 	
 	element->Update(player);
 	for (int i = 0; i < lemoner_count; i++)
@@ -169,13 +166,21 @@ AbstractScene* GAMEMAIN::Update()
 	stage->Update(player);	//ステージクリア用
 	element->Update(player);
 
-	if (stage->GetClearFlg()) { return new RESULT(); };
+	//ゲームオーバー
+	if (player->IsDeath()) {
+		return new RESULT(false);
+	}
+
+	//ステージクリア
+	if (stage->GetClearFlg()) { return new RESULT(true); };
 
 	return this;
 }
 
 void GAMEMAIN::Draw() const
 {
+
+	//ステージ背景
 	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
 	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
 
@@ -209,6 +214,7 @@ void GAMEMAIN::Draw() const
 			gurepon[i]->Draw();
 		}
 	}
-	DrawFormatString(0, 50, 0x000000, "%d", player->GetLife());
 
+	//デバッグ
+	DrawFormatString(200, 300, 0xffffff, "GetPlayerY:%f", player->GetPlayerY);
 }

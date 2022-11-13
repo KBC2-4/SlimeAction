@@ -8,6 +8,8 @@ class Title :
 {
 private:
     int background_image;
+    int title_font,menu_font;
+    int selectmenu;
     
 public:
     //コンストラクタ

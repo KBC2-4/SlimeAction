@@ -28,6 +28,9 @@ public:
 	virtual void Draw() const;
 	//ステージの初期化
 	//void InitStage();
+
+	//カメラワーク
+	void CameraWork(PLAYER* player);
 	
 	//水たまりの処理
 	void PuddleProcess();

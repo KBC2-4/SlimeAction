@@ -63,6 +63,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 	}
 
+	InitFontToHandle();	//全てのフォントデータを削除
+	InitGraph();		//読み込んだ全てのグラフィックデータを削除
 	DxLib_End();
 	return 0;
 }
