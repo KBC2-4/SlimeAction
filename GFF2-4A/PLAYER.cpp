@@ -11,7 +11,7 @@ float PLAYER::player_x, PLAYER::player_y;
 /*コンストラクタ*/
 PLAYER::PLAYER() {
 	player_x = 20.0f;
-	player_y = 520.0f;
+	player_y = 500.0f;
 	rebound_x = SPEED;
 	map_x = 0;
 	map_y = 0;
@@ -41,6 +41,9 @@ PLAYER::PLAYER() {
 	if ((images[3][0] = LoadGraph("Resource/Images/Player/nobi.png")) == -1) {
 		throw "Resource/Images/Player/nobi.png";
 	}
+	if ((images[3][1] = LoadGraph("Resource/Images/Player/nobi2.png")) == -1) {
+		throw "Resource/Images/Player/nobi2.png";
+	}
 
 	if (LoadDivGraph("Resource/Images/Player/JumpSlime1.png", 10, 10, 1, 80, 80, images[4]) == -1) {
 		throw "Resource/Images/Player/JumpSlime1.png";
@@ -52,7 +55,7 @@ PLAYER::PLAYER() {
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
 		throw "Resource/Images/Player/SlimeBullet.png";
 	}
-
+	
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	animation_frame = 0;
 	animation_mode = 0;
@@ -67,22 +70,23 @@ PLAYER::PLAYER() {
 /// </summary>
 void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	//clsDx();
+	int bullet;
 	Move();
 	JumpMove(element);
 	HookMove(element);
 	Throw();
 	HitBlock();
-	if (GetBullet()==true) {
+	if (GetBullet(&bullet)==true) {
 		/*throw_x.erase(throw_x.begin());
 		throw_y.erase(throw_y.begin());*/
-		throw_slime.erase(throw_slime.begin());
+		throw_slime.erase(throw_slime.begin() + bullet);
 	}
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Update(stage);
 	}
 
-	if (STAGE::GetMapDat(map_y, map_x) == -1 || life <= 0) {
+	if (STAGE::GetMapDat(map_y, map_x) == -1 /*|| life <= 0*/) {
 		is_death = true;
 	}
 
@@ -109,24 +113,31 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// </summary>
 void PLAYER::Draw()const {
 	//プレイヤーの表示
+	float slime_size_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		DrawRotaGraphF(player_x, player_y, 1.0, 0.0, now_image, TRUE, move_type);
+		DrawRotaGraphF(player_x, (player_y-20) + (1.6 - slime_size_scale) * 40, slime_size_scale, 0.0, now_image, TRUE, move_type);
 		
 	}
 	else {
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
-			//DrawRotaGraphF(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 1.0, 0.0, now_image, TRUE, move_type);
 			float diff_x = ((hook_x + STAGE::GetScrollX() + nx) - player_x);
 			float diff_y = ((hook_y + ny) - player_y);
 			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
 			float angle = atan2(diff_y, diff_x) + DX_PI_F;
-			DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
-				distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
-				images[3][0], TRUE, move_type);
+			if (move_type == 0) {
+				DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
+					distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
+					images[3][1], TRUE, move_type);
+			}
+			else {
+				DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
+					distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
+					images[3][0], TRUE, move_type);
+			}
 		}
 		else {
 			DrawRotaGraph3F(player_x, player_y, 40, 80,
-				1, hook_distance / (MAP_CEllSIZE / 2), (double)hook_angle,
+				1* slime_size_scale, (hook_distance / (MAP_CEllSIZE / 2))* slime_size_scale, (double)hook_angle,
 				now_image, TRUE, move_type);
 		}
 	}
@@ -137,40 +148,12 @@ void PLAYER::Draw()const {
 	}
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB && life > 1) {
 		for (int i = 0; i < throw_x.size(); i += 5) {
-			//DrawCircle(throw_x[i], throw_y[i], 10, 0xFFFFFF, TRUE);
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 		}
 	}
-	//else {
-	//	//DrawCircle(throw_x[0], throw_y[0], 10, 0xFFFFFF, TRUE);
-	//	DrawGraph(throw_x[0], throw_y[0], throw_ball_image, TRUE);
-	//}
-
-
-	/*for (int i = 0; i < 10; i++) {
-		printfDx("throw_x[%d]: %f\n", i,throw_x[i]);
+	for (int i = 0; i < life - 1; i++) {
+		DrawRotaGraph(30 + 50 * i, 20, 1.5, 1, throw_ball_image, TRUE);
 	}
-	for (int i = 0; i < 10; i++) {
-		printfDxThrowSlime("throw_y[%d]: %f\n", i, throw_y[i]);
-	}*/
-	//printfDx("throw_rad: %f\n", throw_rad);
-	//printfDx("hook: %f %f\n", hook_x, hook_y);
-	//printfDx("input.lx: %d\n", PAD_INPUT::GetPadThumbLX());
-
-	//グリッドの表示(デバッグ用)
-	//for (int i = 0; i < 128; i++) {
-	//	DrawLine(0, i * 80, 1280, i * 80, 0xFFFFFF, 2);	//横
-	//	DrawLine(i * 80 + STAGE::GetScrollX(), 0, i * 80 + STAGE::GetScrollX(),  720,0xFFFFFF, 2);		//縦
-	//}
-
-	//座標(デバッグ用)
-	/*printfDx("x1: %d, x2: %d\n", (int)(player_left / MAP_CEllSIZE), (int)player_right / MAP_CEllSIZE);
-	printfDx("y1: %d, y2: %d\n", (int)(player_top / MAP_CEllSIZE), (int)player_bottom / MAP_CEllSIZE);
-	printfDx("x : %d, y : %d\n", (int)(player_x / MAP_CEllSIZE), (int)player_y / MAP_CEllSIZE);*/
-
-	//マップチップの座標の表示(デバッグ用)
-	/*SetFontSize(40);
-	DrawFormatString(0, 0, 0xFF, "%d, %d: %d", map_x, map_y, STAGE::GetMapDat(map_y, map_x));*/
 }
 
 /// <summary>
@@ -411,6 +394,8 @@ void PLAYER::HookMove(ELEMENT* element) {
 			player_x = hook_x + STAGE::GetScrollX() + nx;
 			player_y = hook_y + ny;
 			player_y += 1;
+			if (speed < 0)jump_move_x = 1;		//フック後のジャンプ方向の修正
+			if (speed >= 0)jump_move_x = -1;
 			jump_request = true;
 			player_state = PLAYER_MOVE_STATE::JUMP;
 		}
@@ -690,7 +675,7 @@ void PLAYER::MoveAnimation() {
 	}
 }
 
-bool PLAYER::GetBullet() {
+bool PLAYER::GetBullet(int *bullet) {
 	float r1X, r1Y, r1XY;
 	for (int i = 0; i < throw_slime.size(); i++) {
 		r1X = throw_slime[i].GetThrowX() + STAGE::GetScrollX() - player_x;
@@ -698,6 +683,7 @@ bool PLAYER::GetBullet() {
 		r1XY = sqrt(r1X * r1X + r1Y * r1Y);
 		if (r1XY <= 40 + BULLETRADIUS && throw_slime[i].Get_throwfall() == true) {
 			++life;
+			*bullet = i;
 			return true;
 		}
 	}
