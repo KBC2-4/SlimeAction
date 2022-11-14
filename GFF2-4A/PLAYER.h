@@ -137,7 +137,7 @@ public:
 	void Update(ELEMENT*element, STAGE* stage);
 	void HitBlock();
 	void Scroll(float move_x);
-	int HitPlayer(float x, float y, int radius);
+	int HitPlayer(float x, float y, int diameter);	//土管の当たり判定	中央の座標と穴の直径渡して
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };

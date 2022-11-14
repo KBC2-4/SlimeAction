@@ -674,15 +674,15 @@ void PLAYER::SetLife(int a)
 	life = a;
 }
 
-int PLAYER::HitPlayer(float x, float y, int radius) {
+int PLAYER::HitPlayer(float x, float y, int diameter) {
 	float px = GetPlayerX() - x;
 	float py = GetPlayerY() - y; 
 	float pxy = sqrt(px * px + py * py); //ベクトル
 
 	float Pdiameter = 28 * life;	//プレーヤー直径
-	float Ediameter = radius * 2;	//対象の直径
+	float Ediameter = diameter * 2;	//対象の直径
 
-	if (pxy <= Pdiameter + radius && Pdiameter <= Ediameter && (player_state == PLAYER_MOVE_STATE::IDLE || player_state == PLAYER_MOVE_STATE::MOVE)) {
+	if (pxy <= Pdiameter + diameter && Pdiameter <= Ediameter && (player_state == PLAYER_MOVE_STATE::IDLE || player_state == PLAYER_MOVE_STATE::MOVE)) {
 		return true;
 	}
 	return false;
