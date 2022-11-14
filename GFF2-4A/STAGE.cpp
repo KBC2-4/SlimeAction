@@ -138,22 +138,19 @@ bool STAGE::HitMapDat(int y, int x) {
 	if (
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
-		|| block_type == 15 //フロー木
-		|| block_type == 14 //アカシア木
-		|| block_type == 13 //オーク木
+		|| block_type == 21 //フロー木
+		|| block_type == 22 //アカシア木
+		|| block_type == 23 //オーク木
 		|| block_type == 64	//ドア 
 		|| block_type == 65	//ドア 
 		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
-		|| block_type == 91 
-		|| block_type == 92 
-		|| block_type == 93
+		|| block_type == 91 //レモナー
+		|| block_type == 92 //グレポン
+		|| block_type == 93	//トマトン
 		|| block_type == 95	//動く床
-
-		//応急処置
-		|| block_type == 19	//New アカシア木
 		) {
 		return false;
 	}
@@ -167,7 +164,7 @@ bool STAGE::HitThrowSlime(int y, int x) {
 	if (
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
-		|| block_type == 62	//ボタン(感圧式)
+		|| block_type == 61	//壁ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
