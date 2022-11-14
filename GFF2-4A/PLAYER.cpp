@@ -55,7 +55,10 @@ PLAYER::PLAYER() {
 	}
 
 	if (LoadDivGraph("Resource/Images/Player/JumpSlime2.png", 10, 10, 1, 80, 80, images[6]) == -1) {
-		throw "Resource/Images/Player/JumpSlime1.png";
+		throw "Resource/Images/Player/JumpSlime2.png";
+	}
+	if ((images[7][0] = LoadGraph("Resource/Images/Player/DeathSlime.png")) == -1) {
+		throw "Resource/Images/Player/DeathSlime.png";
 	}
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
 		throw "Resource/Images/Player/SlimeBullet.png";
@@ -103,6 +106,9 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	int image_type = 0;
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		image_type = static_cast<int>(animation_state);
+	}
+	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
+		image_type = static_cast<int>(PLAYER_ANIM_STATE::DAMAGE);
 	}
 	now_image = images[image_type][animation_type[image_type]];
 

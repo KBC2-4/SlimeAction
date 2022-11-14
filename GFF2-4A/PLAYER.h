@@ -12,7 +12,7 @@
 //#define IMAGE_MAX_NUM			10		//画像の枚数
 #define JUMP_VELOCITY			-5.8f	//ジャンプスピード
 #define HOOK_MAX_DISTANCE		280
-#define ANIMATION_TYPE			7
+#define ANIMATION_TYPE			8
 
 #define PI 3.1415926535897932384626433832795
 #define LENGTH      200                 // 紐の長さ
@@ -40,10 +40,11 @@ enum class PLAYER_ANIM_STATE {
 	IDLE = 0,//アイドルアニメーション
 	MOVE,	 //移動アニメーション
 	THROW,	 //投げるアニメーション
-	HOOK,
+	HOOK,	//フック
 	JUMP,	//ジャンプアニメーション
-	FALL,
-	LANDING,
+	FALL,	//落下
+	LANDING,//着地
+	DAMAGE,	//ダメージを食らったとき
 };
 
 class PLAYER
@@ -112,6 +113,7 @@ private:
 		20,	//ジャンプ
 		20,	//落下中
 		2,	//着地
+		1,	//ダメージ
 	};
 
 	//アニメーションの再生の仕方
@@ -127,6 +129,7 @@ private:
 		1,	//ジャンプ
 		2,	//落下中
 		1,	//着地
+		-1, //ダメージ
 	};
 
 	//アニメーション画像の枚数
@@ -134,10 +137,11 @@ private:
 		9,	//アイドル
 		10,	//移動
 		7,	//投げる
-		1,
+		1,	//フック
 		4,	//ジャンプ
 		4,	//落下中
 		10,	//着地
+		1,	//ダメージ
 	};
 
 	//ステート変数
