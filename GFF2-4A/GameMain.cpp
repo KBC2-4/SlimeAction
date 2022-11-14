@@ -149,6 +149,7 @@ AbstractScene* GAMEMAIN::Update()
 		{
 			delete gurepon[i];
 			gurepon[i] = nullptr;
+			item = new ITEMBALL;
 		}
 		else if(gurepon[i] != nullptr && !gurepon[i]->GetDeleteFlg())
 		{
@@ -195,5 +196,5 @@ void GAMEMAIN::Draw() const
 			gurepon[i]->Draw();
 		}
 	}
-	
+
 }
