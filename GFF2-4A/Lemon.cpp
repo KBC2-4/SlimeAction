@@ -225,8 +225,6 @@ bool LEMON::DethAnimation()
 
 void LEMON::Draw() const
 {
-
-	DrawRotaGraph(x + stage->GetScrollX(), y, 1, 0, image[0], TRUE);
 	if (bullet != nullptr)		//’e‚ª‘¶Ý‚·‚é‚Æ‚«’e‚ð•`‰æ‚·‚é
 	{
 		bullet->Draw();
