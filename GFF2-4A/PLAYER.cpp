@@ -679,10 +679,10 @@ int PLAYER::HitPlayer(float x, float y, int radius) {
 	float py = GetPlayerY() - y; 
 	float pxy = sqrt(px * px + py * py); //ベクトル
 
-	float prad = 28 * life;	//プレーヤー直径
-	float erad = radius * 2;	//対象の直径
+	float Pdiameter = 28 * life;	//プレーヤー直径
+	float Ediameter = radius * 2;	//対象の直径
 
-	if (pxy <= prad + radius && prad <= erad) {
+	if (pxy <= Pdiameter + radius && Pdiameter <= Ediameter && (player_state == PLAYER_MOVE_STATE::IDLE || player_state == PLAYER_MOVE_STATE::MOVE)) {
 		return true;
 	}
 	return false;
