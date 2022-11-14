@@ -98,6 +98,11 @@ private:
 	float ve, vx0, vy0, vx, vy;
 	float g, dt, t,x0, y0;
 
+	//点滅用
+	bool is_damage;
+	int alpha_param;	//パラーメーター
+	int alpha_time;		//点滅時間
+
 	//画像を切り替えるタイミング(フレーム)
 	const int animation_switch_frame[ANIMATION_TYPE] = {
 		3,	//アイドル
