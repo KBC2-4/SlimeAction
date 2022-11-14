@@ -20,6 +20,9 @@ STAGE::STAGE() {
 	//scroll_x = -8640;
 	scroll_x = 0;
 	scroll_y = 0;
+	player_x_old = 20.f;
+	player_y_old = 500.f;
+
 	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1) == -1) {
 		throw "Resource/Images/Stage/map_chips.png";
 	}
@@ -39,6 +42,7 @@ STAGE::STAGE() {
 
 void STAGE::Update(PLAYER* player) {
 	StageClear(player);
+	//CameraWork(player);
 }
 
 void STAGE::Draw()const {
@@ -53,7 +57,7 @@ void STAGE::Draw()const {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			//‰æ–ÊŠO‚Í•`‰æ‚µ‚È‚¢
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
-				if (map_data[i][j] < 90/* && map_data[i][j] != 68*/) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[map_data[i][j] - 1], TRUE); }
+				if (map_data[i][j] < 90/* && map_data[i][j] != 68*/) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data[i][j] - 1], TRUE); }
 			}
 			
 		}
@@ -61,9 +65,44 @@ void STAGE::Draw()const {
 	
 }
 
-void STAGE::CameraWork(PLAYER *player) {
-	//if (player->GetPlayerY() < 6)scroll_y = -60;
-}
+//void STAGE::CameraWork(PLAYER *player) {
+//	int player_vector_x = 0;
+//	int player_vector_y = 0;
+//	if (player->GetPlayerX() - player_x_old > 0) {
+//		player_vector_x = 1;
+//	}
+//	else{
+//		player_vector_x = -1;
+//	}
+//	if (0 < player->GetPlayerY() - player_y_old) {
+//		player_vector_x = 1;
+//	}
+//	else {
+//		player_vector_x = -1;
+//	}
+//	if (player->GetPlayerX() != player_x_old) {
+//		scroll_x -= 5 * player_vector_x;
+//	}
+//	if (player->GetPlayerY() != player_y_old) {
+//		scroll_y -= 5 * player_vector_y;
+//	}
+//	
+//	if (player_vector_x > 0 && player->GetPlayerX() >= 680 || player_vector_x < 0 && player->GetPlayerX() <= 600) {
+//		if (scroll_x >= 0 || scroll_x <= -8080) {
+//			scroll_x += 5 * player_vector_x;
+//		}
+//	}
+//	if (player_vector_y > 0 && player->GetPlayerY() >= 720 || player_vector_y < 0 && player->GetPlayerY() <= 0) {
+//		if (scroll_y >= 0 || scroll_x <= -1120) {
+//			scroll_x += 5 * player_vector_y;
+//		}
+//	}
+//	player_x_old = player->GetPlayerX();
+//	player_y_old = player->GetPlayerY();
+//
+//
+//	//if (player->GetPlayerY() < 6)scroll_y = -60;
+//}
 
 
 
