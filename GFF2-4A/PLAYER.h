@@ -137,7 +137,7 @@ public:
 	void Update(ELEMENT*element, STAGE* stage);
 	void HitBlock();
 	void Scroll(float move_x);
-	int HitPlayer(float x, float y, int diameter);	//“yŠÇ‚Ì“–‚½‚è”»’è	’†‰›‚ÌÀ•W‚ÆŒŠ‚Ì’¼Œa“n‚µ‚Ä
+	int HitPlayer(float x, float y, int diameter,int type);	//type::“yŠÇ=1,
 
 	/*•Ï”‚ÌƒZƒbƒg‚ÆƒQƒbƒg*/
 	int GetLife() { return life; };
