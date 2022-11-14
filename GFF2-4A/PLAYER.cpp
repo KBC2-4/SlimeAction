@@ -189,16 +189,18 @@ void PLAYER::Draw()const {
 /// </summary>
 void PLAYER::Move() {
 	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
-	if (is_throw_anim) return;
+	//if (is_throw_anim) return;
 	//スティック入力の取得
 	int input_lx = PAD_INPUT::GetPadThumbLX();
 	//移動するとき
 	move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 	if ((input_lx < -DEVIATION || input_lx > DEVIATION) && player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::FALL && animation_state != PLAYER_ANIM_STATE::LANDING) {
-			animation_state = PLAYER_ANIM_STATE::MOVE;
+			if (is_throw_anim) {
+				animation_state = PLAYER_ANIM_STATE::MOVE;
+				animation_mode = 1;							//アニメーションの切り替え
+			}
 		}
-		animation_mode = 1;							//アニメーションの切り替え
 		move_type = move_x > 0 ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL) {
 			//アニメーションが前半のとき
@@ -246,9 +248,11 @@ void PLAYER::Move() {
 		//移動アニメーションが終わったらアイドルアニメーションの再生
 		else {
 			if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::FALL && animation_state != PLAYER_ANIM_STATE::LANDING) {
-				animation_state = PLAYER_ANIM_STATE::IDLE;
-				animation_mode = 0;
-				MoveAnimation();
+				if (is_throw_anim) {
+					animation_state = PLAYER_ANIM_STATE::IDLE;
+					animation_mode = 0;
+					MoveAnimation();
+				}
 			}
 		}
 		//ジャンプ中じゃないかったらステートを切り替える
