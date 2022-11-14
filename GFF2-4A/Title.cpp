@@ -8,6 +8,13 @@ Title::Title()
 	if ((background_image = LoadGraph("Resource/Images/Stage/BackImage.png")) == -1) {
 		throw "Resource/Images/Stage/BackImage.png";
 	}
+	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1) {
+		throw "Resource/Sounds/SE/cursor_move.wav";
+	}
+
+	if ((ok_se = LoadSoundMem("Resource/Sounds/SE/ok.wav")) == -1) {
+		throw "Resource/Sounds/SE/ok.wav";
+	}
 
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
@@ -19,17 +26,17 @@ Title::~Title()
 {
 	DeleteGraph(background_image);
 	InitFontToHandle();	//全てのフォントデータを削除
+	InitSoundMem();		//メモリに読み込んだ音データをすべて削除
 }
 
 AbstractScene* Title::Update()
 {
 	static int input_margin;
 	input_margin++;
-	if (PAD_INPUT::GetPadThumbLY() > 1000 && input_margin > 20) { selectmenu = (selectmenu + 2) % 3; input_margin = 0; StartJoypadVibration(DX_INPUT_PAD1, 150, 160, -1); }
-	if (PAD_INPUT::GetPadThumbLY() < -1000 && input_margin > 20) { selectmenu = (selectmenu + 1) % 3; input_margin = 0; StartJoypadVibration(DX_INPUT_PAD1, 150, 160, -1);
-	}
+	if (PAD_INPUT::GetPadThumbLY() > 1000 && input_margin > 20) { selectmenu = (selectmenu + 2) % 3;  input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
+	if (PAD_INPUT::GetPadThumbLY() < -1000 && input_margin > 20) { selectmenu = (selectmenu + 1) % 3; input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
 
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B)return new GAMEMAIN();
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1); return new GAMEMAIN(); }
 	return this;
 }
 

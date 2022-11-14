@@ -5,8 +5,9 @@ class RESULT : public AbstractScene
 {
 private:
 	int clear_background_image,gameover_background_image;
+	int count_se, ok_se,good_se[4],bad_se[4];
 	int title_font, menu_font,time_font;
-	int timer;
+	int timer, wintimer;
 	bool win;
 	int time;
 	int diff_time;

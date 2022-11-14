@@ -43,7 +43,7 @@ void STAGE::Update(PLAYER* player) {
 
 void STAGE::Draw()const {
 	//デバッグ
-	//DrawFormatString(200, 200, 0xffffff, "scroll_y:%f", scroll_y);
+	DrawFormatString(200, 200, 0xffffff, "scroll_y:%f", scroll_y);
 	//ゲームクリア時
 	if (clearflg == true) {DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
 	

@@ -8,6 +8,7 @@ class Title :
 {
 private:
     int background_image;
+    int cursor_move_se, ok_se;
     int title_font,menu_font;
     int selectmenu;
     
