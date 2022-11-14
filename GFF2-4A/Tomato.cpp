@@ -120,6 +120,7 @@ void TOMATO::Hit()
 	{
 		state = ENEMY_STATE::DETH;
 		animation_timer = 0;
+		animation_type = 00;
 	}
 }
 
