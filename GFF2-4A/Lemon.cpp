@@ -60,6 +60,10 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 LEMON::~LEMON()
 {
 	delete[] image;
+	if (bullet != nullptr)
+	{
+		delete bullet;
+	}
 }
 
 void LEMON::Update()
