@@ -644,8 +644,47 @@ void PLAYER::HitBlock() {
 	player_right = (player_x - STAGE::GetScrollX() + 35);
 	player_top = (player_y - MAP_CEllSIZE / 2);
 	player_bottom = (player_y + MAP_CEllSIZE / 2);
+	
+	if (player_state == PLAYER_MOVE_STATE::IDLE || player_state == PLAYER_MOVE_STATE::MOVE|| player_state == PLAYER_MOVE_STATE::THROW) {
+		if (STAGE::HitMapDat(map_y - 1, (int)(player_left / MAP_CEllSIZE))) {
+			if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE))) {
+				player_x += rebound_x;
+			}
+			else {
+				player_x -= rebound_x;
+			}
+		}
+		else if (STAGE::HitMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE))) {
+			if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
+				player_x -= rebound_x;
+			}
+			else {
+				player_x += rebound_x;
+			}
+		}
+	}
+	else if (player_state == PLAYER_MOVE_STATE::JUMP || player_state == PLAYER_MOVE_STATE::FALL) {
+		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
+			if (STAGE::HitMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE))) {
+				player_x -= rebound_x;
+			}
+			else if (move_x < 0) {
+				player_x += rebound_x;
+			}
+		}
+		else if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE))) {
+			if (STAGE::HitMapDat(map_y - 1, (int)(player_left / MAP_CEllSIZE))) {
+				player_x += rebound_x;
+			}
+			else if (move_x > 0) {
+				player_x -= rebound_x;
+			}
+		}
+	}
+	else if (player_state == PLAYER_MOVE_STATE::HOOK) {
 
-	if (player_state == PLAYER_MOVE_STATE::JUMP || player_state == PLAYER_MOVE_STATE::FALL) {
+	}
+	/*if (player_state == PLAYER_MOVE_STATE::JUMP || player_state == PLAYER_MOVE_STATE::FALL) {
 		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
 			if (STAGE::HitMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE))) {
 				player_x -= rebound_x;
@@ -680,7 +719,7 @@ void PLAYER::HitBlock() {
 				player_x += rebound_x;
 			}
 		}
-	}
+	}*/
 }
 
 /// <summary>
