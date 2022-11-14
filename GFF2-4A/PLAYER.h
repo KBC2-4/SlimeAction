@@ -12,7 +12,7 @@
 //#define IMAGE_MAX_NUM			10		//画像の枚数
 #define JUMP_VELOCITY			-5.8f	//ジャンプスピード
 #define HOOK_MAX_DISTANCE		280
-#define ANIMATION_TYPE			6
+#define ANIMATION_TYPE			7
 
 #define PI 3.1415926535897932384626433832795
 #define LENGTH      200                 // 紐の長さ
@@ -42,6 +42,7 @@ enum class PLAYER_ANIM_STATE {
 	THROW,	 //投げるアニメーション
 	HOOK,
 	JUMP,	//ジャンプアニメーション
+	FALL,
 	LANDING,
 };
 
@@ -103,19 +104,23 @@ private:
 		1,	//移動
 		3,	//投げる
 		1,
-		5,	//ジャンプ
+		20,	//ジャンプ
+		20,	//落下中
 		2,	//着地
 	};
 
 	//アニメーションの再生の仕方
+	//-1: 固定
 	// 0: 一枚目から再生したら逆再生する
 	// 1: 一枚目から再生したら一枚目に戻す
+	// 2: 最後までされたら最後の画像で固定
 	const int animation_play_type[ANIMATION_TYPE] = {
 		1,	//アイドル
 		0,	//移動
 		1,	//投げる
-		2,
+		-1,
 		1,	//ジャンプ
+		2,	//落下中
 		1,	//着地
 	};
 
@@ -125,7 +130,8 @@ private:
 		10,	//移動
 		7,	//投げる
 		1,
-		10,	//ジャンプ
+		4,	//ジャンプ
+		4,	//落下中
 		10,	//着地
 	};
 

@@ -45,11 +45,15 @@ PLAYER::PLAYER() {
 		throw "Resource/Images/Player/nobi2.png";
 	}
 
-	if (LoadDivGraph("Resource/Images/Player/JumpSlime1.png", 10, 10, 1, 80, 80, images[4]) == -1) {
-		throw "Resource/Images/Player/JumpSlime1.png";
+	if (LoadDivGraph("Resource/Images/Player/JumpSlime01.png", 4, 4, 1, 80, 80, images[4]) == -1) {
+		throw "Resource/Images/Player/JumpSlime01.png";
 	}
 
-	if (LoadDivGraph("Resource/Images/Player/JumpSlime2.png", 10, 10, 1, 80, 80, images[5]) == -1) {
+	if (LoadDivGraph("Resource/Images/Player/JumpSlime02.png", 4, 4, 1, 80, 80, images[5]) == -1) {
+		throw "Resource/Images/Player/JumpSlime02.png";
+	}
+
+	if (LoadDivGraph("Resource/Images/Player/JumpSlime2.png", 10, 10, 1, 80, 80, images[6]) == -1) {
 		throw "Resource/Images/Player/JumpSlime1.png";
 	}
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
@@ -167,7 +171,7 @@ void PLAYER::Move() {
 	//移動するとき
 	move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 	if ((input_lx < -DEVIATION || input_lx > DEVIATION) && player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::LANDING) {
+		if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::FALL && animation_state != PLAYER_ANIM_STATE::LANDING) {
 			animation_state = PLAYER_ANIM_STATE::MOVE;
 		}
 		animation_mode = 1;							//アニメーションの切り替え
@@ -217,7 +221,7 @@ void PLAYER::Move() {
 		}
 		//移動アニメーションが終わったらアイドルアニメーションの再生
 		else {
-			if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::LANDING) {
+			if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::FALL && animation_state != PLAYER_ANIM_STATE::LANDING) {
 				animation_state = PLAYER_ANIM_STATE::IDLE;
 				animation_mode = 0;
 				MoveAnimation();
@@ -429,7 +433,9 @@ void PLAYER::JumpMove(ELEMENT* element) {
 			}
 			player_state = PLAYER_MOVE_STATE::JUMP;
 			animation_state = PLAYER_ANIM_STATE::JUMP;
-			animation_type[static_cast<int>(animation_state)] = 0;
+			animation_type[static_cast<int>(PLAYER_ANIM_STATE::JUMP)] = 0;
+			animation_type[static_cast<int>(PLAYER_ANIM_STATE::FALL)] = 0;
+			animation_type[static_cast<int>(PLAYER_ANIM_STATE::LANDING)] = 0;
 
 		}
 	}
@@ -451,6 +457,7 @@ void PLAYER::JumpMove(ELEMENT* element) {
 
 		if (player_y <= jump_y && velocity >= 0 || is_block || player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			is_jump = false;
+			animation_state = PLAYER_ANIM_STATE::FALL;
 			velocity = 0;
 		}
 	}
@@ -503,11 +510,17 @@ void PLAYER::JumpMove(ELEMENT* element) {
 				if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 					velocity = 0;
 				}
-				if (animation_state == PLAYER_ANIM_STATE::LANDING) {
-					MoveAnimation();
-					if (animation_type[static_cast<int>(animation_state)] >= 9) {
-						animation_state = PLAYER_ANIM_STATE::IDLE;
-					}
+			}
+			if (animation_state == PLAYER_ANIM_STATE::FALL) {
+				MoveAnimation();
+				if (animation_type[static_cast<int>(animation_state)] >= 4) {
+					animation_state = PLAYER_ANIM_STATE::LANDING;
+				}
+			}
+			if (animation_state == PLAYER_ANIM_STATE::LANDING) {
+				MoveAnimation();
+				if (animation_type[static_cast<int>(animation_state)] >= 9) {
+					animation_state = PLAYER_ANIM_STATE::IDLE;
 				}
 			}
 	}
@@ -663,7 +676,7 @@ void PLAYER::MoveAnimation() {
 			if (animation_play_type[type] == 0) {
 				animation_type[type]--;
 			}
-			else {
+			else if (animation_play_type[type] == 1) {
 				animation_phase[type] = 0;
 				animation_type[type] = 1;
 			}
