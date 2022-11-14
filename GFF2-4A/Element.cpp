@@ -126,9 +126,9 @@ ELEMENT::ELEMENT() {
 void ELEMENT::Draw() const {
 	//static int animtimer = 0;
 	//printfDx("%d", animtimer);
-	//DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
+	//DrawFormatString(200, 100, 0xFFFFFF, "acidrain_puddles.x%f\acidrain_puddles.y%f", acidrain_puddles[1].x, acidrain_puddles[1].y);
 	//DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
-	////デバッグ用
+	//デバッグ用
 
 	//ボタン
 	for (int i = 0; i < button.size(); i++) {
@@ -330,12 +330,17 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 		}
 
 		if (acidrain_puddles[i].type == 1) {	//酸性雨の水たまり
-			if ((player_map_x >= acidrain_puddles[i].x - MAP_CEllSIZE + 25) && (player_map_x <= acidrain_puddles[i].x + MAP_CEllSIZE - 25) && (player_map_y >= acidrain_puddles[i].y - MAP_CEllSIZE / 2) && (player_map_y <= acidrain_puddles[i].y + MAP_CEllSIZE / 2)) {
+			if ((player_map_x >= acidrain_puddles[i].x - MAP_CEllSIZE / 2) && (player_map_x <= acidrain_puddles[i].x + MAP_CEllSIZE / 2) && (player_map_y >= acidrain_puddles[i].y - MAP_CEllSIZE) && (player_map_y <= acidrain_puddles[i].y + MAP_CEllSIZE)) {
 				//デバッグ
-				printfDx("入ってるよ！");
-				player->SetPlayerY(button[i].y + 1.5f);
-				if (acidrain_puddles[i].flg == true) { player->SetLife(player->GetLife() - 1); }
-			}
+				//printfDx("入ってるよ！");
+
+				//player->SetPlayerY(acidrain_puddles[i].y + 1.5f);
+				if (acidrain_puddles[i].flg == true) {
+					player->SetLife(player->GetLife() - 1);
+					printfDx("残りライフ：%d",player->GetLife());		//デバッグ
+					acidrain_puddles[i].flg = false;
+				}
+			}else{ acidrain_puddles[i].animtimer = 0; }
 		}
 	}
 }
