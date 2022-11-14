@@ -77,8 +77,10 @@ void RESULT::Draw() const {
 		DrawExtendGraph(0, 0, 1280, 720, clear_background_image, true);
 		DrawStringToHandle(170, 200, "ゲームクリア", 0xF5F2B4, title_font, 0xF5EA1D);
 		DrawStringToHandle(330, 350, "クリアタイム", 0xF5EB67, time_font, 0xFFFFFF);
-		char dis_clear_time[18];	//文字列合成バッファー
-		sprintf_s(dis_clear_time, sizeof(dis_clear_time), "%5d秒%.3dミリ秒", clear_time / 1000, clear_time % 1000);	//文字列合成
+		char dis_clear_time[20];	//文字列合成バッファー
+		//文字列合成
+		if (clear_time / 1000 >= 60) { sprintf_s(dis_clear_time, sizeof(dis_clear_time), "%2d分%2d秒%.3dミリ秒", (clear_time / 1000) / 60, (clear_time / 1000) % 60, clear_time % 1000); }
+		else { sprintf_s(dis_clear_time, sizeof(dis_clear_time), "%5d秒%.3dミリ秒", clear_time / 1000, clear_time % 1000); }
 		DrawStringToHandle(160, 450, dis_clear_time, 0xF5EB67, time_font, 0xFFFFFF);	//クリアタイム
 		DrawFormatStringToHandle(20, 560, 0x56F590, menu_font , "%2d秒後にリスタートします", timer / 60);
 	}
