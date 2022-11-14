@@ -216,5 +216,5 @@ void GAMEMAIN::Draw() const
 	}
 
 	//デバッグ
-	//DrawFormatString(200, 300, 0xffffff, "GetPlayerY:%f", player->GetPlayerY);
+	//DrawFormatString(200, 300, 0xffffff, "GetPlayerY:%f", player->GetPlayerY());
 }

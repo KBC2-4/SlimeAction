@@ -55,6 +55,8 @@ void STAGE::Draw()const {
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
 				if (map_data[i][j] < 90/* && map_data[i][j] != 68*/) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[map_data[i][j] - 1], TRUE); }
 			}
+			//レモナーとグレポンはツルだけ描画する
+			if(map_data[i][j] == 91 || map_data[i][j] == 92){ DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE, block_image1[map_data[i][j] - 1], TRUE); }
 			
 		}
 	}
