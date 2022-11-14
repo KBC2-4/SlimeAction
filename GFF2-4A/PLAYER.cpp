@@ -46,8 +46,19 @@ PLAYER::PLAYER() {
 		throw "Resource/Images/Player/nobi2.png";
 	}
 
-	if ((throw_ball_image = LoadGraph("Resource/Images/Player/Slime_Bullet.png")) == -1) {
-		throw "Resource/Images/Player/Slime_Bullet.png";
+	if (LoadDivGraph("Resource/Images/Player/JumpSlime01.png", 4, 4, 1, 80, 80, images[4]) == -1) {
+		throw "Resource/Images/Player/JumpSlime01.png";
+	}
+
+	if (LoadDivGraph("Resource/Images/Player/JumpSlime02.png", 4, 4, 1, 80, 80, images[5]) == -1) {
+		throw "Resource/Images/Player/JumpSlime02.png";
+	}
+
+	if (LoadDivGraph("Resource/Images/Player/JumpSlime2.png", 10, 10, 1, 80, 80, images[6]) == -1) {
+		throw "Resource/Images/Player/JumpSlime1.png";
+	}
+	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
+		throw "Resource/Images/Player/SlimeBullet.png";
 	}
 	
 	animation_state = PLAYER_ANIM_STATE::IDLE;
@@ -183,7 +194,9 @@ void PLAYER::Move() {
 	//移動するとき
 	move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 	if ((input_lx < -DEVIATION || input_lx > DEVIATION) && player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		animation_state = PLAYER_ANIM_STATE::MOVE;
+		if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::FALL && animation_state != PLAYER_ANIM_STATE::LANDING) {
+			animation_state = PLAYER_ANIM_STATE::MOVE;
+		}
 		animation_mode = 1;							//アニメーションの切り替え
 		move_type = move_x > 0 ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL) {
@@ -231,9 +244,11 @@ void PLAYER::Move() {
 		}
 		//移動アニメーションが終わったらアイドルアニメーションの再生
 		else {
-			animation_state = PLAYER_ANIM_STATE::IDLE;
-			animation_mode = 0;
-			MoveAnimation();
+			if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::FALL && animation_state != PLAYER_ANIM_STATE::LANDING) {
+				animation_state = PLAYER_ANIM_STATE::IDLE;
+				animation_mode = 0;
+				MoveAnimation();
+			}
 		}
 		//ジャンプ中じゃないかったらステートを切り替える
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL &&
@@ -440,12 +455,17 @@ void PLAYER::JumpMove(ELEMENT* element) {
 				jump_mode = 2;
 			}
 			player_state = PLAYER_MOVE_STATE::JUMP;
-
+			animation_state = PLAYER_ANIM_STATE::JUMP;
+			animation_type[static_cast<int>(PLAYER_ANIM_STATE::JUMP)] = 0;
+			animation_type[static_cast<int>(PLAYER_ANIM_STATE::FALL)] = 0;
+			animation_type[static_cast<int>(PLAYER_ANIM_STATE::LANDING)] = 0;
 
 		}
 	}
 	//ジャンプ中
 	if (is_jump) {
+		//animation_state = PLAYER_ANIM_STATE::JUMP;
+		MoveAnimation();
 		velocity += 0.2f;
 		player_y += velocity;
 		bool is_block = false;
@@ -460,6 +480,7 @@ void PLAYER::JumpMove(ELEMENT* element) {
 
 		if (player_y <= jump_y && velocity >= 0 || is_block || player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			is_jump = false;
+			animation_state = PLAYER_ANIM_STATE::FALL;
 			velocity = 0;
 		}
 	}
@@ -488,6 +509,7 @@ void PLAYER::JumpMove(ELEMENT* element) {
 						player_y = new_y;
 						velocity = 0;
 						player_state = PLAYER_MOVE_STATE::IDLE;
+						animation_state = PLAYER_ANIM_STATE::LANDING;
 					}
 					else {
 						bool is_wall = false;
@@ -510,6 +532,18 @@ void PLAYER::JumpMove(ELEMENT* element) {
 				}
 				if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 					velocity = 0;
+				}
+			}
+			if (animation_state == PLAYER_ANIM_STATE::FALL) {
+				MoveAnimation();
+				if (animation_type[static_cast<int>(animation_state)] >= 4) {
+					animation_state = PLAYER_ANIM_STATE::LANDING;
+				}
+			}
+			if (animation_state == PLAYER_ANIM_STATE::LANDING) {
+				MoveAnimation();
+				if (animation_type[static_cast<int>(animation_state)] >= 9) {
+					animation_state = PLAYER_ANIM_STATE::IDLE;
 				}
 			}
 	}
@@ -665,7 +699,7 @@ void PLAYER::MoveAnimation() {
 			if (animation_play_type[type] == 0) {
 				animation_type[type]--;
 			}
-			else {
+			else if (animation_play_type[type] == 1) {
 				animation_phase[type] = 0;
 				animation_type[type] = 1;
 			}
@@ -694,10 +728,30 @@ bool PLAYER::GetBullet(int *bullet) {
 
 void PLAYER::SetLife(int a) 
 {
+
 	if (!is_damage) {
 		life = a;
 		player_state == PLAYER_MOVE_STATE::DAMAGE;
 		alpha_time = 120;
 		is_damage = true;
 	}
+}
+
+int PLAYER::HitPlayer(float x, float y, int diameter, int type) {
+	float px = GetPlayerX() - x;
+	float py = GetPlayerY() - y; 
+	float pxy = sqrt(px * px + py * py); //ベクトル
+
+	float Pdiameter = 28 * life;	//プレーヤー直径
+	float Ediameter = diameter * 2;	//対象の直径
+	if (type == 1) {
+		if (pxy <= Pdiameter + diameter && Pdiameter <= Ediameter && (player_state == PLAYER_MOVE_STATE::IDLE || player_state == PLAYER_MOVE_STATE::MOVE)) {
+			return true;
+		}
+	}
+	/*if (type != 1) {
+		if()
+	}*/
+	return false;
+
 }
