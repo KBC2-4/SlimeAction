@@ -8,6 +8,7 @@ GAMEMAIN::GAMEMAIN()
 	time = 0.0;
 	lemoner_count = 0;
 	tomaton_count = 0;
+	item_count = 0;
 
 	player = new PLAYER;
 	stage = new STAGE;
@@ -24,6 +25,7 @@ GAMEMAIN::GAMEMAIN()
 			if (stage->GetMapDat(i, j) == 93)
 			{
 				tomaton_count++;
+				item_count++;
 				spawn_point.push_back(std::vector<int>(2));
 				spawn_point[point][0] = i;
 				spawn_point[point][1] = j;
@@ -98,6 +100,12 @@ GAMEMAIN::GAMEMAIN()
 		}
 	}
 
+	item_count = gurepon_count + lemoner_count;
+	if (item_count > 0)
+	{
+		item = new ITEMBALL * [item_count];
+	}
+
 	element = new ELEMENT();
 }
 
@@ -149,7 +157,6 @@ AbstractScene* GAMEMAIN::Update()
 		{
 			delete gurepon[i];
 			gurepon[i] = nullptr;
-			item = new ITEMBALL;
 		}
 		else if(gurepon[i] != nullptr && !gurepon[i]->GetDeleteFlg())
 		{
