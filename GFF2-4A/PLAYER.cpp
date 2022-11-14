@@ -673,3 +673,14 @@ void PLAYER::SetLife(int a)
 {
 	life = a;
 }
+//
+//int PLAYER::HitPlayer(float x, float y, int radius) {
+//	float px = GetPlayerX() - x;
+//	float py = GetPlayerY() - y; 
+//	int prad = 20 * life;
+//	float pxy = sqrt(px * px + py * py);
+//	if(px<=)
+//
+//	
+//
+//}

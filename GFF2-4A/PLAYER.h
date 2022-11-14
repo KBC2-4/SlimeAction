@@ -137,6 +137,7 @@ public:
 	void Update(ELEMENT*element, STAGE* stage);
 	void HitBlock();
 	void Scroll(float move_x);
+	int HitPlayer(float x, float y, int radius);
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
