@@ -69,13 +69,20 @@ ELEMENT::ELEMENT() {
 			//	manhole.push_back(data);
 			//	break;
 
-				//é_
-			/*case 68:
+				//é_ê´âJÇÃêÖÇΩÇ‹ÇË
+			case 74:
+			case 75:
+			case 76:
+			case 77:
+			case 78:
+			case 79:
 				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 1;
-				acid.push_back(data);
-				break;*/
+				data.animtimer = 0;
+				data.flg = false;
+				acidrain_puddles.push_back(data);
+				break;
 
 				//ÉtÉbÉN
 			case 72:
@@ -164,6 +171,7 @@ void ELEMENT::Update(PLAYER* player) {
 	Door();
 	Lift(player);
 	Manhole(player);
+	Acidrain_puddles(player);
 	
 }
 
@@ -306,6 +314,27 @@ void ELEMENT::Manhole(PLAYER* player) {
 				player->SetPlayerY(player->GetPlayerY() - 10.5f);
 				manhole[i].flg = true;
 
+			}
+		}
+	}
+}
+
+void ELEMENT::Acidrain_puddles(PLAYER* player) {
+
+	for (int i = 0; i < acidrain_puddles.size(); i++) {
+
+		if (acidrain_puddles[i].flg == false)acidrain_puddles[i].animtimer++;
+		if (acidrain_puddles[i].animtimer > 180) {
+			acidrain_puddles[i].animtimer = 0;
+			acidrain_puddles[i].flg = true;
+		}
+
+		if (acidrain_puddles[i].type == 1) {	//é_ê´âJÇÃêÖÇΩÇ‹ÇË
+			if ((player_map_x >= acidrain_puddles[i].x - MAP_CEllSIZE + 25) && (player_map_x <= acidrain_puddles[i].x + MAP_CEllSIZE - 25) && (player_map_y >= acidrain_puddles[i].y - MAP_CEllSIZE / 2) && (player_map_y <= acidrain_puddles[i].y + MAP_CEllSIZE / 2)) {
+				//ÉfÉoÉbÉO
+				printfDx("ì¸Ç¡ÇƒÇÈÇÊÅI");
+				player->SetPlayerY(button[i].y + 1.5f);
+				if (acidrain_puddles[i].flg == true) { player->SetLife(player->GetLife() - 1); }
 			}
 		}
 	}
