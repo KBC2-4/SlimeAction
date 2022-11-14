@@ -22,6 +22,7 @@ PLAYER::PLAYER() {
 	is_hook_move = false;
 	is_throw_anim = false;
 	is_death = false;
+	is_damage = false;
 	player_state = PLAYER_MOVE_STATE::IDLE;
 	// 初期位置は軸の真下から左方向に45度傾いた位置
 	x = CLENGTH / b;
@@ -99,12 +100,32 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 		player_x += element->GetLiftVector()*2;
 	}
 
+	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
+		if (alpha_time > 0) {
+			if (alpha_time % 20 < 10) {
+				alpha_param -= 25;
+			}
+			else {
+				alpha_param += 25;
+			}
+			alpha_time--;
+		}
+		else {
+			player_state = PLAYER_MOVE_STATE::IDLE;
+			is_damage = false;
+		}
+	}
 }
 
 /// <summary>
 /// プレイヤーの表示
 /// </summary>
 void PLAYER::Draw()const {
+	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_param);
+		
+	}
+
 	//プレイヤーの表示
 	float slime_size_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
@@ -134,6 +155,8 @@ void PLAYER::Draw()const {
 				now_image, TRUE, move_type);
 		}
 	}
+
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
@@ -671,5 +694,10 @@ bool PLAYER::GetBullet(int *bullet) {
 
 void PLAYER::SetLife(int a) 
 {
-	life = a;
+	if (!is_damage) {
+		life = a;
+		player_state == PLAYER_MOVE_STATE::DAMAGE;
+		alpha_time = 120;
+		is_damage = true;
+	}
 }
