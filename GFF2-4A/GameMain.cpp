@@ -3,9 +3,10 @@
 
 GAMEMAIN::GAMEMAIN()
 {
+	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 	std::vector<std::vector<int>> spawn_point;
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
-	time = 0.0;
+	time = GetNowCount();
 	lemoner_count = 0;
 	tomaton_count = 0;
 	item_count = 0;
@@ -139,13 +140,19 @@ GAMEMAIN::~GAMEMAIN()
 AbstractScene* GAMEMAIN::Update()
 {
 	player->Update(element,stage);
-	if (player->IsDeath()) {
-		return new GAMEMAIN();
-	}
+	
 	element->Update(player);
 	for (int i = 0; i < lemoner_count; i++)
 	{
-		lemoner[i]->Update();
+		if (lemoner[i] != nullptr)
+		{
+			lemoner[i]->Update();
+			if (lemoner[i]->GetDeleteFlag())
+			{
+				delete lemoner[i];
+				lemoner[i] = nullptr;
+			}
+		}
 	}
 	for (int i = 0; i < tomaton_count; i++)
 	{
@@ -165,20 +172,29 @@ AbstractScene* GAMEMAIN::Update()
 		else
 		{}
 	}
+	stage->Update(player);	//ステージクリア用
 	element->Update(player);
+
+	//ゲームオーバー
+	if (player->IsDeath()) {
+		return new RESULT(false);
+	}
+
+	//ステージクリア
+	if (stage->GetClearFlg()) { return new RESULT(true,time); };
 
 	return this;
 }
 
 void GAMEMAIN::Draw() const
 {
+
+	//ステージ背景
 	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
 	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
-	DrawFormatString(0, 50, 0x000000, "%d", player->GetLife());	
 
 
 	//ステージの描画
-
 	element->Draw();
 	stage->Draw();
 	
@@ -188,7 +204,11 @@ void GAMEMAIN::Draw() const
 	//レモナーの描画
 	for (int i = 0; i < lemoner_count; i++)
 	{
-		lemoner[i]->Draw();
+		if (lemoner[i] != nullptr)
+		{
+			lemoner[i]->Draw();
+
+		}
 	}
 	//とまトンの描画
 	for (int i = 0; i < tomaton_count; i++)
@@ -203,5 +223,4 @@ void GAMEMAIN::Draw() const
 			gurepon[i]->Draw();
 		}
 	}
-
 }

@@ -14,16 +14,16 @@ ELEMENT::ELEMENT() {
 			{
 				//ボタン横
 			case 61:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25;
-				data.y = i * MAP_CEllSIZE + MAP_CEllSIZE / 2 ;
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25);
+				data.y = static_cast<float>(i * MAP_CEllSIZE + MAP_CEllSIZE / 2) ;
 				data.type = 1;
 				button.push_back(data);
 				break;
 					
 				//ボタン(下)
 			case 62:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 2;
 				button.push_back(data);
 				break;
@@ -31,71 +31,71 @@ ELEMENT::ELEMENT() {
 
 				//ボタン(ones)下
 			case 63:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25;
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25);
 				data.type = 3;
 				button.push_back(data);
 				break;
 
 				//閉まっているドアの下
 			case 66:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 1;
 				door.push_back(data);
 				break;
 
 				//マンホールの蓋
 			case 68:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 1;
 				manhole.push_back(data);
 				break;
 
 				//マンホール(中間)
 			case 69:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 2;
 				manhole.push_back(data);
 				break;
 
 				//マンホール(出口)
 			//case 70:
-			//	data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-			//	data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+			//	data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+			//	data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 			//	data.type = 3;
 			//	manhole.push_back(data);
 			//	break;
 
 				//酸
 			/*case 68:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = (i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 1;
 				acid.push_back(data);
 				break;*/
 
 				//フック
 			case 72:
-				data.x = (j * MAP_CEllSIZE + MAP_CEllSIZE / 2);
-				data.y = i * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				hook.push_back(data);
 				break;
 
 				//動く床
 			case 95:
-				data.x = (j * MAP_CEllSIZE);
-				data.y = (i * MAP_CEllSIZE);
+				data.x = static_cast<float>((j * MAP_CEllSIZE));
+				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 2;
 				lift.push_back(data);
 				break;
 
 				//動く床(ゴール)
 			case 96:
-				data.x = (j * MAP_CEllSIZE);
-				data.y = (i * MAP_CEllSIZE);
+				data.x = static_cast<float>((j * MAP_CEllSIZE));
+				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 0;
 				lift_goal.push_back(data);
 				break;
@@ -122,10 +122,6 @@ void ELEMENT::Draw() const {
 	//DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
 	//DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
 	////デバッグ用
-	//DrawFormatString(200, 250, 0xFFFFFF, "door.x%f\ndoor.y%f", door[0].x, door[0].y);
-	//DrawFormatString(200, 300, 0xFFFFFF, "flg:%d", door[0].flg);
-	//DrawFormatString(200, 350, 0xFFFFFF, ":%d", static_cast<int>((door[0].x / MAP_CEllSIZE)));
-	//DrawBox(button[1].x + scroll_x, button[1].y + scroll_y, button[1].x + scroll_x + MAP_CEllSIZE, button[1].y + scroll_y + MAP_CEllSIZE,0xff0000,TRUE);
 
 	//ボタン
 	for (int i = 0; i < button.size(); i++) {
@@ -160,11 +156,13 @@ void ELEMENT::Draw() const {
 }
 
 void ELEMENT::Update(PLAYER* player) {
+	//プレイヤーのマップ内座標を設定
 	player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
 	player_map_y = floorf(player->GetPlayerY());
+
 	Button(player);
 	Door();
-	Lift();
+	Lift(player);
 	Manhole(player);
 	
 }
@@ -180,28 +178,36 @@ void ELEMENT::Button(PLAYER* player) {
 			button[i].flg = false;
 		}	
 
-		if (button[i].type == 1) {
+		if (button[i].type == 1) {		//横ボタン
 			int max_ball_num = player->GetThrowCnt();
 			for (int ball_num = 0; ball_num < max_ball_num; ball_num++) {
 				if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2 + 33) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2 - 30) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
 					//printfDx("1番に入ってるよ！");
-					door[i + 1].flg = true;
+					if(i < door.size() && i >= 0){
+						int j = i + 1;
+						door[j].flg = true;
+					}
+					
 				}
 			}
 		}
-			if (button[i].type == 2) {
+			if (button[i].type == 2) {	//ボタン
 				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 ) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
 					//printfDx("2番に入ってるよ！");
 					player->SetPlayerY(button[i].y - 6.5f);
 					button[i].flg = true;		//ボタンを押した
-					door[i - 1].flg = true;
+					if (i < door.size() && i >= 0) {
+						int j = i - 1;
+						door[j].flg = true;
+					}
+					
 				}
 			}
 
 			//一回限り
-			if (button[i].type == 3) {
+			if (button[i].type == 3) {	//Onecボタン
 				if ((player_map_x >= button[i].x-MAP_CEllSIZE/2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2)&& (player_map_y >= button[i].y - MAP_CEllSIZE / 2)&& (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
 					//printfDx("3番に入ってるよ！");
@@ -241,16 +247,22 @@ void ELEMENT::Door() {
 /// <summary>
 /// 動く床の処理
 /// </summary>
-void ELEMENT::Lift() {
+void ELEMENT::Lift(PLAYER* player) {
 	for (int i = 0; i < lift.size(); i++) {
-		 if (lift[i].flg) {
+		if (player_map_x>lift[i].x - 1280 && player_map_x<lift[i].x + 1280) {
+			lift[i].flg = true;
+		}
+		if (lift[i].flg) {
 			if (lift[i].x != lift_goal[i].x) {
-				lift[i].x += lift_vector*2;
-				
+				lift[i].x += lift_vector * 2.0;
+				if (HitLift()) {
+					player->SetPlayerX(player->GetPlayerX() + lift_vector * 2.0);
+				}
+
 			}
 			else if (lift[i].type == 2) {
-				for (int lift_pos = lift[i].x-MAP_CEllSIZE*lift_vector; i >= 0; lift_pos-=lift_vector*MAP_CEllSIZE) {
-					if (map_data[int(lift[i].y)/MAP_CEllSIZE][lift_pos/MAP_CEllSIZE] == 95) {
+				for (int lift_pos = lift[i].x - MAP_CEllSIZE * lift_vector; i >= 0; lift_pos -= lift_vector * MAP_CEllSIZE) {
+					if (map_data[int(lift[i].y) / MAP_CEllSIZE][lift_pos / MAP_CEllSIZE] == 95) {
 						lift_goal[i].x = lift_pos;
 						break;
 					}
@@ -258,7 +270,7 @@ void ELEMENT::Lift() {
 				map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 95;
 				lift_vector *= -1;
 			}
-			
+
 		}
 		
 	}
@@ -270,16 +282,18 @@ void ELEMENT::Lift() {
 /// </summary>
 bool ELEMENT::HitLift() {
 	for (int i = 0; i < lift.size(); i++) {
-		if (player_map_x+MAP_CEllSIZE/2-20 >= lift[i].x && player_map_x-MAP_CEllSIZE/2+20 <= lift[i].x +MAP_CEllSIZE
+		if (player_map_x >= lift[i].x && player_map_x <= lift[i].x +MAP_CEllSIZE
 			&& player_map_y+MAP_CEllSIZE/2==lift[i].y) {
-			lift[i].flg = true;
 			return true;
 		}
 	}
-	
 	return false;
 }
 
+
+/// <summary>
+/// マンホールの処理
+/// </summary>
 void ELEMENT::Manhole(PLAYER* player) {
 	for (int i = 0; i < manhole.size(); i++) {
 		if (manhole[i].flg == true)manhole[i].animtimer++;
@@ -289,7 +303,7 @@ void ELEMENT::Manhole(PLAYER* player) {
 		}
 		if (manhole[i].type == 1) {
 			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE + 25) && (player_map_x <= manhole[i].x + MAP_CEllSIZE - 25) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
-				player->SetPlayerY(manhole[i].y - 10.5f);
+				player->SetPlayerY(player->GetPlayerY() - 10.5f);
 				manhole[i].flg = true;
 
 			}

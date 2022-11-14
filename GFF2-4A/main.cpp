@@ -17,7 +17,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);		//フォントをアンチエイリアス対応にする。
 
-	SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
+	SetJoypadDeadZone(DX_INPUT_PAD1, 0.0);
+
+;	SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
 
 	SceneManager* sceneMng;
 	try
@@ -63,6 +65,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 	}
 
+	InitFontToHandle();	//全てのフォントデータを削除
+	InitGraph();		//読み込んだ全てのグラフィックデータを削除
 	DxLib_End();
 	return 0;
 }

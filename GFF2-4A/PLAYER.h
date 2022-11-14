@@ -155,4 +155,3 @@ public:
 	float GetMoveX() { return move_x; }
 	void SetLife(int a);
 };
-

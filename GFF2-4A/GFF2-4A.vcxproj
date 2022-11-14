@@ -166,6 +166,7 @@
     </ClCompile>
     <ClCompile Include="PadInput.cpp" />
     <ClCompile Include="PLAYER.cpp" />
+    <ClCompile Include="RESULT.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="STAGE.cpp" />
     <ClCompile Include="ThrowSlime.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Lemon.h" />
     <ClInclude Include="PadInput.h" />
     <ClInclude Include="PLAYER.h" />
+    <ClInclude Include="RESULT.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="STAGE.h" />
     <ClInclude Include="ThrowSlime.h" />

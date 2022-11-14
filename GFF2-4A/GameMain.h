@@ -6,14 +6,14 @@
 #include"GrapeFruit.h"
 #include"Tomato.h"
 #include "Element.h"
+#include "RESULT.h"
 #include"ITEMBALL.h"
-
 class GAMEMAIN :
     public AbstractScene
 {
 private:
 	int background_image[5];
-	float time;		//経過時間
+	int time;		//経過時間
 
 	//レモナーの数用の変数
 	int lemoner_count;
