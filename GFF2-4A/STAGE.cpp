@@ -32,6 +32,7 @@ STAGE::STAGE() {
 	LoadMapData();
 	clearflg = false;
 	*clearbox = 0;
+	halfwaypoint = false;
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
@@ -44,6 +45,7 @@ STAGE::STAGE() {
 
 void STAGE::Update(PLAYER* player) {
 	StageClear(player);
+	HalfwayPoint(player);
 	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) {
 		CameraWork(player);
 	}
@@ -230,4 +232,15 @@ void STAGE::StageClear(PLAYER *player) {
 		/*if (GetNowCount() % 30 == 0)printfDx("%d:::::%d\n", count, GetNowCount());*/
 	}
 	
+}
+
+bool STAGE::HalfwayPoint(PLAYER *player) {
+	int player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
+	int player_map_y = floorf(player->GetPlayerY());
+	if ((player_map_x >= 3500 - MAP_CEllSIZE / 2) && (player_map_x <= 3500 + MAP_CEllSIZE / 2) && (player_map_y >= 520 - MAP_CEllSIZE) && (player_map_y <= 520 + MAP_CEllSIZE)) {
+		//デバッグ
+		//printfDx("aaa");
+		halfwaypoint = true;
+	}
+	return halfwaypoint;
 }

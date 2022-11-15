@@ -174,8 +174,8 @@ AbstractScene* GAMEMAIN::Update()
 
 	//ゲームオーバー
 	if (player->IsDeath()) {
-		if (restart == false) {return new GAMEMAIN(true); }
-		else if(restart == true)return new RESULT(false);
+		if (restart == false && stage->HalfwayPoint(player) == true) {return new GAMEMAIN(true); }
+		return new RESULT(false);
 	}
 
 	//ステージクリア

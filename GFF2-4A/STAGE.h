@@ -15,6 +15,7 @@ private:
 	float map_x, map_y;			//マップ描画座標
 	int clearbox[2];		//クリアになるボックス状範囲	0=x,1=y
 	bool clearflg;			//クリア判定フラグ
+	bool halfwaypoint;		//中間地点フラグ
 	float player_x_old, player_y_old;		//旧プレイヤー座標
 	float player_vector_x;					//プレイヤーの移動方向x
 	float player_vector_y;					//プレイヤーの移動方向y
@@ -57,5 +58,7 @@ public:
 	bool GetClearFlg(void) { return clearflg; };
 
 	void SetScrollX(float scroll_x) { if (scroll_x < 0) { this->scroll_x = scroll_x; } }
+
+	bool HalfwayPoint(PLAYER* player);
 };
 
