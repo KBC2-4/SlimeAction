@@ -173,6 +173,7 @@ bool STAGE::HitThrowSlime(int y, int x) {
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
 		|| block_type == 61	//壁ボタン(感圧式)
+		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
