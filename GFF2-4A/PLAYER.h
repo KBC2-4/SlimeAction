@@ -55,6 +55,7 @@ private:
 	int map_x, map_y;
 	float player_left = 0, player_right = 0;
 	float player_top = 0, player_bottom = 0;
+	float old_px, old_py;
 	float rebound_x;
 	float jump_move_x;
 	int life;

@@ -187,6 +187,8 @@ void PLAYER::Draw()const {
 /// プレイヤーの移動
 /// </summary>
 void PLAYER::Move() {
+	old_px = player_x;
+	old_py = player_y;
 	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
 	if (is_throw_anim) return;
 	//スティック入力の取得
@@ -268,7 +270,7 @@ void PLAYER::Scroll(float move_x) {
 		if (!(isScroll = STAGE::SetScrollPos(move_x))) {
 			//プレイヤーの位置を中心に戻す
 			rebound_x = SPEED * 1.3f;
-			player_x -= move_x * rebound_x;
+			/*player_x -= move_x * rebound_x;*/
 		}
 	}
 	//スクロールしてない時
@@ -524,10 +526,10 @@ void PLAYER::JumpMove(ELEMENT* element) {
 							player_y = new_y;
 						}
 
-						if (move_type == 0)
+						/*if (move_type == 0)
 							player_x -= SPEED;
 						else
-							player_x += SPEED;
+							player_x += SPEED;*/
 					}
 				}
 				if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
@@ -640,12 +642,44 @@ void PLAYER::HitBlock() {
 	//マップチップの座標のセット
 	map_x = (int)roundf((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
-	player_left = (player_x - STAGE::GetScrollX() - 35);
+	/*player_left = (player_x - STAGE::GetScrollX() - 35);
 	player_right = (player_x - STAGE::GetScrollX() + 35);
 	player_top = (player_y - MAP_CEllSIZE / 2);
-	player_bottom = (player_y + MAP_CEllSIZE / 2);
+	player_bottom = (player_y + MAP_CEllSIZE / 2);*/
+
+	player_left = player_x - STAGE::GetScrollX() - 35;
+	player_right = player_left + 60;
+	player_top = player_y;
+	player_bottom = player_top + 40;
+
+	int hit_x = floor(STAGE::GetScrollX() / MAP_CEllSIZE);
 	
-	if (player_state == PLAYER_MOVE_STATE::IDLE || player_state == PLAYER_MOVE_STATE::MOVE|| player_state == PLAYER_MOVE_STATE::THROW) {
+	for (int i = 0; i < MAP_HEIGHT; i++){
+		for (int j = hit_x; j < hit_x + 16; j++) {
+			if (STAGE::HitMapDat(i, j) == false) {
+				continue;
+			}
+			float block_left   = j * MAP_CEllSIZE;
+			float block_right  = j * MAP_CEllSIZE + 80;
+			float block_top    = i * MAP_CEllSIZE;
+			float block_bottom = i * MAP_CEllSIZE + 80;
+
+			/*if (((player_right >= block_left && player_left <= block_left) || 
+				(player_left <= block_right && player_right >= block_right)) && 
+				((player_top <= block_bottom && player_bottom >= block_bottom) || 
+				(block_top <= player_bottom && block_top >= player_top))) {
+				player_x = old_px;
+				player_y = old_py;
+			}*/
+			if ((player_right > block_left) && (player_left < block_right)) {
+				if ((player_bottom > block_top) && (player_top < block_bottom)) {
+					player_x = old_px;
+					/*player_y = old_py;*/
+				}
+			}
+		}
+	}
+	/*if (player_state == PLAYER_MOVE_STATE::IDLE || player_state == PLAYER_MOVE_STATE::MOVE|| player_state == PLAYER_MOVE_STATE::THROW) {
 		if (STAGE::HitMapDat(map_y - 1, (int)(player_left / MAP_CEllSIZE))) {
 			if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE))) {
 				player_x += rebound_x;
@@ -683,7 +717,7 @@ void PLAYER::HitBlock() {
 	}
 	else if (player_state == PLAYER_MOVE_STATE::HOOK) {
 
-	}
+	}*/
 	/*if (player_state == PLAYER_MOVE_STATE::JUMP || player_state == PLAYER_MOVE_STATE::FALL) {
 		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
 			if (STAGE::HitMapDat(map_y - 1, (int)(player_right / MAP_CEllSIZE))) {
@@ -767,7 +801,6 @@ bool PLAYER::GetBullet(int *bullet) {
 
 void PLAYER::SetLife(int a) 
 {
-
 	if (!is_damage) {
 		life = a;
 		player_state == PLAYER_MOVE_STATE::DAMAGE;
