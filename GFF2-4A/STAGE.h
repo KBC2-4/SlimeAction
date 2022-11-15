@@ -15,9 +15,9 @@ private:
 	float map_x, map_y;			//マップ描画座標
 	int clearbox[2];		//クリアになるボックス状範囲	0=x,1=y
 	bool clearflg;			//クリア判定フラグ
-	float player_x_old, player_y_old;		//旧プレイヤー座標(x、y)
-	/*int player_vector_x;
-	int player_vector_y;*/
+	float player_x_old, player_y_old;		//旧プレイヤー座標
+	float player_vector_x;					//プレイヤーの移動方向x
+	float player_vector_y;					//プレイヤーの移動方向y
 
 protected:
 	int block_image1[100];		//ステージブロック画像

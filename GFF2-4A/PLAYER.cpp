@@ -100,9 +100,6 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// プレイヤーの表示
 /// </summary>
 void PLAYER::Draw()const {
-	//デバッグ
-	//DrawFormatString(200, 150, 0xffffff, "playerx:%f", player_x);
-
 	//プレイヤーの表示
 	
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
@@ -259,9 +256,9 @@ void PLAYER::Scroll(float move_x) {
 	//スクロールの処理
 	bool isScroll = false;
 	//プレイヤーの位置が中心だったら
-	if (move_x > 0 && player_x >= 680 || move_x < 0 && player_x <= 600) {
+	if (move_x > 0 && player_x >= 620 || move_x < 0 && player_x <= 660) {
 		//スクロールが端まで行ってない時
-		if (!(isScroll = STAGE::SetScrollPos(move_x))) {
+		if (!(isScroll = (STAGE::GetScrollX() >= 0 || STAGE::GetScrollX() <= -8080))) {
 			//プレイヤーの位置を中心に戻す
 			rebound_x = SPEED * 1.3f;
 			player_x -= move_x * rebound_x;

@@ -154,4 +154,6 @@ public:
 	double GetSpeed() { return speed; }
 	float GetMoveX() { return move_x; }
 	void SetLife(int a);
+
+	PLAYER_MOVE_STATE GetPlayerMoveState() { return player_state; }
 };

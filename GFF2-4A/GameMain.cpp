@@ -130,8 +130,9 @@ GAMEMAIN::~GAMEMAIN()
 
 AbstractScene* GAMEMAIN::Update()
 {
-	player->Update(element,stage);
 	
+	player->Update(element,stage);
+	stage->Update(player);	//ステージクリア用
 	element->Update(player);
 	for (int i = 0; i < lemoner_count; i++)
 	{
@@ -163,8 +164,6 @@ AbstractScene* GAMEMAIN::Update()
 		else
 		{}
 	}
-	stage->Update(player);	//ステージクリア用
-	element->Update(player);
 
 	//ゲームオーバー
 	if (player->IsDeath()) {
