@@ -172,6 +172,12 @@ AbstractScene* GAMEMAIN::Update()
 		else
 		{}
 	}
+
+
+
+
+
+
 	stage->Update(player);	//ステージクリア用
 	element->Update(player);
 
