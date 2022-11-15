@@ -1,7 +1,7 @@
 #include "GameMain.h"
 #include <vector>
 
-GAMEMAIN::GAMEMAIN()
+GAMEMAIN::GAMEMAIN(bool restert)
 {
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 	std::vector<std::vector<int>> spawn_point;
@@ -99,6 +99,8 @@ GAMEMAIN::GAMEMAIN()
 	}
 
 	element = new ELEMENT();
+
+	revival = restert;
 }
 
 GAMEMAIN::~GAMEMAIN()
@@ -167,7 +169,8 @@ AbstractScene* GAMEMAIN::Update()
 
 	//ゲームオーバー
 	if (player->IsDeath()) {
-		return new RESULT(false);
+		if (revival == false) {return new GAMEMAIN(true); }
+		else if(revival == true)return new RESULT(false);
 	}
 
 	//ステージクリア

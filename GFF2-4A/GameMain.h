@@ -24,6 +24,8 @@ private:
 	//グレポンの数用の変数
 	int gurepon_count = 0;
 
+	bool revival;	//復活フラグ
+
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
 	LEMON** lemoner;	//レモナー
@@ -34,7 +36,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	GAMEMAIN();
+	GAMEMAIN(bool restert = false);
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
