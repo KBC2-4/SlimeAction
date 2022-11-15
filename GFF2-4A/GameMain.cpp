@@ -9,12 +9,14 @@ GAMEMAIN::GAMEMAIN()
 	time = GetNowCount();
 	lemoner_count = 0;
 	tomaton_count = 0;
+	item_count = 0;
 
 	player = new PLAYER;
 	stage = new STAGE;
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
+	item = nullptr;
 
 	//とまトン生成する数を数える
 	for (int i = 0,point = 0 ; i < MAP_HEIGHT; i++)
@@ -24,6 +26,7 @@ GAMEMAIN::GAMEMAIN()
 			if (stage->GetMapDat(i, j) == 93)
 			{
 				tomaton_count++;
+				item_count++;
 				spawn_point.push_back(std::vector<int>(2));
 				spawn_point[point][0] = i;
 				spawn_point[point][1] = j;
@@ -98,6 +101,12 @@ GAMEMAIN::GAMEMAIN()
 		}
 	}
 
+	item_count = gurepon_count + lemoner_count;
+	if (item_count > 0)
+	{
+		item = new ITEMBALL * [item_count];
+	}
+
 	element = new ELEMENT();
 }
 
@@ -163,6 +172,12 @@ AbstractScene* GAMEMAIN::Update()
 		else
 		{}
 	}
+
+
+
+
+
+
 	stage->Update(player);	//ステージクリア用
 	element->Update(player);
 
@@ -214,7 +229,4 @@ void GAMEMAIN::Draw() const
 			gurepon[i]->Draw();
 		}
 	}
-
-	//デバッグ
-	//DrawFormatString(200, 300, 0xffffff, "GetPlayerY:%f", player->GetPlayerY());
 }
