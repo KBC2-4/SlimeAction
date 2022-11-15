@@ -705,5 +705,5 @@ bool PLAYER::GetBullet(int *bullet) {
 
 void PLAYER::SetLife(int a) 
 {
-	//life = a;
+	life = a;
 }

@@ -5,6 +5,22 @@
 
 ELEMENT::ELEMENT() {
 
+	if ((door_close_se = LoadSoundMem("Resource/Sounds/SE/Stage/door_close.wav")) == -1) {
+		throw "Resource/Sounds/SE/Stage/door_close.wav";
+	}
+
+	if ((press_the_button_se = LoadSoundMem("Resource/Sounds/SE/Stage/press_the_button.wav")) == -1) {
+		throw "Resource/Sounds/SE/Stage/press_the_button.wav";
+	}
+
+	if ((switch_se = LoadSoundMem("Resource/Sounds/SE/Stage/switch.wav")) == -1) {
+		throw "Resource/Sounds/SE/Stage/switch.wav";
+	}
+
+	if ((walk_puddle_se = LoadSoundMem("Resource/Sounds/SE/Stage/walk_puddle.wav")) == -1) {
+		throw "Resource/Sounds/SE/Stage/walk_puddle.wav";
+	}
+
 	ELEMENT_DATA data;
 	for (int i = 0; i < MAP_HEIGHT; i++)
 	{
@@ -126,9 +142,9 @@ ELEMENT::ELEMENT() {
 void ELEMENT::Draw() const {
 	//static int animtimer = 0;
 	//printfDx("%d", animtimer);
-	//DrawFormatString(200, 100, 0xFFFFFF, "button.x%f\nbutton.y%f", button[1].x, button[1].y);
+	//DrawFormatString(200, 100, 0xFFFFFF, "acidrain_puddles.x%f\acidrain_puddles.y%f", acidrain_puddles[1].x, acidrain_puddles[1].y);
 	//DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
-	////デバッグ用
+	//デバッグ用
 
 	//ボタン
 	for (int i = 0; i < button.size(); i++) {
@@ -192,6 +208,7 @@ void ELEMENT::Button(PLAYER* player) {
 				if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2 + 33) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2 - 30) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
 					//printfDx("1番に入ってるよ！");
+					if (CheckSoundMem(press_the_button_se) == FALSE)PlaySoundMem(press_the_button_se, DX_PLAYTYPE_BACK, TRUE);
 					if(i < door.size() && i >= 0){
 						int j = i + 1;
 						door[j].flg = true;
@@ -205,7 +222,12 @@ void ELEMENT::Button(PLAYER* player) {
 					//デバッグ
 					//printfDx("2番に入ってるよ！");
 					player->SetPlayerY(button[i].y - 6.5f);
+					if (button[i].flg == false) {
+						if (CheckSoundMem(switch_se) == FALSE)PlaySoundMem(switch_se, DX_PLAYTYPE_BACK, TRUE);
+					}
+					
 					button[i].flg = true;		//ボタンを押した
+					
 					if (i < door.size() && i >= 0) {
 						int j = i - 1;
 						door[j].flg = true;
@@ -247,6 +269,7 @@ void ELEMENT::Door() {
 			map_data[y][x] = 66;
 			map_data[y - 1][x] = 67;
 			door[i].flg = false;
+			if (CheckSoundMem(door_close_se) == FALSE)PlaySoundMem(door_close_se, DX_PLAYTYPE_BACK, TRUE);
 			
 		}
 	}
@@ -330,12 +353,17 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 		}
 
 		if (acidrain_puddles[i].type == 1) {	//酸性雨の水たまり
-			if ((player_map_x >= acidrain_puddles[i].x - MAP_CEllSIZE + 25) && (player_map_x <= acidrain_puddles[i].x + MAP_CEllSIZE - 25) && (player_map_y >= acidrain_puddles[i].y - MAP_CEllSIZE / 2) && (player_map_y <= acidrain_puddles[i].y + MAP_CEllSIZE / 2)) {
+			if ((player_map_x >= acidrain_puddles[i].x - MAP_CEllSIZE / 2) && (player_map_x <= acidrain_puddles[i].x + MAP_CEllSIZE / 2) && (player_map_y >= acidrain_puddles[i].y - MAP_CEllSIZE) && (player_map_y <= acidrain_puddles[i].y + MAP_CEllSIZE)) {
 				//デバッグ
-				printfDx("入ってるよ！");
-				player->SetPlayerY(button[i].y + 1.5f);
-				if (acidrain_puddles[i].flg == true) { player->SetLife(player->GetLife() - 1); }
-			}
+				//printfDx("入ってるよ！");
+				if (CheckSoundMem(walk_puddle_se) == FALSE)PlaySoundMem(walk_puddle_se, DX_PLAYTYPE_BACK, TRUE);
+				//player->SetPlayerY(acidrain_puddles[i].y + 1.5f);
+				if (acidrain_puddles[i].flg == true) {
+					player->SetLife(player->GetLife() - 1);
+					printfDx("残りライフ：%d",player->GetLife());		//デバッグ
+					acidrain_puddles[i].flg = false;
+				}
+			}else{ acidrain_puddles[i].animtimer = 0; }
 		}
 	}
 }
