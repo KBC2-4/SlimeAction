@@ -296,9 +296,9 @@ void ELEMENT::Lift(PLAYER* player) {
 		}
 		if (lift[i].flg) {
 			if (lift[i].x != lift_goal[i].x) {
-				lift[i].x += lift_vector * 2.0;
+				lift[i].x += lift_vector * 1;
 				if (HitLift()) {
-					player->SetPlayerX(player->GetPlayerX() + lift_vector * 2.0);
+					player->SetPlayerX(player->GetPlayerX() + lift_vector * 1);
 				}
 
 			}
