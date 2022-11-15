@@ -22,6 +22,8 @@ STAGE::STAGE() {
 	scroll_y = 0;
 	player_x_old = 20.f;
 	player_y_old = 500.f;
+	/*player_vector_x = 0;
+	player_vector_y = 0;*/
 
 	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1) == -1) {
 		throw "Resource/Images/Stage/map_chips.png";
@@ -47,7 +49,9 @@ void STAGE::Update(PLAYER* player) {
 
 void STAGE::Draw()const {
 	//デバッグ
-	//DrawFormatString(200, 200, 0xffffff, "scroll_y:%f", scroll_y);
+	/*DrawFormatString(200, 100, 0xffffff, "oldx:%f", player_x_old);
+	DrawFormatString(350, 100, 0xffffff, "vectorx:%d", player_vector_x);
+	DrawFormatString(100, 200, 0xffffff, "scroll_x:%f", scroll_x);*/
 	//ゲームクリア時
 	if (clearflg == true) {DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
 	
@@ -71,37 +75,36 @@ void STAGE::Draw()const {
 }
 
 //void STAGE::CameraWork(PLAYER *player) {
-//	int player_vector_x = 0;
-//	int player_vector_y = 0;
 //	if (player->GetPlayerX() - player_x_old > 0) {
 //		player_vector_x = 1;
 //	}
-//	else{
+//	else if (player->GetPlayerX() - player_x_old < 0) {
 //		player_vector_x = -1;
 //	}
-//	if (0 < player->GetPlayerY() - player_y_old) {
-//		player_vector_x = 1;
+//	if (player->GetPlayerY() - player_y_old > 0) {
+//		player_vector_y = 1;
 //	}
-//	else {
-//		player_vector_x = -1;
+//	else if (player->GetPlayerX() - player_x_old < 0) {
+//		player_vector_y = -1;
 //	}
-//	if (player->GetPlayerX() != player_x_old) {
+//	if ((player_vector_x > 0 && player->GetPlayerX() > 680) || (player_vector_x < 0 && player->GetPlayerX() <= 600)) {
+//
 //		scroll_x -= 5 * player_vector_x;
-//	}
-//	if (player->GetPlayerY() != player_y_old) {
-//		scroll_y -= 5 * player_vector_y;
-//	}
-//	
-//	if (player_vector_x > 0 && player->GetPlayerX() >= 680 || player_vector_x < 0 && player->GetPlayerX() <= 600) {
+//
 //		if (scroll_x >= 0 || scroll_x <= -8080) {
 //			scroll_x += 5 * player_vector_x;
 //		}
 //	}
-//	if (player_vector_y > 0 && player->GetPlayerY() >= 720 || player_vector_y < 0 && player->GetPlayerY() <= 0) {
-//		if (scroll_y >= 0 || scroll_x <= -1120) {
-//			scroll_x += 5 * player_vector_y;
+//	/*if ((player_vector_y > 0 && player->GetPlayerY() >= 720) || (player_vector_y < 0 && player->GetPlayerY() <= 0)) {
+//
+//		scroll_y -= 5 * player_vector_y;
+//
+//		if (scroll_y >= 0 || scroll_y <= -1120) {
+//			scroll_y += 5 * player_vector_y;
 //		}
-//	}
+//	}*/
+//
+//	float player_x = player->GetPlayerX();
 //	player_x_old = player->GetPlayerX();
 //	player_y_old = player->GetPlayerY();
 //

@@ -100,6 +100,9 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// プレイヤーの表示
 /// </summary>
 void PLAYER::Draw()const {
+	//デバッグ
+	//DrawFormatString(200, 150, 0xffffff, "playerx:%f", player_x);
+
 	//プレイヤーの表示
 	
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
