@@ -24,10 +24,11 @@ private:
 	std::vector<ELEMENT_DATA> lift;			//“®‚­°
 	std::vector<ELEMENT_DATA>lift_goal;		//“®‚­°‚ÌƒS[ƒ‹’n“_
 	std::vector<ELEMENT_DATA> manhole;		//ƒ}ƒ“ƒz[ƒ‹
-	std::vector<ELEMENT_DATA> acid;			//_
+	std::vector<ELEMENT_DATA> acidrain_puddles;			//_«‰J‚Ì…‚½‚Ü‚è
 	float player_map_x, player_map_y;
 	int lift_vector;
 	//mutable int animtimer;
+	int door_close_se, press_the_button_se, switch_se, walk_puddle_se;
 
 public:
 	ELEMENT();
@@ -38,10 +39,12 @@ public:
 	void Lift(PLAYER* player);			//“®‚­°‚Ìˆ—
 	bool HitLift();						//“®‚­°‚Ì“–‚½‚è”»’è
 	void Manhole(PLAYER* player);		//ƒ}ƒ“ƒz[ƒ‹‚Ìˆ—
+	void Acidrain_puddles(PLAYER* player);		//_«‰J‚Ì…‚½‚Ü‚è‚Ìˆ—
 	std::vector<ELEMENT_DATA> GetHook() { return hook; }
 	std::vector<ELEMENT_DATA>GetButton() { return button; }
 	std::vector<ELEMENT_DATA>GetDoor() { return door; }
 	std::vector<ELEMENT_DATA>GetLift() { return lift; }
 	std::vector<ELEMENT_DATA>GetManhole() { return manhole; }
+	std::vector<ELEMENT_DATA>GetAcidrain_puddles() { return acidrain_puddles; }
 };
 

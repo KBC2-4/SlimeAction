@@ -57,7 +57,10 @@ void STAGE::Draw()const {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			//画面外は描画しない
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
-				if (map_data[i][j] < 90/* && map_data[i][j] != 68*/) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data[i][j] - 1], TRUE); }
+				if (map_data[i][j] < 90 
+					|| (map_data[i][j] <= 74	//酸性雨の水たまりを描画しない
+					&& map_data[i][j] >= 79)
+					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data[i][j] - 1], TRUE); }
 			}
 			//レモナーとグレポンはツルだけ描画する
 			if(map_data[i][j] == 91 || map_data[i][j] == 92){ DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE, block_image1[map_data[i][j] - 1], TRUE); }
@@ -138,22 +141,19 @@ bool STAGE::HitMapDat(int y, int x) {
 	if (
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
-		|| block_type == 15 //フロー木
-		|| block_type == 14 //アカシア木
-		|| block_type == 13 //オーク木
+		|| block_type == 21 //フロー木
+		|| block_type == 22 //アカシア木
+		|| block_type == 23 //オーク木
 		|| block_type == 64	//ドア 
 		|| block_type == 65	//ドア 
 		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
-		|| block_type == 91 
-		|| block_type == 92 
-		|| block_type == 93
+		|| block_type == 91 //レモナー
+		|| block_type == 92 //グレポン
+		|| block_type == 93	//トマトン
 		|| block_type == 95	//動く床
-
-		//応急処置
-		|| block_type == 19	//New アカシア木
 		) {
 		return false;
 	}
@@ -167,7 +167,7 @@ bool STAGE::HitThrowSlime(int y, int x) {
 	if (
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
-		|| block_type == 62	//ボタン(感圧式)
+		|| block_type == 61	//壁ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
