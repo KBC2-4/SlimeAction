@@ -16,6 +16,8 @@ private:
 	int clearbox[2];		//クリアになるボックス状範囲	0=x,1=y
 	bool clearflg;			//クリア判定フラグ
 	float player_x_old, player_y_old;		//旧プレイヤー座標(x、y)
+	/*int player_vector_x;
+	int player_vector_y;*/
 
 protected:
 	int block_image1[100];		//ステージブロック画像
