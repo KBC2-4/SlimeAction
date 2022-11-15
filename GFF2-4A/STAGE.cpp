@@ -6,6 +6,9 @@
 #include <string>
 #include <sstream>
 
+#include "PLAYER.h"
+#include "RESULT.h"
+
 int STAGE::map_data[MAP_HEIGHT][MAP_WIDTH];
 float STAGE::scroll_x = 0;
 float STAGE::scroll_y = 0;
@@ -14,32 +17,97 @@ STAGE::STAGE() {
 	**map_data = 0;
 	*block_image1 = 0;
 	*stage_image = 0;
+	//scroll_x = -8640;
 	scroll_x = 0;
 	scroll_y = 0;
-	LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1);
+	player_x_old = 20.f;
+	player_y_old = 500.f;
+
+	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1) == -1) {
+		throw "Resource/Images/Stage/map_chips.png";
+	}
 	//InitStage();
 	LoadMapData();
+	clearflg = false;
+	*clearbox = 0;
+
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		for (int j = 0; j < MAP_WIDTH; j++) {
+			//クリア座標を代入
+			if (map_data[i][j] == 73) { clearbox[0] = j * MAP_CEllSIZE; clearbox[1] = i * MAP_CEllSIZE; }
+		}
+	}
 }
 	
 
-void STAGE::Update() {
-
+void STAGE::Update(PLAYER* player) {
+	StageClear(player);
+	//CameraWork(player);
 }
 
 void STAGE::Draw()const {
+	//デバッグ
+	//DrawFormatString(200, 200, 0xffffff, "scroll_y:%f", scroll_y);
+	//ゲームクリア時
+	if (clearflg == true) {DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
+	
 	//printfDx("%f",scroll_x);
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			//画面外は描画しない
-			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280) {
-				if (map_data[i][j] < 90/* && map_data[i][j] != 68*/) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE, block_image1[map_data[i][j] - 1], TRUE); }
+			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
+				if (map_data[i][j] < 90 
+					|| (map_data[i][j] <= 74	//酸性雨の水たまりを描画しない
+					&& map_data[i][j] >= 79)
+					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data[i][j] - 1], TRUE); }
 			}
+			//レモナーとグレポンはツルだけ描画する
+			if(map_data[i][j] == 91 || map_data[i][j] == 92){ DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE, block_image1[map_data[i][j] - 1], TRUE); }
 			
 		}
 	}
 	
 }
+
+//void STAGE::CameraWork(PLAYER *player) {
+//	int player_vector_x = 0;
+//	int player_vector_y = 0;
+//	if (player->GetPlayerX() - player_x_old > 0) {
+//		player_vector_x = 1;
+//	}
+//	else{
+//		player_vector_x = -1;
+//	}
+//	if (0 < player->GetPlayerY() - player_y_old) {
+//		player_vector_x = 1;
+//	}
+//	else {
+//		player_vector_x = -1;
+//	}
+//	if (player->GetPlayerX() != player_x_old) {
+//		scroll_x -= 5 * player_vector_x;
+//	}
+//	if (player->GetPlayerY() != player_y_old) {
+//		scroll_y -= 5 * player_vector_y;
+//	}
+//	
+//	if (player_vector_x > 0 && player->GetPlayerX() >= 680 || player_vector_x < 0 && player->GetPlayerX() <= 600) {
+//		if (scroll_x >= 0 || scroll_x <= -8080) {
+//			scroll_x += 5 * player_vector_x;
+//		}
+//	}
+//	if (player_vector_y > 0 && player->GetPlayerY() >= 720 || player_vector_y < 0 && player->GetPlayerY() <= 0) {
+//		if (scroll_y >= 0 || scroll_x <= -1120) {
+//			scroll_x += 5 * player_vector_y;
+//		}
+//	}
+//	player_x_old = player->GetPlayerX();
+//	player_y_old = player->GetPlayerY();
+//
+//
+//	//if (player->GetPlayerY() < 6)scroll_y = -60;
+//}
 
 
 
@@ -73,22 +141,19 @@ bool STAGE::HitMapDat(int y, int x) {
 	if (
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
-		|| block_type == 15 //フロー木
-		|| block_type == 14 //アカシア木
-		|| block_type == 13 //オーク木
+		|| block_type == 21 //フロー木
+		|| block_type == 22 //アカシア木
+		|| block_type == 23 //オーク木
 		|| block_type == 64	//ドア 
 		|| block_type == 65	//ドア 
 		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
-		|| block_type == 91 
-		|| block_type == 92 
-		|| block_type == 93
+		|| block_type == 91 //レモナー
+		|| block_type == 92 //グレポン
+		|| block_type == 93	//トマトン
 		|| block_type == 95	//動く床
-
-		//応急処置
-		|| block_type == 19	//New アカシア木
 		) {
 		return false;
 	}
@@ -102,7 +167,7 @@ bool STAGE::HitThrowSlime(int y, int x) {
 	if (
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
-		|| block_type == 62	//ボタン(感圧式)
+		|| block_type == 61	//壁ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
@@ -134,4 +199,29 @@ void STAGE::LoadMapData(void) {
 			j = 0;
 			i++;
 		}
+}
+
+
+/// <summary>
+/// ステージクリア時
+/// </summary>
+void STAGE::StageClear(PLAYER *player) {
+	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - STAGE::GetScrollX()));
+	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()));
+	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox[0], clearbox[1]);
+
+	//旗に触れるとゲームクリア
+	if ((player_map_x >= clearbox[0] - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox[0] + MAP_CEllSIZE + 30) && (player_map_y >= clearbox[1] - MAP_CEllSIZE / 2) && (player_map_y <= clearbox[1] + MAP_CEllSIZE / 2)) {
+		clearflg = true;
+	}
+
+	if (clearflg == true) {
+		static int count = GetNowCount();
+		if ((GetNowCount() - count) > 3000) {
+			clearflg = false;
+			count = GetNowCount();
+		}
+		/*if (GetNowCount() % 30 == 0)printfDx("%d:::::%d\n", count, GetNowCount());*/
+	}
+	
 }

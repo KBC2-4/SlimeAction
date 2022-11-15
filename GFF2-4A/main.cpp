@@ -17,7 +17,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);		//フォントをアンチエイリアス対応にする。
 
-	SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
+	SetJoypadDeadZone(DX_INPUT_PAD1, 0.0);
+
+;	SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
 
 	SceneManager* sceneMng;
 	try
@@ -61,8 +63,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			break;
 		}
+		//STARTボタンでタイトル画面へ移行
+		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_START) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) { sceneMng = new SceneManager((AbstractScene*)new Title()); }
 	}
 
+	InitFontToHandle();	//全てのフォントデータを削除
+	InitGraph();		//読み込んだ全てのグラフィックデータを削除
 	DxLib_End();
 	return 0;
 }

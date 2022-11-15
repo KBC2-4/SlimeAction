@@ -41,9 +41,19 @@ public:
 	/// </summary>
 	void Hit() override;
 	/// <summary>
-	/// アニメーション
+	/// 落下アニメーション
 	/// </summary>
-	void Animation();
+	void FallAnimation();
+	/// <summary>
+	/// アイドルアニメション
+	/// </summary>
+	/// <returns>アニメションが終わったかどうか</returns>
+	bool IdolAnimation();
+	/// <summary>
+	/// 死亡アニメーション
+	/// </summary>
+	/// <returns>アニメションが終わったかどうか</returns>
+	bool DethAnimation();
 	/// <summary>
 	/// 描画
 	/// </summary>
