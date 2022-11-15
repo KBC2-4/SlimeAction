@@ -103,6 +103,9 @@ private:
 	int alpha_param;	//パラーメーター
 	int alpha_time;		//点滅時間
 
+	//プレイヤーのサイズ(倍率)
+	float player_scale;
+
 	//画像を切り替えるタイミング(フレーム)
 	const int animation_switch_frame[ANIMATION_TYPE] = {
 		3,	//アイドル
@@ -173,6 +176,9 @@ public:
 	bool GetBullet(int* bullet);	//ドロップした玉を拾う処理
 	double GetSpeed() { return speed; }
 	float GetMoveX() { return move_x; }
+
+	float GetPlayerScale() { return player_scale; }
+
 	void SetLife(int a);
 };
 

@@ -126,6 +126,8 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 			is_damage = false;
 		}
 	}
+
+	player_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
 }
 
 /// <summary>
@@ -138,9 +140,8 @@ void PLAYER::Draw()const {
 	}
 
 	//プレイヤーの表示
-	float slime_size_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		DrawRotaGraphF(player_x, (player_y-20) + (1.6 - slime_size_scale) * 40, slime_size_scale, 0.0, now_image, TRUE, move_type);
+		DrawRotaGraphF(player_x, (player_y-20) + (1.6 - player_scale) * 40, player_scale, 0.0, now_image, TRUE, move_type);
 		
 	}
 	else {
@@ -162,7 +163,7 @@ void PLAYER::Draw()const {
 		}
 		else {
 			DrawRotaGraph3F(player_x, player_y, 40, 80,
-				1* slime_size_scale, (hook_distance / (MAP_CEllSIZE / 2))* slime_size_scale, (double)hook_angle,
+				1* player_scale, (hook_distance / (MAP_CEllSIZE / 2))* player_scale, (double)hook_angle,
 				now_image, TRUE, move_type);
 		}
 	}
@@ -421,10 +422,25 @@ void PLAYER::HookMove(ELEMENT* element) {
 			player_x = hook_x + STAGE::GetScrollX() + nx;
 			player_y = hook_y + ny;
 			player_y += 1;
-			if (speed < 0)jump_move_x = 1;		//フック後のジャンプ方向の修正
+			//フック後のジャンプ方向の修正
+			if (input_lx < -DEVIATION) {
+				jump_move_x = -1;
+			}
+			else if (input_lx > DEVIATION) {
+				jump_move_x = 1;
+			}
+			if (abs(speed) >= 3) {
+				jump_request = true;
+			}
+			else {
+				player_state = PLAYER_MOVE_STATE::FALL;
+				animation_state = PLAYER_ANIM_STATE::IDLE;
+			}
+
+			/*if (speed < 0)jump_move_x = 1;		//フック後のジャンプ方向の修正
 			if (speed >= 0)jump_move_x = -1;
 			jump_request = true;
-			player_state = PLAYER_MOVE_STATE::JUMP;
+			player_state = PLAYER_MOVE_STATE::JUMP;*/
 		}
 	}
 }
