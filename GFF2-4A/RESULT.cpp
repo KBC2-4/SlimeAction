@@ -53,15 +53,18 @@ RESULT::RESULT(bool issue, int clear_time) {
 RESULT::~RESULT() {
 	DeleteGraph(clear_background_image);
 	DeleteGraph(gameover_background_image);
+	DeleteSoundMem(count_se);
+	DeleteSoundMem(ok_se);
+	for(int i = 0; i < 4; i++)DeleteSoundMem(good_se[i]);
+	for (int i = 0; i < 4; i++)DeleteSoundMem(bad_se[i]);
 	InitFontToHandle();	//全てのフォントデータを削除
-	InitSoundMem();		//メモリに読み込んだ音データをすべて削除
 }
 
 AbstractScene* RESULT::Update() {
 	static const int se_num = GetRand(3);
-	if (win == true && timer > 8 * 60) { PlaySoundMem(good_se[se_num], DX_PLAYTYPE_BACK, FALSE); }
-	if(win == false && timer > 5 * 80){ PlaySoundMem(bad_se[se_num], DX_PLAYTYPE_BACK, FALSE); }
-	if (timer <= 5 * 60) { PlaySoundMem(count_se, DX_PLAYTYPE_BACK, FALSE); }
+	if (win == true && timer > 8 * 60) { if (CheckSoundMem(good_se[se_num]) == FALSE)PlaySoundMem(good_se[se_num], DX_PLAYTYPE_BACK, FALSE); }
+	if(win == false && timer > 5 * 80){ if (CheckSoundMem(bad_se[se_num]) == FALSE)PlaySoundMem(bad_se[se_num], DX_PLAYTYPE_BACK, FALSE); }
+	if (timer <= 5 * 60) { if (CheckSoundMem(count_se) == FALSE)PlaySoundMem(count_se, DX_PLAYTYPE_BACK, FALSE); }
 
 	if (--timer <= 60) { return new GAMEMAIN(); }
 

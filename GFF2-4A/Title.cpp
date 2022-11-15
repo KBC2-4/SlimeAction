@@ -25,8 +25,9 @@ Title::Title()
 Title::~Title() 
 {
 	DeleteGraph(background_image);
+	DeleteSoundMem(cursor_move_se);
+	DeleteSoundMem(ok_se);
 	InitFontToHandle();	//全てのフォントデータを削除
-	InitSoundMem();		//メモリに読み込んだ音データをすべて削除
 }
 
 AbstractScene* Title::Update()

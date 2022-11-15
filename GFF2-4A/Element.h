@@ -28,6 +28,7 @@ private:
 	float player_map_x, player_map_y;
 	int lift_vector;
 	//mutable int animtimer;
+	int door_close_se, press_the_button_se, switch_se, walk_puddle_se;
 
 public:
 	ELEMENT();
