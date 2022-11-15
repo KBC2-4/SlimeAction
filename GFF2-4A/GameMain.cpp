@@ -101,6 +101,11 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	element = new ELEMENT();
 
 	this->restart = restert;
+
+	if (restart == true) {
+		player->SetPlayerX(500);
+		stage->SetScrollX(-3000);
+	}
 }
 
 GAMEMAIN::~GAMEMAIN()

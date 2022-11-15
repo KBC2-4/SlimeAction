@@ -55,5 +55,7 @@ public:
 	void StageClear(PLAYER* player);
 
 	bool GetClearFlg(void) { return clearflg; };
+
+	void SetScrollX(float scroll_x) { if (scroll_x < 0) { this->scroll_x = scroll_x; } }
 };
 
