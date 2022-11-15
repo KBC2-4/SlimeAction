@@ -44,7 +44,7 @@ STAGE::STAGE() {
 
 void STAGE::Update(PLAYER* player) {
 	StageClear(player);
-	CameraWork(player);
+	//CameraWork(player);
 }
 
 void STAGE::Draw()const {
