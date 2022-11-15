@@ -82,8 +82,8 @@ private:
 	double mass = 4.0;
 
 	//Throw
+	bool throw_preparation;
 	int throw_ball_image;
-	bool is_throw_anim;
 	//double throw_x[100];// = 100;
 	//double throw_y[100];// = 560;
 	float throw_rad;

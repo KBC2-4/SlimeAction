@@ -20,9 +20,9 @@ PLAYER::PLAYER() {
 	jump_move_x = 0;
 	jump_request = false;
 	is_hook_move = false;
-	is_throw_anim = false;
 	is_death = false;
 	is_damage = false;
+	throw_preparation = false;
 	player_state = PLAYER_MOVE_STATE::IDLE;
 	// 初期位置は軸の真下から左方向に45度傾いた位置
 	x = CLENGTH / b;
@@ -174,7 +174,7 @@ void PLAYER::Draw()const {
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Draw();
 	}
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB && life > 1) {
+	if (life > 1) {
 		for (int i = 0; i < throw_x.size(); i += 5) {
 			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 		}
@@ -189,16 +189,18 @@ void PLAYER::Draw()const {
 /// </summary>
 void PLAYER::Move() {
 	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
-	if (is_throw_anim) return;
+	//if (is_throw_anim) return;
 	//スティック入力の取得
 	int input_lx = PAD_INPUT::GetPadThumbLX();
 	//移動するとき
 	move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 	if ((input_lx < -DEVIATION || input_lx > DEVIATION) && player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::FALL && animation_state != PLAYER_ANIM_STATE::LANDING) {
-			animation_state = PLAYER_ANIM_STATE::MOVE;
+			if (animation_state != PLAYER_ANIM_STATE::THROW) {
+				animation_state = PLAYER_ANIM_STATE::MOVE;
+				animation_mode = 1;							//アニメーションの切り替え
+			}
 		}
-		animation_mode = 1;							//アニメーションの切り替え
 		move_type = move_x > 0 ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL) {
 			//アニメーションが前半のとき
@@ -246,9 +248,11 @@ void PLAYER::Move() {
 		//移動アニメーションが終わったらアイドルアニメーションの再生
 		else {
 			if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::FALL && animation_state != PLAYER_ANIM_STATE::LANDING) {
-				animation_state = PLAYER_ANIM_STATE::IDLE;
-				animation_mode = 0;
-				MoveAnimation();
+				if (animation_state != PLAYER_ANIM_STATE::THROW) {
+					animation_state = PLAYER_ANIM_STATE::IDLE;
+					animation_mode = 0;
+					MoveAnimation();
+				}
 			}
 		}
 		//ジャンプ中じゃないかったらステートを切り替える
@@ -567,86 +571,77 @@ void PLAYER::JumpMove(ELEMENT* element) {
 }
 
 void PLAYER::Throw() {
-	static bool is_throw = true;
+	static bool push_button = false;
 	//軌道の計算
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_THUMB) {
-		is_throw = false;
-		is_throw_anim = true;
-		//アニメーションのリセット
-		animation_type[2] = 0;
+	throw_index = 0;
+	throw_x.clear();
+	throw_y.clear();
+	int input_ry = PAD_INPUT::GetPadThumbRY();
+	int input_rx = PAD_INPUT::GetPadThumbRX();
+	if ((abs(input_rx) <= DEVIATION && abs(input_ry) <= DEVIATION) || input_ry < DEVIATION) {
+		return;
+	}
+	//角度取得
+	throw_rad = atan2(input_ry, input_rx);
+	float angle = throw_rad * 180.0f / M_PI;
+	//角度の制限
+	if (move_type == 0) {
+		if (angle > 90) throw_rad = 90 * M_PI / 180.0f;
+		else if (angle < 60) throw_rad = 60 * M_PI / 180.0f;
+	}
+	else {
+		if (angle > 120) throw_rad = 120 * M_PI / 180.0f;
+		else if (angle < 90) throw_rad = 90 * M_PI / 180.0f;
+	}
 
-		throw_index = 0;
-		throw_x.clear();
-		throw_y.clear();
-		int input_ry = PAD_INPUT::GetPadThumbRY();
-		int input_rx = PAD_INPUT::GetPadThumbRX();
-		if ((abs(input_rx) <= DEVIATION && abs(input_ry) <= DEVIATION) || input_ry < DEVIATION) {
-			is_throw = true;
-			is_throw_anim = false;
-			return;
+	vx0 = ve * (float)cos(throw_rad);
+	vy0 = ve * (float)sin(throw_rad);
+
+	g = 9.8;
+	dt = 0.15f;
+
+	x0 = player_x;
+	y0 = player_y;
+
+	vx = vx0; vy = vy0;
+
+	for (t = 0.0; y0 <= 720; t = t + dt) {
+		x0 = x0 + vx * dt;
+		y0 = y0 - vy * dt;
+		vy = vy - g * dt;
+		if (vy < 0) {
+			g += 0.2f;
 		}
-		//角度取得
-		throw_rad = atan2(input_ry, input_rx);
-		float angle = throw_rad * 180.0f / M_PI;
-		//角度の制限
-		if (move_type == 0) {
-			if (angle > 90) throw_rad = 90 * M_PI / 180.0f;
-			else if (angle < 60) throw_rad = 60 * M_PI / 180.0f;
-		}
-		else {
-			if (angle > 120) throw_rad = 120 * M_PI / 180.0f;
-			else if (angle < 90) throw_rad = 90 * M_PI / 180.0f;
-		}
-
-		vx0 = ve * (float)cos(throw_rad);
-		vy0 = ve * (float)sin(throw_rad);
-
-		g = 9.8;
-		dt = 0.15f;
-
-		x0 = player_x;
-		y0 = player_y;
-
-		vx = vx0; vy = vy0;
-
-		for (t = 0.0; y0 <= 720; t = t + dt) {
-			x0 = x0 + vx * dt;
-			y0 = y0 - vy * dt;
-			vy = vy - g * dt;
-			if (vy < 0) {
-				g += 0.2f;
+		throw_x.push_back(x0);
+		throw_y.push_back(y0);
+	}
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_SHOULDER) {
+		if (!push_button) {
+			push_button = true;
+			if (life > 1) {
+				//アニメーションのリセット
+				animation_type[2] = 0;
+				//投げる処理
+				throw_slime.push_back(ThrowSlime(throw_x, throw_y));
+				life--;
+				animation_state = PLAYER_ANIM_STATE::THROW;
 			}
-			throw_x.push_back(x0);
-			throw_y.push_back(y0);
 		}
 	}
 	else {
-		if ((life > 1 || is_throw) && is_throw_anim) {
-			if (!is_throw) {
-				throw_slime.push_back(ThrowSlime(throw_x, throw_y));
-				life--;
-				is_throw = true;
-			}
-			//投げる処理
-			if (is_throw_anim) {
-				int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
-				if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
-					is_throw_anim = false;
-				}
-				else {
-					animation_state = PLAYER_ANIM_STATE::THROW;
-					MoveAnimation();
-				}
-			}
+		push_button = false;
+	}
+
+	if (animation_state == PLAYER_ANIM_STATE::THROW) {
+		int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
+		if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
+			animation_state = PLAYER_ANIM_STATE::IDLE;
 		}
 		else {
-			is_throw = true;
-			is_throw_anim = false;
-			if (animation_state == PLAYER_ANIM_STATE::THROW) {
-				animation_state = PLAYER_ANIM_STATE::IDLE;
-			}
+			MoveAnimation();
 		}
 	}
+
 }
 
 /// <summary>
