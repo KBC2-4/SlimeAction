@@ -195,9 +195,12 @@ void ELEMENT::Update(PLAYER* player) {
 /// ボタンの処理
 /// </summary>
 void ELEMENT::Button(PLAYER* player) {
+
+	static bool keep_pushing = false;	//押し続けているかフラグ
+
 	for (int i = 0; i < button.size(); i++) {
 		if(button[i].flg == true)button[i].animtimer++;
-		if (button[i].animtimer > 180 && !((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && !(player_map_x <= button[i].x + MAP_CEllSIZE - 25) && !(player_map_y >= button[i].y - MAP_CEllSIZE / 2) && !(player_map_y <= button[i].y + MAP_CEllSIZE / 2))) {
+		if (button[i].animtimer > 180 && keep_pushing == false) {
 			button[i].animtimer = 0;
 			button[i].flg = false;
 		}	
@@ -218,14 +221,22 @@ void ELEMENT::Button(PLAYER* player) {
 			}
 		}
 			if (button[i].type == 2) {	//ボタン
-				if ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 ) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
+				bool ball_flg = false;	//ボールの当たり判定フラグ
+				for (int ball_num = 0; ball_num < player->GetThrowCnt(); ball_num++) {
+					if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2 + 10) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2 - 10) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
+						ball_flg = true;
+					}
+					else { keep_pushing = false; }
+				}
+
+				if ((ball_flg == true) || ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 ) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2))) {
 					//デバッグ
 					//printfDx("2番に入ってるよ！");
-					player->SetPlayerY(button[i].y - 6.5f);
+					if(ball_flg == false)player->SetPlayerY(button[i].y - 6.5f);
 					if (button[i].flg == false) {
 						if (CheckSoundMem(switch_se) == FALSE)PlaySoundMem(switch_se, DX_PLAYTYPE_BACK, TRUE);
 					}
-					
+					keep_pushing = true; //押し続けている
 					button[i].flg = true;		//ボタンを押した
 					
 					if (i < door.size() && i >= 0) {
@@ -233,7 +244,7 @@ void ELEMENT::Button(PLAYER* player) {
 						door[j].flg = true;
 					}
 					
-				}
+				}else{ keep_pushing = false; }
 			}
 
 			//一回限り
