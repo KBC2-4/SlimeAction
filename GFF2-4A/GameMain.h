@@ -24,7 +24,7 @@ private:
 	//グレポンの数用の変数
 	int gurepon_count = 0;
 
-	bool revival;	//復活フラグ
+	bool restart;	//復活フラグ
 
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ

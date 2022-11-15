@@ -100,7 +100,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 
 	element = new ELEMENT();
 
-	revival = restert;
+	this->restart = restert;
 }
 
 GAMEMAIN::~GAMEMAIN()
@@ -169,8 +169,8 @@ AbstractScene* GAMEMAIN::Update()
 
 	//ゲームオーバー
 	if (player->IsDeath()) {
-		if (revival == false) {return new GAMEMAIN(true); }
-		else if(revival == true)return new RESULT(false);
+		if (restart == false) {return new GAMEMAIN(true); }
+		else if(restart == true)return new RESULT(false);
 	}
 
 	//ステージクリア
