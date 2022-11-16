@@ -270,7 +270,7 @@ void PLAYER::Scroll(float move_x) {
 		if (!(isScroll = STAGE::SetScrollPos(move_x))) {
 			//プレイヤーの位置を中心に戻す
 			rebound_x = SPEED * 1.3f;
-			/*player_x -= move_x * rebound_x;*/
+			player_x -= move_x * rebound_x;
 		}
 	}
 	//スクロールしてない時
@@ -655,7 +655,7 @@ void PLAYER::HitBlock() {
 	int hit_x = floor(STAGE::GetScrollX() / MAP_CEllSIZE);
 	
 	for (int i = 0; i < MAP_HEIGHT; i++){
-		for (int j = hit_x; j < hit_x + 16; j++) {
+		for (int j = hit_x; j <= hit_x + 16; j++) {
 			if (STAGE::HitMapDat(i, j) == false) {
 				continue;
 			}
