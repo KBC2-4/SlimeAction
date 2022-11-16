@@ -274,10 +274,10 @@ void GAMEMAIN::Draw() const
 	}
 
 	if (pause_flg == true) { //É|Å[ÉYâÊñ  ï`âÊ
-		SaveDrawScreen(0, 0, 1280, 720, "Resource/Images/Stage/BackImpause_cash.bmp");
-		int drawgraph = LoadGraph("Resource/Images/Stage/BackImpause_cash.bmp");
-		GraphFilter(drawgraph,DX_GRAPH_FILTER_GAUSS, 16, 1000);
-		DrawGraph(0, 0, drawgraph, FALSE);
+		int pause_graph = MakeGraph(1280, 720);	
+		GetDrawScreenGraph(0, 0, 1280, 720, pause_graph);
+		GraphFilter(pause_graph,DX_GRAPH_FILTER_GAUSS, 16, 1000);
+		DrawGraph(0, 0, pause_graph, FALSE);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 		DrawFillBox(0, 0, 1280, 720,0x000000);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND,0);
