@@ -101,7 +101,7 @@ void STAGE::CameraWork(PLAYER* player) {
 
 	if ((player_vector_x > 0 && player->GetPlayerX() >= 616 || player_vector_x < 0 && player->GetPlayerX() <= 664) && player_x_old != player->GetPlayerX()) {
 		scroll_x -= 5 * player_vector_x;
-		if (scroll_x > 0 || scroll_x <= -8500) {
+		if (scroll_x > 0 || scroll_x <= -(80 * MAP_WIDTH - 640)) {
 			scroll_x += 5 * player_vector_x;
 		}
 	}
@@ -142,7 +142,7 @@ void STAGE::PuddleProcess(){
 /// </summary>
 bool STAGE::SetScrollPos(int move_x) {
 	scroll_x -= 5 * move_x;
-	if (scroll_x >= 0 || scroll_x <= -8500) {
+	if (scroll_x >= 0 || scroll_x <= -(80 * MAP_WIDTH - 640)) {
 	scroll_x += 5 * move_x;
 		return true;
 	}
