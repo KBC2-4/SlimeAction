@@ -10,7 +10,6 @@ private:
 	bool hitflg;
 	bool delete_flag;
 	int shootcount;
-	double rads[2];
 	int animation_timer;
 	int animation_type;
 	int spawn_map_x;
@@ -56,13 +55,18 @@ public:
 	/// <returns>アニメーションの終了判定</returns>
 	bool ReturnAnimation();
 	/// <summary>
+	/// 弾の発射時のアニメーション
+	/// </summary>
+	/// <returns>アニメーションの終了判定</returns>
+	bool PressAnimation();
+	/// <summary>
 	/// 落下アニメーション
 	/// </summary>
 	void FallAnimation();
 	/// <summary>
 	/// 死亡アニメーション
 	/// </summary>
-	/// <returns>アニメションが終わったかどうか</returns>
+	/// <returns>アニメーションの終了判定</returns>
 	bool DethAnimation();
 	/// <summary>
 	/// 描画

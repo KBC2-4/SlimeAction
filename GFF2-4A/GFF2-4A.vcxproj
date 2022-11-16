@@ -156,6 +156,7 @@
     <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="GrapeFruit.cpp" />
+    <ClCompile Include="ITEMBALL.cpp" />
     <ClCompile Include="Lemon.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\PG\dxlib</AdditionalIncludeDirectories>
@@ -179,6 +180,7 @@
     <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="GameMain.h" />
     <ClInclude Include="GrapeFruit.h" />
+    <ClInclude Include="ITEMBALL.h" />
     <ClInclude Include="Lemon.h" />
     <ClInclude Include="PadInput.h" />
     <ClInclude Include="PLAYER.h" />
