@@ -7,6 +7,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	std::vector<std::vector<int>> spawn_point;
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
 	time = GetNowCount();
+	if(restart == false)halfway_time = 0;
 	lemoner_count = 0;
 	tomaton_count = 0;
 
@@ -103,8 +104,9 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	this->restart = restert;
 
 	if (restart == true) {
-		player->SetPlayerX(500);
-		stage->SetScrollX(-3000);
+		int scrollx = -(stage->GetHalfwayPoint(0) - 500);
+		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
+		stage->SetScrollX(scrollx);	//スポーン地点をセット
 	}
 }
 
@@ -174,12 +176,12 @@ AbstractScene* GAMEMAIN::Update()
 
 	//ゲームオーバー
 	if (player->IsDeath()) {
-		if (restart == false && stage->HalfwayPoint(player) == true) {return new GAMEMAIN(true); }
+		if (restart == false && stage->HalfwayPoint(player) == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
 		return new RESULT(false);
 	}
 
 	//ステージクリア
-	if (stage->GetClearFlg()) { return new RESULT(true,time); };
+	if (stage->GetClearFlg()) { return new RESULT(true,time + halfway_time); };
 
 	return this;
 }

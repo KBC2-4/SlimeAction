@@ -14,6 +14,7 @@ class GAMEMAIN :
 private:
 	int background_image[5];
 	int time;		//経過時間
+	int halfway_time; //中間地点経過時の時間
 
 	//レモナーの数用の変数
 	int lemoner_count;
