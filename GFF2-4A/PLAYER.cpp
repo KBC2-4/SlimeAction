@@ -199,6 +199,8 @@ void PLAYER::Move() {
 	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
 	//if (is_throw_anim) return;
 	//スティック入力の取得
+	old_player_x = player_x;
+	old_player_y = player_y;
 	int input_lx = PAD_INPUT::GetPadThumbLX();
 	//移動するとき
 	move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
@@ -276,8 +278,6 @@ void PLAYER::Move() {
 	else if (player_x > old_player_x) {
 		move_x = 1.0f;
 	}
-	old_player_x = player_x;
-	old_player_y = player_y;
 }
 
 void PLAYER::Scroll(float move_x) {
