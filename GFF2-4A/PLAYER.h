@@ -52,6 +52,7 @@ class PLAYER
 private:
 	bool is_death;
 	static float player_x, player_y;
+	float old_player_x, old_player_y;
 	int map_x, map_y;
 	float player_left = 0, player_right = 0;
 	float player_top = 0, player_bottom = 0;
@@ -73,6 +74,7 @@ private:
 	float hook_distance;
 
 	float hook_y, hook_x;
+	int hook_index;
 
 	double x;     // •R‚ğL‚Î‚µ‚Äˆêü‚³‚¹‚½ê‡‚Éo—ˆ‚é‰~‚Ìüã‚ÌÀ•WA‚O‚Í•R‚ª²‚Ì^‰º‚ÉL‚Ñ‚½ˆÊ’u
 	double speed; // x‚Ì•Ï‰»‘¬“x
@@ -164,10 +166,10 @@ public:
 	/*•Ï”‚ÌƒZƒbƒg‚ÆƒQƒbƒg*/
 	int GetLife() { return life; };
 	bool IsDeath() { return is_death; }
-	static float GetPlayerX() { return player_x; }
+	static float GetPlayerX() { return player_x + STAGE::GetScrollX(); }
 	static float GetPlayerY() { return player_y; }
 
-	void SetPlayerX(float x) { player_x = x; }
+	void SetPlayerX(float x) { player_x = x - STAGE::GetScrollX(); }
 	void SetPlayerY(float y) { player_y = y; }
 
 	int GetThrowCnt() { return throw_slime.size(); }

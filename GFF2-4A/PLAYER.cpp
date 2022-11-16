@@ -123,6 +123,19 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	}
 
 	player_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
+	if (player_state == PLAYER_MOVE_STATE::HOOK) {
+		if (hook_x + nx < player_x) {
+			Scroll(-1.0f);
+		}
+		else {
+			Scroll(1.0f);
+		}
+		clsDx();
+		printfDx("%d\n", hook_x + nx < player_x);
+	}
+	else {
+		Scroll(move_x);
+	}
 }
 
 /// <summary>
@@ -136,28 +149,28 @@ void PLAYER::Draw()const {
 
 	//プレイヤーの表示
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		DrawRotaGraphF(player_x, (player_y-20) + (1.6 - player_scale) * 40, player_scale, 0.0, now_image, TRUE, move_type);
+		DrawRotaGraphF(player_x + STAGE::GetScrollX(), (player_y - 20) + (1.6 - player_scale) * 40, player_scale, 0.0, now_image, TRUE, move_type);
 		
 	}
 	else {
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
-			float diff_x = ((hook_x + STAGE::GetScrollX() + nx) - player_x);
-			float diff_y = ((hook_y + ny) - player_y);
+			float diff_x = nx;
+			float diff_y = ny;
 			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
 			float angle = atan2(diff_y, diff_x) + DX_PI_F;
 			if (move_type == 0) {
-				DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
-					distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
+				DrawRotaGraph3F(hook_x + nx + STAGE::GetScrollX(), hook_y + ny, 80, 80,
+					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
 					images[3][1], TRUE, move_type);
 			}
 			else {
-				DrawRotaGraph3F(hook_x + STAGE::GetScrollX() + nx, hook_y + ny, 80, 80,
-					distance / MAP_CEllSIZE / 2, 0.6f, (double)angle,
+				DrawRotaGraph3F(hook_x + nx + STAGE::GetScrollX(), hook_y + ny, 80, 80,
+					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
 					images[3][0], TRUE, move_type);
 			}
 		}
 		else {
-			DrawRotaGraph3F(player_x, player_y, 40, 80,
+			DrawRotaGraph3F(player_x + STAGE::GetScrollX(), player_y, 40, 80,
 				1* player_scale, (hook_distance / (MAP_CEllSIZE / 2))* player_scale, (double)hook_angle,
 				now_image, TRUE, move_type);
 		}
@@ -229,7 +242,6 @@ void PLAYER::Move() {
 			}
 		}
 		MoveAnimation();
-		Scroll(move_x);
 	}
 
 	//移動してない時
@@ -257,18 +269,36 @@ void PLAYER::Move() {
 			player_state = PLAYER_MOVE_STATE::IDLE;	//ステートをIdleに切り替え
 		}
 	}
+
+	if (player_x < old_player_x) {
+		move_x = -1.0f;
+	}
+	else if (player_x > old_player_x) {
+		move_x = 1.0f;
+	}
+	old_player_x = player_x;
+	old_player_y = player_y;
 }
 
 void PLAYER::Scroll(float move_x) {
 	//スクロールの処理
 	bool isScroll = false;
 	//プレイヤーの位置が中心だったら
-	if (move_x > 0 && player_x >= 680 || move_x < 0 && player_x <= 600) {
+	if (move_x > 0 && player_x + STAGE::GetScrollX() >= 680 || move_x < 0 && player_x + STAGE::GetScrollX() <= 600) {
 		//スクロールが端まで行ってない時
-		if (!(isScroll = STAGE::SetScrollPos(move_x))) {
+		float scroll_x = move_x * SPEED;
+		if (move_x > 0) {
+			scroll_x = max(player_x + STAGE::GetScrollX() - 680.0f, move_x * SPEED);
+			scroll_x = min(scroll_x, 100.0f);
+		}
+		else {
+			scroll_x = min(player_x + STAGE::GetScrollX() - 600.0f, move_x * SPEED);
+			scroll_x = max(scroll_x, -100.0f);
+		}
+		if (!(isScroll = STAGE::SetScrollPos(scroll_x))) {
 			//プレイヤーの位置を中心に戻す
 			rebound_x = SPEED * 1.3f;
-			player_x -= move_x * rebound_x;
+			//player_x -= move_x * rebound_x;
 		}
 	}
 	//スクロールしてない時
@@ -302,41 +332,77 @@ void PLAYER::HookMove(ELEMENT* element) {
 
 		//フックの位置
 		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
-		for (int i = 0; i < hook_pos.size(); i++) {
-			ELEMENT::ELEMENT_DATA pos = hook_pos[i];
+		if (player_state == PLAYER_MOVE_STATE::HOOK) {
+			ELEMENT::ELEMENT_DATA pos = hook_pos[hook_index];
 			//距離計算
-			float diff_x = pos.x - (player_x - STAGE::GetScrollX());
+			float diff_x = pos.x - (player_x);
 			float diff_y = pos.y - player_y;
 			float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
 			//距離が最短距離より近いとき
-			if (distance <= min_distance) {
-				//フックの角度
-				float angle = atan2f(diff_y, diff_x);
-				//移動の計算
-				move_x = cosf(angle) * SPEED * 3;
-				move_y = sinf(angle) * SPEED * 3;
-				//プレイヤーの現在の位置
-				float x = player_x - STAGE::GetScrollX();
-				float y = player_y;
-				//フックまでの移動経路に障害物がないか
-				while (!STAGE::HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
-					x += move_x;
-					y += move_y;
+			//if (distance <= min_distance) {
+			//フックの角度
+			float angle = atan2f(diff_y, diff_x);
+			//移動の計算
+			move_x = cosf(angle) * SPEED * 3;
+			move_y = sinf(angle) * SPEED * 3;
+			//プレイヤーの現在の位置
+			float x = player_x;
+			float y = player_y;
+			//フックまでの移動経路に障害物がないか
+			while (!STAGE::HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
+				x += move_x;
+				y += move_y;
+			}
+			//配列に変換
+			int hook_map_x = x / MAP_CEllSIZE;
+			int hook_map_y = y / MAP_CEllSIZE;
+			//障害物がある場合は移動させない
+			//最短距離の更新
+			min_distance = distance;
+			//フックの座標の更新
+			hook_x = pos.x;
+			hook_y = pos.y;
+			//フックが見つかった判定をtrue
+			is_hook = true;
+		}
+		else {
+			for (int i = 0; i < hook_pos.size(); i++) {
+				ELEMENT::ELEMENT_DATA pos = hook_pos[i];
+				//距離計算
+				float diff_x = pos.x - (player_x);
+				float diff_y = pos.y - player_y;
+				float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
+				//距離が最短距離より近いとき
+				if (distance <= min_distance) {
+					//フックの角度
+					float angle = atan2f(diff_y, diff_x);
+					//移動の計算
+					move_x = cosf(angle) * SPEED * 3;
+					move_y = sinf(angle) * SPEED * 3;
+					//プレイヤーの現在の位置
+					float x = player_x;
+					float y = player_y;
+					//フックまでの移動経路に障害物がないか
+					while (!STAGE::HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
+						x += move_x;
+						y += move_y;
+					}
+					//配列に変換
+					int hook_map_x = x / MAP_CEllSIZE;
+					int hook_map_y = y / MAP_CEllSIZE;
+					//障害物がある場合は移動させない
+					if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
+						continue;
+					}
+					//最短距離の更新
+					min_distance = distance;
+					hook_index = i;
+					//フックの座標の更新
+					hook_x = pos.x;
+					hook_y = pos.y;
+					//フックが見つかった判定をtrue
+					is_hook = true;
 				}
-				//配列に変換
-				int hook_map_x = x / MAP_CEllSIZE;
-				int hook_map_y = y / MAP_CEllSIZE;
-				//障害物がある場合は移動させない
-				if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
-					continue;
-				}
-				//最短距離の更新
-				min_distance = distance;
-				//フックの座標の更新
-				hook_x = pos.x;
-				hook_y = pos.y;
-				//フックが見つかった判定をtrue
-				is_hook = true;
 			}
 		}
 		//フックが見つかった時
@@ -345,7 +411,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 			if (!end_move) {
 				//フックまでの距離の計算
 				float y = hook_y - player_y;
-				float x = hook_x - (player_x - STAGE::GetScrollX());
+				float x = hook_x - (player_x);
 				hook_distance = sqrt(x * x + y * y);
 				//フック移動してない時
 				if (!is_hook_move) {
@@ -362,7 +428,6 @@ void PLAYER::HookMove(ELEMENT* element) {
 				if (hook_distance > 40) {
 					player_x += move_x;
 					player_y += move_y;
-					Scroll(jump_move_x);
 				}
 				//フックについたら移動処理の終了
 				else end_move = true;
@@ -376,8 +441,8 @@ void PLAYER::HookMove(ELEMENT* element) {
 				//ステートの変更
 				player_state = PLAYER_MOVE_STATE::HOOK;
 				//フックの座標にプレイヤーを移動
-				//player_x = hook_x + STAGE::GetScrollX();
-				//player_y = hook_y;
+				player_x = hook_x + nx;
+				player_y = hook_y + ny;
 				// 速度を加算
 				speed += -mass * (G / 60) * sin(x / LENGTH);
 				x += speed;
@@ -409,6 +474,8 @@ void PLAYER::HookMove(ELEMENT* element) {
 					if (speed > 0)speed -= 0.05;
 					if (speed < 0)speed += 0.05;
 				}
+				//player_x = hook_x + nx;
+				//player_y = hook_y + ny;
 			}
 		}
 	}
@@ -416,9 +483,10 @@ void PLAYER::HookMove(ELEMENT* element) {
 	if (!is_hook) {
 		//初期化
 		end_move = false;
+		hook_index = -1;
 		is_hook_move = false;
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
-			player_x = hook_x + STAGE::GetScrollX() + nx;
+			player_x = hook_x + nx;
 			player_y = hook_y + ny;
 			player_y += 1;
 			//フック後のジャンプ方向の修正
@@ -595,7 +663,7 @@ void PLAYER::Throw() {
 	g = 9.8;
 	dt = 0.15f;
 
-	x0 = player_x;
+	x0 = player_x + STAGE::GetScrollX();
 	y0 = player_y;
 
 	vx = vx0; vy = vy0;
@@ -644,10 +712,10 @@ void PLAYER::Throw() {
 /// </summary>
 void PLAYER::HitBlock() {
 	//マップチップの座標のセット
-	map_x = (int)roundf((player_x - STAGE::GetScrollX()) / MAP_CEllSIZE);
+	map_x = (int)roundf((player_x) / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
-	player_left = (player_x - STAGE::GetScrollX() - 35);
-	player_right = (player_x - STAGE::GetScrollX() + 35);
+	player_left = (player_x - 35);
+	player_right = (player_x + 35);
 	player_top = (player_y - MAP_CEllSIZE / 2);
 	player_bottom = (player_y + MAP_CEllSIZE / 2);
 
@@ -720,7 +788,7 @@ void PLAYER::MoveAnimation() {
 bool PLAYER::GetBullet(int *bullet) {
 	float r1X, r1Y, r1XY;
 	for (int i = 0; i < throw_slime.size(); i++) {
-		r1X = throw_slime[i].GetThrowX() + STAGE::GetScrollX() - player_x;
+		r1X = throw_slime[i].GetThrowX() - player_x;
 		r1Y = throw_slime[i].GetThrowY() - player_y;
 		r1XY = sqrt(r1X * r1X + r1Y * r1Y);
 		if (r1XY <= 40 + BULLETRADIUS && throw_slime[i].Get_throwfall() == true) {

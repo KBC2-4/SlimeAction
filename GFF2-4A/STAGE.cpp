@@ -123,9 +123,9 @@ void STAGE::PuddleProcess(){
 /// ステージのスクロール
 /// </summary>
 bool STAGE::SetScrollPos(int move_x) {
-	scroll_x -= 5 * move_x;
+	scroll_x -= move_x;
 	if (scroll_x >= 0 || scroll_x <= -8080) {
-		scroll_x += 5 * move_x;
+		scroll_x += move_x;
 		return true;
 	}
 	return false;
