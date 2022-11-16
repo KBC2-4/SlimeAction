@@ -53,9 +53,9 @@ STAGE::STAGE() {
 void STAGE::Update(PLAYER* player) {
 	StageClear(player);
 	HalfwayPoint(player);
-	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) {
+	//if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) {
 		CameraWork(player);
-	}
+	//}
 }
 
 void STAGE::Draw()const {
