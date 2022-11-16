@@ -12,10 +12,15 @@ class STAGE
 private:
 	
 	int stage_image[5];			//ステージ背景画像
+	int halfwaypoint_se;		//中間地点SE
 	float map_x, map_y;			//マップ描画座標
 	int clearbox[2];		//クリアになるボックス状範囲	0=x,1=y
+	int halfwaypointbox[2];		//中間地点判定になるボックス状範囲	0=x,1=y
 	bool clearflg;			//クリア判定フラグ
-	float player_x_old, player_y_old;		//旧プレイヤー座標(x、y)
+	bool halfwaypoint;		//中間地点フラグ
+	float player_x_old, player_y_old;		//旧プレイヤー座標
+	float player_vector_x;					//プレイヤーの移動方向x
+	float player_vector_y;					//プレイヤーの移動方向y
 
 protected:
 	int block_image1[100];		//ステージブロック画像
@@ -53,5 +58,11 @@ public:
 	void StageClear(PLAYER* player);
 
 	bool GetClearFlg(void) { return clearflg; };
+
+	void SetScrollX(float scroll_x) { if (scroll_x < 0) { this->scroll_x = scroll_x; } }
+
+	bool HalfwayPoint(PLAYER* player);
+
+	int GetHalfwayPoint(int xy) {if(xy == 0 || xy == 1) return halfwaypointbox[xy]; }
 };
 

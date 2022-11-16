@@ -1,12 +1,13 @@
 #include "GameMain.h"
 #include <vector>
 
-GAMEMAIN::GAMEMAIN()
+GAMEMAIN::GAMEMAIN(bool restert)
 {
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 	std::vector<std::vector<int>> spawn_point;
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
 	time = GetNowCount();
+	if(restart == false)halfway_time = 0;
 	lemoner_count = 0;
 	tomaton_count = 0;
 	item_count = 0;
@@ -108,6 +109,14 @@ GAMEMAIN::GAMEMAIN()
 	}
 
 	element = new ELEMENT();
+
+	this->restart = restert;
+
+	if (restart == true) {
+		int scrollx = -(stage->GetHalfwayPoint(0) - 500);
+		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
+		stage->SetScrollX(scrollx);	//スポーン地点をセット
+	}
 }
 
 GAMEMAIN::~GAMEMAIN()
@@ -139,8 +148,9 @@ GAMEMAIN::~GAMEMAIN()
 
 AbstractScene* GAMEMAIN::Update()
 {
-	player->Update(element,stage);
 	
+	player->Update(element,stage);
+	stage->Update(player);	//ステージクリア用
 	element->Update(player);
 	for (int i = 0; i < lemoner_count; i++)
 	{
@@ -183,11 +193,12 @@ AbstractScene* GAMEMAIN::Update()
 
 	//ゲームオーバー
 	if (player->IsDeath()) {
+		if (restart == false && stage->HalfwayPoint(player) == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
 		return new RESULT(false);
 	}
 
 	//ステージクリア
-	if (stage->GetClearFlg()) { return new RESULT(true,time); };
+	if (stage->GetClearFlg()) { return new RESULT(true,time + halfway_time); };
 
 	return this;
 }

@@ -14,6 +14,7 @@ class GAMEMAIN :
 private:
 	int background_image[5];
 	int time;		//経過時間
+	int halfway_time; //中間地点経過時の時間
 
 	//レモナーの数用の変数
 	int lemoner_count;
@@ -27,6 +28,8 @@ private:
 	//アイテムの数用変数
 	int item_count;
 
+	bool restart;	//復活フラグ
+
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
 	LEMON** lemoner;	//レモナー
@@ -38,7 +41,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	GAMEMAIN();
+	GAMEMAIN(bool restert = false);
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
