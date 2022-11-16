@@ -10,10 +10,7 @@ void PAD_INPUT::UpdateKey()
 {
 	// “ü—ÍƒL[æ“¾
 	GetJoypadXInputState(DX_INPUT_KEY_PAD1, &Input);
-	if (NowKey != -1)
-	{
-		OldKey = NowKey;
-	}
+	OldKey = NowKey;
 	for (int i = 0; i < BUTTONS; i++)
 	{
 		if (Input.Buttons[i])
