@@ -10,6 +10,7 @@ private:
 	int timer;
 	bool win;
 	int clear_time;
+	int se_randnum;
 
 public:
 	RESULT(bool issue , int clear_time = -1);

@@ -21,12 +21,14 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	if(restart == false)halfway_time = 0;
 	lemoner_count = 0;
 	tomaton_count = 0;
+	item_count = 0;
 
 	player = new PLAYER;
 	stage = new STAGE;
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
+	item = nullptr;
 
 	//とまトン生成する数を数える
 	for (int i = 0,point = 0 ; i < MAP_HEIGHT; i++)
@@ -36,6 +38,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 			if (stage->GetMapDat(i, j) == 93)
 			{
 				tomaton_count++;
+				item_count++;
 				spawn_point.push_back(std::vector<int>(2));
 				spawn_point[point][0] = i;
 				spawn_point[point][1] = j;
@@ -108,6 +111,12 @@ GAMEMAIN::GAMEMAIN(bool restert)
 		{
 			lemoner[i] = new LEMON(player, stage, spawn_point[i][0], spawn_point[i][1]);
 		}
+	}
+
+	item_count = gurepon_count + lemoner_count;
+	if (item_count > 0)
+	{
+		item = new ITEMBALL * [item_count];
 	}
 
 	element = new ELEMENT();
@@ -195,11 +204,19 @@ AbstractScene* GAMEMAIN::Update()
 			}
 		}
 
-		//ゲームオーバー
-		if (player->IsDeath()) {
-			if (restart == false && stage->HalfwayPoint(player) == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
-			return new RESULT(false);
-		}
+
+
+
+
+
+	stage->Update(player);	//ステージクリア用
+	element->Update(player);
+
+	//ゲームオーバー
+	if (player->IsDeath()) {
+		if (restart == false && stage->HalfwayPoint(player) == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
+		return new RESULT(false);
+	}
 
 		//ステージクリア
 		if (stage->GetClearFlg()) { return new RESULT(true, time + halfway_time); };
@@ -257,10 +274,10 @@ void GAMEMAIN::Draw() const
 	}
 
 	if (pause_flg == true) { //ポーズ画面 描画
-		SaveDrawScreen(0, 0, 1280, 720, "Resource/Images/Stage/BackImpause_cash.bmp");
-		int drawgraph = LoadGraph("Resource/Images/Stage/BackImpause_cash.bmp");
-		GraphFilter(drawgraph,DX_GRAPH_FILTER_GAUSS, 16, 1000);
-		DrawGraph(0, 0, drawgraph, FALSE);
+		int pause_graph = MakeGraph(1280, 720);	
+		GetDrawScreenGraph(0, 0, 1280, 720, pause_graph);
+		GraphFilter(pause_graph,DX_GRAPH_FILTER_GAUSS, 16, 1000);
+		DrawGraph(0, 0, pause_graph, FALSE);
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 		DrawFillBox(0, 0, 1280, 720,0x000000);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND,0);
@@ -270,8 +287,6 @@ void GAMEMAIN::Draw() const
 		DrawStringToHandle(362, 450, "タイトルへ戻る", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
 		DrawStringToHandle(560, 540, "終了", selectmenu == 2 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 	}
-	else{  }
 
-	//デバッグ
-	//DrawFormatString(200, 300, 0xffffff, "GetPlayerY:%f", player->GetPlayerY());
+	DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
 }

@@ -7,7 +7,7 @@
 #include"Tomato.h"
 #include "Element.h"
 #include "RESULT.h"
-
+#include"ITEMBALL.h"
 class GAMEMAIN :
     public AbstractScene
 {
@@ -27,7 +27,10 @@ private:
 	int tomaton_count;
 
 	//グレポンの数用の変数
-	int gurepon_count = 0;
+	int gurepon_count;
+
+	//アイテムの数用変数
+	int item_count;
 
 	bool restart;	//復活フラグ
 
@@ -36,6 +39,7 @@ private:
 	LEMON** lemoner;	//レモナー
 	GRAPEFRUIT** gurepon;	//グレぽん
 	TOMATO** tomaton;	//とまトン
+	ITEMBALL** item;     //アイテム
 	ELEMENT* element;	//ステージ内要素
 public:
 	/// <summary>
