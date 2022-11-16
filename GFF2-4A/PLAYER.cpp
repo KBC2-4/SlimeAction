@@ -107,9 +107,6 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	now_image = images[image_type][animation_type[image_type]];
 
 
-	if (element->HitLift()) {
-		player_x += element->GetLiftVector()*2;
-	}
 
 	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
 		if (alpha_time > 0) {

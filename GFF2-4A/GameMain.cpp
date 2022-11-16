@@ -287,4 +287,6 @@ void GAMEMAIN::Draw() const
 		DrawStringToHandle(362, 450, "タイトルへ戻る", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
 		DrawStringToHandle(560, 540, "終了", selectmenu == 2 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 	}
+
+	DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
 }
