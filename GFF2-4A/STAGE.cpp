@@ -22,19 +22,29 @@ STAGE::STAGE() {
 	scroll_y = 0;
 	player_x_old = 20.f;
 	player_y_old = 500.f;
+	player_vector_x = 0;
+	player_vector_y = 0;
 
 	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1) == -1) {
 		throw "Resource/Images/Stage/map_chips.png";
+	}
+
+	if ((halfwaypoint_se = LoadSoundMem("Resource/Sounds/SE/Stage/halfwaypoint.wav")) == -1) {
+		throw "Resource/Sounds/SE/Stage/halfwaypoint.wav";
 	}
 	//InitStage();
 	LoadMapData();
 	clearflg = false;
 	*clearbox = 0;
+	*halfwaypointbox = 0;
+	halfwaypoint = false;
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			//クリア座標を代入
 			if (map_data[i][j] == 73) { clearbox[0] = j * MAP_CEllSIZE; clearbox[1] = i * MAP_CEllSIZE; }
+			//中間地点座標を代入
+			if (map_data[i][j] == 90) { halfwaypointbox[0] = j * MAP_CEllSIZE; halfwaypointbox[1] = i * MAP_CEllSIZE; }
 		}
 	}
 }
@@ -42,12 +52,17 @@ STAGE::STAGE() {
 
 void STAGE::Update(PLAYER* player) {
 	StageClear(player);
-	//CameraWork(player);
+	HalfwayPoint(player);
+	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) {
+		CameraWork(player);
+	}
 }
 
 void STAGE::Draw()const {
 	//デバッグ
-	//DrawFormatString(200, 200, 0xffffff, "scroll_y:%f", scroll_y);
+	//DrawFormatString(200, 100, 0xffffff, "oldx:%f", player_x_old);
+	//DrawFormatString(350, 100, 0xffffff, "vectorx:%f", player_vector_x);
+	//DrawFormatString(100, 200, 0xffffff, "scroll_x:%f", scroll_x);
 	//ゲームクリア時
 	if (clearflg == true) {DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
 	
@@ -57,7 +72,7 @@ void STAGE::Draw()const {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			//画面外は描画しない
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
-				if (map_data[i][j] < 90 
+				if (map_data[i][j] < 89 
 					|| (map_data[i][j] <= 74	//酸性雨の水たまりを描画しない
 					&& map_data[i][j] >= 79)
 					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data[i][j] - 1], TRUE); }
@@ -67,47 +82,50 @@ void STAGE::Draw()const {
 			
 		}
 	}
+
+	//中間地点　描画
+	if(halfwaypoint == false){ DrawGraph(halfwaypointbox[0] + scroll_x, halfwaypointbox[1] + scroll_y, block_image1[88], TRUE); }
+	else{ DrawGraph(halfwaypointbox[0] + scroll_x, halfwaypointbox[1] + scroll_y, block_image1[89], TRUE); }
 	
 }
 
-//void STAGE::CameraWork(PLAYER *player) {
-//	int player_vector_x = 0;
-//	int player_vector_y = 0;
-//	if (player->GetPlayerX() - player_x_old > 0) {
-//		player_vector_x = 1;
-//	}
-//	else{
-//		player_vector_x = -1;
-//	}
-//	if (0 < player->GetPlayerY() - player_y_old) {
-//		player_vector_x = 1;
-//	}
-//	else {
-//		player_vector_x = -1;
-//	}
-//	if (player->GetPlayerX() != player_x_old) {
-//		scroll_x -= 5 * player_vector_x;
-//	}
-//	if (player->GetPlayerY() != player_y_old) {
-//		scroll_y -= 5 * player_vector_y;
-//	}
-//	
-//	if (player_vector_x > 0 && player->GetPlayerX() >= 680 || player_vector_x < 0 && player->GetPlayerX() <= 600) {
-//		if (scroll_x >= 0 || scroll_x <= -8080) {
-//			scroll_x += 5 * player_vector_x;
-//		}
-//	}
-//	if (player_vector_y > 0 && player->GetPlayerY() >= 720 || player_vector_y < 0 && player->GetPlayerY() <= 0) {
-//		if (scroll_y >= 0 || scroll_x <= -1120) {
-//			scroll_x += 5 * player_vector_y;
-//		}
-//	}
-//	player_x_old = player->GetPlayerX();
-//	player_y_old = player->GetPlayerY();
-//
-//
-//	//if (player->GetPlayerY() < 6)scroll_y = -60;
-//}
+void STAGE::CameraWork(PLAYER* player) {
+	//スティック入力の取得
+	int input_lx = PAD_INPUT::GetPadThumbLX();
+	if (input_lx > 0) {
+		player_vector_x = 1.0f;
+	}
+	else if (input_lx < 0) {
+		player_vector_x = -1.0f;
+	}
+
+	if ((player_vector_x > 0 && player->GetPlayerX() >= 616 || player_vector_x < 0 && player->GetPlayerX() <= 664) && player_x_old != player->GetPlayerX()) {
+		scroll_x -= 5 * player_vector_x;
+		if (scroll_x > 0 || scroll_x <= -(80 * MAP_WIDTH - 640)) {
+			scroll_x += 5 * player_vector_x;
+		}
+	}
+
+	
+	/*if ((player_vector_y > 0 && player->GetPlayerY() >= 720) || (player_vector_y < 0 && player->GetPlayerY() <= 0)) {
+
+		scroll_y -= 5 * player_vector_y;
+
+		if (scroll_y >= 0 || scroll_y <= -1120) {
+			scroll_y += 5 * player_vector_y;
+		}
+	}*/
+
+	if (player_x_old != player->GetPlayerX()) {
+		player_x_old = player->GetPlayerX();
+	}
+	else {
+		player_vector_x = 0;
+	}
+	if (player_y_old != player->GetPlayerY()) {
+		player_y_old = player->GetPlayerY();
+	}
+}
 
 
 
@@ -123,9 +141,9 @@ void STAGE::PuddleProcess(){
 /// ステージのスクロール
 /// </summary>
 bool STAGE::SetScrollPos(int move_x) {
-	scroll_x -= move_x;
-	if (scroll_x >= 0 || scroll_x <= -8080) {
-		scroll_x += move_x;
+	scroll_x -= 5 * move_x;
+	if (scroll_x >= 0 || scroll_x <= -(80 * MAP_WIDTH - 640)) {
+	scroll_x += 5 * move_x;
 		return true;
 	}
 	return false;
@@ -150,6 +168,7 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
+		|| block_type == 90 //中間地点
 		|| block_type == 91 //レモナー
 		|| block_type == 92 //グレポン
 		|| block_type == 93	//トマトン
@@ -168,9 +187,11 @@ bool STAGE::HitThrowSlime(int y, int x) {
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
 		|| block_type == 61	//壁ボタン(感圧式)
+		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
 		|| block_type == 73	//ゴール
+		|| block_type == 97	//マンホールの蓋End
 		) {
 	return false;
 	}
@@ -224,4 +245,16 @@ void STAGE::StageClear(PLAYER *player) {
 		/*if (GetNowCount() % 30 == 0)printfDx("%d:::::%d\n", count, GetNowCount());*/
 	}
 	
+}
+
+bool STAGE::HalfwayPoint(PLAYER *player) {
+	int player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
+	int player_map_y = floorf(player->GetPlayerY());
+	if ((player_map_x >= halfwaypointbox[0] - MAP_CEllSIZE / 2) && (player_map_x <= halfwaypointbox[0] + MAP_CEllSIZE / 2) && (player_map_y >= halfwaypointbox[1] - MAP_CEllSIZE) && (player_map_y <= halfwaypointbox[1] + MAP_CEllSIZE)) {
+		//デバッグ
+		//printfDx("aaa");
+		if (halfwaypoint == false)PlaySoundMem(halfwaypoint_se, DX_PLAYTYPE_BACK, TRUE);
+		halfwaypoint = true;
+	}
+	return halfwaypoint;
 }
