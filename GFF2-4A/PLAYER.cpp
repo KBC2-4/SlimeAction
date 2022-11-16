@@ -57,8 +57,8 @@ PLAYER::PLAYER() {
 	if (LoadDivGraph("Resource/Images/Player/JumpSlime2.png", 10, 10, 1, 80, 80, images[6]) == -1) {
 		throw "Resource/Images/Player/JumpSlime1.png";
 	}
-	if ((throw_ball_image = LoadGraph("Resource/Images/Player/SlimeBullet.png")) == -1) {
-		throw "Resource/Images/Player/SlimeBullet.png";
+	if ((throw_ball_image = LoadGraph("Resource/Images/Player/Slime_Bullet.png")) == -1) {
+		throw "Resource/Images/Player/Slime_Bullet.png";
 	}
 	
 	animation_state = PLAYER_ANIM_STATE::IDLE;
