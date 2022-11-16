@@ -125,8 +125,8 @@ GAMEMAIN::GAMEMAIN(bool restert)
 
 	if (restart == true) {
 		int scrollx = -(stage->GetHalfwayPoint(0) - 500);
-		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
 		stage->SetScrollX(scrollx);	//スポーン地点をセット
+		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
 	}
 
 	pause_flg = false;

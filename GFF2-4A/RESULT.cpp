@@ -3,11 +3,11 @@
 #include "DxLib.h"
 
 RESULT::RESULT(bool issue, int clear_time) {
-	if ((clear_background_image = LoadGraph("Resource/Images/Enemy/mi_hasya_kao.png")) == -1) {
+	if ((clear_background_image = LoadGraph("Resource/Images/Result/mi_hasya_kao.png")) == -1) {
 		throw "Resource/Images/Enemy/mi_hasya_kao.png";
 	}
 
-	if ((gameover_background_image = LoadGraph("Resource/Images/Enemy/gurepon.png")) == -1) {
+	if ((gameover_background_image = LoadGraph("Resource/Images/Result/gurepon.png")) == -1) {
 		throw "Resource/Images/Enemy/gurepon.png";
 	}
 
@@ -48,22 +48,24 @@ RESULT::RESULT(bool issue, int clear_time) {
 	win = issue;
 
 	this->clear_time =  GetNowCount() - clear_time;
+	se_randnum = GetRand(3);
 }
 
 RESULT::~RESULT() {
 	DeleteGraph(clear_background_image);
 	DeleteGraph(gameover_background_image);
+	DeleteFontToHandle(title_font);
+	DeleteFontToHandle(menu_font);
+	DeleteFontToHandle(time_font);
 	DeleteSoundMem(count_se);
 	DeleteSoundMem(ok_se);
 	for(int i = 0; i < 4; i++)DeleteSoundMem(good_se[i]);
 	for (int i = 0; i < 4; i++)DeleteSoundMem(bad_se[i]);
-	InitFontToHandle();	//全てのフォントデータを削除
 }
 
 AbstractScene* RESULT::Update() {
-	static const int se_num = GetRand(3);
-	if (win == true && timer > 8 * 60) { PlaySoundMem(good_se[se_num], DX_PLAYTYPE_BACK, FALSE); }
-	if(win == false && timer > 5 * 80){ PlaySoundMem(bad_se[se_num], DX_PLAYTYPE_BACK, FALSE); }
+	if (win == true && timer > 8 * 60) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
+	if(win == false && timer > 5 * 80){ PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
 	if (timer <= 5 * 60) { if (CheckSoundMem(count_se) == FALSE)PlaySoundMem(count_se, DX_PLAYTYPE_BACK, FALSE); }
 
 	if (--timer <= 60) { return new GAMEMAIN(); }
