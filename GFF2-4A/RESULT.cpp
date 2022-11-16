@@ -53,11 +53,13 @@ RESULT::RESULT(bool issue, int clear_time) {
 RESULT::~RESULT() {
 	DeleteGraph(clear_background_image);
 	DeleteGraph(gameover_background_image);
+	DeleteFontToHandle(title_font);
+	DeleteFontToHandle(menu_font);
+	DeleteFontToHandle(time_font);
 	DeleteSoundMem(count_se);
 	DeleteSoundMem(ok_se);
 	for(int i = 0; i < 4; i++)DeleteSoundMem(good_se[i]);
 	for (int i = 0; i < 4; i++)DeleteSoundMem(bad_se[i]);
-	InitFontToHandle();	//全てのフォントデータを削除
 }
 
 AbstractScene* RESULT::Update() {
