@@ -8,8 +8,6 @@ TOMATO::TOMATO()
 	image_rate = 0.1;
 	spawn_map_x = 0;
 	spawn_map_y = 0;
-	animation_timer = 0;
-	animation_type = 0;
 	image = new int[3];
 	if (LoadDivGraph("Resource/Images/Enemy/tomaton.png", 3, 3, 1, 80, 80, image) == -1)
 	{
@@ -29,8 +27,6 @@ TOMATO::TOMATO(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	this->stage = stage;
 
 	image_rate = 0.1;
-	animation_timer = 0;
-	animation_type = 0;
 	state = ENEMY_STATE::IDOL;
 
 	image = new int[9];

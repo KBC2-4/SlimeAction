@@ -11,8 +11,6 @@ LEMON::LEMON()
 	x = 0;
 	spawn_map_x = 0;
 	spawn_map_y = 0;
-	animation_timer = 0;
-	animation_type = 0;
 	now_image = 0;
 
 	state = ENEMY_STATE::IDOL;
@@ -46,8 +44,7 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	this->player = player;
 	this->stage = stage;
 
-	animation_timer = 0;
-	animation_type = 0;
+	
 	now_image = image[3];
 	state = ENEMY_STATE::IDOL;
 
@@ -206,7 +203,6 @@ bool LEMON::PressAnimation()
 	}
 	else //アニメーションの終了
 	{
-		now_image = image[1];
 		ret = true;
 	}
 	return ret;

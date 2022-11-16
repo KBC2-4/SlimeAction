@@ -23,7 +23,8 @@ protected:
 	int x, y;			//座標
 	int map_x, map_y;	//マップ内での座標
 	int* image;			//画像保存用
-	int now_image;		//使用している画像
+	int animation_timer;//アニメーションの時間
+	int animation_type;	//アニメーションの種類
 	double rad;          //ラジアン
 	ENEMY_STATE state;	//エネミーの状態
 	STAGE* stage;		//ステージ
@@ -31,6 +32,8 @@ protected:
 	ITEMBALL* item;     //ドロップするアイテム
 
 	const int IMAGE_SIZE = 80;
+	const int ANIMATION_TIME = 5;	//アニメーションの切り替え時間
+
 public:
 	/// <summary>
 	/// コンストラクタ
