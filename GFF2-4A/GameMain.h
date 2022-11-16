@@ -13,7 +13,12 @@ class GAMEMAIN :
 {
 private:
 	int background_image[5];
+	int title_font, menu_font;	//フォント
+	int cursor_move_se, ok_se;	//SE
+	int selectmenu;				//選択用
 	int time;		//経過時間
+	int halfway_time; //中間地点経過時の時間
+	bool pause_flg;	//ポーズフラグ
 
 	//レモナーの数用の変数
 	int lemoner_count;
@@ -23,6 +28,8 @@ private:
 
 	//グレポンの数用の変数
 	int gurepon_count = 0;
+
+	bool restart;	//復活フラグ
 
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
@@ -34,7 +41,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	GAMEMAIN();
+	GAMEMAIN(bool restert = false);
 	/// <summary>
 	/// デストラクタ
 	/// </summary>

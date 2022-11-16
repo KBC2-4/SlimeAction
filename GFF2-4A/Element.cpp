@@ -78,12 +78,12 @@ ELEMENT::ELEMENT() {
 				break;
 
 				//マンホール(出口)
-			//case 70:
-			//	data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
-			//	data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
-			//	data.type = 3;
-			//	manhole.push_back(data);
-			//	break;
+			case 97:
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.type = 3;
+				manhole.push_back(data);
+				break;
 
 				//酸性雨の水たまり
 			case 74:
@@ -348,6 +348,23 @@ void ELEMENT::Manhole(PLAYER* player) {
 				player->SetPlayerY(player->GetPlayerY() - 10.5f);
 				manhole[i].flg = true;
 
+			}
+		}
+
+		//中間地点
+		if (manhole[i].type == 2) {
+			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE + 25) && (player_map_x <= manhole[i].x + MAP_CEllSIZE - 25) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
+				//プレイヤーの落下速度を遅くする
+				player->SetPlayerY(player->GetPlayerY() + 10.0f);
+			}
+		}
+
+		//出口
+		if (manhole[i].type == 3) {
+			if((player_map_x >= manhole[i].x - MAP_CEllSIZE /2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE /2)/* && (player_map_y <= manhole[i].y)*/){
+			if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { player->SetPlayerY(manhole[i].y); }
+			//デバッグ
+			//printfDx("入っています。");
 			}
 		}
 	}
