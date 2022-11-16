@@ -98,7 +98,6 @@ void ENEMYBULLET::Move()
 		delete_flg = true;
 	}
 
-	//弾が画面外に行ったら消えるフラグを真に
 	mapd_x = bullet_x / MAP_CEllSIZE;
 	mapd_y = bullet_y / MAP_CEllSIZE;
 

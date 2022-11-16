@@ -70,5 +70,7 @@ public:
 	void Draw()const override;
 
 	bool GetDeleteFlag() { return delete_flag; }
+	int GetMapX() { return map_x; }
+	int GetMapY() { return map_y; }
 };
 

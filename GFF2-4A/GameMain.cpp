@@ -10,13 +10,13 @@ GAMEMAIN::GAMEMAIN()
 	lemoner_count = 0;
 	tomaton_count = 0;
 	item_count = 0;
+	item_num = 0;
 
 	player = new PLAYER;
 	stage = new STAGE;
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
-	item = nullptr;
 
 	//とまトン生成する数を数える
 	for (int i = 0,point = 0 ; i < MAP_HEIGHT; i++)
@@ -101,12 +101,15 @@ GAMEMAIN::GAMEMAIN()
 		}
 	}
 
+	//アイテムのカウント＆生成
 	item_count = gurepon_count + lemoner_count;
 	if (item_count > 0)
 	{
 		item = new ITEMBALL * [item_count];
+		for (int i = 0; i < item_count; i++) {
+			item[i] = nullptr;
+		}
 	}
-
 	element = new ELEMENT();
 }
 
@@ -149,6 +152,8 @@ AbstractScene* GAMEMAIN::Update()
 			lemoner[i]->Update();
 			if (lemoner[i]->GetDeleteFlag())
 			{
+				//アイテムを生成
+				item[item_num++] = new ITEMBALL(lemoner[i]->GetX(),lemoner[i]->GetY(),lemoner[i]->GetMapX(),lemoner[i]->GetMapY(),player,stage);
 				delete lemoner[i];
 				lemoner[i] = nullptr;
 			}
@@ -162,6 +167,10 @@ AbstractScene* GAMEMAIN::Update()
 	{
 		if (gurepon[i] != nullptr && gurepon[i]->GetDeleteFlg())
 		{
+			//アイテムを生成
+			item[item_num++] = new ITEMBALL(gurepon[i]->GetX(),gurepon[i]->GetY(),gurepon[i]->GetSpawnMapX(),gurepon[i]->GetSpawnMapY(),player,stage);
+
+			//グレポンを削除＆nullを代入
 			delete gurepon[i];
 			gurepon[i] = nullptr;
 		}
@@ -172,11 +181,14 @@ AbstractScene* GAMEMAIN::Update()
 		else
 		{}
 	}
-
-
-
-
-
+	//アイテムのアップデート
+	for (int i = 0; i < item_count; i++)
+	{
+		if (item[i] != nullptr)
+		{
+			item[i]->Update();
+		}
+	}
 
 	stage->Update(player);	//ステージクリア用
 	element->Update(player);
@@ -227,6 +239,15 @@ void GAMEMAIN::Draw() const
 		if (gurepon[i] != nullptr && gurepon[i]->GetDeleteFlg() == false)
 		{
 			gurepon[i]->Draw();
+		}
+	}
+
+	//アイテムの描画
+	for (int i = 0; i < item_count; i++)
+	{
+		if (item[i] != nullptr)
+		{
+			item[i]->Draw();
 		}
 	}
 }

@@ -26,6 +26,7 @@ private:
 
 	//アイテムの数用変数
 	int item_count;
+	int item_num;
 
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
