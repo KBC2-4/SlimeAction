@@ -208,6 +208,7 @@ AbstractScene* GAMEMAIN::Update()
 				//アイテムを生成
 				item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
 
+				//グレポンを削除＆nullを代入
 				delete gurepon[i];
 				gurepon[i] = nullptr;
 			}
@@ -217,6 +218,17 @@ AbstractScene* GAMEMAIN::Update()
 			}
 			else
 			{
+			}
+		}
+		//アイテムのアップデート
+		for (int i = 0; i < item_count; i++)
+		{
+			if (gurepon[i] == nullptr || lemoner[i] == nullptr)
+			{
+				if (item[i] != nullptr)
+				{
+					item[i]->Update();
+				}
 			}
 		}
 
