@@ -490,10 +490,11 @@ void PLAYER::HookMove(ELEMENT* element) {
 			/*jumppower = (16.0 - fabs(speed)) / 16.0;*/
 			
 			jumppower = fabs(static_cast<float>(nx) / LENGTH);
-			printfDx("%f\n", fabsf(static_cast<float>(nx) / LENGTH));
+			//printfDx("%f\n", fabsf(static_cast<float>(nx) / LENGTH));
 			if (fabsf(nx) > LENGTH / 2) {
 				jump_request = true;
 			}
+			player_state = PLAYER_MOVE_STATE::FALL;
 			//jump_request = true;
 			/*if (speed < 0)jump_move_x = 1;		//フック後のジャンプ方向の修正
 			if (speed >= 0)jump_move_x = -1;
