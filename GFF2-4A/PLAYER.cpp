@@ -483,13 +483,13 @@ void PLAYER::HookMove(ELEMENT* element) {
 				animation_state = PLAYER_ANIM_STATE::IDLE;
 			}
 			/*jumppower = (16.0 - fabs(speed)) / 16.0;*/
-			if (speed > 8) {
-				jumppower = fabs((16.0 - speed)/8);
+			
+			jumppower = fabs(static_cast<float>(nx) / LENGTH);
+			printfDx("%f\n", fabsf(static_cast<float>(nx) / LENGTH));
+			if (fabsf(nx) > LENGTH / 2) {
+				jump_request = true;
 			}
-			else {
-				jumppower = fabs(speed / 8);
-			}
-			jump_request = true;
+			//jump_request = true;
 			/*if (speed < 0)jump_move_x = 1;		//フック後のジャンプ方向の修正
 			if (speed >= 0)jump_move_x = -1;
 			jump_request = true;
@@ -722,6 +722,10 @@ void PLAYER::HitBlock() {
 			else if (move_x > 0) {
 				player_x -= rebound_x;
 			}
+		}
+		int player_bottom_index = static_cast<int>(player_bottom / MAP_CEllSIZE);
+		if (STAGE::HitMapDat(player_bottom_index, (int)(player_left / MAP_CEllSIZE))) {
+			player_y = player_bottom_index * MAP_CEllSIZE - MAP_CEllSIZE / 2;
 		}
 	}
 	else {
