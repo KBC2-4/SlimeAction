@@ -27,7 +27,7 @@ private:
 	bool delete_flg;
 	int face_image[2];
 	int fruit_image[3];
-	ENEMYBULLET* bullet[3];
+	ENEMY_BULLET* bullet[3];
 	//ThrowSlime* throw_slime;
 public:
 	/// <summary>

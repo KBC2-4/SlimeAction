@@ -15,7 +15,7 @@ private:
 	int spawn_map_x;
 	int spawn_map_y;
 
-	ENEMYBULLET* bullet;
+	ENEMY_BULLET* bullet;
 
 public:
     /// <summary>
