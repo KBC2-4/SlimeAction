@@ -90,16 +90,16 @@ void STAGE::Draw()const {
 }
 
 void STAGE::CameraWork(PLAYER* player) {
-	//スティック入力の取得
-	int input_lx = PAD_INPUT::GetPadThumbLX();
-	if (input_lx > 0) {
-		player_vector_x = 1.0f;
+	if (player->GetPlayerX() - player_x_old > 0) {
+		player_vector_x = 1;
 	}
-	else if (input_lx < 0) {
-		player_vector_x = -1.0f;
+	else if (player->GetPlayerX() - player_x_old < 0) {
+		player_vector_x = -1;
 	}
+	
 
-	if ((player_vector_x > 0 && player->GetPlayerX() >= 616 || player_vector_x < 0 && player->GetPlayerX() <= 664) && player_x_old != player->GetPlayerX()) {
+
+	if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
 		scroll_x -= 5 * player_vector_x;
 		if (scroll_x > 0 || scroll_x <= -(80 * MAP_WIDTH - 640)) {
 			scroll_x += 5 * player_vector_x;
