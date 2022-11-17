@@ -160,9 +160,12 @@ void PLAYER::Draw()const {
 			}
 		}
 		else {
-			DrawRotaGraph3F(player_x + STAGE::GetScrollX(), player_y, 40, 80,
-				1* player_scale, (hook_distance / (MAP_CEllSIZE / 2))* player_scale, (double)hook_angle,
-				now_image, TRUE, move_type);
+			//DrawRotaGraph3F(player_x + STAGE::GetScrollX(), player_y, 40, 80,
+			//	1/** player_scale*/, (hook_distance / (MAP_CEllSIZE / 2))* player_scale, (double)hook_angle,
+			//	images[3][1], TRUE, move_type);
+			DrawRotaGraph3F(player_x + STAGE::GetScrollX(), player_y, 160, 80,
+				(hook_distance / (MAP_CEllSIZE * 2.5)) * player_scale, 1* player_scale, (double)hook_angle,
+				images[3][1], TRUE, move_type);
 		}
 	}
 
@@ -398,7 +401,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 				//フック移動してない時
 				if (!is_hook_move) {
 					//角度の計算
-					hook_angle = atan2f(y, x) + 90.0f * (DX_PI_F / 180.0f);
+					hook_angle = atan2f(y, x) + 180.0f * (DX_PI_F / 180.0f);
 					//移動方向の計算
 					move_x = cosf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
 					move_y = sinf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
