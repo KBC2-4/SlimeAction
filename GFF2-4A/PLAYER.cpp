@@ -336,6 +336,9 @@ void PLAYER::HookMove(ELEMENT* element) {
 				float y = player_y;
 				//フックまでの移動経路に障害物がないか
 				while (!STAGE::HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
+					if (STAGE::GetMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
+						break;
+					}
 					x += move_x;
 					y += move_y;
 				}
@@ -371,6 +374,9 @@ void PLAYER::HookMove(ELEMENT* element) {
 					float y = player_y;
 					//フックまでの移動経路に障害物がないか
 					while (!STAGE::HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
+						if (STAGE::GetMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
+							break;
+						}
 						x += move_x;
 						y += move_y;
 					}
