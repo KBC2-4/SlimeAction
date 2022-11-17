@@ -160,9 +160,12 @@ void PLAYER::Draw()const {
 			}
 		}
 		else {
-			DrawRotaGraph3F(player_x + STAGE::GetScrollX(), player_y, 40, 80,
-				1* player_scale, (hook_distance / (MAP_CEllSIZE / 2))* player_scale, (double)hook_angle,
-				now_image, TRUE, move_type);
+			//DrawRotaGraph3F(player_x + STAGE::GetScrollX(), player_y, 40, 80,
+			//	1/** player_scale*/, (hook_distance / (MAP_CEllSIZE / 2))* player_scale, (double)hook_angle,
+			//	images[3][1], TRUE, move_type);
+			DrawRotaGraph3F(player_x + STAGE::GetScrollX(), player_y, 160, 80,
+				(hook_distance / (MAP_CEllSIZE * 2.5)) * player_scale, 1* player_scale, (double)hook_angle,
+				images[3][1], TRUE, move_type);
 		}
 	}
 
@@ -398,7 +401,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 				//フック移動してない時
 				if (!is_hook_move) {
 					//角度の計算
-					hook_angle = atan2f(y, x) + 90.0f * (DX_PI_F / 180.0f);
+					hook_angle = atan2f(y, x) + 180.0f * (DX_PI_F / 180.0f);
 					//移動方向の計算
 					move_x = cosf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
 					move_y = sinf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
@@ -483,8 +486,13 @@ void PLAYER::HookMove(ELEMENT* element) {
 				animation_state = PLAYER_ANIM_STATE::IDLE;
 			}
 			/*jumppower = (16.0 - fabs(speed)) / 16.0;*/
-			jumppower = fabs(speed / 8);
-			jump_request = true;
+			
+			jumppower = fabs(static_cast<float>(nx) / LENGTH);
+			printfDx("%f\n", fabsf(static_cast<float>(nx) / LENGTH));
+			if (fabsf(nx) > LENGTH / 2) {
+				jump_request = true;
+			}
+			//jump_request = true;
 			/*if (speed < 0)jump_move_x = 1;		//フック後のジャンプ方向の修正
 			if (speed >= 0)jump_move_x = -1;
 			jump_request = true;
@@ -508,7 +516,7 @@ void PLAYER::JumpMove(ELEMENT* element) {
 			|| jump_request) {
 			jump_request = false;
 			is_jump = true;			//ジャンプ中に移行
-			jump_y = player_y - (MAP_CEllSIZE/2) * jumppower; //ジャンプの高さのセット
+			jump_y = player_y - MAP_CEllSIZE * jumppower; //ジャンプの高さのセット
 			velocity = JUMP_VELOCITY;
 			//横移動してない時
 			if (player_state == PLAYER_MOVE_STATE::IDLE) {
@@ -568,7 +576,7 @@ void PLAYER::JumpMove(ELEMENT* element) {
 		//地面についた時
 			else {
 				if ((player_state == PLAYER_MOVE_STATE::FALL || player_state == PLAYER_MOVE_STATE::JUMP) && !is_hook_move) {
-					jumppower = 2;
+					jumppower = 1.0;
 					float new_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
 					if (fabsf(player_y - new_y) <= 10) {
 						player_y = new_y;
@@ -717,6 +725,10 @@ void PLAYER::HitBlock() {
 			else if (move_x > 0) {
 				player_x -= rebound_x;
 			}
+		}
+		int player_bottom_index = static_cast<int>(player_bottom / MAP_CEllSIZE);
+		if (STAGE::HitMapDat(player_bottom_index, (int)(player_left / MAP_CEllSIZE))) {
+			player_y = player_bottom_index * MAP_CEllSIZE - MAP_CEllSIZE / 2;
 		}
 	}
 	else {
