@@ -180,6 +180,8 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
+		|| block_type == 71	//ゴール
+		|| block_type == 72	//ゴール
 		|| block_type == 73	//ゴール
 		|| block_type == 90 //中間地点
 		|| block_type == 91 //レモナー
