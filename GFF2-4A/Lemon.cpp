@@ -194,11 +194,19 @@ bool LEMON::PressAnimation()
 {
 
 	bool ret = false;
-	if (animation_timer < 30) //30フレーム間アニメーションをする
+	if (animation_timer < 40) //40フレーム間アニメーションをする
 	{
 		if (animation_timer % (ANIMATION_TIME * 2) == 0)
 		{
-			now_image = image[(++animation_type % 6) + 3];
+			if (animation_type < 2)
+			{
+				now_image = image[(animation_type++ % 7) + 4];
+			}
+			else
+			{
+				now_image = image[0];
+			}
+			
 		}
 	}
 	else //アニメーションの終了
@@ -210,11 +218,11 @@ bool LEMON::PressAnimation()
 bool LEMON::ReturnAnimation()
 {
 	bool ret = false;
-	if (animation_timer < 30) //30フレーム間アニメーションをする
+	if (animation_timer < 50) //50フレーム間アニメーションをする
 	{
 		if (animation_timer % (ANIMATION_TIME * 2) == 0)
 		{
-			now_image = image[(++animation_type % 6) + 1];
+			now_image = image[(animation_type++ % 7)];
 		}
 	}
 	else //アニメーションの終了
