@@ -33,7 +33,6 @@ enum class PLAYER_MOVE_STATE {
 	HOOK,    //フックをつかむとき
 	DAMAGE,  //ダメージを受けた時
 	DEAD,     //死んだとき
-	LIFT	 //リフトに乗っているとき
 };
 
 //アニメーションステート
@@ -70,6 +69,7 @@ private:
 	int animation_mode;
 	int jump_mode;			//停止ジャンプ(1)か移動ジャンプ(2)か
 	bool jump_request;
+	float jumppower;
 	bool is_hook_move;
 	float hook_angle;
 	float hook_distance;
