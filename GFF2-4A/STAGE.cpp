@@ -254,7 +254,15 @@ bool STAGE::HalfwayPoint(PLAYER *player) {
 	if ((player_map_x >= halfwaypointbox[0] - MAP_CEllSIZE / 2) && (player_map_x <= halfwaypointbox[0] + MAP_CEllSIZE / 2) && (player_map_y >= halfwaypointbox[1] - MAP_CEllSIZE) && (player_map_y <= halfwaypointbox[1] + MAP_CEllSIZE)) {
 		//デバッグ
 		//printfDx("aaa");
-		if (halfwaypoint == false)PlaySoundMem(halfwaypoint_se, DX_PLAYTYPE_BACK, TRUE);
+		if (halfwaypoint == false) { PlaySoundMem(halfwaypoint_se, DX_PLAYTYPE_BACK, TRUE); 
+		static int anitimer = 0;
+		if (++anitimer < 180) {
+			DrawOvalAA(halfwaypointbox[0] + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox[1] + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+			DrawOvalAA(halfwaypointbox[0] + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox[1] + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+			DrawOvalAA(halfwaypointbox[0] + scroll_x + anitimer % 3, halfwaypointbox[1] + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+		}
+		else if (180 <= anitimer)anitimer = 0;
+		}
 		halfwaypoint = true;
 	}
 	return halfwaypoint;
