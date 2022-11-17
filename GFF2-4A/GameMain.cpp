@@ -180,7 +180,7 @@ AbstractScene* GAMEMAIN::Update()
 
 	if (pause->IsPause() == false) {
 		player->Update(element, stage);
-		stage->Update(player,element);	//ステージクリア用
+		stage->Update(player, element);	//ステージクリア用
 		element->Update(player);
 		for (int i = 0; i < lemoner_count; i++)
 		{
@@ -188,10 +188,9 @@ AbstractScene* GAMEMAIN::Update()
 			{
 				lemoner[i]->Update();
 				if (lemoner[i]->GetDeleteFlag())
-				{			
+				{
 					//アイテムを生成
-					item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
-
+					item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX());
 					delete lemoner[i];
 					lemoner[i] = nullptr;
 				}
@@ -207,8 +206,6 @@ AbstractScene* GAMEMAIN::Update()
 			{
 				//アイテムを生成
 				item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
-
-				//グレポンを削除＆nullを代入
 				delete gurepon[i];
 				gurepon[i] = nullptr;
 			}
@@ -220,25 +217,25 @@ AbstractScene* GAMEMAIN::Update()
 			{
 			}
 		}
-		//アイテムのアップデート
-		for (int i = 0; i < item_count; i++)
+	//アイテムのアップデート
+	for (int i = 0; i < item_count; i++)
+	{
+		if (item[i] != nullptr && !item[i]->GetDeleteFlag())
 		{
-			if (gurepon[i] == nullptr || lemoner[i] == nullptr)
-			{
-				if (item[i] != nullptr)
-				{
-					item[i]->Update();
-				}
-			}
+			item[i]->Update();
+		}
+		else if (item[i] != nullptr && item[i]->GetDeleteFlag())
+		{
+			delete item[i];
+			item[i] = nullptr;
 		}
 
 
 
 
 
-
-	stage->Update(player,element);	//ステージクリア用
-	element->Update(player);
+		stage->Update(player, element);	//ステージクリア用
+		element->Update(player);
 
 	//ゲームオーバー
 	if (player->IsDeath()) {
@@ -255,14 +252,6 @@ AbstractScene* GAMEMAIN::Update()
 		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(); }
 		else if (pause->GetSelectMenu() == 3) { pause->SetPause(); }
 	}
-
-	//デバッグ
-	if (CheckHitKey(KEY_INPUT_F)) { 
-		int scrollx = -(7800 - 500);
-		stage->SetScrollX(scrollx);	//スポーン地点をセット
-		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
-	}
-
 	return this;
 }
 
@@ -270,8 +259,8 @@ void GAMEMAIN::Draw() const
 {
 
 	//ステージ背景
-	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, int(STAGE::GetScrollY()), background_image[0], FALSE);
-	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, int(STAGE::GetScrollY()), background_image[0], FALSE);
+	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
+	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
 
 
 	//ステージの描画
@@ -303,14 +292,23 @@ void GAMEMAIN::Draw() const
 			gurepon[i]->Draw();
 		}
 	}
+//アイテムの描画
+	for (int i = 0; i < item_count; i++)
+	{
+		if (item[i] != nullptr)
+		{
+			item[i]->Draw();
+		}
+	}
 
 	if (pause->IsPause() == true) { //ポーズ画面へ
-		int pause_graph = MakeGraph(1280, 720);	
-		GetDrawScreenGraph(0, 0, 1280, 720, pause_graph);
+		int pause_graph = MakeGraph(1280, 720);
+	GetDrawScreenGraph(0, 0, 1280, 720, pause_graph);
+
 		pause->Draw(pause_graph);
 	}
 
 	//デバッグ
 	//DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
-
+	}
 }
