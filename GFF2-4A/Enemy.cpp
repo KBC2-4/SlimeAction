@@ -7,13 +7,17 @@ ENEMY::ENEMY()
 {
 	player = nullptr;
 	stage = nullptr;
+	item = nullptr;
+
 	rad = 0.0;
 	x = 0;
 	y = 0;
 	map_x = 0;
 	map_y = 0;
 	image = nullptr;
-	now_image = 0;
+	animation_timer = 0;
+	animation_type = 0;
+
 	state = ENEMY_STATE::IDOL;
 }
 

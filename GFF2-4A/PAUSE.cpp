@@ -14,6 +14,7 @@ PAUSE::PAUSE() {
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
 	selectmenu = 0;
+	nextmenu = 0;
 
 	pause_flg = false;
 }

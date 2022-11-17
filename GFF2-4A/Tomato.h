@@ -4,10 +4,9 @@ class TOMATO :
 	public ENEMY
 {
 private:
-	int animation_timer;	//アニメーションの切り替え時間用変数
-	int animation_type;		//アニメーションの画像タイプ
 	int spawn_map_x;		//スポーン地点(x)
 	int spawn_map_y;		//スポーン地点(y)
+	int now_image;			//現在の画像
 	double image_rate;			//画像サイズ
 	const int ANIMATION_TIME = 5;	//アニメーションの切り替え時間
 	const int FALL_SPEED = 10;		//落下速度
