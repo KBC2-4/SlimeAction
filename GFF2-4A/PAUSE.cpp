@@ -36,7 +36,7 @@ int PAUSE::Update(void) {
 		StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
 		if (selectmenu == 0) { pause_flg = !pause_flg; }
 		else if (selectmenu == 1) { pause_flg = !pause_flg;}
-		return selectmenu;
+		nextmenu = selectmenu;
 	}
 	return 0;
 }
