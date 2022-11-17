@@ -232,7 +232,8 @@ void ELEMENT::Button(PLAYER* player) {
 				if ((ball_flg == true) || ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 ) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2))) {
 					//デバッグ
 					//printfDx("2番に入ってるよ！");
-					if(ball_flg == false)player->SetPlayerY(button[i].y - 6.5f);
+					// 当たり判定バグる為一時停止
+					//if(ball_flg == false)player->SetPlayerY(button[i].y - 6.0f);
 					if (button[i].flg == false) {
 						if (CheckSoundMem(switch_se) == FALSE)PlaySoundMem(switch_se, DX_PLAYTYPE_BACK, TRUE);
 					}
@@ -344,9 +345,12 @@ void ELEMENT::Manhole(PLAYER* player) {
 			manhole[i].flg = false;
 		}
 		if (manhole[i].type == 1) {
+			if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
+			
+
 			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE + 25) && (player_map_x <= manhole[i].x + MAP_CEllSIZE - 25) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
-				player->SetPlayerY(player->GetPlayerY() - 10.5f);
-				manhole[i].flg = true;
+				//player->SetPlayerY(player->GetPlayerY() - 2.0f);
+				//manhole[i].flg = true;
 
 			}
 		}
@@ -362,13 +366,19 @@ void ELEMENT::Manhole(PLAYER* player) {
 		//出口
 		if (manhole[i].type == 3) {
 			if((player_map_x >= manhole[i].x - MAP_CEllSIZE /2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE /2)/* && (player_map_y <= manhole[i].y)*/){
-			if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true;}
+				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
 			if (manhole[i].flg == true) {
-				player->SetPlayerY(player->GetPlayerY() - 10.0f);
-				printfDx("%f",player->GetPlayerY());
+
 				if (player->GetPlayerY() <= manhole[i].y) {
 					manhole[i].flg = false;
 				}
+
+				//if (manhole[i].animtimer == 180) {
+					//player->SetPlayerX(manhole[i].x);
+					player->SetPlayerY(manhole[i].y);
+				//}
+				//player->SetPlayerY(player->GetPlayerY() - 10.0f);
+				//printfDx("%f",player->GetPlayerY());
 			}
 			//デバッグ
 			//printfDx("入っています。");
@@ -391,7 +401,7 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 			if ((player_map_x >= acidrain_puddles[i].x - MAP_CEllSIZE / 2) && (player_map_x <= acidrain_puddles[i].x + MAP_CEllSIZE / 2) && (player_map_y >= acidrain_puddles[i].y - MAP_CEllSIZE) && (player_map_y <= acidrain_puddles[i].y + MAP_CEllSIZE)) {
 				//デバッグ
 				//printfDx("入ってるよ！");
-				if (CheckSoundMem(walk_puddle_se) == FALSE)PlaySoundMem(walk_puddle_se, DX_PLAYTYPE_BACK, TRUE);
+				if (CheckSoundMem(walk_puddle_se) == FALSE && acidrain_puddles[i].animtimer % 90 == 0)PlaySoundMem(walk_puddle_se, DX_PLAYTYPE_BACK, TRUE);
 				//player->SetPlayerY(acidrain_puddles[i].y + 1.5f);
 				if (acidrain_puddles[i].flg == true) {
 					player->SetLife(player->GetLife() - 1);
