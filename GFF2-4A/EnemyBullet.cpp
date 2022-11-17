@@ -81,7 +81,7 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 
 void ENEMY_BULLET::Draw() const
 {
-	DrawRotaGraph(static_cast<int>(GetDrawX()), bullet_y, 2, rad + (-90 * (PI / 180)), bullet_images[image_index], TRUE);
+	DrawRotaGraph(static_cast<int>(GetDrawX()), bullet_y, 2, rad + (-90 * (PI / 180)),image, TRUE);
 }
 
 void ENEMY_BULLET::Update()
