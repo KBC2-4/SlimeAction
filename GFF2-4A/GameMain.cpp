@@ -232,8 +232,8 @@ void GAMEMAIN::Draw() const
 {
 
 	//ステージ背景
-	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
-	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
+	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, int(STAGE::GetScrollY()), background_image[0], FALSE);
+	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, int(STAGE::GetScrollY()), background_image[0], FALSE);
 
 
 	//ステージの描画
