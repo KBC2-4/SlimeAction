@@ -57,7 +57,7 @@ int ThrowSlime::HitBlock(STAGE* stage) {
 		if (enemy == 91 || enemy == 92 || enemy == 13) { 
 			return false; 
 		}
-		printfDx("%d\n", stage->GetMapDat(static_cast<int>(floor((throw_y[0] / MAP_CEllSIZE))), static_cast<int>(throw_x[0] / MAP_CEllSIZE)));
+		//printfDx("%d\n", stage->GetMapDat(static_cast<int>(floor((throw_y[0] / MAP_CEllSIZE))), static_cast<int>(throw_x[0] / MAP_CEllSIZE)));
 		throw_bottom = (static_cast<int>(throw_y[0])/* - MAP_CEllSIZE*/) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
 		throw_y[0] -= throw_bottom + 10;
 		return true;

@@ -107,6 +107,8 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	}
 	now_image = images[image_type][animation_type[image_type]];
 
+
+
 	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
 		if (alpha_time > 0) {
 			if (alpha_time % 20 < 10) {
@@ -124,19 +126,6 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	}
 
 	player_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
-	if (player_state == PLAYER_MOVE_STATE::HOOK) {
-		if (hook_x + nx < player_x) {
-			Scroll(-1.0f);
-		}
-		else {
-			Scroll(1.0f);
-		}
-		clsDx();
-		printfDx("%d\n", hook_x + nx < player_x);
-	}
-	else {
-		Scroll(move_x);
-	}
 }
 
 /// <summary>

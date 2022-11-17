@@ -1,6 +1,7 @@
 #pragma once
 #include"PLAYER.h"
 #include"STAGE.h"
+#include"ITEMBALL.h"
 
 
 #define BALL_W 10
@@ -27,6 +28,7 @@ protected:
 	ENEMY_STATE state;	//エネミーの状態
 	STAGE* stage;		//ステージ
 	PLAYER* player;		//ステージ
+	ITEMBALL* item;     //ドロップするアイテム
 
 	const int IMAGE_SIZE = 80;
 public:

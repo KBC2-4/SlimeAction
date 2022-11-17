@@ -7,9 +7,6 @@ LEMON::LEMON()
 	image = nullptr;
 	shootcount = 0;
 	hitflg = false;
-	rad = 0.0;
-	for (int i = 0; i < 2; i++)
-		rads[i] = 0.0;
 	delete_flag = false;
 	x = 0;
 	spawn_map_x = 0;
@@ -34,24 +31,24 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	delete_flag = false;
 	
 	//画像の取得
-	image = new int[4];
-	if (LoadDivGraph("Resource/Images/Enemy/lemon.png", 4, 4, 1, 80, 80, image) == -1)
+	image = new int[15];
+	if (LoadDivGraph("Resource/Images/Enemy/lemon.png", 9, 9, 1, 80, 80, image) == -1)
 	{
 		throw "Resource/Images/Enemy/lemon.png";
 	}
+	if (LoadDivGraph("Resource/Images/Enemy/lemon_break.png", 6, 6, 1, 80, 80, image + 9) == -1)
+	{
+		throw "Resource/Images/Enemy/lemon_break.png";
+	}
 	shootcount = 0;
 
-	for (int i = 0; i < 2; i++)
-	{
-		rads[i] = 0.0;
-	}
 	bullet = nullptr;
 	this->player = player;
 	this->stage = stage;
 
 	animation_timer = 0;
 	animation_type = 0;
-	now_image = image[1];
+	now_image = image[3];
 	state = ENEMY_STATE::IDOL;
 
 }
@@ -90,14 +87,19 @@ void LEMON::Update()
 		if (ReturnAnimation())
 		{
 			animation_timer = 0;
+			animation_type = 0;
 			state = ENEMY_STATE::MOVE;
 		}
 		break;
 	case ENEMY_STATE::PRESS:
 		ChangeAngle();
-		bullet = new ENEMYBULLET(player, stage, x, y, 0, stage->GetScrollX(),rad,2);
-		animation_timer = 0;
-		state = ENEMY_STATE::RETURN;
+		if (PressAnimation())
+		{
+			bullet = new ENEMYBULLET(player, stage, x, y, 0, stage->GetScrollX(), rad, 2);
+			animation_timer = 0;
+			animation_type = 0;
+			state = ENEMY_STATE::RETURN;
+		}
 		break;
 	case ENEMY_STATE::FALL:
 		Move();
@@ -161,13 +163,13 @@ void LEMON::Hit()
 		for (int i = 0; i < player->GetThrowCnt(); i++)
 		{
 			throw_slime = player->GetThrowSlime(i);
-				//スライムのボールの当たり判定
-				bx1 = throw_slime.GetThrowX();
-				by1 = throw_slime.GetThrowY();
-				bx2 = throw_slime.GetThrowX() + BALL_W;
-				by2 = throw_slime.GetThrowY() - BALL_H;
-				//グレープフルーツの当たり判定
-				gx1 = x;
+			//スライムのボールの当たり判定
+			bx1 = throw_slime.GetThrowX();
+			by1 = throw_slime.GetThrowY();
+			bx2 = throw_slime.GetThrowX() + BALL_W;
+			by2 = throw_slime.GetThrowY() - BALL_H;
+			//グレープフルーツの当たり判定
+			gx1 = x;
 			gy1 = y;
 			gx2 = gx1 + IMAGE_SIZE;
 			gy2 = gy1 + IMAGE_SIZE;
@@ -178,6 +180,7 @@ void LEMON::Hit()
 			}
 		}
 	}
+
 	//地面やブロックとの当たり判定
 	if (state == ENEMY_STATE::FALL)
 	{
@@ -185,15 +188,38 @@ void LEMON::Hit()
 		{
 			state = ENEMY_STATE::DETH;
 			animation_timer = 0;
+			animation_type = 0;
+
 		}
 	}
 }
+bool LEMON::PressAnimation()
+{
 
+	bool ret = false;
+	if (animation_timer < 30) //30フレーム間アニメーションをする
+	{
+		if (animation_timer % (ANIMATION_TIME * 2) == 0)
+		{
+			now_image = image[(++animation_type % 6) + 3];
+		}
+	}
+	else //アニメーションの終了
+	{
+		now_image = image[1];
+		ret = true;
+	}
+	return ret;
+}
 bool LEMON::ReturnAnimation()
 {
 	bool ret = false;
-	if (animation_timer < 120) //120フレーム間アニメーションをする
+	if (animation_timer < 30) //30フレーム間アニメーションをする
 	{
+		if (animation_timer % (ANIMATION_TIME * 2) == 0)
+		{
+			now_image = image[(++animation_type % 6) + 1];
+		}
 	}
 	else //アニメーションの終了
 	{
@@ -206,15 +232,19 @@ void LEMON::FallAnimation()
 {
 	if (animation_timer % ANIMATION_TIME == 0)
 	{
-		now_image = image[(++animation_type % 2) + 2];
+		now_image = image[(++animation_type % 2) + 7];
 	}
 }
 bool LEMON::DethAnimation()
 {
 	bool ret = false;
-	if (animation_timer < 30) //120フレーム間アニメーションをする
+	if (animation_timer < 30) //30フレーム間アニメーションをする
 	{
-
+		//アニメーション
+		if (animation_timer % ANIMATION_TIME == 0)
+		{
+			now_image = image[(++animation_type % 6) + 9];
+		}
 	}
 	else //アニメーションの終了
 	{
@@ -225,8 +255,6 @@ bool LEMON::DethAnimation()
 
 void LEMON::Draw() const
 {
-
-	DrawRotaGraph(x + stage->GetScrollX(), y, 1, 0, image[0], TRUE);
 	if (bullet != nullptr)		//弾が存在するとき弾を描画する
 	{
 		bullet->Draw();
