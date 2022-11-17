@@ -17,7 +17,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
 	time = GetNowCount();
-	if(restart == false)halfway_time = 0;
+	if (restart == false)halfway_time = 0;
 	lemoner_count = 0;
 	tomaton_count = 0;
 	item_count = 0;
@@ -31,7 +31,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	tomaton = nullptr;
 
 	//とまトン生成する数を数える
-	for (int i = 0,point = 0 ; i < MAP_HEIGHT; i++)
+	for (int i = 0, point = 0; i < MAP_HEIGHT; i++)
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
 		{
@@ -49,10 +49,10 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	//とまトンの生成
 	if (tomaton_count > 0)
 	{
-		tomaton = new TOMATO*[tomaton_count];
+		tomaton = new TOMATO * [tomaton_count];
 		for (int i = 0; i < tomaton_count; i++)
 		{
-			tomaton[i] = new TOMATO(player,stage, spawn_point[i][0],spawn_point[i][1]);
+			tomaton[i] = new TOMATO(player, stage, spawn_point[i][0], spawn_point[i][1]);
 		}
 	}
 
@@ -127,7 +127,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	this->restart = restert;
 
 	if (restart == true) {
-		int scrollx = -(stage->GetHalfwayPoint(0) - 500);
+		int scrollx = -(stage->GetHalfwayPoint().x - 500);
 		stage->SetScrollX(scrollx);	//スポーン地点をセット
 		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
 	}
@@ -156,19 +156,19 @@ GAMEMAIN::~GAMEMAIN()
 	delete[] tomaton;
 	//グレポンの削除
 	for (int i = 0; i < gurepon_count; i++) {
-			delete gurepon[i];
-		
+		delete gurepon[i];
+
 	}
 	delete[] gurepon;
 
-	for (int i = 0; i < item_count; i++) 
+	for (int i = 0; i < item_count; i++)
 	{
-		if (item[i] != nullptr) 
+		if (item[i] != nullptr)
 		{
 			delete item[i];
 		}
 	}
-	
+
 	delete[] item;
 	delete element;
 }
@@ -180,7 +180,7 @@ AbstractScene* GAMEMAIN::Update()
 
 	if (pause->IsPause() == false) {
 		player->Update(element, stage);
-		stage->Update(player,element);	//ステージクリア用
+		stage->Update(player, element);	//ステージクリア用
 		element->Update(player);
 		for (int i = 0; i < lemoner_count; i++)
 		{
@@ -188,10 +188,9 @@ AbstractScene* GAMEMAIN::Update()
 			{
 				lemoner[i]->Update();
 				if (lemoner[i]->GetDeleteFlag())
-				{			
+				{
 					//アイテムを生成
-					item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
-
+					item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX());
 					delete lemoner[i];
 					lemoner[i] = nullptr;
 				}
@@ -207,8 +206,6 @@ AbstractScene* GAMEMAIN::Update()
 			{
 				//アイテムを生成
 				item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
-
-				//グレポンを削除＆nullを代入
 				delete gurepon[i];
 				gurepon[i] = nullptr;
 			}
@@ -223,31 +220,34 @@ AbstractScene* GAMEMAIN::Update()
 		//アイテムのアップデート
 		for (int i = 0; i < item_count; i++)
 		{
-			if (gurepon[i] == nullptr || lemoner[i] == nullptr)
+			if (item[i] != nullptr)
 			{
-				if (item[i] != nullptr)
+				if (item[i]->GetDeleteFlag()) 
 				{
-					item[i]->Update();
+					delete item[i];
+					item[i] = nullptr;
+				}
+				else 
+				{
+					if ((item[i]->GetItemX() + stage->GetScrollX()) > 0 && (item[i]->GetItemX() + stage->GetScrollX()) < 1280)
+					{
+						item[i]->Update();
+					}
 				}
 			}
+
+			stage->Update(player, element);	//ステージクリア用
+			element->Update(player);
+
+			//ゲームオーバー
+			if (player->IsDeath()) {
+				if (restart == false && stage->GetHalfwayPointFlg() == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
+				return new RESULT(false);
+			}
+
+			//ステージクリア
+			if (stage->GetClearFlg()) { return new RESULT(true, time + halfway_time); };
 		}
-
-
-
-
-
-
-	stage->Update(player,element);	//ステージクリア用
-	element->Update(player);
-
-	//ゲームオーバー
-	if (player->IsDeath()) {
-		if (restart == false && stage->HalfwayPoint(player) == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
-		return new RESULT(false);
-	}
-
-		//ステージクリア
-		if (stage->GetClearFlg()) { return new RESULT(true, time + halfway_time); };
 	}
 	else {	//ポーズ画面のセレクター
 		pause->Update();
@@ -255,29 +255,20 @@ AbstractScene* GAMEMAIN::Update()
 		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(); }
 		else if (pause->GetSelectMenu() == 3) { pause->SetPause(); }
 	}
-
-	//デバッグ
-	if (CheckHitKey(KEY_INPUT_F)) { 
-		int scrollx = -(7800 - 500);
-		stage->SetScrollX(scrollx);	//スポーン地点をセット
-		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
-	}
-
 	return this;
 }
-
 void GAMEMAIN::Draw() const
 {
 
 	//ステージ背景
-	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, int(STAGE::GetScrollY()), background_image[0], FALSE);
-	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, int(STAGE::GetScrollY()), background_image[0], FALSE);
+	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
+	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
 
 
 	//ステージの描画
 	element->Draw();
 	stage->Draw();
-	
+
 	//プレイヤーの描画
 	player->Draw();
 
@@ -303,14 +294,25 @@ void GAMEMAIN::Draw() const
 			gurepon[i]->Draw();
 		}
 	}
+	//アイテムの描画
+	for (int i = 0; i < item_count; i++)
+	{
+		if (item[i] != nullptr)
+		{
+			if ((item[i]->GetItemX() + stage->GetScrollX()) > 0 && (item[i]->GetItemX() + stage->GetScrollX()) < 1280)
+			{
+				item[i]->Draw();
+			}
+		}
+	}
 
 	if (pause->IsPause() == true) { //ポーズ画面へ
-		int pause_graph = MakeGraph(1280, 720);	
+		int pause_graph = MakeGraph(1280, 720);
 		GetDrawScreenGraph(0, 0, 1280, 720, pause_graph);
+
 		pause->Draw(pause_graph);
 	}
 
 	//デバッグ
 	//DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
-
 }

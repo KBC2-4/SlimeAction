@@ -81,7 +81,7 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 
 void ENEMY_BULLET::Draw() const
 {
-	DrawRotaGraph(static_cast<int>(GetDrawX()), bullet_y, 2, rad + (-90 * (PI / 180)), bullet_images[image_index], TRUE);
+	DrawRotaGraph(static_cast<int>(GetDrawX()), bullet_y, 2, rad + (-90 * (PI / 180)), image, TRUE);
 }
 
 void ENEMY_BULLET::Update()
@@ -112,6 +112,11 @@ void ENEMY_BULLET::Update()
 		}
 	}
 
+	if (GetDrawX() < 0 || GetDrawX() > 1280 || (bullet_y + stage->GetScrollY()) < 0 || (bullet_y + stage->GetScrollY()) > 720)
+	{
+		delete_flg = true;
+	}
+
 }
 
 void ENEMY_BULLET::Move()
@@ -121,10 +126,6 @@ void ENEMY_BULLET::Move()
 	bullet_x += bullet_sx;
 	bullet_y += bullet_sy;
 
-	if (GetDrawX() < 0 || GetDrawX() > 1280)
-	{
-		delete_flg = true;
-	}
 
 	mapd_x = bullet_x / MAP_CEllSIZE;
 	mapd_y = (bullet_y + IMAGE_Y_SIZE)  / MAP_CEllSIZE;

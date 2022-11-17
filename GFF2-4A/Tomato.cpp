@@ -52,7 +52,7 @@ void TOMATO::Update()
 	{
 	case ENEMY_STATE::IDOL:
 		//プレイヤーが一定範囲以内に入っている間落ちる
-		if ((IdolAnimation()) && (fabsf(player->GetPlayerX() - (x + stage->GetScrollX())) < 240))
+		if ((IdolAnimation()) && (fabsf(player->GetPlayerX() - (x + stage->GetScrollX())) < 240) && (y + stage->GetScrollY() > 0))
 		{
 			animation_timer = 0;
 			state = ENEMY_STATE::FALL;
@@ -174,7 +174,7 @@ void TOMATO::Draw()const
 	//画面外に出たら描画しない
 	if ((x + stage->GetScrollX() > -IMAGE_SIZE) && (x + stage->GetScrollX() < 1280 + IMAGE_SIZE))
 	{
-		DrawRotaGraph(x + stage->GetScrollX(), y+stage->GetScrollY(), image_rate, 0, now_image, TRUE);
+		DrawRotaGraph(x + stage->GetScrollX(), y + stage->GetScrollY(), image_rate, 0, now_image, TRUE);
 	}
 
 }

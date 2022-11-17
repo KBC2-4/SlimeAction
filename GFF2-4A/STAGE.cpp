@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 
+
 #include "PLAYER.h"
 #include "RESULT.h"
 
@@ -35,16 +36,16 @@ STAGE::STAGE() {
 	//InitStage();
 	LoadMapData();
 	clearflg = false;
-	*clearbox = 0;
-	*halfwaypointbox = 0;
+	clearbox = {0,0};
+	halfwaypointbox = {0,0};
 	halfwaypoint = false;
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			//クリア座標を代入
-			if (map_data[i][j] == 73) { clearbox[0] = j * MAP_CEllSIZE; clearbox[1] = i * MAP_CEllSIZE; }
+			if (map_data[i][j] == 73) { clearbox.x  = j * MAP_CEllSIZE; clearbox.y = i * MAP_CEllSIZE; }
 			//中間地点座標を代入
-			if (map_data[i][j] == 90) { halfwaypointbox[0] = j * MAP_CEllSIZE; halfwaypointbox[1] = i * MAP_CEllSIZE; }
+			if (map_data[i][j] == 90) { halfwaypointbox.x = j * MAP_CEllSIZE; halfwaypointbox.y = i * MAP_CEllSIZE; }
 		}
 	}
 }
@@ -86,8 +87,8 @@ void STAGE::Draw()const {
 	}
 
 	//中間地点　描画
-	if(halfwaypoint == false){ DrawGraph(halfwaypointbox[0] + scroll_x, halfwaypointbox[1] + scroll_y, block_image1[88], TRUE); }
-	else{ DrawGraph(halfwaypointbox[0] + scroll_x, halfwaypointbox[1] + scroll_y, block_image1[89], TRUE); }
+	if(halfwaypoint == false){ DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[88], TRUE); }
+	else{ DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
 	
 }
 
@@ -246,10 +247,10 @@ void STAGE::LoadMapData(void) {
 void STAGE::StageClear(PLAYER *player) {
 	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - STAGE::GetScrollX()));
 	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()));
-	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox[0], clearbox[1]);
+	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox.x , clearbox.y);
 
 	//旗に触れるとゲームクリア
-	if ((player_map_x >= clearbox[0] - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox[0] + MAP_CEllSIZE + 30) && (player_map_y >= clearbox[1] - MAP_CEllSIZE / 2) && (player_map_y <= clearbox[1] + MAP_CEllSIZE / 2)) {
+	if ((player_map_x >= clearbox.x  - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox.x  + MAP_CEllSIZE + 30) && (player_map_y >= clearbox.y - MAP_CEllSIZE / 2) && (player_map_y <= clearbox.y + MAP_CEllSIZE / 2)) {
 		clearflg = true;
 	}
 
@@ -264,22 +265,21 @@ void STAGE::StageClear(PLAYER *player) {
 	
 }
 
-bool STAGE::HalfwayPoint(PLAYER *player) {
+void STAGE::HalfwayPoint(PLAYER *player) {
 	int player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
 	int player_map_y = floorf(player->GetPlayerY());
-	if ((player_map_x >= halfwaypointbox[0] - MAP_CEllSIZE / 2) && (player_map_x <= halfwaypointbox[0] + MAP_CEllSIZE / 2) && (player_map_y >= halfwaypointbox[1] - MAP_CEllSIZE) && (player_map_y <= halfwaypointbox[1] + MAP_CEllSIZE)) {
+	if ((player_map_x >= halfwaypointbox.x - MAP_CEllSIZE / 2) && (player_map_x <= halfwaypointbox.x + MAP_CEllSIZE / 2) && (player_map_y >= halfwaypointbox.y - MAP_CEllSIZE) && (player_map_y <= halfwaypointbox.y + MAP_CEllSIZE)) {
 		//デバッグ
 		//printfDx("aaa");
 		if (halfwaypoint == false) { PlaySoundMem(halfwaypoint_se, DX_PLAYTYPE_BACK, TRUE); 
 		static int anitimer = 0;
 		if (++anitimer < 180) {
-			DrawOvalAA(halfwaypointbox[0] + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox[1] + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
-			DrawOvalAA(halfwaypointbox[0] + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox[1] + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
-			DrawOvalAA(halfwaypointbox[0] + scroll_x + anitimer % 3, halfwaypointbox[1] + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+			DrawOvalAA(halfwaypointbox.x + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+			DrawOvalAA(halfwaypointbox.x + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+			DrawOvalAA(halfwaypointbox.x + scroll_x + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
 		}
 		else if (180 <= anitimer)anitimer = 0;
 		}
 		halfwaypoint = true;
 	}
-	return halfwaypoint;
 }

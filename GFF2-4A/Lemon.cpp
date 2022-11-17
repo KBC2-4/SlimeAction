@@ -131,7 +131,7 @@ void LEMON::Update()
 	
 	Hit();
 
-	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE))		//画面外に出るとアイドル状態にする
+	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY() < 0))		//画面外に出るとアイドル状態にする
 	{
 		state = ENEMY_STATE::IDOL;
 	}
@@ -263,7 +263,7 @@ void LEMON::Draw() const
 	{
 		bullet->Draw();
 	}
-	DrawRotaGraph(x + stage->GetScrollX(), y+stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), now_image, TRUE);
+	DrawRotaGraph(x + stage->GetScrollX(), y + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), now_image, TRUE);
 
 	
 }

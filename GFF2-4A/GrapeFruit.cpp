@@ -155,7 +155,7 @@ void GRAPEFRUIT::Update()
 
 	Hit();
 
-	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE))		//画面外に出るとアイドル状態にする
+	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY()) < 0 || (y + stage->GetScrollY()) > 720)		//画面外に出るとアイドル状態にする
 	{
 		state = ENEMY_STATE::IDOL;
 	}
@@ -332,8 +332,8 @@ void GRAPEFRUIT::Draw() const
 {
 	for (int i = 0; i < 2; i++)
 	{
-		DrawRotaGraph(x + stage->GetScrollX(), y + 10 * i, 1, rad + (-90 * (PI / 180)), fruit_image[i], TRUE);
-		DrawRotaGraph(x + stage->GetScrollX(), y + 10 * i, 1, rad + (-90 * (PI / 180)), face_image[i], TRUE);
+		DrawRotaGraph(x + stage->GetScrollX(), (y + 10 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), fruit_image[i], TRUE);
+		DrawRotaGraph(x + stage->GetScrollX(), (y + 10 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), face_image[i], TRUE);
 	}
 	
 
