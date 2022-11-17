@@ -70,7 +70,7 @@ AbstractScene* RESULT::Update() {
 
 	if (--timer <= 60) { return new GAMEMAIN(); }
 
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); return new GAMEMAIN(); }
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B && PAD_INPUT::GetPadState() == PAD_STATE::ON) { PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); return new GAMEMAIN(); }
 
 	return this;
 }

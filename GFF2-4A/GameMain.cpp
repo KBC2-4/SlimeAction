@@ -16,7 +16,6 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	}
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
-	selectmenu = 0;
 	time = GetNowCount();
 	if(restart == false)halfway_time = 0;
 	lemoner_count = 0;
@@ -25,6 +24,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 
 	player = new PLAYER;
 	stage = new STAGE;
+	pause = new PAUSE;
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
@@ -128,8 +128,6 @@ GAMEMAIN::GAMEMAIN(bool restert)
 		stage->SetScrollX(scrollx);	//スポーン地点をセット
 		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
 	}
-
-	pause_flg = false;
 }
 
 GAMEMAIN::~GAMEMAIN()
@@ -166,9 +164,9 @@ GAMEMAIN::~GAMEMAIN()
 AbstractScene* GAMEMAIN::Update()
 {
 	//STARTボタンでポーズ
-	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_START) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) { pause_flg = !pause_flg; }
+	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_START) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) { pause->SetPause(); }
 
-	if (pause_flg == false) {
+	if (pause->IsPause() == false) {
 		player->Update(element, stage);
 		stage->Update(player,element);	//ステージクリア用
 		element->Update(player);
@@ -222,15 +220,10 @@ AbstractScene* GAMEMAIN::Update()
 		if (stage->GetClearFlg()) { return new RESULT(true, time + halfway_time); };
 	}
 	else {	//ポーズ画面のセレクター
-		static int input_margin;
-		input_margin++;
-		if (PAD_INPUT::GetPadThumbLY() > 1000 && input_margin > 20) { selectmenu = (selectmenu + 2) % 3;  input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
-		if (PAD_INPUT::GetPadThumbLY() < -1000 && input_margin > 20) { selectmenu = (selectmenu + 1) % 3; input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
-
-		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
-			if (selectmenu == 0) { pause_flg = !pause_flg; }
-			else if (selectmenu == 1) { pause_flg = !pause_flg; return new Title(); }
-		}
+		pause->Update();
+		if (pause->GetSelectMenu() == 2) { return new Title(); }
+		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(); }
+		else if (pause->GetSelectMenu() == 3) { pause->SetPause(); }
 	}
 	return this;
 }
@@ -273,20 +266,12 @@ void GAMEMAIN::Draw() const
 		}
 	}
 
-	if (pause_flg == true) { //ポーズ画面 描画
+	if (pause->IsPause() == true) { //ポーズ画面へ
 		int pause_graph = MakeGraph(1280, 720);	
 		GetDrawScreenGraph(0, 0, 1280, 720, pause_graph);
-		GraphFilter(pause_graph,DX_GRAPH_FILTER_GAUSS, 16, 1000);
-		DrawGraph(0, 0, pause_graph, FALSE);
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
-		DrawFillBox(0, 0, 1280, 720,0x000000);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND,0);
-		DrawStringToHandle(380, 100, "ポーズ", 0x56F590, title_font, 0xFFFFFF);
-		//選択メニュー
-		DrawStringToHandle(400, 360, "ゲームへ戻る", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(362, 450, "タイトルへ戻る", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(560, 540, "終了", selectmenu == 2 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+		pause->Draw(pause_graph);
 	}
 
-	DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
+	//デバッグ
+	//DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
 }

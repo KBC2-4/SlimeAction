@@ -16,6 +16,7 @@ private:
 	int halfwaypoint_se;		//中間地点SE
 	float map_x, map_y;			//マップ描画座標
 	int clearbox[2];		//クリアになるボックス状範囲	0=x,1=y
+	int anitimer;
 	int halfwaypointbox[2];		//中間地点判定になるボックス状範囲	0=x,1=y
 	bool clearflg;			//クリア判定フラグ
 	bool halfwaypoint;		//中間地点フラグ
