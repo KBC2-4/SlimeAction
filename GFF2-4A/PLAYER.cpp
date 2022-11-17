@@ -494,7 +494,12 @@ void PLAYER::HookMove(ELEMENT* element) {
 				animation_state = PLAYER_ANIM_STATE::IDLE;
 			}
 			/*jumppower = (16.0 - fabs(speed)) / 16.0;*/
-			jumppower = fabs(speed / 8);
+			if (speed > 8) {
+				jumppower = fabs((16.0 - speed)/8);
+			}
+			else {
+				jumppower = fabs(speed / 8);
+			}
 			jump_request = true;
 			/*if (speed < 0)jump_move_x = 1;		//フック後のジャンプ方向の修正
 			if (speed >= 0)jump_move_x = -1;
@@ -519,7 +524,7 @@ void PLAYER::JumpMove(ELEMENT* element) {
 			|| jump_request) {
 			jump_request = false;
 			is_jump = true;			//ジャンプ中に移行
-			jump_y = player_y - (MAP_CEllSIZE/2) * jumppower; //ジャンプの高さのセット
+			jump_y = player_y - MAP_CEllSIZE * jumppower; //ジャンプの高さのセット
 			velocity = JUMP_VELOCITY;
 			//横移動してない時
 			if (player_state == PLAYER_MOVE_STATE::IDLE) {
@@ -579,7 +584,7 @@ void PLAYER::JumpMove(ELEMENT* element) {
 		//地面についた時
 			else {
 				if ((player_state == PLAYER_MOVE_STATE::FALL || player_state == PLAYER_MOVE_STATE::JUMP) && !is_hook_move) {
-					jumppower = 2;
+					jumppower = 1.0;
 					float new_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
 					if (fabsf(player_y - new_y) <= 10) {
 						player_y = new_y;
