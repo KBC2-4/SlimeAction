@@ -26,7 +26,7 @@ private:
 	bool hit_flg;
 	bool delete_flg;
 	int face_image[2];
-	int fruit_image[2];
+	int fruit_image[3];
 	ENEMYBULLET* bullet[3];
 	//ThrowSlime* throw_slime;
 public:

@@ -226,17 +226,18 @@ bool GRAPEFRUIT::PressAnimation()
 {
 
 	bool ret = false;
-	if (animation_timer < 30) //30フレーム間アニメーションをする
+	if (animation_timer < 40) //30フレーム間アニメーションをする
 	{
-		animation_type++;
 		if (animation_timer % (ANIMATION_TIME * 2) == 0)
 		{
+			animation_type++;
+
 			for (int i = 0; i < 2; i++)
 			{
 				face_image[i] = image[i];
 				if (animation_type % 3 == 0)
 				{
-					fruit_image[i] = image[((animation_type % 3) * 2 - 1) + (6 * (i + 1))];
+					fruit_image[i] = image[(6 * (i + 2) - 1)];
 				}
 				else
 				{
@@ -255,16 +256,24 @@ bool GRAPEFRUIT::PressAnimation()
 bool GRAPEFRUIT::ReturnAnimation()
 {
 	bool ret = false;
-	if (animation_timer < 60) //30フレーム間アニメーションをする
+	if (animation_timer < 40) //30フレーム間アニメーションをする
 	{
 		if (animation_timer % (ANIMATION_TIME * 2) == 0)
 		{
+			animation_type++;
+
 			for (int i = 0; i < 2; i++)
 			{
 				face_image[i] = image[i];
-				fruit_image[i] = image[(6 * (i + 2) - 1) - (animation_type % 6) ];
+				if (animation_type % 3 == 0)
+				{
+					fruit_image[i] = image[(i + 1) * 6];
+				}
+				else
+				{
+					fruit_image[i] = image[(6 * (i + 2) - 1) - (animation_type % 6)];
+				}
 			}
-			animation_type++;
 		}
 	}
 	else //アニメーションの終了
