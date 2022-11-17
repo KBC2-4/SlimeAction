@@ -127,7 +127,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	this->restart = restert;
 
 	if (restart == true) {
-		int scrollx = -(stage->GetHalfwayPoint(0) - 500);
+		int scrollx = -(stage->GetHalfwayPoint().x - 500);
 		stage->SetScrollX(scrollx);	//スポーン地点をセット
 		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
 	}
@@ -241,7 +241,7 @@ AbstractScene* GAMEMAIN::Update()
 
 			//ゲームオーバー
 			if (player->IsDeath()) {
-				if (restart == false && stage->HalfwayPoint(player) == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
+				if (restart == false && stage->GetHalfwayPointFlg() == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
 				return new RESULT(false);
 			}
 

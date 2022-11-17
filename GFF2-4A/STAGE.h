@@ -1,5 +1,5 @@
 #pragma once
-
+#include <Windows.h>
 
 #define MAP_HEIGHT 14
 #define MAP_WIDTH 117
@@ -15,9 +15,10 @@ private:
 	int stage_image[5];			//ステージ背景画像
 	int halfwaypoint_se;		//中間地点SE
 	float map_x, map_y;			//マップ描画座標
-	int clearbox[2];		//クリアになるボックス状範囲	0=x,1=y
+	POINT clearbox;		//クリアになるボックス状範囲の座標
 	int anitimer;
-	int halfwaypointbox[2];		//中間地点判定になるボックス状範囲	0=x,1=y
+	POINT halfwaypointbox;		//中間地点座標
+
 	bool clearflg;			//クリア判定フラグ
 	bool halfwaypoint;		//中間地点フラグ
 	float player_x_old, player_y_old;		//旧プレイヤー座標
@@ -65,8 +66,11 @@ public:
 
 	void SetScrollX(float scroll_x) { if (scroll_x < 0) { this->scroll_x = scroll_x; } }
 
-	bool HalfwayPoint(PLAYER* player);
+	void HalfwayPoint(PLAYER* player);
+	//中間地点座標のGeter
+	POINT GetHalfwayPoint(void) {return POINT(halfwaypointbox); }
 
-	int GetHalfwayPoint(int xy) {if(xy == 0 || xy == 1) return halfwaypointbox[xy]; }
+	//中間地点通過したか判定フラグのGeter
+	bool GetHalfwayPointFlg(void) { return halfwaypoint; }
 };
 
