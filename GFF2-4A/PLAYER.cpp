@@ -132,6 +132,8 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// プレイヤーの表示
 /// </summary>
 void PLAYER::Draw()const {
+	//デバッグ
+	//DrawFormatString(100, 50, 0xffffff, "%f", player_y);
 	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_param);
 		
@@ -140,7 +142,6 @@ void PLAYER::Draw()const {
 	//プレイヤーの表示
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		DrawRotaGraphF(player_x + STAGE::GetScrollX(), (player_y - 20) + (1.6 - player_scale) * 40, player_scale, 0.0, now_image, TRUE, move_type);
-		
 	}
 	else {
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
@@ -574,7 +575,9 @@ void PLAYER::JumpMove(ELEMENT* element) {
 		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
 			STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_ground = true;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) is_ground = true;
-		if (element->HitLift(player_scale))is_ground = true;
+		if (element->HitLift(player_scale)) {
+			is_ground = true;
+		}
 		
 			//地面じゃない時は落下
 			if (!is_ground) {

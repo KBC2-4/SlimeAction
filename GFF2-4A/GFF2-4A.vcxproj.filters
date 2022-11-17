@@ -63,13 +63,16 @@
     <ClCompile Include="ThrowSlime.cpp">
       <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
-        <ClCompile Include="RESULT.cpp">
+    <ClCompile Include="RESULT.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-        <ClCompile Include="ITEMBALL.cpp">
+    <ClCompile Include="ITEMBALL.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    </ItemGroup>
+    <ClCompile Include="PAUSE.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -119,7 +122,10 @@
     <ClInclude Include="ITEMBALL.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    </ItemGroup>
+    <ClInclude Include="PAUSE.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\Resource.rc">
       <Filter>リソース ファイル</Filter>

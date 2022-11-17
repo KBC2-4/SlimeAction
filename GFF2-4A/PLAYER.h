@@ -32,7 +32,7 @@ enum class PLAYER_MOVE_STATE {
 	THROW,   //投げる時
 	HOOK,    //フックをつかむとき
 	DAMAGE,  //ダメージを受けた時
-	DEAD     //死んだとき
+	DEAD,     //死んだとき
 };
 
 //アニメーションステート

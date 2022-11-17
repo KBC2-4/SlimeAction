@@ -355,14 +355,21 @@ void ELEMENT::Manhole(PLAYER* player) {
 		if (manhole[i].type == 2) {
 			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE + 25) && (player_map_x <= manhole[i].x + MAP_CEllSIZE - 25) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
 				//プレイヤーの落下速度を遅くする
-				player->SetPlayerY(player->GetPlayerY() + 10.0f);
+				player->SetPlayerY(player->GetPlayerY() - 10.0f);
 			}
 		}
 
 		//出口
 		if (manhole[i].type == 3) {
 			if((player_map_x >= manhole[i].x - MAP_CEllSIZE /2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE /2)/* && (player_map_y <= manhole[i].y)*/){
-			if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { player->SetPlayerY(manhole[i].y); }
+			if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true;}
+			if (manhole[i].flg == true) {
+				player->SetPlayerY(player->GetPlayerY() - 10.0f);
+				printfDx("%f",player->GetPlayerY());
+				if (player->GetPlayerY() <= manhole[i].y) {
+					manhole[i].flg = false;
+				}
+			}
 			//デバッグ
 			//printfDx("入っています。");
 			}
@@ -388,7 +395,7 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 				//player->SetPlayerY(acidrain_puddles[i].y + 1.5f);
 				if (acidrain_puddles[i].flg == true) {
 					player->SetLife(player->GetLife() - 1);
-					printfDx("残りライフ：%d",player->GetLife());		//デバッグ
+					//printfDx("残りライフ：%d",player->GetLife());		//デバッグ
 					acidrain_puddles[i].flg = false;
 				}
 			}else{ acidrain_puddles[i].animtimer = 0; }
