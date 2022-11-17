@@ -317,38 +317,40 @@ void PLAYER::HookMove(ELEMENT* element) {
 
 		//フックの位置
 		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
-		if (player_state == PLAYER_MOVE_STATE::HOOK) {
-			ELEMENT::ELEMENT_DATA pos = hook_pos[hook_index];
-			//距離計算
-			float diff_x = pos.x - (player_x);
-			float diff_y = pos.y - player_y;
-			float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
-			//距離が最短距離より近いとき
-			//if (distance <= min_distance) {
-			//フックの角度
-			float angle = atan2f(diff_y, diff_x);
-			//移動の計算
-			move_x = cosf(angle) * SPEED * 3;
-			move_y = sinf(angle) * SPEED * 3;
-			//プレイヤーの現在の位置
-			float x = player_x;
-			float y = player_y;
-			//フックまでの移動経路に障害物がないか
-			while (!STAGE::HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
-				x += move_x;
-				y += move_y;
+			if (player_state == PLAYER_MOVE_STATE::HOOK) {
+		if (hook_pos.size() >= hook_index) {
+				ELEMENT::ELEMENT_DATA pos = hook_pos[hook_index];
+				//距離計算
+				float diff_x = pos.x - (player_x);
+				float diff_y = pos.y - player_y;
+				float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
+				//距離が最短距離より近いとき
+				//if (distance <= min_distance) {
+				//フックの角度
+				float angle = atan2f(diff_y, diff_x);
+				//移動の計算
+				move_x = cosf(angle) * SPEED * 3;
+				move_y = sinf(angle) * SPEED * 3;
+				//プレイヤーの現在の位置
+				float x = player_x;
+				float y = player_y;
+				//フックまでの移動経路に障害物がないか
+				while (!STAGE::HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
+					x += move_x;
+					y += move_y;
+				}
+				//配列に変換
+				int hook_map_x = x / MAP_CEllSIZE;
+				int hook_map_y = y / MAP_CEllSIZE;
+				//障害物がある場合は移動させない
+				//最短距離の更新
+				min_distance = distance;
+				//フックの座標の更新
+				hook_x = pos.x;
+				hook_y = pos.y;
+				//フックが見つかった判定をtrue
+				is_hook = true;
 			}
-			//配列に変換
-			int hook_map_x = x / MAP_CEllSIZE;
-			int hook_map_y = y / MAP_CEllSIZE;
-			//障害物がある場合は移動させない
-			//最短距離の更新
-			min_distance = distance;
-			//フックの座標の更新
-			hook_x = pos.x;
-			hook_y = pos.y;
-			//フックが見つかった判定をtrue
-			is_hook = true;
 		}
 		else {
 			for (int i = 0; i < hook_pos.size(); i++) {
