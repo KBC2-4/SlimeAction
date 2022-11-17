@@ -10,14 +10,12 @@ private:
 	bool hitflg;
 	bool delete_flag;
 	int shootcount;
-	int animation_timer;
-	int animation_type;
+	
+	int now_image;		//使用している画像
 	int spawn_map_x;
 	int spawn_map_y;
 
 	ENEMYBULLET* bullet;
-
-	const int ANIMATION_TIME = 5;	//アニメーションの切り替え時間
 
 public:
     /// <summary>

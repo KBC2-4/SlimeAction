@@ -11,8 +11,6 @@ LEMON::LEMON()
 	x = 0;
 	spawn_map_x = 0;
 	spawn_map_y = 0;
-	animation_timer = 0;
-	animation_type = 0;
 	now_image = 0;
 
 	state = ENEMY_STATE::IDOL;
@@ -46,8 +44,7 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	this->player = player;
 	this->stage = stage;
 
-	animation_timer = 0;
-	animation_type = 0;
+	
 	now_image = image[3];
 	state = ENEMY_STATE::IDOL;
 
@@ -197,16 +194,23 @@ bool LEMON::PressAnimation()
 {
 
 	bool ret = false;
-	if (animation_timer < 30) //30フレーム間アニメーションをする
+	if (animation_timer < 40) //40フレーム間アニメーションをする
 	{
 		if (animation_timer % (ANIMATION_TIME * 2) == 0)
 		{
-			now_image = image[(++animation_type % 6) + 3];
+			if (animation_type < 2)
+			{
+				now_image = image[(animation_type++ % 7) + 4];
+			}
+			else
+			{
+				now_image = image[0];
+			}
+			
 		}
 	}
 	else //アニメーションの終了
 	{
-		now_image = image[1];
 		ret = true;
 	}
 	return ret;
@@ -214,11 +218,11 @@ bool LEMON::PressAnimation()
 bool LEMON::ReturnAnimation()
 {
 	bool ret = false;
-	if (animation_timer < 30) //30フレーム間アニメーションをする
+	if (animation_timer < 50) //50フレーム間アニメーションをする
 	{
 		if (animation_timer % (ANIMATION_TIME * 2) == 0)
 		{
-			now_image = image[(++animation_type % 6) + 1];
+			now_image = image[(animation_type++ % 7)];
 		}
 	}
 	else //アニメーションの終了
