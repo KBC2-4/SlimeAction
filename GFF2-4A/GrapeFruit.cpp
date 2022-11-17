@@ -136,7 +136,7 @@ void GRAPEFRUIT::Update()
 
 	//マップ上の座標の設定
 	map_x = x / MAP_CEllSIZE;
-	map_y = y / MAP_CEllSIZE;
+	map_y = (y - IMAGE_SIZE / 2) / MAP_CEllSIZE;
 
 	//弾が存在しているときに弾の処理を行う
 	for (int i = 0; i < 3; i++)
@@ -228,14 +228,22 @@ bool GRAPEFRUIT::PressAnimation()
 	bool ret = false;
 	if (animation_timer < 30) //30フレーム間アニメーションをする
 	{
+		animation_type++;
 		if (animation_timer % (ANIMATION_TIME * 2) == 0)
 		{
 			for (int i = 0; i < 2; i++)
 			{
 				face_image[i] = image[i];
-				fruit_image[i] = image[((animation_type % 3) * 2) + (6 * (i + 1))];
+				if (animation_type % 3 == 0)
+				{
+					fruit_image[i] = image[((animation_type % 3) * 2 - 1) + (6 * (i + 1))];
+				}
+				else
+				{
+					fruit_image[i] = image[((animation_type % 3) * 2) + (6 * (i + 1))];
+				}
 			}
-			animation_type++;
+			
 		}
 	}
 	else //アニメーションの終了
@@ -247,14 +255,14 @@ bool GRAPEFRUIT::PressAnimation()
 bool GRAPEFRUIT::ReturnAnimation()
 {
 	bool ret = false;
-	if (animation_timer < 30) //30フレーム間アニメーションをする
+	if (animation_timer < 60) //30フレーム間アニメーションをする
 	{
 		if (animation_timer % (ANIMATION_TIME * 2) == 0)
 		{
 			for (int i = 0; i < 2; i++)
 			{
 				face_image[i] = image[i];
-				fruit_image[i] = image[(7 * (i + 1) - 1) - (animation_type % 6) ];
+				fruit_image[i] = image[(6 * (i + 2) - 1) - (animation_type % 6) ];
 			}
 			animation_type++;
 		}
@@ -279,7 +287,8 @@ void GRAPEFRUIT::FallAnimation()
 		{
 			for (int i = 0; i < 2; i++)
 			{
-				face_image[i] = image[((animation_type % 2) *  (i * 2))];
+				face_image[i] = image[(2 + (animation_type % 2) +  (i  * 2))];
+				fruit_image[i] = image[(i + 1) * 6];
 			}
 			animation_type++;
 		}
@@ -296,8 +305,9 @@ bool GRAPEFRUIT::DethAnimation()
 			for (int i = 0; i < 2; i++)
 			{
 				face_image[i] = 0;
-				fruit_image[i] = image[(animation_type % 6) + (6 * 4)];
 			}
+			fruit_image[0] = image[(animation_type % 6) + (6 * 3)];
+			fruit_image[1] = 0;
 			animation_type++;
 		}
 	}
@@ -313,7 +323,7 @@ void GRAPEFRUIT::Draw() const
 {
 	for (int i = 0; i < 2; i++)
 	{
-		DrawRotaGraph(x + stage->GetScrollX(), y + 20 * i, 1, rad + (-90 * (PI / 180)), fruit_image[i], TRUE);
+		DrawRotaGraph(x + stage->GetScrollX(), y + 10 * i, 1, rad + (-90 * (PI / 180)), fruit_image[i], TRUE);
 		DrawRotaGraph(x + stage->GetScrollX(), y + 10 * i, 1, rad + (-90 * (PI / 180)), face_image[i], TRUE);
 	}
 	
