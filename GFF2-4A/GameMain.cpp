@@ -21,6 +21,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	lemoner_count = 0;
 	tomaton_count = 0;
 	item_count = 0;
+	item_num = 0;
 
 	player = new PLAYER;
 	stage = new STAGE;
@@ -28,7 +29,6 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
-	item = nullptr;
 
 	//とまトン生成する数を数える
 	for (int i = 0,point = 0 ; i < MAP_HEIGHT; i++)
@@ -113,12 +113,15 @@ GAMEMAIN::GAMEMAIN(bool restert)
 		}
 	}
 
+	//アイテムのカウント＆生成
 	item_count = gurepon_count + lemoner_count;
 	if (item_count > 0)
 	{
 		item = new ITEMBALL * [item_count];
+		for (int i = 0; i < item_count; i++) {
+			item[i] = nullptr;
+		}
 	}
-
 	element = new ELEMENT();
 
 	this->restart = restert;
@@ -157,7 +160,16 @@ GAMEMAIN::~GAMEMAIN()
 		
 	}
 	delete[] gurepon;
+
+	for (int i = 0; i < item_count; i++) 
+	{
+		if (item[i] != nullptr) 
+		{
+			delete item[i];
+		}
+	}
 	
+	delete[] item;
 	delete element;
 }
 
@@ -176,7 +188,10 @@ AbstractScene* GAMEMAIN::Update()
 			{
 				lemoner[i]->Update();
 				if (lemoner[i]->GetDeleteFlag())
-				{
+				{			
+					//アイテムを生成
+					item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
+
 					delete lemoner[i];
 					lemoner[i] = nullptr;
 				}
@@ -190,6 +205,10 @@ AbstractScene* GAMEMAIN::Update()
 		{
 			if (gurepon[i] != nullptr && gurepon[i]->GetDeleteFlg())
 			{
+				//アイテムを生成
+				item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
+
+				//グレポンを削除＆nullを代入
 				delete gurepon[i];
 				gurepon[i] = nullptr;
 			}
@@ -199,6 +218,17 @@ AbstractScene* GAMEMAIN::Update()
 			}
 			else
 			{
+			}
+		}
+		//アイテムのアップデート
+		for (int i = 0; i < item_count; i++)
+		{
+			if (gurepon[i] == nullptr || lemoner[i] == nullptr)
+			{
+				if (item[i] != nullptr)
+				{
+					item[i]->Update();
+				}
 			}
 		}
 

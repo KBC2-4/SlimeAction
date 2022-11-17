@@ -30,6 +30,7 @@ private:
 
 	//アイテムの数用変数
 	int item_count;
+	int item_num;
 
 	bool restart;	//復活フラグ
 

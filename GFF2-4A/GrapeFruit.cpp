@@ -349,3 +349,8 @@ void GRAPEFRUIT::Draw() const
 	}
 }
 
+int GRAPEFRUIT::GetX()
+{
+	return x;
+}
+

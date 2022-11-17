@@ -796,7 +796,6 @@ bool PLAYER::GetBullet(int *bullet) {
 
 void PLAYER::SetLife(int a) 
 {
-
 	if (!is_damage) {
 		life = a;
 		player_state == PLAYER_MOVE_STATE::DAMAGE;
@@ -807,7 +806,7 @@ void PLAYER::SetLife(int a)
 
 int PLAYER::HitPlayer(float x, float y, int diameter, int type) {
 	float px = GetPlayerX() - x;
-	float py = GetPlayerY() - y; 
+	float py = GetPlayerY() - y;
 	float pxy = sqrt(px * px + py * py); //ベクトル
 
 	float Pdiameter = 28 * life;	//プレーヤー直径
