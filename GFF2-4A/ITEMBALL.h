@@ -14,15 +14,17 @@ private:
 	bool delete_flg;
 	PLAYER* player;
 	STAGE* stage;
+	float scrool_x;
 
 public:
 	ITEMBALL();
-	ITEMBALL(float, float,int,int, PLAYER*,STAGE*);
+	ITEMBALL(float, float,int,int, PLAYER*,STAGE* ,float);
 	~ITEMBALL();
 
 	void Draw()const;
 	void Update();
 	void PlayerHit();
+	float GetDrawX() const;
 	bool GetDeleteFlag() { return delete_flg; }
 };
 

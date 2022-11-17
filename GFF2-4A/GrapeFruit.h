@@ -64,5 +64,6 @@ public:
 	bool GetDeleteFlg() { return delete_flg; }
 	int GetSpawnMapY() { return spawn_map_y; }
 	int GetSpawnMapX() { return spawn_map_x; }
+	int GetX();
 };
 
