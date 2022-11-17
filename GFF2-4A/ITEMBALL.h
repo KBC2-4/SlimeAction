@@ -15,6 +15,8 @@ private:
 	PLAYER* player;
 	STAGE* stage;
 	float scrool_x;
+	int test1, test2, test3, test4;
+	int test5, test6, test7, test8;
 
 public:
 	ITEMBALL();

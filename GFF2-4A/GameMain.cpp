@@ -193,13 +193,15 @@ AbstractScene* GAMEMAIN::Update()
 	//アイテムのアップデート
 	for (int i = 0; i < item_count; i++)
 	{
-		if (gurepon[i] == nullptr || lemoner[i] == nullptr)
-		{
-			if (item[i] != nullptr)
+			if (item[i] != nullptr && !item[i]->GetDeleteFlag())
 			{
 				item[i]->Update();
 			}
-		}
+			else if (item[i] != nullptr && item[i]->GetDeleteFlag())
+			{
+				delete item[i];
+				item[i] = nullptr;
+			}
 	}
 
 	stage->Update(player);	//ステージクリア用
