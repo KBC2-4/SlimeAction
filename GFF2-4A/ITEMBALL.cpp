@@ -3,7 +3,7 @@
 
 
 
-ITEMBALL::ITEMBALL() 
+ITEMBALL::ITEMBALL()
 {
 	map_x = 0;
 	map_y = 0;
@@ -47,19 +47,16 @@ ITEMBALL::ITEMBALL(float enemy_x, float enemy_y, int e_mapy, int e_mapx, PLAYER*
 
 ITEMBALL::~ITEMBALL() {};
 
-void ITEMBALL::Draw() const 
+void ITEMBALL::Draw() const
 {
-	DrawRotaGraph((static_cast<int>(GetDrawX())), item_y + 70, 1, 0, item, TRUE);
+	DrawRotaGraph((static_cast<int>(GetDrawX())), item_y + 30, 1, 0, item, TRUE);
 	DrawBox(test1, test3, test2, test4, 0xff00ff, FALSE);
 	DrawBox(test5, test7, test6, test8, 0x00ff00, FALSE);
 }
 
 void ITEMBALL::Update()
 {
-	if ((item_x + stage->GetScrollX() > 0) && (item_x + stage->GetScrollX() < 1280))
-	{
-		PlayerHit();
-	}
+	PlayerHit();
 }
 
 void ITEMBALL::PlayerHit()
@@ -74,7 +71,7 @@ void ITEMBALL::PlayerHit()
 
 	bx1 = GetDrawX() - 10;
 	bx2 = bx1 + _BALL_RADIUS;
-	by1 = (item_y + _BALL_RADIUS) + 40;
+	by1 = item_y + _BALL_RADIUS;
 	by2 = by1 + _BALL_RADIUS;
 
 	test1 = px1;
@@ -94,6 +91,7 @@ void ITEMBALL::PlayerHit()
 			delete_flg = true;
 		}
 	}
+
 }
 
 float ITEMBALL::GetDrawX() const

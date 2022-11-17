@@ -28,5 +28,6 @@ public:
 	void PlayerHit();
 	float GetDrawX() const;
 	bool GetDeleteFlag() { return delete_flg; }
+	float GetItemX() { return item_x; }
 };
 
