@@ -297,7 +297,7 @@ void ELEMENT::Lift(PLAYER* player) {
 		if (lift[i].flg) {
 			if (lift[i].x != lift_goal[i].x) {
 				lift[i].x += lift_vector * 1;
-				if (HitLift()) {
+				if (HitLift(player->GetPlayerScale())) {
 					player->SetPlayerX(player->GetPlayerX() + lift_vector * 1);
 				}
 
@@ -322,9 +322,9 @@ void ELEMENT::Lift(PLAYER* player) {
 /// <summary>
 /// ƒvƒŒƒCƒ„[‚Æ“®‚­°‚Ì“–‚½‚è”»’è
 /// </summary>
-bool ELEMENT::HitLift() {
+bool ELEMENT::HitLift(float player_scale) {
 	for (int i = 0; i < lift.size(); i++) {
-		if (player_map_x >= lift[i].x && player_map_x <= lift[i].x +MAP_CEllSIZE
+		if (player_map_x +player_scale*25>= lift[i].x && player_map_x-player_scale*25 <= lift[i].x +MAP_CEllSIZE
 			&& player_map_y+MAP_CEllSIZE/2==lift[i].y) {
 			return true;
 		}

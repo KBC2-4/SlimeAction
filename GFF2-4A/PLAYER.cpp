@@ -125,7 +125,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	}
 
 	player_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
-	if (player_state == PLAYER_MOVE_STATE::HOOK) {
+	/*if (player_state == PLAYER_MOVE_STATE::HOOK) {
 		if (hook_x + nx < player_x) {
 			Scroll(-1.0f);
 		}
@@ -137,7 +137,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	}
 	else {
 		Scroll(move_x);
-	}
+	}*/
 }
 
 /// <summary>
@@ -569,7 +569,7 @@ void PLAYER::JumpMove(ELEMENT* element) {
 		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
 			STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) == 0) is_ground = true;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) is_ground = true;
-		if (element->HitLift())is_ground = true;
+		if (element->HitLift(player_scale))is_ground = true;
 		
 			//地面じゃない時は落下
 			if (!is_ground) {
