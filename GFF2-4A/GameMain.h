@@ -1,14 +1,14 @@
 #pragma once
 #include "AbstractScene.h"
-#include"PLAYER.h"
-#include"STAGE.h"
-#include"Lemon.h"
-#include"GrapeFruit.h"
-#include"Tomato.h"
+#include "PLAYER.h"
+#include "STAGE.h"
+#include "Lemon.h"
+#include "GrapeFruit.h"
+#include "Tomato.h"
 #include "Element.h"
 #include "RESULT.h"
 #include "PAUSE.h"
-#include"ITEMBALL.h"
+#include "ITEMBALL.h"
 class GAMEMAIN :
     public AbstractScene
 {
