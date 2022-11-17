@@ -142,7 +142,7 @@ void PLAYER::Draw()const {
 
 	//プレイヤーの表示
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		DrawRotaGraphF(player_x + STAGE::GetScrollX(), (player_y - 20) + (1.6 - player_scale) * 40, player_scale, 0.0, now_image, TRUE, move_type);
+		DrawRotaGraphF(player_x + STAGE::GetScrollX(), (player_y - 20+STAGE::GetScrollY()) + (1.6 - player_scale) * 40, player_scale, 0.0, now_image, TRUE, move_type);
 	}
 	else {
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {

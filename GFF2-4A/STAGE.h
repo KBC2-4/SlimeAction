@@ -54,6 +54,8 @@ public:
 	static bool SetScrollPos(int move_x);
 	//画面スクロール座標Xの取得
 	static float GetScrollX() { return scroll_x; };	
+	//画面スクロール座標Yの取得
+	static float GetScrollY() { return scroll_y; }
 	//マップデータの読み込み
 	void LoadMapData(void);	
 

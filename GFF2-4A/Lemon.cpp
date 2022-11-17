@@ -263,7 +263,7 @@ void LEMON::Draw() const
 	{
 		bullet->Draw();
 	}
-	DrawRotaGraph(x + stage->GetScrollX(), y, 1, rad + (-90 * (PI / 180)), now_image, TRUE);
+	DrawRotaGraph(x + stage->GetScrollX(), y+stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), now_image, TRUE);
 
 	
 }
