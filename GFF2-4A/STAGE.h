@@ -6,6 +6,7 @@
 #define MAP_CEllSIZE 80
 
 class PLAYER;
+class ELEMENT;
 
 class STAGE
 {
@@ -30,7 +31,7 @@ protected:
 public:
 	STAGE();
 	//マップ情報の更新
-	void Update(PLAYER *player);
+	void Update(PLAYER* player, ELEMENT* element);
 	//ステージの描画
 	virtual void Draw() const;
 	//ステージの初期化
@@ -53,6 +54,8 @@ public:
 	static bool SetScrollPos(int move_x);
 	//画面スクロール座標Xの取得
 	static float GetScrollX() { return scroll_x; };	
+	//画面スクロール座標Yの取得
+	static float GetScrollY() { return scroll_y; }
 	//マップデータの読み込み
 	void LoadMapData(void);	
 

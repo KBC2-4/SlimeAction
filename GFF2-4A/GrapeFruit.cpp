@@ -161,7 +161,7 @@ void GRAPEFRUIT::Animation()
 
 void GRAPEFRUIT::Draw() const
 {
-	DrawRotaGraph2(x + stage->GetScrollX(), y, 40, 0, 1, rad + (-90 * (PI / 180)), image[0], TRUE);
+	DrawRotaGraph2(x + stage->GetScrollX(), y+stage->GetScrollY(), 40, 0, 1, rad + (-90 * (PI / 180)), image[0], TRUE);
 
 	if (flag)
 	{

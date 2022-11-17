@@ -168,7 +168,7 @@ AbstractScene* GAMEMAIN::Update()
 
 	if (pause->IsPause() == false) {
 		player->Update(element, stage);
-		stage->Update(player);	//ステージクリア用
+		stage->Update(player,element);	//ステージクリア用
 		element->Update(player);
 		for (int i = 0; i < lemoner_count; i++)
 		{
@@ -207,7 +207,7 @@ AbstractScene* GAMEMAIN::Update()
 
 
 
-	stage->Update(player);	//ステージクリア用
+	stage->Update(player,element);	//ステージクリア用
 	element->Update(player);
 
 	//ゲームオーバー
@@ -240,8 +240,8 @@ void GAMEMAIN::Draw() const
 {
 
 	//ステージ背景
-	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
-	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
+	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, int(STAGE::GetScrollY()), background_image[0], FALSE);
+	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, int(STAGE::GetScrollY()), background_image[0], FALSE);
 
 
 	//ステージの描画

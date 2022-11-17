@@ -33,7 +33,6 @@ enum class PLAYER_MOVE_STATE {
 	HOOK,    //フックをつかむとき
 	DAMAGE,  //ダメージを受けた時
 	DEAD,     //死んだとき
-	LIFT	 //リフトに乗っているとき
 };
 
 //アニメーションステート

@@ -50,12 +50,13 @@ STAGE::STAGE() {
 }
 	
 
-void STAGE::Update(PLAYER* player) {
+void STAGE::Update(PLAYER* player, ELEMENT* element) {
 	StageClear(player);
 	HalfwayPoint(player);
-	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) {
+	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && !element->HitLift(player->GetPlayerScale())) {
 		CameraWork(player);
 	}
+	
 }
 
 void STAGE::Draw()const {
@@ -63,6 +64,7 @@ void STAGE::Draw()const {
 	//DrawFormatString(200, 100, 0xffffff, "oldx:%f", player_x_old);
 	//DrawFormatString(350, 100, 0xffffff, "vectorx:%f", player_vector_x);
 	//DrawFormatString(100, 200, 0xffffff, "scroll_x:%f", scroll_x);
+	//DrawFormatString(200, 200, 0xffffff, "scroll_y:%f", scroll_y);
 	//ゲームクリア時
 	if (clearflg == true) {DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
 	
@@ -78,7 +80,7 @@ void STAGE::Draw()const {
 					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data[i][j] - 1], TRUE); }
 			}
 			//レモナーとグレポンはツルだけ描画する
-			if(map_data[i][j] == 91 || map_data[i][j] == 92){ DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE, block_image1[map_data[i][j] - 1], TRUE); }
+			if (map_data[i][j] == 91 || map_data[i][j] == 92) { DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data[i][j] - 1], TRUE); }
 			
 		}
 	}
@@ -89,17 +91,29 @@ void STAGE::Draw()const {
 	
 }
 
+/// <summary>
+/// ステージスクロール関数
+/// </summary>
 void STAGE::CameraWork(PLAYER* player) {
-	if (player->GetPlayerX() - player_x_old > 0) {
-		player_vector_x = 1;
-	}
-	else if (player->GetPlayerX() - player_x_old < 0) {
-		player_vector_x = -1;
-	}
+	//プレイヤーxベクトルの判定
+		if (player->GetPlayerX() - player_x_old > 0) {
+			player_vector_x = 1;
+		}
+		else if (player->GetPlayerX() - player_x_old < 0) {
+			player_vector_x = -1;
+		}
+		//プレイヤーyベクトルの判定
+		if (player->GetPlayerY() - player_y_old < 0) {
+			player_vector_y = 1;
+		}
+		else if (player->GetPlayerY() - player_y_old > 0) {
+			player_vector_y = -1;
+		}
+	
 	
 
 
-	if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()&&player->GetPlayerMoveState()!=PLAYER_MOVE_STATE::LIFT) {
+	if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
 		scroll_x -= 5 * player_vector_x;
 		if (scroll_x > 0 || scroll_x <= -(80 * MAP_WIDTH - 640)) {
 			scroll_x += 5 * player_vector_x;
@@ -107,14 +121,12 @@ void STAGE::CameraWork(PLAYER* player) {
 	}
 
 	
-	/*if ((player_vector_y > 0 && player->GetPlayerY() >= 720) || (player_vector_y < 0 && player->GetPlayerY() <= 0)) {
-
-		scroll_y -= 5 * player_vector_y;
-
-		if (scroll_y >= 0 || scroll_y <= -1120) {
-			scroll_y += 5 * player_vector_y;
-		}
-	}*/
+	if (player->GetPlayerY()>=720) {
+		scroll_y = -320;
+	}
+	else if (player->GetPlayerY() >= 640) {
+		scroll_y = 0;
+	}
 
 	if (player_x_old != player->GetPlayerX()) {
 		player_x_old = player->GetPlayerX();
@@ -125,6 +137,7 @@ void STAGE::CameraWork(PLAYER* player) {
 	if (player_y_old != player->GetPlayerY()) {
 		player_y_old = player->GetPlayerY();
 	}
+	else player_vector_y = 0;
 }
 
 
@@ -167,6 +180,7 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
+		|| block_type == 71	//ゴール
 		|| block_type == 73	//ゴール
 		|| block_type == 90 //中間地点
 		|| block_type == 91 //レモナー
@@ -191,10 +205,12 @@ bool STAGE::HitThrowSlime(int y, int x) {
 		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
+		|| block_type == 71	//ツタ
+		|| block_type == 72	//ツタ(捕まる部分)
 		|| block_type == 73	//ゴール
 		|| block_type == 97	//マンホールの蓋End
 		) {
-	return false;
+		return false;
 	}
 		return true;
 }
