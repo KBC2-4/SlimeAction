@@ -136,7 +136,16 @@ GAMEMAIN::~GAMEMAIN()
 		
 	}
 	delete[] gurepon;
+
+	for (int i = 0; i < item_count; i++) 
+	{
+		if (item[i] != nullptr) 
+		{
+			delete item[i];
+		}
+	}
 	
+	delete[] item;
 	delete element;
 }
 
@@ -184,9 +193,12 @@ AbstractScene* GAMEMAIN::Update()
 	//アイテムのアップデート
 	for (int i = 0; i < item_count; i++)
 	{
-		if (item[i] != nullptr)
+		if (gurepon[i] == nullptr || lemoner[i] == nullptr)
 		{
-			item[i]->Update();
+			if (item[i] != nullptr)
+			{
+				item[i]->Update();
+			}
 		}
 	}
 
