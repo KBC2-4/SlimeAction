@@ -112,6 +112,11 @@ void ENEMY_BULLET::Update()
 		}
 	}
 
+	if (GetDrawX() < 0 || GetDrawX() > 1280 || (bullet_y + stage->GetScrollY()) < 0 || (bullet_y + stage->GetScrollY()) > 720)
+	{
+		delete_flg = true;
+	}
+
 }
 
 void ENEMY_BULLET::Move()
@@ -121,10 +126,6 @@ void ENEMY_BULLET::Move()
 	bullet_x += bullet_sx;
 	bullet_y += bullet_sy;
 
-	if (GetDrawX() < 0 || GetDrawX() > 1280)
-	{
-		delete_flg = true;
-	}
 
 	mapd_x = bullet_x / MAP_CEllSIZE;
 	mapd_y = (bullet_y + IMAGE_Y_SIZE)  / MAP_CEllSIZE;

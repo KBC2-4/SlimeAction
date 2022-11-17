@@ -155,7 +155,7 @@ void GRAPEFRUIT::Update()
 
 	Hit();
 
-	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE))		//画面外に出るとアイドル状態にする
+	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY()) < 0 || (y + stage->GetScrollY()) > 720)		//画面外に出るとアイドル状態にする
 	{
 		state = ENEMY_STATE::IDOL;
 	}
