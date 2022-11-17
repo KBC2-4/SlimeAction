@@ -24,10 +24,11 @@ private:
 	std::vector<ELEMENT_DATA> lift;			//動く床
 	std::vector<ELEMENT_DATA>lift_goal;		//動く床のゴール地点
 	std::vector<ELEMENT_DATA> manhole;		//マンホール
-	std::vector<ELEMENT_DATA> acid;			//酸
+	std::vector<ELEMENT_DATA> acidrain_puddles;			//酸性雨の水たまり
 	float player_map_x, player_map_y;
 	int lift_vector;
 	//mutable int animtimer;
+	int door_close_se, press_the_button_se, switch_se, walk_puddle_se;
 
 public:
 	ELEMENT();
@@ -36,12 +37,14 @@ public:
 	void Button(PLAYER* player);		//3種類のボタン
 	void Door();						//ドアの処理
 	void Lift(PLAYER* player);			//動く床の処理
-	bool HitLift();						//動く床の当たり判定
+	bool HitLift(float player_scale);						//動く床の当たり判定
 	void Manhole(PLAYER* player);		//マンホールの処理
+	void Acidrain_puddles(PLAYER* player);		//酸性雨の水たまりの処理
 	std::vector<ELEMENT_DATA> GetHook() { return hook; }
 	std::vector<ELEMENT_DATA>GetButton() { return button; }
 	std::vector<ELEMENT_DATA>GetDoor() { return door; }
 	std::vector<ELEMENT_DATA>GetLift() { return lift; }
 	std::vector<ELEMENT_DATA>GetManhole() { return manhole; }
+	std::vector<ELEMENT_DATA>GetAcidrain_puddles() { return acidrain_puddles; }
 };
 

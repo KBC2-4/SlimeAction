@@ -8,8 +8,6 @@ TOMATO::TOMATO()
 	image_rate = 0.1;
 	spawn_map_x = 0;
 	spawn_map_y = 0;
-	animation_timer = 0;
-	animation_type = 0;
 	image = new int[3];
 	if (LoadDivGraph("Resource/Images/Enemy/tomaton.png", 3, 3, 1, 80, 80, image) == -1)
 	{
@@ -29,8 +27,6 @@ TOMATO::TOMATO(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	this->stage = stage;
 
 	image_rate = 0.1;
-	animation_timer = 0;
-	animation_type = 0;
 	state = ENEMY_STATE::IDOL;
 
 	image = new int[9];
@@ -116,7 +112,7 @@ void TOMATO::Hit()
 	}
 
 	//地面やブロックとの当たり判定
-	if ((stage->GetMapDat(map_y + 1, map_x) != 0) && stage->GetMapDat(map_y + 1, map_x) != 93)
+	if (stage->HitMapDat(map_y + 1,map_x))
 	{
 		state = ENEMY_STATE::DETH;
 		animation_timer = 0;
@@ -157,12 +153,14 @@ bool TOMATO::DethAnimation()
 {
 	bool ret = false;
 	//アニメーション
-	if (animation_timer % ANIMATION_TIME == 0)
+	if (animation_timer < 15)
 	{
-		now_image = image[(++animation_type % 6) + 1];
+		if (animation_timer % ANIMATION_TIME == 0)
+		{
+			now_image = image[(++animation_type % 6) + 1];
+		}
 	}
-	//アニメーションの終了
-	if (animation_timer > 15)
+	else //アニメーションの終了
 	{
 		ret = true;
 	}

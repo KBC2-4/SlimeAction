@@ -16,7 +16,7 @@ Title::Title()
 		throw "Resource/Sounds/SE/ok.wav";
 	}
 
-	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
+	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 120, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
 	selectmenu = 0;
@@ -25,8 +25,10 @@ Title::Title()
 Title::~Title() 
 {
 	DeleteGraph(background_image);
-	InitFontToHandle();	//全てのフォントデータを削除
-	InitSoundMem();		//メモリに読み込んだ音データをすべて削除
+	DeleteSoundMem(cursor_move_se);
+	DeleteSoundMem(ok_se);
+	DeleteFontToHandle(title_font);
+	DeleteFontToHandle(menu_font);
 }
 
 AbstractScene* Title::Update()
@@ -36,14 +38,25 @@ AbstractScene* Title::Update()
 	if (PAD_INPUT::GetPadThumbLY() > 1000 && input_margin > 20) { selectmenu = (selectmenu + 2) % 3;  input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
 	if (PAD_INPUT::GetPadThumbLY() < -1000 && input_margin > 20) { selectmenu = (selectmenu + 1) % 3; input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
 
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1); return new GAMEMAIN(); }
+	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+		if (selectmenu == 0) { PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1); return new GAMEMAIN(); }
+		if (selectmenu == 1) { PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1); return new RESULT(false); }
+		if (selectmenu == 2) { 
+			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1); 
+			InitFontToHandle();	//全てのフォントデータを削除
+			InitGraph();		//読み込んだ全てのグラフィックデータを削除
+			InitSoundMem();
+			DxLib_End();
+		}
+	}
 	return this;
 }
 
 void Title::Draw()const
 {
 	DrawGraph(0, 0, background_image, false);
-	DrawStringToHandle(318, 100, "タイトル", 0x56F590, title_font ,0xFFFFFF);
+	DrawStringToHandle(30, 100, "スライムアクション", 0x56F590, title_font ,0xFFFFFF);
 
 	//ボックス
 	//SetDrawBlendMode(DX_BLENDMODE_ALPHA,100);

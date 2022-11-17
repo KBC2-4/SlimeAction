@@ -25,6 +25,8 @@ private:
 	int check_hit_count;
 	bool hit_flg;
 	bool delete_flg;
+	int face_image[2];
+	int fruit_image[3];
 	ENEMYBULLET* bullet[3];
 	//ThrowSlime* throw_slime;
 public:
@@ -53,9 +55,24 @@ public:
 	/// </summary>
 	void Hit() override;
 	/// <summary>
-	/// アニメーション
+	/// 元の形に戻るアニメーション
 	/// </summary>
-	void Animation();
+	/// <returns>アニメーションの終了判定</returns>
+	bool ReturnAnimation();
+	/// <summary>
+	/// 弾の発射時のアニメーション
+	/// </summary>
+	/// <returns>アニメーションの終了判定</returns>
+	bool PressAnimation();
+	/// <summary>
+	/// 落下アニメーション
+	/// </summary>
+	void FallAnimation();
+	/// <summary>
+	/// 死亡アニメーション
+	/// </summary>
+	/// <returns>アニメーションの終了判定</returns>
+	bool DethAnimation();
 	/// <summary>
 	/// 描画
 	/// </summary>

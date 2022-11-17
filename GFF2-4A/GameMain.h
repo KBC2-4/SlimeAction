@@ -7,13 +7,17 @@
 #include"Tomato.h"
 #include "Element.h"
 #include "RESULT.h"
+#include "PAUSE.h"
 #include"ITEMBALL.h"
 class GAMEMAIN :
     public AbstractScene
 {
 private:
 	int background_image[5];
+	int title_font, menu_font;	//フォント
+	int cursor_move_se, ok_se;	//SE
 	int time;		//経過時間
+	int halfway_time; //中間地点経過時の時間
 
 	//レモナーの数用の変数
 	int lemoner_count;
@@ -28,8 +32,11 @@ private:
 	int item_count;
 	int item_num;
 
+	bool restart;	//復活フラグ
+
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
+	PAUSE* pause;	//ポーズ
 	LEMON** lemoner;	//レモナー
 	GRAPEFRUIT** gurepon;	//グレぽん
 	TOMATO** tomaton;	//とまトン
@@ -39,7 +46,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	GAMEMAIN();
+	GAMEMAIN(bool restert = false);
 	/// <summary>
 	/// デストラクタ
 	/// </summary>

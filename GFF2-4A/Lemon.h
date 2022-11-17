@@ -10,15 +10,12 @@ private:
 	bool hitflg;
 	bool delete_flag;
 	int shootcount;
-	double rads[2];
-	int animation_timer;
-	int animation_type;
+	
+	int now_image;		//使用している画像
 	int spawn_map_x;
 	int spawn_map_y;
 
 	ENEMYBULLET* bullet;
-
-	const int ANIMATION_TIME = 5;	//アニメーションの切り替え時間
 
 public:
     /// <summary>
@@ -56,13 +53,18 @@ public:
 	/// <returns>アニメーションの終了判定</returns>
 	bool ReturnAnimation();
 	/// <summary>
+	/// 弾の発射時のアニメーション
+	/// </summary>
+	/// <returns>アニメーションの終了判定</returns>
+	bool PressAnimation();
+	/// <summary>
 	/// 落下アニメーション
 	/// </summary>
 	void FallAnimation();
 	/// <summary>
 	/// 死亡アニメーション
 	/// </summary>
-	/// <returns>アニメションが終わったかどうか</returns>
+	/// <returns>アニメーションの終了判定</returns>
 	bool DethAnimation();
 	/// <summary>
 	/// 描画

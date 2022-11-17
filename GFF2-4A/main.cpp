@@ -15,6 +15,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetGraphMode(1280, 720, 32);
 	if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
 
+	SetAlwaysRunFlag(true);		//常にアクティブにする
+
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);		//フォントをアンチエイリアス対応にする。
 
 	SetJoypadDeadZone(DX_INPUT_PAD1, 0.0);
@@ -63,6 +65,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			break;
 		}
+		//STARTボタンでタイトル画面へ移行
+		//if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_START) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) { sceneMng = new SceneManager((AbstractScene*)new Title()); }
 	}
 
 	InitFontToHandle();	//全てのフォントデータを削除
