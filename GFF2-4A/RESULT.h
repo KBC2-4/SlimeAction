@@ -11,7 +11,7 @@ private:
 	bool win;
 	int clear_time;
 	int se_randnum;
-	int effect_timer;
+	int effect_timer[2];
 
 public:
 	RESULT(bool issue , int clear_time = -1);
