@@ -18,6 +18,10 @@ private:
 	std::vector<float>throw_y;
 	bool throw_fall;
 	float throw_bottom;
+
+	int move_type;
+	float move_x, move_y;
+
 public:
 	ThrowSlime() {};
 	ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y);
