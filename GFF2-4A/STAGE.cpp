@@ -50,12 +50,13 @@ STAGE::STAGE() {
 }
 	
 
-void STAGE::Update(PLAYER* player) {
+void STAGE::Update(PLAYER* player, ELEMENT* element) {
 	StageClear(player);
 	HalfwayPoint(player);
-	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) {
+	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && !element->HitLift(player->GetPlayerScale())) {
 		CameraWork(player);
 	}
+	
 }
 
 void STAGE::Draw()const {
@@ -89,12 +90,23 @@ void STAGE::Draw()const {
 	
 }
 
+/// <summary>
+/// ステージスクロール関数
+/// </summary>
 void STAGE::CameraWork(PLAYER* player) {
+	//プレイヤーxベクトルの判定
 	if (player->GetPlayerX() - player_x_old > 0) {
 		player_vector_x = 1;
 	}
 	else if (player->GetPlayerX() - player_x_old < 0) {
 		player_vector_x = -1;
+	}
+	//プレイヤーyベクトルの判定
+	if (player->GetPlayerY() - player_y_old < 0) {
+		player_vector_y = 1;
+	}
+	else if (player->GetPlayerY() - player_y_old > 0) {
+		player_vector_y = -1;
 	}
 	
 
@@ -107,14 +119,14 @@ void STAGE::CameraWork(PLAYER* player) {
 	}
 
 	
-	/*if ((player_vector_y > 0 && player->GetPlayerY() >= 720) || (player_vector_y < 0 && player->GetPlayerY() <= 0)) {
+	if ((player_vector_y > 0 && player->GetPlayerY() <= 160) || (player_vector_y < 0 && player->GetPlayerY() >= 640)) {
 
 		scroll_y -= 5 * player_vector_y;
 
 		if (scroll_y >= 0 || scroll_y <= -1120) {
 			scroll_y += 5 * player_vector_y;
 		}
-	}*/
+	}
 
 	if (player_x_old != player->GetPlayerX()) {
 		player_x_old = player->GetPlayerX();
@@ -125,6 +137,7 @@ void STAGE::CameraWork(PLAYER* player) {
 	if (player_y_old != player->GetPlayerY()) {
 		player_y_old = player->GetPlayerY();
 	}
+	else player_vector_y = 0;
 }
 
 
@@ -191,10 +204,12 @@ bool STAGE::HitThrowSlime(int y, int x) {
 		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
+		|| block_type == 71	//ツタ
+		|| block_type == 72	//ツタ(捕まる部分)
 		|| block_type == 73	//ゴール
 		|| block_type == 97	//マンホールの蓋End
 		) {
-	return false;
+		return false;
 	}
 		return true;
 }

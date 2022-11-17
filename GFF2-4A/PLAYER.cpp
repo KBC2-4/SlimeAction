@@ -144,6 +144,8 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// プレイヤーの表示
 /// </summary>
 void PLAYER::Draw()const {
+	//デバッグ
+	//DrawFormatString(100, 50, 0xffffff, "%f", player_y);
 	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_param);
 		
@@ -570,7 +572,6 @@ void PLAYER::JumpMove(ELEMENT* element) {
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) is_ground = true;
 		if (element->HitLift(player_scale)) {
 			is_ground = true;
-			player_state = PLAYER_MOVE_STATE::LIFT;
 		}
 		
 			//地面じゃない時は落下

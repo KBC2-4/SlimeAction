@@ -6,6 +6,7 @@
 #define MAP_CEllSIZE 80
 
 class PLAYER;
+class ELEMENT;
 
 class STAGE
 {
@@ -29,7 +30,7 @@ protected:
 public:
 	STAGE();
 	//マップ情報の更新
-	void Update(PLAYER *player);
+	void Update(PLAYER* player, ELEMENT* element);
 	//ステージの描画
 	virtual void Draw() const;
 	//ステージの初期化
