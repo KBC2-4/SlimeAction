@@ -272,5 +272,6 @@ void GAMEMAIN::Draw() const
 		pause->Draw(pause_graph);
 	}
 
-	DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
+	//デバッグ
+	//DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
 }
