@@ -99,7 +99,7 @@ void STAGE::CameraWork(PLAYER* player) {
 	
 
 
-	if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
+	if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()&&player->GetPlayerMoveState()!=PLAYER_MOVE_STATE::LIFT) {
 		scroll_x -= 5 * player_vector_x;
 		if (scroll_x > 0 || scroll_x <= -(80 * MAP_WIDTH - 640)) {
 			scroll_x += 5 * player_vector_x;

@@ -395,7 +395,7 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 				//player->SetPlayerY(acidrain_puddles[i].y + 1.5f);
 				if (acidrain_puddles[i].flg == true) {
 					player->SetLife(player->GetLife() - 1);
-					printfDx("残りライフ：%d",player->GetLife());		//デバッグ
+					//printfDx("残りライフ：%d",player->GetLife());		//デバッグ
 					acidrain_puddles[i].flg = false;
 				}
 			}else{ acidrain_puddles[i].animtimer = 0; }

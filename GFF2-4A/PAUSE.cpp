@@ -14,6 +14,7 @@ PAUSE::PAUSE() {
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
 	selectmenu = 0;
+	nextmenu = 0;
 
 	pause_flg = false;
 }
@@ -36,7 +37,7 @@ int PAUSE::Update(void) {
 		StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
 		if (selectmenu == 0) { pause_flg = !pause_flg; }
 		else if (selectmenu == 1) { pause_flg = !pause_flg;}
-		return selectmenu;
+		nextmenu = selectmenu;
 	}
 	return 0;
 }

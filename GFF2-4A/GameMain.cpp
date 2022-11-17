@@ -220,9 +220,10 @@ AbstractScene* GAMEMAIN::Update()
 		if (stage->GetClearFlg()) { return new RESULT(true, time + halfway_time); };
 	}
 	else {	//ポーズ画面のセレクター
-		if (pause->Update() == 2) { return new Title(); }
-		else if (pause->Update() == 1) { return new GAMEMAIN(); }
-		else if (pause->Update() == 3) { pause->SetPause(); }
+		pause->Update();
+		if (pause->GetSelectMenu() == 2) { return new Title(); }
+		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(); }
+		else if (pause->GetSelectMenu() == 3) { pause->SetPause(); }
 	}
 	return this;
 }
@@ -271,5 +272,6 @@ void GAMEMAIN::Draw() const
 		pause->Draw(pause_graph);
 	}
 
-	DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
+	//デバッグ
+	//DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
 }
