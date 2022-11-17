@@ -92,7 +92,7 @@ void LEMON::Update()
 		ChangeAngle();
 		if (PressAnimation())
 		{
-			bullet = new ENEMYBULLET(player, stage, x, y, 0, stage->GetScrollX(), rad, 2);
+			bullet = new ENEMY_BULLET(player, stage, x, y, 0, stage->GetScrollX(), rad, 1);
 			animation_timer = 0;
 			animation_type = 0;
 			state = ENEMY_STATE::RETURN;
@@ -154,7 +154,7 @@ void LEMON::Hit()
 
 	float bx1, by1, bx2, by2;
 	float gx1, gy1, gx2, gy2;
-	//プレイヤーが投げた体一部との当たり判定
+	//プレイヤーが投げた体の一部との当たり判定
 	if ((state != ENEMY_STATE::FALL) || (state != ENEMY_STATE::DETH))
 	{
 		for (int i = 0; i < player->GetThrowCnt(); i++)
