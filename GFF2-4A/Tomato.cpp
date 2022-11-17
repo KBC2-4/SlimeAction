@@ -157,12 +157,14 @@ bool TOMATO::DethAnimation()
 {
 	bool ret = false;
 	//アニメーション
-	if (animation_timer % ANIMATION_TIME == 0)
+	if (animation_timer < 15)
 	{
-		now_image = image[(++animation_type % 6) + 1];
+		if (animation_timer % ANIMATION_TIME == 0)
+		{
+			now_image = image[(++animation_type % 6) + 1];
+		}
 	}
-	//アニメーションの終了
-	if (animation_timer > 15)
+	else //アニメーションの終了
 	{
 		ret = true;
 	}
