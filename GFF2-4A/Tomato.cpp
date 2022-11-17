@@ -52,7 +52,7 @@ void TOMATO::Update()
 	{
 	case ENEMY_STATE::IDOL:
 		//ƒvƒŒƒCƒ„[‚ªˆê’è”ÍˆÍˆÈ“à‚É“ü‚Á‚Ä‚¢‚éŠÔ—Ž‚¿‚é
-		if ((IdolAnimation()) && (fabsf(player->GetPlayerX() - (x + stage->GetScrollX())) < 240))
+		if ((IdolAnimation()) && (fabsf(player->GetPlayerX() - (x + stage->GetScrollX())) < 240) && (y + stage->GetScrollY() > 0))
 		{
 			animation_timer = 0;
 			state = ENEMY_STATE::FALL;
