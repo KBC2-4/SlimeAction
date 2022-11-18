@@ -98,8 +98,12 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	}
 
 	//画面端の判定
-	if (player_left <= 0) player_x = 40;
-	if (player_right + STAGE::GetScrollX() >= 1280) player_x = 1240;
+	if (player_x <= 40 * player_scale) {
+		player_x = 40 * player_scale;
+	}
+	if (player_x + STAGE::GetScrollX() >= 1280 - MAP_CEllSIZE / 2 * player_scale) {
+		player_x = 1280 - MAP_CEllSIZE / 2 * player_scale;
+	}
 
 	//描画する画像のセット
 	int image_type = 0;
