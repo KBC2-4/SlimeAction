@@ -197,8 +197,8 @@ void GRAPEFRUIT::Hit()
 			bx2 = throw_slime.GetThrowX() + BALL_W;
 			by2 = throw_slime.GetThrowY() - BALL_H;
 			//グレープフルーツの当たり判定
-			gx1 = x;
-			gy1 = y;
+			gx1 = x - IMAGE_SIZE / 2;
+			gy1 = y - IMAGE_SIZE / 2;
 			gx2 = gx1 + IMAGE_SIZE;
 			gy2 = gy1 + IMAGE_SIZE;
 			if (((bx2 >= gx1 && bx2 <= gx2) || (bx1 <= gx2 && bx1 >= gx1)) && ((by1 >= gy2 && by1 <= gy1) || (by2 >= gy1 && by2 <= gy2)))
@@ -332,10 +332,16 @@ void GRAPEFRUIT::Draw() const
 {
 	for (int i = 0; i < 2; i++)
 	{
-		DrawRotaGraph(x + stage->GetScrollX(), (y + 10 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), fruit_image[i], TRUE);
-		DrawRotaGraph(x + stage->GetScrollX(), (y + 10 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), face_image[i], TRUE);
+		DrawRotaGraph(x + stage->GetScrollX(), (y + 5 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), fruit_image[i], TRUE);
+		DrawRotaGraph(x + stage->GetScrollX(), (y + 5 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), face_image[i], TRUE);
 	}
-	
+	float gx1, gy1, gx2, gy2;
+	gx1 = x - IMAGE_SIZE / 2;
+	gy1 = y - IMAGE_SIZE / 2;
+	gx2 = gx1 + IMAGE_SIZE;
+	gy2 = gy1 + IMAGE_SIZE;
+
+	DrawBoxAA(gx1 + stage->GetScrollX(), gy1 + stage->GetScrollY(), gx2 + stage->GetScrollX(), gy2 + stage->GetScrollY(), 0xffffff, FALSE);
 
 	if (flag)
 	{

@@ -165,10 +165,10 @@ void LEMON::Hit()
 			by1 = throw_slime.GetThrowY();
 			bx2 = throw_slime.GetThrowX() + BALL_W;
 			by2 = throw_slime.GetThrowY() - BALL_H;
-			//グレープフルーツの当たり判定
-			gx1 = x;
-			gy1 = y;
-			gx2 = gx1 + IMAGE_SIZE;
+			//レモナーの当たり判定
+			gx1 = x - IMAGE_SIZE / 2.5;
+			gy1 = y - IMAGE_SIZE / 2;
+			gx2 = gx1 + IMAGE_SIZE / 1.25;
 			gy2 = gy1 + IMAGE_SIZE;
 			if (((bx2 >= gx1 && bx2 <= gx2) || (bx1 <= gx2 && bx1 >= gx1)) && ((by1 >= gy2 && by1 <= gy1) || (by2 >= gy1 && by2 <= gy2)))
 			{
@@ -215,6 +215,7 @@ bool LEMON::PressAnimation()
 	}
 	return ret;
 }
+
 bool LEMON::ReturnAnimation()
 {
 	bool ret = false;
@@ -239,6 +240,7 @@ void LEMON::FallAnimation()
 		now_image = image[(++animation_type % 2) + 7];
 	}
 }
+
 bool LEMON::DethAnimation()
 {
 	bool ret = false;
@@ -259,11 +261,11 @@ bool LEMON::DethAnimation()
 
 void LEMON::Draw() const
 {
+	float gx1, gy1, gx2, gy2;
+
 	if (bullet != nullptr)		//弾が存在するとき弾を描画する
 	{
 		bullet->Draw();
 	}
 	DrawRotaGraph(x + stage->GetScrollX(), y + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), now_image, TRUE);
-
-	
 }
