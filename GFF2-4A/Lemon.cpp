@@ -69,15 +69,11 @@ void LEMON::Update()
 		break;
 	case ENEMY_STATE::MOVE:
 		ChangeAngle();
-		if((x+stage->GetScrollX() > 0) && (x + stage->GetScrollX()<1280))
+		if (++shootcount % 180 == 0)
 		{
-			if (++shootcount % 180 == 0)
-			{
-				animation_timer = 0;
-				state = ENEMY_STATE::PRESS;
-			}
+			animation_timer = 0;
+			state = ENEMY_STATE::PRESS;
 		}
-		
 		break;
 	case ENEMY_STATE::RETURN:
 		ChangeAngle();
@@ -155,7 +151,7 @@ void LEMON::Hit()
 	float bx1, by1, bx2, by2;
 	float gx1, gy1, gx2, gy2;
 	//ƒvƒŒƒCƒ„[‚ª“Š‚°‚½‘Ì‚Ìˆê•”‚Æ‚Ì“–‚½‚è”»’è
-	if ((state != ENEMY_STATE::FALL) || (state != ENEMY_STATE::DETH))
+	if ((state != ENEMY_STATE::FALL) && (state != ENEMY_STATE::DETH))
 	{
 		for (int i = 0; i < player->GetThrowCnt(); i++)
 		{
