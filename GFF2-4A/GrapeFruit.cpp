@@ -155,7 +155,7 @@ void GRAPEFRUIT::Update()
 
 	Hit();
 
-	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY()) < 0 || (y + stage->GetScrollY()) > 720)		//画面外に出るとアイドル状態にする
+	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY() < 0) || (y + stage->GetScrollY() > 720))		//画面外に出るとアイドル状態にする
 	{
 		state = ENEMY_STATE::IDOL;
 	}
@@ -186,7 +186,7 @@ void GRAPEFRUIT::Hit()
 	float bx1, by1, bx2, by2;
 	float gx1, gy1, gx2, gy2;
 	//プレイヤーが投げた体一部との当たり判定
-	if ((state != ENEMY_STATE::FALL) || (state != ENEMY_STATE::DETH))
+	if ((state != ENEMY_STATE::FALL) && (state != ENEMY_STATE::DETH))
 	{
 		for (int i = 0; i < player->GetThrowCnt(); i++)
 		{
