@@ -152,8 +152,8 @@ void TOMATO::FallAnimation()
 bool TOMATO::DethAnimation()
 {
 	bool ret = false;
-	//アニメーション
-	if (animation_timer < 15)
+	
+	if (animation_timer < 15)	//15フレーム間アニメーション
 	{
 		if (animation_timer % ANIMATION_TIME == 0)
 		{
