@@ -98,7 +98,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	}
 
 	//画面端の判定
-	if (player_left <= 0) player_x = 40;
+	if (player_left <= 0) player_x = player_scale * 40;
 	if (player_right + STAGE::GetScrollX() >= 1280) player_x = 1240;
 
 	//描画する画像のセット
@@ -654,10 +654,10 @@ void PLAYER::Throw() {
 	//角度の制限
 	if (move_type == 0) {
 		if (angle > 90) throw_rad = 90 * M_PI / 180.0f;
-		else if (angle < 60) throw_rad = 60 * M_PI / 180.0f;
+		else if (angle < 30) throw_rad = 30 * M_PI / 180.0f;
 	}
 	else {
-		if (angle > 120) throw_rad = 120 * M_PI / 180.0f;
+		if (angle > 150) throw_rad = 150 * M_PI / 180.0f;
 		else if (angle < 90) throw_rad = 90 * M_PI / 180.0f;
 	}
 
