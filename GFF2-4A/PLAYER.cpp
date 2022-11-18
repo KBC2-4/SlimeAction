@@ -795,6 +795,10 @@ bool PLAYER::GetBullet(int* bullet) {
 		r1XY = sqrt(r1X * r1X + r1Y * r1Y);
 		if (r1XY <= 40 + BULLETRADIUS && throw_slime[i].Get_throwfall() == true) {
 			++life;
+			if (life > 5) {
+				life = 5;
+				return false;
+			}
 			*bullet = i;
 			return true;
 		}
