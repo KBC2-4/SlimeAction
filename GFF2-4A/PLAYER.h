@@ -58,6 +58,9 @@ private:
 	float player_top = 0, player_bottom = 0;
 	float rebound_x;
 	float jump_move_x;
+	bool is_ground;		//地面についてるかどうか
+	bool hit_ceil;
+
 	int life;
 	int now_image;			//描画する画像
 	int images[ANIMATION_TYPE][10];		//アニメーションの画像
