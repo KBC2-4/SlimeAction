@@ -61,6 +61,7 @@ private:
 	bool is_ground;		//地面についてるかどうか
 	bool hit_ceil;
 
+	bool hitBullet;
 	int life;
 	int now_image;			//描画する画像
 	int images[ANIMATION_TYPE][10];		//アニメーションの画像
@@ -159,11 +160,11 @@ public:
 	void Move();
 	void Draw() const;
 	void HookMove(ELEMENT* element);
-	void JumpMove(ELEMENT* element);
+	void JumpMove();
 	void Throw();
 	void MoveAnimation();
 	void Update(ELEMENT*element, STAGE* stage);
-	void HitBlock();
+	void HitBlock(ELEMENT* element);
 	void Scroll(float move_x);
 	int HitPlayer(float x, float y, int diameter,int type);	//type::土管=1,
 

@@ -79,15 +79,15 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	int bullet;
 	rebound_x = SPEED * player_scale;
 	Move();
-	JumpMove(element);
+	JumpMove();
 	HookMove(element);
 	Throw();
-	HitBlock();
-	if (GetBullet(&bullet) == true) {
+	if ((hitBullet = GetBullet(&bullet)) == true) {
 		/*throw_x.erase(throw_x.begin());
 		throw_y.erase(throw_y.begin());*/
 		throw_slime.erase(throw_slime.begin() + bullet);
 	}
+	HitBlock(element);
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Update(stage);
@@ -523,7 +523,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 /// <summary>
 /// プレイヤーのジャンプ処理
 /// </summary>
-void PLAYER::JumpMove(ELEMENT* element) {
+void PLAYER::JumpMove() {
 	if (CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
 	static bool is_jump = false;		//ジャンプ中か
 	static float jump_y = 0;			//ジャンプの高さ
@@ -560,11 +560,6 @@ void PLAYER::JumpMove(ELEMENT* element) {
 		velocity += 0.2f;
 		player_y += velocity;
 
-		bool hit_ceil_center = STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		bool hit_ceil_left = STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_left + SPEED * player_scale) / MAP_CEllSIZE));
-		bool hit_ceil_right = STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_right - SPEED * player_scale) / MAP_CEllSIZE));
-		hit_ceil = hit_ceil_center || hit_ceil_left || hit_ceil_right;
-
 		if (player_y <= jump_y || hit_ceil || player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			is_jump = false;
 			hit_ceil = false;
@@ -574,29 +569,6 @@ void PLAYER::JumpMove(ELEMENT* element) {
 	}
 	//落下中
 	else {
-		//地面の判定
-		is_ground = false;
-		if  (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) &&
-			!STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) &&
-			!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE))) {
-				is_ground = true;
-		}
-		if  (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) && 
-			!STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
-			!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
-				is_ground = true;
-		}
-		if  (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
-			!STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
-			!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE))) {
-				is_ground = true;
-		}
-		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
-			is_ground = true;
-		}
-		if (element->HitLift(player_scale)) {
-			is_ground = true;
-		}
 
 		//地面じゃない時は落下
 		if (!is_ground) {
@@ -714,7 +686,7 @@ void PLAYER::Throw() {
 /// <summary>
 /// 横移動の当たり判定
 /// </summary>
-void PLAYER::HitBlock() {
+void PLAYER::HitBlock(ELEMENT* element) {
 	//マップチップの座標のセット
 	map_x = (int)roundf((player_x) / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
@@ -723,10 +695,42 @@ void PLAYER::HitBlock() {
 	player_top = (player_y - MAP_CEllSIZE / 2);
 	player_bottom = (player_y + MAP_CEllSIZE / 2);
 
+	//天井の判定
+	bool hit_ceil_center = STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+	bool hit_ceil_left = STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_left + SPEED * player_scale) / MAP_CEllSIZE));
+	bool hit_ceil_right = STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_right - SPEED * player_scale) / MAP_CEllSIZE));
+	hit_ceil = hit_ceil_center || hit_ceil_left || hit_ceil_right;
+	
+	//地面の判定
+	is_ground = false;
 	if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
+		is_ground = true;
 		return;
 	}
+	if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) &&
+		!STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) &&
+		!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE))) {
+		is_ground = true;
+	}
+	float diff_y = fabsf(player_y - old_player_y);
+	if (fmodf(player_y, MAP_CEllSIZE / 2) <= diff_y) {
+		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
+			!STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
+			!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
+			is_ground = true;
+		}
+		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
+			!STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
+			!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE))) {
+			is_ground = true;
+		}
+	}
+	
+	if (element->HitLift(player_scale)) {
+		is_ground = true;
+	}
 
+	//壁の判定
 	int screen_left = static_cast<int>(-STAGE::GetScrollX() / MAP_CEllSIZE);
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = screen_left; j < screen_left + 20; j++) {
@@ -742,6 +746,9 @@ void PLAYER::HitBlock() {
 				if (player_bottom > block_top && player_top < block_bottom) {
 					if (!hit_ceil) {
 						player_x = old_player_x;
+						if (hitBullet) {
+							player_x -= move_x * player_scale * SPEED * 2;
+						}
 						break;
 					}
 				}
