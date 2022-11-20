@@ -33,6 +33,8 @@ ELEMENT::ELEMENT() {
 				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25);
 				data.y = static_cast<float>(i * MAP_CEllSIZE + MAP_CEllSIZE / 2) ;
 				data.type = 1;
+				data.flg = false;
+				data.animtimer = 0;
 				button.push_back(data);
 				break;
 					
@@ -41,6 +43,8 @@ ELEMENT::ELEMENT() {
 				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 2;
+				data.flg = false;
+				data.animtimer = 0;
 				button.push_back(data);
 				break;
 
@@ -50,6 +54,8 @@ ELEMENT::ELEMENT() {
 				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25);
 				data.type = 3;
+				data.flg = false;
+				data.animtimer = 0;
 				button.push_back(data);
 				break;
 
@@ -58,14 +64,18 @@ ELEMENT::ELEMENT() {
 				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 1;
+				data.flg = false;
+				data.animtimer = 0;
 				door.push_back(data);
 				break;
 
 				//マンホールの蓋
 			case 68:
-				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
-				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.x = static_cast<float>((j * MAP_CEllSIZE));
+				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 1;
+				data.flg = false;
+				data.animtimer = 0;
 				manhole.push_back(data);
 				break;
 
@@ -74,6 +84,8 @@ ELEMENT::ELEMENT() {
 				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 2;
+				data.flg = false;
+				data.animtimer = 0;
 				manhole.push_back(data);
 				break;
 
@@ -82,6 +94,8 @@ ELEMENT::ELEMENT() {
 				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.type = 3;
+				data.flg = false;
+				data.animtimer = 0;
 				manhole.push_back(data);
 				break;
 
@@ -112,6 +126,8 @@ ELEMENT::ELEMENT() {
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 2;
+				data.flg = false;
+				data.animtimer = 0;
 				lift.push_back(data);
 				break;
 
@@ -120,6 +136,8 @@ ELEMENT::ELEMENT() {
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 0;
+				data.flg = false;
+				data.animtimer = 0;
 				lift_goal.push_back(data);
 				break;
 
@@ -172,8 +190,23 @@ void ELEMENT::Draw() const {
 	//マンホール
 	for (int i = 0; i < manhole.size(); i++) {
 		if (manhole[i].flg == true) {
+			if (manhole[i].type == 1) {
+
+				if (manhole[i].animtimer < 240) {
+					DrawModiGraph(manhole[i].x + scroll_x, manhole[i].y + scroll_y - manhole[i].animtimer * 1.2,
+						manhole[i].x + scroll_x + MAP_CEllSIZE, manhole[i].y + scroll_y - manhole[i].animtimer * 1.2,
+						manhole[i].x + scroll_x + MAP_CEllSIZE, manhole[i].y + scroll_y + MAP_CEllSIZE,
+						manhole[i].x + scroll_x, manhole[i].y + scroll_y + MAP_CEllSIZE,
+						block_image1[67], TRUE);
+				}
+				else {
+					DrawGraph(manhole[i].x + scroll_x, manhole[i].y + scroll_y, block_image1[97], TRUE);
+				}
+			}
 			//DrawOvalAA(manhole[i].x + scroll_x, manhole[i].y + scroll_y + 30 + manhole[i].animtimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
-			//DrawGraph(manhole[i].x + scroll_x + manhole[i].animtimer, manhole[i].y + scroll_y, block_image1[67], TRUE);
+			
+		}else{
+			DrawGraph(manhole[i].x + scroll_x, manhole[i].y - scroll_y, block_image1[67], TRUE);
 		}
 	}
 }
@@ -339,27 +372,32 @@ bool ELEMENT::HitLift(float player_scale) {
 /// </summary>
 void ELEMENT::Manhole(PLAYER* player) {
 	for (int i = 0; i < manhole.size(); i++) {
-		if (manhole[i].flg == true)manhole[i].animtimer++;
-		if (manhole[i].animtimer > 180) {
-			manhole[i].animtimer = 0;
-			manhole[i].flg = false;
+		if (manhole[i].flg == true && manhole[i].animtimer < 240)manhole[i].animtimer++;
+		if (manhole[i].animtimer > 240) {
+			//manhole[i].animtimer = 0;
+			//manhole[i].flg = false;
 		}
 		if (manhole[i].type == 1) {
-			if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
-			
+			if ((player_map_x >= manhole[i].x) && (player_map_x <= manhole[i].x + MAP_CEllSIZE) && (player_map_y <= manhole[i].y + MAP_CEllSIZE) && (player_map_y >= manhole[i].y)) {
+				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
+				
+				if (manhole[i].flg == false) {
+					player->SetPlayerY(player->GetPlayerY() - 2.0f);
+				}
 
-			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE + 25) && (player_map_x <= manhole[i].x + MAP_CEllSIZE - 25) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
-				//player->SetPlayerY(player->GetPlayerY() - 2.0f);
-				//manhole[i].flg = true;
-
+				if (manhole[i].animtimer >= 240) {
+					int x = floor(manhole[i].x / MAP_CEllSIZE);
+					int y = floor(manhole[i].y / MAP_CEllSIZE);
+					map_data[y][x] = 98;
+				}
 			}
 		}
 
 		//中間地点
 		if (manhole[i].type == 2) {
-			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE + 25) && (player_map_x <= manhole[i].x + MAP_CEllSIZE - 25) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
+			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE / 2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE /2) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
 				//プレイヤーの落下速度を遅くする
-				player->SetPlayerY(player->GetPlayerY() - 10.0f);
+				player->SetPlayerY(player->GetPlayerY() - 3.0f);
 			}
 		}
 

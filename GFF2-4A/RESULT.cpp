@@ -72,7 +72,7 @@ AbstractScene* RESULT::Update() {
 	if (effect_timer[0] >= 40 && effect_timer[1] < 100) { ++effect_timer[1]; }
 	else { effect_timer[1] = 100; }
 
-	if (win == true && timer > 8 * 60) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
+	if (win == true && timer > 9 * 60) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
 	if(win == false && timer > 5 * 80){ PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
 	if (timer <= 5 * 60) { if (CheckSoundMem(count_se) == FALSE)PlaySoundMem(count_se, DX_PLAYTYPE_BACK, FALSE); }
 
