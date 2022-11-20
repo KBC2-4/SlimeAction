@@ -169,8 +169,8 @@ void PLAYER::Draw()const {
 			//DrawRotaGraph3F(player_x + STAGE::GetScrollX(), player_y, 40, 80,
 			//	1/** player_scale*/, (hook_distance / (MAP_CEllSIZE / 2))* player_scale, (double)hook_angle,
 			//	images[3][1], TRUE, move_type);
-			DrawRotaGraph3F(player_x + STAGE::GetScrollX(), player_y, 160, 80,
-				(hook_distance / (MAP_CEllSIZE * 2.5)) * player_scale, 1 * player_scale, (double)hook_angle,
+			DrawRotaGraph3F(player_x + STAGE::GetScrollX() + 20, (player_y + STAGE::GetScrollY()) + (1.6 - player_scale) * 40, 226, 80,
+				(hook_distance / (MAP_CEllSIZE * 3.5)) * player_scale, 1 * player_scale, (double)hook_angle,
 				images[3][1], TRUE, move_type);
 		}
 	}
