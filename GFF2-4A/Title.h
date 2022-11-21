@@ -3,6 +3,12 @@
 #include "STAGE.h"
 #include "PadInput.h"
 
+enum class MENU
+{
+    GAME_SELECT=0,
+    RANKING,
+    END
+};
 class Title :
     public AbstractScene
 {
@@ -11,7 +17,9 @@ private:
     int cursor_move_se, ok_se;
     int title_font,menu_font;
     int selectmenu;
-    
+    int input_margin;
+    int timer;
+
 public:
     //コンストラクタ
     Title();

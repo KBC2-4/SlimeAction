@@ -1,5 +1,6 @@
 #include "GameMain.h"
 #include "Title.h"
+#include "GameOver.h"
 #include <vector>
 
 GAMEMAIN::GAMEMAIN(bool restert)
@@ -242,7 +243,7 @@ AbstractScene* GAMEMAIN::Update()
 			//ゲームオーバー
 			if (player->IsDeath()) {
 				if (restart == false && stage->GetHalfwayPointFlg() == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
-				return new RESULT(false);
+				return new GameOver();
 			}
 
 			//ステージクリア

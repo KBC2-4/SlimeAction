@@ -155,6 +155,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="GrapeFruit.cpp" />
     <ClCompile Include="ITEMBALL.cpp" />
     <ClCompile Include="Lemon.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="GameMain.h" />
+    <ClInclude Include="GameOver.h" />
     <ClInclude Include="GrapeFruit.h" />
     <ClInclude Include="ITEMBALL.h" />
     <ClInclude Include="Lemon.h" />
