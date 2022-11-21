@@ -43,13 +43,18 @@ AbstractScene* Title::Update()
 {
 
 	input_margin++;
+
 	if (PAD_INPUT::GetPadThumbLY() > 1000 && input_margin > 20) 
 	{ 
+
 		selectmenu = (selectmenu + 2) % 3;  
 		input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); 
 		StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); 
 	}
-	if (PAD_INPUT::GetPadThumbLY() < -1000 && input_margin > 20) { 
+
+	if (PAD_INPUT::GetPadThumbLY() < -1000 && input_margin > 20) 
+	{ 
+
 		selectmenu = (selectmenu + 1) % 3; input_margin = 0;
 		PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
 		StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
@@ -60,16 +65,19 @@ AbstractScene* Title::Update()
 
 		switch (static_cast<MENU>(selectmenu))
 		{
+
 		case MENU::GAME_SELECT:
 			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); 
 			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1); 
 			return new GAMEMAIN();
 			break;
+
 		case MENU::RANKING:
 			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); 
 			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1); 
-			return new RESULT(false);
+			return new GameOver();	//デバッグ用でGameOverへ移動
 			break;
+
 		case MENU::END:
 			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
 			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
@@ -78,6 +86,7 @@ AbstractScene* Title::Update()
 			InitSoundMem();
 			return nullptr;
 			break;
+
 		default:
 			break;
 		}

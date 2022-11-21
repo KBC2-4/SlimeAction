@@ -13,12 +13,22 @@ GameOver::GameOver()
 
 	//Select用fontを初期化
 	Select_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	//Bボタンを押すのを促す文字列用fontを初期化
+	Button_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
 	//Input_WaitTimeを初期化
 	Input_WaitTime= 0;
 
 	//Selectcursorの移動数をカウントする変数を初期化
 	SelectCount = 0;
+
+	timer=0;
+}
+
+GameOver::~GameOver()
+{
+	DeleteGraph(GameOverImage);
+	DeleteFontToHandle(Select_font);
 }
 
 AbstractScene* GameOver::Update()
@@ -59,8 +69,12 @@ AbstractScene* GameOver::Update()
 		case GAMEOVER_MENU::NewGame:
 			return new GAMEMAIN();
 			break;
+
+		default:
+			break;
 		}
 	}
+	timer++;
 
 	return this;
 }
@@ -79,4 +93,13 @@ void GameOver::Draw() const
 	//Select用String
 	DrawStringToHandle(330, 360, "GameSelect", SelectCount == 0 ? 0x95ff89 : 0x000000, Select_font, 0x000000);
 	DrawStringToHandle(445, 460, "Restart", SelectCount == 1 ? 0x95ff89 : 0x000000, Select_font, 0x000000);
+
+	if (timer % 120 < 60)
+	{
+
+		//Bボタンを押すことを促す(表示非表示を切り替え)
+		DrawCircleAA(580.5f, 627.5f, 20, 20, 0x000000, 1);
+		DrawExtendStringToHandle(572, 610, 0.4f, 0.4f, "B", 0x20ff07, Button_font, 0x000000);
+		DrawExtendStringToHandle(600, 610, 0.4f, 0.4f, "で決定", 0x95ff89, Button_font, 0x000000);
+	}
 }

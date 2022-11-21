@@ -1,6 +1,7 @@
 #pragma once
 #include "AbstractScene.h"
 #include "STAGE.h"
+#include "GameOver.h"
 #include "PadInput.h"
 
 enum class MENU
