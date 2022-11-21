@@ -729,15 +729,29 @@ void PLAYER::HitBlock(ELEMENT* element) {
 	}
 	float diff_y = fabsf(player_y - old_player_y);
 	if (fmodf(player_y, MAP_CEllSIZE / 2) <= diff_y) {
+		bool is_manhole = false;
 		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
 			!STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
 			!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
 			is_ground = true;
 		}
+		else {
+			int block_type = STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE));
+			if (block_type == 68 || block_type == 69) {
+				is_manhole = true;
+				is_ground = false;
+			}
+		}
 		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
 			!STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
-			!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE))) {
+			!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) && !is_manhole) {
 			is_ground = true;
+		}
+		else {
+			int block_type = STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE));
+			if (block_type == 68 || block_type == 69) {
+				is_ground = false;
+			}
 		}
 	}
 	
