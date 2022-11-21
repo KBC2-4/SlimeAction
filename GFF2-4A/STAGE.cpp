@@ -19,7 +19,7 @@ STAGE::STAGE() {
 	*block_image1 = 0;
 	*stage_image = 0;
 	//scroll_x = -8640;
-	scroll_x = -5600;
+	scroll_x = 0;
 	scroll_y = 0;
 	player_x_old = 20.f;
 	player_y_old = 500.f;
