@@ -75,8 +75,9 @@ void STAGE::Draw()const {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			//画面外は描画しない
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
-				if (map_data[i][j] < 89 
+				if (map_data[i][j] < 89 && map_data[i][j] != 68
 					|| (map_data[i][j] <= 74	//酸性雨の水たまりを描画しない
+												////マンホールの開いている蓋を描画しない
 					&& map_data[i][j] >= 79)
 					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data[i][j] - 1], TRUE); }
 			}
@@ -189,6 +190,7 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 93	//トマトン
 		|| block_type == 95	//動く床
 		|| block_type == 97	//マンホールの蓋(出口)
+		|| block_type == 98	//マンホールの開いている蓋
 		) {
 		return false;
 	}
@@ -210,6 +212,7 @@ bool STAGE::HitThrowSlime(int y, int x) {
 		|| block_type == 72	//ツタ(捕まる部分)
 		|| block_type == 73	//ゴール
 		|| block_type == 97	//マンホールの蓋End
+		|| block_type == 98	//マンホールの開いている蓋
 		) {
 		return false;
 	}

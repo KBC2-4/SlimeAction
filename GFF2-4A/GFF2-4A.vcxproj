@@ -171,6 +171,7 @@
     <ClCompile Include="RESULT.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="STAGE.cpp" />
+    <ClCompile Include="StageSelect.cpp" />
     <ClCompile Include="ThrowSlime.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tomato.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="RESULT.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="STAGE.h" />
+    <ClInclude Include="StageSelect.h" />
     <ClInclude Include="ThrowSlime.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tomato.h" />

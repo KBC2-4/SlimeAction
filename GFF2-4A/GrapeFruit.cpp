@@ -335,14 +335,7 @@ void GRAPEFRUIT::Draw() const
 		DrawRotaGraph(x + stage->GetScrollX(), (y + 5 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), fruit_image[i], TRUE);
 		DrawRotaGraph(x + stage->GetScrollX(), (y + 5 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), face_image[i], TRUE);
 	}
-	float gx1, gy1, gx2, gy2;
-	gx1 = x - IMAGE_SIZE / 2;
-	gy1 = y - IMAGE_SIZE / 2;
-	gx2 = gx1 + IMAGE_SIZE;
-	gy2 = gy1 + IMAGE_SIZE;
-
-	DrawBoxAA(gx1 + stage->GetScrollX(), gy1 + stage->GetScrollY(), gx2 + stage->GetScrollX(), gy2 + stage->GetScrollY(), 0xffffff, FALSE);
-
+	
 	if (flag)
 	{
 		for (int i = 0; i < bullet_count; i++)
