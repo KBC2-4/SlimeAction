@@ -439,7 +439,16 @@ void PLAYER::HookMove(ELEMENT* element) {
 					player_y += move_y;
 				}
 				//フックについたら移動処理の終了
-				else end_move = true;
+				else {
+					end_move = true;
+					//振り子の開始角度の設定
+					double angle = (double)hook_angle * (180.0 / M_PI) - 90.0;
+					if (angle > 90 && angle < 180) angle = 90.0;
+					else if (angle < -90 || angle > 180) angle = -90.0;
+					this->x = (CLENGTH / 360.0) * angle;
+					//スピードの初期化
+					speed = 0;
+				}
 				//フックまでの移動判定
 				is_hook_move = true;
 			}
