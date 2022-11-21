@@ -640,7 +640,7 @@ void PLAYER::Throw() {
 	dt = 0.15f;
 
 	x0 = player_x + STAGE::GetScrollX();
-	y0 = player_y;
+	y0 = player_y + STAGE::GetScrollY();
 
 	vx = vx0; vy = vy0;
 
