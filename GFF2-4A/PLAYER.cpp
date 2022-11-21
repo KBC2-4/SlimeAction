@@ -76,12 +76,13 @@ PLAYER::PLAYER() {
 /// </summary>
 void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	//clsDx();
+	this->stage = stage;
 	int bullet;
 	rebound_x = SPEED * player_scale;
 	Move();
 	JumpMove();
-	HookMove(element);
-	Throw();
+	HookMove(element, stage);
+	Throw(stage);
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_slime.size(); i++) {
 		if (throw_slime[i].checkdel() == true) {
@@ -93,13 +94,13 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	//	throw_y.erase(throw_y.begin());*/
 	//	throw_slime.erase(throw_slime.begin());
 	//}
-	HitBlock(element);
+	HitBlock(element, stage);
 	throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Update(stage);
 	}
 
-	if (STAGE::GetMapDat(map_y, map_x) == -1 || life <= 0) {
+	if (stage->GetMapData(map_y, map_x) == -1 || life <= 0) {
 		is_death = true;
 	}
 
@@ -107,7 +108,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	if (player_x <= 40 * player_scale) {
 		player_x = 40 * player_scale;
 	}
-	if (player_x + STAGE::GetScrollX() >= 1280 - MAP_CEllSIZE / 2 * player_scale) {
+	if (player_x + stage->GetScrollX() >= 1280 - MAP_CEllSIZE / 2 * player_scale) {
 		player_x = 1280 - MAP_CEllSIZE / 2 * player_scale;
 	}
 
@@ -142,7 +143,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// <summary>
 /// プレイヤーの表示
 /// </summary>
-void PLAYER::Draw()const {
+void PLAYER::Draw(STAGE *stage)const {
 	//デバッグ
 	//DrawFormatString(100, 50, 0xffffff, "%f", player_y);
 	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
@@ -152,7 +153,7 @@ void PLAYER::Draw()const {
 
 	//プレイヤーの表示
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		DrawRotaGraphF(player_x + STAGE::GetScrollX(), (player_y - 20 + STAGE::GetScrollY()) + (1.6 - player_scale) * 40, player_scale, 0.0, now_image, TRUE, move_type);
+		DrawRotaGraphF(player_x + stage->GetScrollX(), (player_y - 20 + stage->GetScrollY()) + (1.6 - player_scale) * 40, player_scale, 0.0, now_image, TRUE, move_type);
 	}
 	else {
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
@@ -161,21 +162,21 @@ void PLAYER::Draw()const {
 			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
 			float angle = atan2(diff_y, diff_x) + DX_PI_F;
 			if (move_type == 0) {
-				DrawRotaGraph3F(hook_x + nx + STAGE::GetScrollX(), hook_y + ny, 80, 80,
+				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny, 80, 80,
 					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
 					images[3][1], TRUE, move_type);
 			}
 			else {
-				DrawRotaGraph3F(hook_x + nx + STAGE::GetScrollX(), hook_y + ny, 80, 80,
+				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny, 80, 80,
 					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
 					images[3][0], TRUE, move_type);
 			}
 		}
 		else {
-			//DrawRotaGraph3F(player_x + STAGE::GetScrollX(), player_y, 40, 80,
+			//DrawRotaGraph3F(player_x + stage->GetScrollX(), player_y, 40, 80,
 			//	1/** player_scale*/, (hook_distance / (MAP_CEllSIZE / 2))* player_scale, (double)hook_angle,
 			//	images[3][1], TRUE, move_type);
-			DrawRotaGraph3F(player_x + STAGE::GetScrollX() + 20, (player_y + STAGE::GetScrollY()) + (1.6 - player_scale) * 40, 226, 80,
+			DrawRotaGraph3F(player_x + stage->GetScrollX() + 20, (player_y + stage->GetScrollY()) + (1.6 - player_scale) * 40, 226, 80,
 				(hook_distance / (MAP_CEllSIZE * 3.5)) * player_scale, 1 * player_scale, (double)hook_angle,
 				images[3][1], TRUE, move_type);
 		}
@@ -185,7 +186,7 @@ void PLAYER::Draw()const {
 
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
-		throw_slime[i].Draw();
+		throw_slime[i].Draw(stage);
 	}
 	if (life > 1) {
 		for (int i = 0; i < throw_x.size(); i += 5) {
@@ -292,26 +293,26 @@ void PLAYER::Move()
 
 void PLAYER::Scroll(float move_x) {
 	//スクロールの処理
-	bool isScroll = false;
-	//プレイヤーの位置が中心だったら
-	if (move_x > 0 && player_x >= 620 || move_x < 0 && player_x <= 660) {
-		//スクロールが端まで行ってない時
-		if (!(isScroll = (STAGE::GetScrollX() >= 0 || STAGE::GetScrollX() <= -8080))) {
-			//プレイヤーの位置を中心に戻す
-			rebound_x = SPEED * 1.3f;
-			//player_x -= move_x * rebound_x;
-		}
-	}
-	//スクロールしてない時
-	if (!isScroll) {
-		rebound_x = SPEED; //反発力を変更
-	}
+	//bool isScroll = false;
+	////プレイヤーの位置が中心だったら
+	//if (move_x > 0 && player_x >= 620 || move_x < 0 && player_x <= 660) {
+	//	//スクロールが端まで行ってない時
+	//	if (!(isScroll = (stage->GetScrollX() >= 0 || stage->GetScrollX() <= -8080))) {
+	//		//プレイヤーの位置を中心に戻す
+	//		rebound_x = SPEED * 1.3f;
+	//		//player_x -= move_x * rebound_x;
+	//	}
+	//}
+	////スクロールしてない時
+	//if (!isScroll) {
+	//	rebound_x = SPEED; //反発力を変更
+	//}
 }
 
 /// <summary>
 /// フックの移動処理
 /// </summary>
-void PLAYER::HookMove(ELEMENT* element) {
+void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 	//フックの移動方向
 	static float move_x = 0;
 	static float move_y = 0;
@@ -351,8 +352,8 @@ void PLAYER::HookMove(ELEMENT* element) {
 				float x = player_x;
 				float y = player_y;
 				//フックまでの移動経路に障害物がないか
-				while (!STAGE::HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
-					if (STAGE::GetMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
+				while (!stage->HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
+					if (stage->GetMapData(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
 						break;
 					}
 					x += move_x;
@@ -389,8 +390,8 @@ void PLAYER::HookMove(ELEMENT* element) {
 					float x = player_x;
 					float y = player_y;
 					//フックまでの移動経路に障害物がないか
-					while (!STAGE::HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
-						if (STAGE::GetMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
+					while (!stage->HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
+						if (stage->GetMapData(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
 							break;
 						}
 						x += move_x;
@@ -400,7 +401,7 @@ void PLAYER::HookMove(ELEMENT* element) {
 					int hook_map_x = x / MAP_CEllSIZE;
 					int hook_map_y = y / MAP_CEllSIZE;
 					//障害物がある場合は移動させない
-					if (STAGE::GetMapDat(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
+					if (stage->GetMapData(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
 						continue;
 					}
 					//最短距離の更新
@@ -587,7 +588,7 @@ void PLAYER::JumpMove() {
 
 		//地面じゃない時は落下
 		if (!is_ground) {
-			int object = STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE));
+			int object = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE));
 			velocity += 0.2f;
 			player_y += velocity;
 			player_state = PLAYER_MOVE_STATE::FALL;
@@ -624,7 +625,7 @@ void PLAYER::JumpMove() {
 
 }
 
-void PLAYER::Throw() {
+void PLAYER::Throw(STAGE* stage) {
 	static bool push_button = false;
 	//軌道の計算
 	throw_index = 0;
@@ -654,8 +655,8 @@ void PLAYER::Throw() {
 	g = 9.8;
 	dt = 0.15f;
 
-	x0 = player_x + STAGE::GetScrollX();
-	y0 = player_y + STAGE::GetScrollY();
+	x0 = player_x + stage->GetScrollX();
+	y0 = player_y + stage->GetScrollY();
 
 	vx = vx0; vy = vy0;
 
@@ -676,7 +677,7 @@ void PLAYER::Throw() {
 				//アニメーションのリセット
 				animation_type[2] = 0;
 				//投げる処理
-				throw_slime.push_back(ThrowSlime(throw_x, throw_y));
+				throw_slime.push_back(ThrowSlime(throw_x, throw_y, stage));
 				//life--;
 				animation_state = PLAYER_ANIM_STATE::THROW;
 			}
@@ -701,7 +702,7 @@ void PLAYER::Throw() {
 /// <summary>
 /// 横移動の当たり判定
 /// </summary>
-void PLAYER::HitBlock(ELEMENT* element) {
+void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 	//マップチップの座標のセット
 	map_x = (int)roundf((player_x) / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
@@ -711,9 +712,9 @@ void PLAYER::HitBlock(ELEMENT* element) {
 	player_bottom = (player_y + MAP_CEllSIZE / 2);
 
 	//天井の判定
-	bool hit_ceil_center = STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-	bool hit_ceil_left = STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_left + SPEED * player_scale) / MAP_CEllSIZE));
-	bool hit_ceil_right = STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_right - SPEED * player_scale) / MAP_CEllSIZE));
+	bool hit_ceil_center = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+	bool hit_ceil_left = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_left + SPEED * player_scale) / MAP_CEllSIZE));
+	bool hit_ceil_right = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_right - SPEED * player_scale) / MAP_CEllSIZE));
 	hit_ceil = hit_ceil_center || hit_ceil_left || hit_ceil_right;
 	
 	//地面の判定
@@ -722,33 +723,33 @@ void PLAYER::HitBlock(ELEMENT* element) {
 		is_ground = true;
 		return;
 	}
-	if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) &&
-		!STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) &&
-		!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE))) {
+	if (stage->HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) &&
+		!stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE)) &&
+		!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE))) {
 		is_ground = true;
 	}
 	float diff_y = fabsf(player_y - old_player_y);
 	if (fmodf(player_y, MAP_CEllSIZE / 2) <= diff_y) {
 		bool is_manhole = false;
-		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
-			!STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
-			!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
+		if (stage->HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
+			!stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
+			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
 			is_ground = true;
 		}
 		else {
-			int block_type = STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE));
+			int block_type = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE));
 			if (block_type == 68 || block_type == 69) {
 				is_manhole = true;
 				is_ground = false;
 			}
 		}
-		if (STAGE::HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
-			!STAGE::HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
-			!STAGE::HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) && !is_manhole) {
+		if (stage->HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
+			!stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
+			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) && !is_manhole) {
 			is_ground = true;
 		}
 		else {
-			int block_type = STAGE::GetMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE));
+			int block_type = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE));
 			if (block_type == 68 || block_type == 69) {
 				is_ground = false;
 			}
@@ -760,11 +761,11 @@ void PLAYER::HitBlock(ELEMENT* element) {
 	}
 
 	//壁の判定
-	int screen_left = static_cast<int>(-STAGE::GetScrollX() / MAP_CEllSIZE);
+	int screen_left = static_cast<int>(-stage->GetScrollX() / MAP_CEllSIZE);
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = screen_left; j < screen_left + 20; j++) {
 			if (j >= MAP_WIDTH) break;
-			if (!STAGE::HitMapDat(i, j)) continue;
+			if (!stage->HitMapDat(i, j)) continue;
 			
 			float block_left = j * MAP_CEllSIZE;
 			float block_right = block_left + MAP_CEllSIZE;
@@ -773,7 +774,7 @@ void PLAYER::HitBlock(ELEMENT* element) {
 
 			if (player_right > block_left && player_left < block_right) {
 				if (player_bottom > block_top && player_top < block_bottom) {
-					int block_type = STAGE::GetMapDat(i, j);
+					int block_type = stage->GetMapData(i, j);
 					if (!hit_ceil) {
 						//ドアの判定
 						if ((block_type == 66 || block_type == 67) && move_x > 0) {

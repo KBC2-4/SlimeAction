@@ -153,28 +153,29 @@ private:
 	//ステート変数
 	PLAYER_MOVE_STATE player_state;
 	PLAYER_ANIM_STATE animation_state;
+	STAGE *stage;
 
 public:
 	PLAYER();
 
 	void Move();
-	void Draw() const;
-	void HookMove(ELEMENT* element);
+	void Draw(STAGE* stage) const;
+	void HookMove(ELEMENT* element, STAGE* stage);
 	void JumpMove();
-	void Throw();
+	void Throw(STAGE* stage);
 	void MoveAnimation();
 	void Update(ELEMENT*element, STAGE* stage);
-	void HitBlock(ELEMENT* element);
+	void HitBlock(ELEMENT* element, STAGE* stage);
 	void Scroll(float move_x);
 	int HitPlayer(float x, float y, int diameter,int type);	//type::土管=1,
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
 	bool IsDeath() { return is_death; }
-	static float GetPlayerX() { return player_x + STAGE::GetScrollX(); }
+	float GetPlayerX() { return player_x + stage->GetScrollX(); }
 	static float GetPlayerY() { return player_y; }
 
-	void SetPlayerX(float x) { player_x = x - STAGE::GetScrollX(); }
+	void SetPlayerX(float x) { player_x = x - stage->GetScrollX(); }
 	void SetPlayerY(float y) { player_y = y; }
 
 	int GetThrowCnt() { return throw_slime.size(); }

@@ -35,7 +35,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
 		{
-			if (stage->GetMapDat(i, j) == 93)
+			if (stage->GetMapData(i, j) == 93)
 			{
 				tomaton_count++;
 				item_count++;
@@ -64,7 +64,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
 		{
-			if (stage->GetMapDat(i, j) == 92)
+			if (stage->GetMapData(i, j) == 92)
 			{
 				gurepon_count++;
 				spawn_point.push_back(std::vector<int>(2));
@@ -93,7 +93,7 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
 		{
-			if (stage->GetMapDat(i, j) == 91)
+			if (stage->GetMapData(i, j) == 91)
 			{
 				lemoner_count++;
 				spawn_point.push_back(std::vector<int>(2));
@@ -269,8 +269,8 @@ void GAMEMAIN::Draw() const
 {
 
 	//ステージ背景
-	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
-	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
+	DrawGraph(int(stage->GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
+	DrawTurnGraph(int(stage->GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
 
 
 	//ステージの描画
@@ -278,7 +278,7 @@ void GAMEMAIN::Draw() const
 	stage->Draw();
 
 	//プレイヤーの描画
-	player->Draw();
+	player->Draw(stage);
 
 	//レモナーの描画
 	for (int i = 0; i < lemoner_count; i++)
