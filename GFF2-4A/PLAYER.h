@@ -180,7 +180,7 @@ public:
 	int GetThrowCnt() { return throw_slime.size(); }
 	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
-	bool GetBullet(int* bullet);	//ドロップした玉を拾う処理
+	/*bool GetBullet(int* bullet);*/	//ドロップした玉を拾う処理
 	double GetSpeed() { return speed; }
 	float GetMoveX() { return move_x; }
 
