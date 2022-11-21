@@ -19,7 +19,7 @@ STAGE::STAGE() {
 	*block_image1 = 0;
 	*stage_image = 0;
 	//scroll_x = -8640;
-	scroll_x = 0;
+	scroll_x = -5600;
 	scroll_y = 0;
 	player_x_old = 20.f;
 	player_y_old = 500.f;
@@ -103,13 +103,6 @@ void STAGE::CameraWork(PLAYER* player) {
 		else if (player->GetPlayerX() - player_x_old < 0) {
 			player_vector_x = -1;
 		}
-		//プレイヤーyベクトルの判定
-		if (player->GetPlayerY() - player_y_old < 0) {
-			player_vector_y = 1;
-		}
-		else if (player->GetPlayerY() - player_y_old > 0) {
-			player_vector_y = -1;
-		}
 	
 	
 
@@ -125,7 +118,7 @@ void STAGE::CameraWork(PLAYER* player) {
 	if (player->GetPlayerY()>=720) {
 		scroll_y = -320;
 	}
-	else if (player->GetPlayerY() >= 640) {
+	else if (player->GetPlayerY() < 640) {
 		scroll_y = 0;
 	}
 
