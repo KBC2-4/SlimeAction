@@ -81,5 +81,5 @@ void Title::Draw()const
 	}
 	else if (timer > 120) { timer = 0; }
 	
-
+	DrawFormatString(20, 700, 0xFFFFFF, "Ver.%.2f", VERSION);	//バージョン表記
 }

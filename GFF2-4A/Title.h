@@ -3,6 +3,8 @@
 #include "STAGE.h"
 #include "PadInput.h"
 
+#define VERSION     2.34
+
 class Title :
     public AbstractScene
 {

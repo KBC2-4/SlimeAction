@@ -49,6 +49,8 @@ RESULT::RESULT(bool issue, int clear_time) {
 
 	this->clear_time =  GetNowCount() - clear_time;
 	se_randnum = GetRand(3);
+
+	*effect_timer = 0;
 }
 
 RESULT::~RESULT() {
@@ -64,7 +66,13 @@ RESULT::~RESULT() {
 }
 
 AbstractScene* RESULT::Update() {
-	if (win == true && timer > 8 * 60) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
+
+	if (effect_timer[0] < 40) { ++effect_timer[0]; }
+	else { effect_timer[0] = 40; }
+	if (effect_timer[0] >= 40 && effect_timer[1] < 100) { ++effect_timer[1]; }
+	else { effect_timer[1] = 100; }
+
+	if (win == true && timer > 9 * 60) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
 	if(win == false && timer > 5 * 80){ PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
 	if (timer <= 5 * 60) { if (CheckSoundMem(count_se) == FALSE)PlaySoundMem(count_se, DX_PLAYTYPE_BACK, FALSE); }
 
@@ -75,7 +83,13 @@ AbstractScene* RESULT::Update() {
 	return this;
 }
 
+const int GetDrawCenterX(int screenX, const char* string, int font_handle) {
+	const int w = screenX / 2 - GetDrawStringWidthToHandle(string, strlen(string), font_handle) / 2;
+	return w;
+}
+
 void RESULT::Draw() const {
+
 
 	if (win == true) {
 		DrawFillBox(0, 0, 1280, 720, 0xFFFFFF);
@@ -93,9 +107,16 @@ void RESULT::Draw() const {
 		DrawFillBox(0, 0, 1280, 720, 0xFFFFFF);
 		SetDrawMode(DX_DRAWMODE_BILINEAR);
 		DrawExtendGraph(0, 0, 1280, 720, gameover_background_image, true);
-		SetDrawMode(DX_DRAWMODE_NEAREST);
-		DrawStringToHandle(90, 200, "ゲームオーバー", 0xEB8A95, title_font , 0xEB3D49);
-		DrawFormatStringToHandle(20, 400, 0x56F590, menu_font, "%2d秒後にリスタートします", timer / 60);
+		SetDrawMode(DX_DRAWMODE_NEAREST); 
+		//DrawExtendStringToHandle(GetDrawCenterX(1280, "ゲームオーバー", title_font), 200 , static_cast<float>(effect_timer[0]) / 40, static_cast<float>(effect_timer[0]) / 40, "ゲームオーバー", 0xEB8A95, title_font, 0xEB3D49);
+		if (effect_timer[1] > 0) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_timer[1] * 2.55);
+			DrawExtendStringToHandle(GetDrawCenterX(1280, "ゲームオーバー", title_font), 200, static_cast<float>(effect_timer[0]) / 40 * 1.0, static_cast<float>(effect_timer[0]) / 40 * 1.0, "ゲームオーバー", 0xEB8A95, title_font, 0xEB3D49);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		}
+
+		//DrawStringToHandle(90, 200, "ゲームオーバー", 0xEB8A95, title_font , 0xEB3D49);
+		DrawFormatStringToHandle(GetDrawCenterX(1280, "00秒後にリスタートします", menu_font), 400, 0x56F590, menu_font, "%2d秒後にリスタートします", timer / 60);
 	}
 
 	static int timer = 0;
