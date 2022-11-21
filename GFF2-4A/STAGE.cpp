@@ -34,7 +34,7 @@ STAGE::STAGE() {
 		throw "Resource/Sounds/SE/Stage/halfwaypoint.wav";
 	}
 
-	map_data.resize(MAP_HEIGHT);
+	//map_data.resize(MAP_HEIGHT);
 
 	//InitStage();
 	LoadMapData();
@@ -172,6 +172,14 @@ bool STAGE::SetScrollPos(int move_x) {
 	return false;
 }
 
+int STAGE::GetMapData(int y, int x) {
+	if (y < 0 || y >= map_data.size())
+		return 0;
+	if (x < 0 || x >= map_data[y].size())
+		return 0;
+	return map_data.at(y).at(x);
+}
+
 /// <summary>
 /// プレイヤーとブロックの当たり判定
 /// </summary>
@@ -240,10 +248,12 @@ void STAGE::LoadMapData(void) {
 		{
 			std::string tmp = "";
 			std::istringstream stream(str);
+			map_data.push_back(std::vector<int>());
 
 			while (std::getline(stream,tmp,','))
 			{
-				map_data.at(i).push_back(std::stoi(tmp));
+				//map_data.at(i).at(j) = std::stoi(tmp);
+				map_data[i].push_back(std::stoi(tmp));
 				j++;
 			}
 			j = 0;

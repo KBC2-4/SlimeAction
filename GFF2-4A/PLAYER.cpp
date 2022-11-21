@@ -76,13 +76,14 @@ PLAYER::PLAYER() {
 /// </summary>
 void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	//clsDx();
+	this->stage = stage;
 	int bullet;
 	rebound_x = SPEED * player_scale;
 	Move();
 	JumpMove(element,stage);
 	HookMove(element,stage);
-	Throw();
-	HitBlock();
+	Throw(stage);
+	HitBlock(stage);
 	if (GetBullet(&bullet) == true) {
 		/*throw_x.erase(throw_x.begin());
 		throw_y.erase(throw_y.begin());*/
@@ -282,20 +283,20 @@ void PLAYER::Move()
 
 void PLAYER::Scroll(float move_x) {
 	//スクロールの処理
-	bool isScroll = false;
-	//プレイヤーの位置が中心だったら
-	if (move_x > 0 && player_x >= 620 || move_x < 0 && player_x <= 660) {
-		//スクロールが端まで行ってない時
-		if (!(isScroll = (stage->GetScrollX() >= 0 || stage->GetScrollX() <= -8080))) {
-			//プレイヤーの位置を中心に戻す
-			rebound_x = SPEED * 1.3f;
-			//player_x -= move_x * rebound_x;
-		}
-	}
-	//スクロールしてない時
-	if (!isScroll) {
-		rebound_x = SPEED; //反発力を変更
-	}
+	//bool isScroll = false;
+	////プレイヤーの位置が中心だったら
+	//if (move_x > 0 && player_x >= 620 || move_x < 0 && player_x <= 660) {
+	//	//スクロールが端まで行ってない時
+	//	if (!(isScroll = (stage->GetScrollX() >= 0 || stage->GetScrollX() <= -8080))) {
+	//		//プレイヤーの位置を中心に戻す
+	//		rebound_x = SPEED * 1.3f;
+	//		//player_x -= move_x * rebound_x;
+	//	}
+	//}
+	////スクロールしてない時
+	//if (!isScroll) {
+	//	rebound_x = SPEED; //反発力を変更
+	//}
 }
 
 /// <summary>
@@ -637,7 +638,7 @@ void PLAYER::JumpMove(ELEMENT* element, STAGE* stage) {
 
 }
 
-void PLAYER::Throw() {
+void PLAYER::Throw(STAGE* stage) {
 	static bool push_button = false;
 	//軌道の計算
 	throw_index = 0;
@@ -714,7 +715,7 @@ void PLAYER::Throw() {
 /// <summary>
 /// 横移動の当たり判定
 /// </summary>
-void PLAYER::HitBlock() {
+void PLAYER::HitBlock(STAGE* stage) {
 	//マップチップの座標のセット
 	map_x = (int)roundf((player_x) / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);

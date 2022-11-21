@@ -158,10 +158,10 @@ public:
 	void Draw(STAGE* stage) const;
 	void HookMove(ELEMENT* element, STAGE* stage);
 	void JumpMove(ELEMENT* element, STAGE* stage);
-	void Throw();
+	void Throw(STAGE* stage);
 	void MoveAnimation();
 	void Update(ELEMENT*element, STAGE* stage);
-	void HitBlock();
+	void HitBlock(STAGE* stage);
 	void Scroll(float move_x);
 	int HitPlayer(float x, float y, int diameter,int type);	//type::ìyä«=1,
 
