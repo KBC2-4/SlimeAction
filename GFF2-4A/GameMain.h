@@ -46,7 +46,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	GAMEMAIN(bool restert = false);
+	GAMEMAIN(bool restert = false, int halfway_time = 0);
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
