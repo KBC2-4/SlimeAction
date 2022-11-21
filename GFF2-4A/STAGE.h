@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include <vector>
 
 #define MAP_HEIGHT 14
 #define MAP_WIDTH 117
@@ -27,7 +28,7 @@ private:
 
 protected:
 	int block_image1[100];		//ステージブロック画像
-	static int map_data[MAP_HEIGHT][MAP_WIDTH];
+	std::vector<std::vector<int>> map_data;
 	static float scroll_x, scroll_y;	//マップスクロール量
 public:
 	STAGE();
@@ -46,17 +47,17 @@ public:
 	//フックの処理
 	void HookProcess();
 	//////マップ配列の値を取得
-	static int GetMapDat(int y, int x) { return map_data[y][x]; }
+	int GetMapData(int y, int x) { return map_data.at(y).at(x); }
 	//マップの当たり判定 
-	static bool HitMapDat(int y, int x); 
+	bool HitMapDat(int y, int x); 
 	//スライムのかけらの当たり判定
 	bool HitThrowSlime(int y, int x);
 	//画面スクロール座標Xをセット
 	static bool SetScrollPos(int move_x);
 	//画面スクロール座標Xの取得
-	static float GetScrollX() { return scroll_x; };	
+	float GetScrollX() { return scroll_x; };	
 	//画面スクロール座標Yの取得
-	static float GetScrollY() { return scroll_y; }
+	float GetScrollY() { return scroll_y; }
 	//マップデータの読み込み
 	void LoadMapData(void);	
 

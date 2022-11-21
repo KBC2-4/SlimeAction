@@ -3,7 +3,7 @@
 #include"PLAYER.h"
 #include<math.h>
 
-ThrowSlime::ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y) {
+ThrowSlime::ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y, STAGE* stage) {
 	if ((image = LoadGraph("Resource/Images/Player/Slime_Bullet.png")) == -1) {
 		throw "Resource/Images/Player/Slime_Bullet.png";
 	}
@@ -12,7 +12,7 @@ ThrowSlime::ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y) {
 	throw_y = _throw_y;
 	throw_cnt = _throw_x.size();
 	for (int i = 0; i < throw_cnt; i++) {
-		throw_x[i] -= STAGE::GetScrollX();
+		throw_x[i] -= stage->GetScrollX();
 	}
 	move_type = 0;
 	move_x = 0;
@@ -51,9 +51,9 @@ void ThrowSlime::Update(STAGE* stage) {
 
 }
 
-void ThrowSlime::Draw() const {
+void ThrowSlime::Draw(STAGE *stage) const {
 	//DrawGraph(throw_x[0] + STAGE::GetScrollX(), throw_y[0], image, TRUE);
-	DrawRotaGraph(throw_x[0] + STAGE::GetScrollX(), throw_y[0], 1, 1, image, TRUE);
+	DrawRotaGraph(throw_x[0] + stage->GetScrollX(), throw_y[0], 1, 1, image, TRUE);
 	//printfDx("throw_y[0] = %f",throw_y[0]);
 	//printfDx("throw_bottom = %f", throw_bottom);
 
@@ -64,7 +64,7 @@ int ThrowSlime::HitBlock(STAGE* stage) {
 		return false;
 	}
 	//if (throw_y[0] >= throw_y[throw_index + 1])throw_fall = true;
-	int object = stage->GetMapDat(static_cast<int>(floor((throw_y[0] / MAP_CEllSIZE))), static_cast<int>(throw_x[0] / MAP_CEllSIZE));
+	int object = stage->GetMapData(static_cast<int>(floor((throw_y[0] / MAP_CEllSIZE))), static_cast<int>(throw_x[0] / MAP_CEllSIZE));
 	/*if (object == 23 && move_type != 1) {
 		move_type = 1;
 		move_x = 0;
