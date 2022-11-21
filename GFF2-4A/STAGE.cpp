@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <vector>
 
 
 #include "PLAYER.h"
@@ -32,12 +33,16 @@ STAGE::STAGE() {
 	if ((halfwaypoint_se = LoadSoundMem("Resource/Sounds/SE/Stage/halfwaypoint.wav")) == -1) {
 		throw "Resource/Sounds/SE/Stage/halfwaypoint.wav";
 	}
+
+	map_data.resize(MAP_HEIGHT, std::vector<int>(MAP_WIDTH));
+
 	//InitStage();
 	LoadMapData();
 	clearflg = false;
 	clearbox = {0,0};
 	halfwaypointbox = {0,0};
 	halfwaypoint = false;
+
 
 	for (int i = 0; i < map_data.size(); i++) {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
@@ -234,7 +239,7 @@ void STAGE::LoadMapData(void) {
 
 			while (std::getline(stream,tmp,','))
 			{
-				map_data.at(i).at(j) = std::stoi(tmp);
+				map_data.at(i).push_back(std::stoi(tmp));
 				j++;
 			}
 			j = 0;
