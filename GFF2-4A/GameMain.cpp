@@ -17,7 +17,10 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
 	time = GetNowCount();
-	if (restart == false)halfway_time = 0;
+	if (restart == false)
+	{
+		halfway_time = 0;
+	}
 	lemoner_count = 0;
 	tomaton_count = 0;
 	item_count = 0;
@@ -240,13 +243,21 @@ AbstractScene* GAMEMAIN::Update()
 			element->Update(player);
 
 			//ゲームオーバー
-			if (player->IsDeath()) {
-				if (restart == false && stage->GetHalfwayPointFlg() == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
+			if (player->IsDeath()) 
+			{
+				if (restart == false && stage->GetHalfwayPointFlg() == true) 
+				{ 
+					halfway_time = GetNowCount() - time;
+					return new GAMEMAIN(true); 
+				}
 				return new RESULT(false);
 			}
 
 			//ステージクリア
-			if (stage->GetClearFlg()) { return new RESULT(true, time + halfway_time); };
+			if (stage->GetClearFlg()) 
+			{ 
+				return new RESULT(true, time + halfway_time); 
+			}
 		}
 	}
 	else {	//ポーズ画面のセレクター
