@@ -1,5 +1,6 @@
 #include "GameMain.h"
 #include "Title.h"
+#include "GameOver.h"
 #include <vector>
 
 GAMEMAIN::GAMEMAIN(bool restert)
@@ -251,7 +252,7 @@ AbstractScene* GAMEMAIN::Update()
 			//ゲームオーバー
 			if (player->IsDeath()) {
 				if (restart == false && stage->GetHalfwayPointFlg() == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
-				return new RESULT(false);
+				return new GameOver();
 			}
 
 			//ステージクリア
@@ -264,6 +265,14 @@ AbstractScene* GAMEMAIN::Update()
 		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(); }
 		else if (pause->GetSelectMenu() == 3) { pause->SetPause(); }
 	}
+
+	//デバッグ
+	if (CheckHitKey(KEY_INPUT_F)) {
+		int scrollx = -(7800 - 500);
+		stage->SetScrollX(scrollx);	//スポーン地点をセット
+		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
+	}
+
 	return this;
 }
 void GAMEMAIN::Draw() const
