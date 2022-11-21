@@ -34,7 +34,7 @@ STAGE::STAGE() {
 		throw "Resource/Sounds/SE/Stage/halfwaypoint.wav";
 	}
 
-	map_data.resize(MAP_HEIGHT, std::vector<int>(MAP_WIDTH));
+	map_data.resize(MAP_HEIGHT);
 
 	//InitStage();
 	LoadMapData();
@@ -43,6 +43,10 @@ STAGE::STAGE() {
 	halfwaypointbox = {0,0};
 	halfwaypoint = false;
 
+	int iy = 0;
+	int yx = 0;
+	iy = map_data.size();
+	yx = map_data.at(0).size();
 
 	for (int i = 0; i < map_data.size(); i++) {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
@@ -75,7 +79,7 @@ void STAGE::Draw()const {
 	
 	//printfDx("%f",scroll_x);
 
-	for (int i = 0; i < map_data.size(); i++) {
+	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			//‰æ–ÊŠO‚Í•`‰æ‚µ‚È‚¢
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {

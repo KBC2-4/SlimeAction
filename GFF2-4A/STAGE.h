@@ -48,7 +48,7 @@ public:
 	void HookProcess();
 	//////マップ配列の値を取得
 	int GetMapData(int y, int x) { return map_data.at(y).at(x); }
-	//マップの当たり判定 
+	//マップの当たり判定 );
 	bool HitMapDat(int y, int x); 
 	//スライムのかけらの当たり判定
 	bool HitThrowSlime(int y, int x);
