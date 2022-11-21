@@ -82,13 +82,19 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	JumpMove();
 	HookMove(element);
 	Throw();
-	if ((hitBullet = GetBullet(&bullet)) == true) {
-		/*throw_x.erase(throw_x.begin());
-		throw_y.erase(throw_y.begin());*/
-		throw_slime.erase(throw_slime.begin() + bullet);
-	}
-	HitBlock(element);
 	int throw_cnt = throw_slime.size();
+	for (int i = 0; i < throw_slime.size(); i++) {
+		if (throw_slime[i].checkdel() == true) {
+			throw_slime.erase(throw_slime.begin() + i);
+		}
+	}
+	//if ((/*hitBullet = GetBullet(&bullet))*/stage->HitThrowSlime(static_cast<int>(floor(throw_y[0] / MAP_CEllSIZE)), static_cast<int>(throw_x[0] / MAP_CEllSIZE)) == true) {
+	//	/*throw_x.erase(throw_x.begin());
+	//	throw_y.erase(throw_y.begin());*/
+	//	throw_slime.erase(throw_slime.begin());
+	//}
+	HitBlock(element);
+	throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Update(stage);
 	}
@@ -662,7 +668,7 @@ void PLAYER::Throw() {
 				animation_type[2] = 0;
 				//投げる処理
 				throw_slime.push_back(ThrowSlime(throw_x, throw_y));
-				life--;
+				//life--;
 				animation_state = PLAYER_ANIM_STATE::THROW;
 			}
 		}
@@ -785,24 +791,24 @@ void PLAYER::MoveAnimation() {
 	}
 }
 
-bool PLAYER::GetBullet(int* bullet) {
-	float r1X, r1Y, r1XY;
-	for (int i = 0; i < throw_slime.size(); i++) {
-		r1X = throw_slime[i].GetThrowX() - player_x;
-		r1Y = throw_slime[i].GetThrowY() - player_y;
-		r1XY = sqrt(r1X * r1X + r1Y * r1Y);
-		if (r1XY <= 40 + BULLETRADIUS && throw_slime[i].Get_throwfall() == true) {
-			++life;
-			if (life > 5) {
-				life = 5;
-				return false;
-			}
-			*bullet = i;
-			return true;
-		}
-	}
-	return false;
-}
+//bool PLAYER::GetBullet(int* bullet) {
+//	float r1X, r1Y, r1XY;
+//	for (int i = 0; i < throw_slime.size(); i++) {
+//		r1X = throw_slime[i].GetThrowX() - player_x;
+//		r1Y = throw_slime[i].GetThrowY() - player_y;
+//		r1XY = sqrt(r1X * r1X + r1Y * r1Y);
+//		if (r1XY <= 40 + BULLETRADIUS && throw_slime[i].Get_throwfall() == true) {
+//			++life;
+//			if (life > 5) {
+//				life = 5;
+//				return false;
+//			}
+//			*bullet = i;
+//			return true;
+//		}
+//	}
+//	return false;
+//}
 
 void PLAYER::SetLife(int a)
 {
