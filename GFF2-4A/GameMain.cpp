@@ -255,6 +255,14 @@ AbstractScene* GAMEMAIN::Update()
 		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(); }
 		else if (pause->GetSelectMenu() == 3) { pause->SetPause(); }
 	}
+
+	//デバッグ
+	if (CheckHitKey(KEY_INPUT_F)) {
+		int scrollx = -(7800 - 500);
+		stage->SetScrollX(scrollx);	//スポーン地点をセット
+		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
+	}
+
 	return this;
 }
 void GAMEMAIN::Draw() const
