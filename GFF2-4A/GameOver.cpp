@@ -30,6 +30,7 @@ AbstractScene* GameOver::Update()
 	ç≈è„ÇÃèÍçáÇÕâ∫Ç÷*/
 	if (PAD_INPUT::GetPadThumbLY() > 1000 && Input_WaitTime > 20)
 	{
+
 		SelectCount = (SelectCount + 1) % 2;
 		Input_WaitTime = 0;
 	}
@@ -38,6 +39,7 @@ AbstractScene* GameOver::Update()
 	ç≈è„ÇÃèÍçáÇÕè„Ç÷*/
 	if (PAD_INPUT::GetPadThumbLY() < -1000 && Input_WaitTime > 20)
 	{
+
 		SelectCount = (SelectCount + 1) % 2;
 		Input_WaitTime = 0;
 	}
@@ -49,9 +51,11 @@ AbstractScene* GameOver::Update()
 
 		switch (static_cast<GAMEOVER_MENU>(SelectCount))
 		{
+
 		case  GAMEOVER_MENU::ReSelect:
 			return new Title();
 			break;
+
 		case GAMEOVER_MENU::NewGame:
 			return new GAMEMAIN();
 			break;

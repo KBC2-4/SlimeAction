@@ -5,10 +5,12 @@
 
 Title::Title()
 {
+
 	if ((background_image = LoadGraph("Resource/Images/Stage/BackImage.png")) == -1) 
 	{
 		throw "Resource/Images/Stage/BackImage.png";
 	}
+
 	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1) 
 	{
 		throw "Resource/Sounds/SE/cursor_move.wav";
@@ -29,6 +31,7 @@ Title::Title()
 
 Title::~Title() 
 {
+
 	DeleteGraph(background_image);
 	DeleteSoundMem(cursor_move_se);
 	DeleteSoundMem(ok_se);
@@ -38,6 +41,7 @@ Title::~Title()
 
 AbstractScene* Title::Update()
 {
+
 	input_margin++;
 	if (PAD_INPUT::GetPadThumbLY() > 1000 && input_margin > 20) 
 	{ 
@@ -53,6 +57,7 @@ AbstractScene* Title::Update()
 
 	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) 
 	{
+
 		switch (static_cast<MENU>(selectmenu))
 		{
 		case MENU::GAME_SELECT:
@@ -84,6 +89,7 @@ AbstractScene* Title::Update()
 
 void Title::Draw()const
 {
+
 	DrawGraph(0, 0, background_image, false);
 	DrawStringToHandle(30, 100, "スライムアクション", 0x56F590, title_font ,0xFFFFFF);
 
