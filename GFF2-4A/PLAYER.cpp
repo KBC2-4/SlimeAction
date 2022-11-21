@@ -759,7 +759,12 @@ void PLAYER::HitBlock(ELEMENT* element) {
 
 			if (player_right > block_left && player_left < block_right) {
 				if (player_bottom > block_top && player_top < block_bottom) {
+					int block_type = STAGE::GetMapDat(i, j);
 					if (!hit_ceil) {
+						//ドアの判定
+						if ((block_type == 66 || block_type == 67) && move_x > 0) {
+							return;
+						}
 						player_x = old_player_x;
 						if (hitBullet) {
 							player_x -= move_x * player_scale * SPEED * 2;
