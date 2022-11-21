@@ -5,17 +5,17 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <vector>
 
 
 #include "PLAYER.h"
 #include "RESULT.h"
 
-int STAGE::map_data[MAP_HEIGHT][MAP_WIDTH];
 float STAGE::scroll_x = 0;
 float STAGE::scroll_y = 0;
 
 STAGE::STAGE() {
-	**map_data = 0;
+	//**map_data = 0;
 	*block_image1 = 0;
 	*stage_image = 0;
 	//scroll_x = -8640;
@@ -33,6 +33,9 @@ STAGE::STAGE() {
 	if ((halfwaypoint_se = LoadSoundMem("Resource/Sounds/SE/Stage/halfwaypoint.wav")) == -1) {
 		throw "Resource/Sounds/SE/Stage/halfwaypoint.wav";
 	}
+
+	//map_data.resize(MAP_HEIGHT);
+
 	//InitStage();
 	LoadMapData();
 	clearflg = false;
@@ -40,12 +43,17 @@ STAGE::STAGE() {
 	halfwaypointbox = {0,0};
 	halfwaypoint = false;
 
-	for (int i = 0; i < MAP_HEIGHT; i++) {
-		for (int j = 0; j < MAP_WIDTH; j++) {
+	int iy = 0;
+	int yx = 0;
+	iy = map_data.size();
+	yx = map_data.at(0).size();
+
+	for (int i = 0; i < map_data.size(); i++) {
+		for (int j = 0; j < map_data.at(0).size(); j++) {
 			//クリア座標を代入
-			if (map_data[i][j] == 73) { clearbox.x  = j * MAP_CEllSIZE; clearbox.y = i * MAP_CEllSIZE; }
+			if (map_data.at(i).at(j) == 73) { clearbox.x  = j * MAP_CEllSIZE; clearbox.y = i * MAP_CEllSIZE; }
 			//中間地点座標を代入
-			if (map_data[i][j] == 90) { halfwaypointbox.x = j * MAP_CEllSIZE; halfwaypointbox.y = i * MAP_CEllSIZE; }
+			if (map_data.at(i).at(j) == 90) { halfwaypointbox.x = j * MAP_CEllSIZE; halfwaypointbox.y = i * MAP_CEllSIZE; }
 		}
 	}
 }
@@ -75,14 +83,14 @@ void STAGE::Draw()const {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			//画面外は描画しない
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
-				if (map_data[i][j] < 89 && map_data[i][j] != 68
-					|| (map_data[i][j] <= 74	//酸性雨の水たまりを描画しない
+				if (map_data.at(i).at(j) < 89 && map_data.at(i).at(j) != 68
+					|| (map_data.at(i).at(j) <= 74	//酸性雨の水たまりを描画しない
 												////マンホールの開いている蓋を描画しない
-					&& map_data[i][j] >= 79)
-					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data[i][j] - 1], TRUE); }
+					&& map_data.at(i).at(j) >= 79)
+					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
 			}
 			//レモナーとグレポンはツルだけ描画する
-			if (map_data[i][j] == 91 || map_data[i][j] == 92) { DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data[i][j] - 1], TRUE); }
+			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
 			
 		}
 	}
@@ -104,13 +112,6 @@ void STAGE::CameraWork(PLAYER* player) {
 		else if (player->GetPlayerX() - player_x_old < 0) {
 			player_vector_x = -1;
 		}
-		//プレイヤーyベクトルの判定
-		if (player->GetPlayerY() - player_y_old < 0) {
-			player_vector_y = 1;
-		}
-		else if (player->GetPlayerY() - player_y_old > 0) {
-			player_vector_y = -1;
-		}
 	
 	
 
@@ -126,7 +127,7 @@ void STAGE::CameraWork(PLAYER* player) {
 	if (player->GetPlayerY()>=720) {
 		scroll_y = -320;
 	}
-	else if (player->GetPlayerY() >= 640) {
+	else if (player->GetPlayerY() < 640) {
 		scroll_y = 0;
 	}
 
@@ -164,13 +165,21 @@ bool STAGE::SetScrollPos(int move_x) {
 	return false;
 }
 
+int STAGE::GetMapData(int y, int x) {
+	if (y < 0 || y >= map_data.size())
+		return 0;
+	if (x < 0 || x >= map_data[y].size())
+		return 0;
+	return map_data.at(y).at(x);
+}
+
 /// <summary>
 /// プレイヤーとブロックの当たり判定
 /// </summary>
 
 bool STAGE::HitMapDat(int y, int x) {
 	if (CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
-	int block_type = GetMapDat(y, x);
+	int block_type = GetMapData(y, x);
 	if (
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
@@ -200,7 +209,7 @@ bool STAGE::HitMapDat(int y, int x) {
 /// スライムのかけらの当たり判定
 /// </summary>
 bool STAGE::HitThrowSlime(int y, int x) {
-	int block_type = GetMapDat(y, x);
+	int block_type = GetMapData(y, x);
 	if (
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
@@ -232,10 +241,12 @@ void STAGE::LoadMapData(void) {
 		{
 			std::string tmp = "";
 			std::istringstream stream(str);
+			map_data.push_back(std::vector<int>());
 
 			while (std::getline(stream,tmp,','))
 			{
-				map_data[i][j] = std::stoi(tmp);
+				//map_data.at(i).at(j) = std::stoi(tmp);
+				map_data[i].push_back(std::stoi(tmp));
 				j++;
 			}
 			j = 0;
