@@ -190,9 +190,12 @@ AbstractScene* GAMEMAIN::Update()
 				lemoner[i]->Update();
 				if (lemoner[i]->GetDeleteFlag())
 				{
-					
+					item_rand = GetRand(5);
 					//アイテムを生成
-					item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX());
+					if (item_rand == 0)
+					{
+						item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX());
+					}
 					delete lemoner[i];
 					lemoner[i] = nullptr;
 				}
@@ -206,8 +209,12 @@ AbstractScene* GAMEMAIN::Update()
 		{
 			if (gurepon[i] != nullptr && gurepon[i]->GetDeleteFlg())
 			{
+				item_rand = GetRand(5);
 				//アイテムを生成
-				item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
+				if (item_rand == 0)
+				{
+					item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
+				}
 				delete gurepon[i];
 				gurepon[i] = nullptr;
 			}
@@ -318,6 +325,3 @@ void GAMEMAIN::Draw() const
 	//デバッグ
 	//DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
 }
-
-
-y
