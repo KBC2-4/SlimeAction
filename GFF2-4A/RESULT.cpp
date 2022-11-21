@@ -7,9 +7,9 @@ RESULT::RESULT(bool issue, int clear_time) {
 		throw "Resource/Images/Enemy/mi_hasya_kao.png";
 	}
 
-	if ((gameover_background_image = LoadGraph("Resource/Images/Result/gurepon.png")) == -1) {
+	/*if ((gameover_background_image = LoadGraph("Resource/Images/Result/gurepon.png")) == -1) {
 		throw "Resource/Images/Enemy/gurepon.png";
-	}
+	}*/
 
 	if ((count_se = LoadSoundMem("Resource/Sounds/SE/321.wav")) == -1) {
 		throw "Resource/Sounds/SE/321.wav";
@@ -29,14 +29,14 @@ RESULT::RESULT(bool issue, int clear_time) {
 		}
 	}
 
-	for (int i = 0; i < 4; i++) {
+	/*for (int i = 0; i < 4; i++) {
 		char dis_bad_se[30];
 		sprintf_s(dis_bad_se, sizeof(dis_bad_se), "Resource/Sounds/SE/bad%d.wav", i + 1);
 
 		if ((bad_se[i] = LoadSoundMem(dis_bad_se)) == -1) {
 			throw dis_bad_se;
 		}
-	}
+	}*/
 
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8,-1,8);
 	menu_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
@@ -49,30 +49,22 @@ RESULT::RESULT(bool issue, int clear_time) {
 
 	this->clear_time =  GetNowCount() - clear_time;
 	se_randnum = GetRand(3);
-
-	*effect_timer = 0;
 }
 
 RESULT::~RESULT() {
 	DeleteGraph(clear_background_image);
-	DeleteGraph(gameover_background_image);
+	/*DeleteGraph(gameover_background_image);*/
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
 	DeleteFontToHandle(time_font);
 	DeleteSoundMem(count_se);
 	DeleteSoundMem(ok_se);
 	for(int i = 0; i < 4; i++)DeleteSoundMem(good_se[i]);
-	for (int i = 0; i < 4; i++)DeleteSoundMem(bad_se[i]);
+	/*for (int i = 0; i < 4; i++)DeleteSoundMem(bad_se[i]);*/
 }
 
 AbstractScene* RESULT::Update() {
-
-	if (effect_timer[0] < 40) { ++effect_timer[0]; }
-	else { effect_timer[0] = 40; }
-	if (effect_timer[0] >= 40 && effect_timer[1] < 100) { ++effect_timer[1]; }
-	else { effect_timer[1] = 100; }
-
-	if (win == true && timer > 9 * 60) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
+	if (win == true && timer > 8 * 60) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
 	if(win == false && timer > 5 * 80){ PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
 	if (timer <= 5 * 60) { if (CheckSoundMem(count_se) == FALSE)PlaySoundMem(count_se, DX_PLAYTYPE_BACK, FALSE); }
 
@@ -83,13 +75,7 @@ AbstractScene* RESULT::Update() {
 	return this;
 }
 
-const int GetDrawCenterX(int screenX, const char* string, int font_handle) {
-	const int w = screenX / 2 - GetDrawStringWidthToHandle(string, strlen(string), font_handle) / 2;
-	return w;
-}
-
 void RESULT::Draw() const {
-
 
 	if (win == true) {
 		DrawFillBox(0, 0, 1280, 720, 0xFFFFFF);
@@ -103,21 +89,14 @@ void RESULT::Draw() const {
 		DrawStringToHandle(160, 450, dis_clear_time, 0xF5EB67, time_font, 0xFFFFFF);	//クリアタイム
 		DrawFormatStringToHandle(20, 560, 0x56F590, menu_font , "%2d秒後にリスタートします", timer / 60);
 	}
-	else {
+	/*else {
 		DrawFillBox(0, 0, 1280, 720, 0xFFFFFF);
 		SetDrawMode(DX_DRAWMODE_BILINEAR);
 		DrawExtendGraph(0, 0, 1280, 720, gameover_background_image, true);
-		SetDrawMode(DX_DRAWMODE_NEAREST); 
-		//DrawExtendStringToHandle(GetDrawCenterX(1280, "ゲームオーバー", title_font), 200 , static_cast<float>(effect_timer[0]) / 40, static_cast<float>(effect_timer[0]) / 40, "ゲームオーバー", 0xEB8A95, title_font, 0xEB3D49);
-		if (effect_timer[1] > 0) {
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, effect_timer[1] * 2.55);
-			DrawExtendStringToHandle(GetDrawCenterX(1280, "ゲームオーバー", title_font), 200, static_cast<float>(effect_timer[0]) / 40 * 1.0, static_cast<float>(effect_timer[0]) / 40 * 1.0, "ゲームオーバー", 0xEB8A95, title_font, 0xEB3D49);
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		}
-
-		//DrawStringToHandle(90, 200, "ゲームオーバー", 0xEB8A95, title_font , 0xEB3D49);
-		DrawFormatStringToHandle(GetDrawCenterX(1280, "00秒後にリスタートします", menu_font), 400, 0x56F590, menu_font, "%2d秒後にリスタートします", timer / 60);
-	}
+		SetDrawMode(DX_DRAWMODE_NEAREST);
+		DrawStringToHandle(90, 200, "ゲームオーバー", 0xEB8A95, title_font , 0xEB3D49);
+		DrawFormatStringToHandle(20, 400, 0x56F590, menu_font, "%2d秒後にリスタートします", timer / 60);
+	}*/
 
 	static int timer = 0;
 	if (timer++ < 50) {
