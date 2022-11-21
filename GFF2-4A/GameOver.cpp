@@ -27,12 +27,14 @@ GameOver::GameOver()
 
 GameOver::~GameOver()
 {
+
 	DeleteGraph(GameOverImage);
 	DeleteFontToHandle(Select_font);
 }
 
 AbstractScene* GameOver::Update()
 {
+
 	//WaitTime‚ð‰ÁŽZ
 	Input_WaitTime++;
 
