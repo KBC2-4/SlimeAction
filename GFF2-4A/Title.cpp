@@ -1,5 +1,6 @@
 #include "Title.h"
 #include "GameMain.h"
+#include "StageSelect.h"
 #include "DrawRanking.h"
 #include "DxLib.h"
 
@@ -70,7 +71,7 @@ AbstractScene* Title::Update()
 		case MENU::GAME_SELECT:
 			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); 
 			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1); 
-			return new GAMEMAIN();
+			return new STAGE_SELECT();
 			break;
 
 		case MENU::RANKING:

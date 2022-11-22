@@ -21,6 +21,7 @@ STAGE::STAGE(const char* stage_name) {
 	//scroll_x = -8640;
 	scroll_x = 0;
 	scroll_y = 0;
+
 	player_x_old = 20.f;
 	player_y_old = 500.f;
 	player_vector_x = 0;
@@ -44,10 +45,6 @@ STAGE::STAGE(const char* stage_name) {
 	halfwaypointbox = {0,0};
 	halfwaypoint = false;
 
-	int iy = 0;
-	int yx = 0;
-	iy = map_data.size();
-	yx = map_data.at(0).size();
 
 	for (int i = 0; i < map_data.size(); i++) {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
@@ -63,7 +60,7 @@ STAGE::STAGE(const char* stage_name) {
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
 	StageClear(player);
 	HalfwayPoint(player);
-	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && !element->HitLift(player->GetPlayerScale())) {
+	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && !element->HitLift(player, player->GetPlayerScale())) {
 		CameraWork(player);
 	}
 	
@@ -80,8 +77,9 @@ void STAGE::Draw()const {
 	
 	//printfDx("%f",scroll_x);
 
-	for (int i = 0; i < MAP_HEIGHT; i++) {
-		for (int j = 0; j < MAP_WIDTH; j++) {
+	for (int i = 0; i < map_data.size(); i++) {
+		for (int j = 0; j < map_data.at(0).size(); j++) {
+			
 			//画面外は描画しない
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
 				if (map_data.at(i).at(j) < 89 && map_data.at(i).at(j) != 68
@@ -92,7 +90,7 @@ void STAGE::Draw()const {
 			}
 			//レモナーとグレポンはツルだけ描画する
 			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
-			
+			if (map_data.at(i).at(j) == 101) { DrawBox(j * MAP_CEllSIZE + scroll_x - MAP_CEllSIZE / 2, (i - 1) * MAP_CEllSIZE - MAP_CEllSIZE / 2, j * MAP_CEllSIZE + scroll_x + MAP_CEllSIZE / 2, (i - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2, 0xFFCB33, TRUE); }
 		}
 	}
 
@@ -199,8 +197,13 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 92 //グレポン
 		|| block_type == 93	//トマトン
 		|| block_type == 95	//動く床
+		|| block_type == 96 //動く床(ゴール)
 		|| block_type == 97	//マンホールの蓋(出口)
 		|| block_type == 98	//マンホールの開いている蓋
+		|| block_type == 101//戻るブロック
+		|| block_type == 102//ステージ1ブロック
+		|| block_type == 103//ステージ2ブロック
+		|| block_type == 104//ステージ3ブロック
 		) {
 		return false;
 	}
@@ -223,6 +226,10 @@ bool STAGE::HitThrowSlime(int y, int x) {
 		|| block_type == 73	//ゴール
 		|| block_type == 97	//マンホールの蓋End
 		|| block_type == 98	//マンホールの開いている蓋
+		|| block_type == 101//戻るブロック
+		|| block_type == 102//ステージ1ブロック
+		|| block_type == 103//ステージ2ブロック
+		|| block_type == 104//ステージ3ブロック
 		) {
 		return false;
 	}

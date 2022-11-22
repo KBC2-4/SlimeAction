@@ -71,6 +71,7 @@ int ThrowSlime::HitBlock(STAGE* stage) {
 	
 	if (stage->HitThrowSlime(static_cast<int>(floor(throw_y[0] / MAP_CEllSIZE)), static_cast<int>(throw_x[0] / MAP_CEllSIZE)) == true) {
 		if (object == 91 || object == 92) { return false; }
+		if (object == 23) { return false; }
 		throw_del = true;
 	}
 	//else *///if (throw_fall == true && stage->HitThrowSlime(static_cast<int>(floor(throw_y[0] / MAP_CEllSIZE)), static_cast<int>(throw_x[0] / MAP_CEllSIZE))) {

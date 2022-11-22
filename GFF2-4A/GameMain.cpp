@@ -136,6 +136,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time)
 
 GAMEMAIN::~GAMEMAIN()
 {
+	DeleteGraph(background_image[0]);
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
 	DeleteSoundMem(cursor_move_se);
@@ -182,7 +183,7 @@ AbstractScene* GAMEMAIN::Update()
 	if (pause->IsPause() == false) {
 		player->Update(element, stage);
 		stage->Update(player, element);	//ステージクリア用
-		element->Update(player);
+		element->Update(player,stage);
 		for (int i = 0; i < lemoner_count; i++)
 		{
 			if (lemoner[i] != nullptr)
@@ -245,8 +246,7 @@ AbstractScene* GAMEMAIN::Update()
 				}
 			}
 
-			stage->Update(player, element);	//ステージクリア用
-			element->Update(player);
+			
 
 			//ゲームオーバー
 			if (player->IsDeath()) {

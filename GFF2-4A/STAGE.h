@@ -48,6 +48,8 @@ public:
 	void HookProcess();
 	//////マップ配列の値を取得
 	int GetMapData(int y, int x);
+	//マップ配列の値を設定
+	void SetMapData(int y, int x, int mapchip_num) { map_data[y][x] = mapchip_num; }
 	//マップの当たり判定 
 	bool HitMapDat(int y, int x); 
 	//スライムのかけらの当たり判定

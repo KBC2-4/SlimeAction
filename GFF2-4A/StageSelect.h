@@ -1,9 +1,20 @@
 #pragma once
 #include "AbstractScene.h"
+#include "PLAYER.h"
+#include "STAGE.h"
+
 class STAGE_SELECT :
     public AbstractScene
 {
 private:
+	//背景画像
+	int background_image[5];
+
+	PLAYER* player;	//プレイヤー
+	STAGE* stage;	//ステージ
+	ELEMENT* element;	//ステージ内要素
+
+	float player_map_x, player_map_y;
 
 public:
 	/// <summary>
