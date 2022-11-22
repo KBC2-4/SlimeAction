@@ -5,6 +5,8 @@
 
 ELEMENT::ELEMENT() {
 
+	guid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+
 	if ((door_close_se = LoadSoundMem("Resource/Sounds/SE/Stage/door_close.wav")) == -1) {
 		throw "Resource/Sounds/SE/Stage/door_close.wav";
 	}
@@ -154,6 +156,9 @@ ELEMENT::ELEMENT() {
 	player_map_x = 0;
 	player_map_y = 0;
 	lift_vector = 1;
+
+	player_state = 0;
+	guid_timer = 0;
 	
 }
 
@@ -164,6 +169,19 @@ void ELEMENT::Draw() const {
 	//DrawFormatString(200, 100, 0xFFFFFF, "acidrain_puddles.x%f\acidrain_puddles.y%f", acidrain_puddles[1].x, acidrain_puddles[1].y);
 	//DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
 	//デバッグ用
+
+	for (int i = 0; i < hook.size(); i++) {
+		if (player_state != static_cast<int>(PLAYER_MOVE_STATE::HOOK)) {
+			if (guid_timer < 50) {
+				DrawCircleAA(hook[i].x + scroll_x, hook[i].y + scroll_y, 15, 20, 0xFFFFFF, 1);
+				DrawStringToHandle(hook[i].x + scroll_x - 7, hook[i].y + scroll_y - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+			}
+			else {
+				DrawCircleAA(hook[i].x + scroll_x, hook[i].y + scroll_y, 15, 20, 0xFFCB33, 1);
+				DrawStringToHandle(hook[i].x + scroll_x - 7, hook[i].y + scroll_y - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+			}
+		}
+	}
 
 	//ボタン
 	for (int i = 0; i < button.size(); i++) {
@@ -208,11 +226,33 @@ void ELEMENT::Draw() const {
 			
 		}else{
 			DrawGraph(manhole[i].x + scroll_x, manhole[i].y - scroll_y, block_image1[67], TRUE);
+
+			if (guid_timer < 50) {
+				DrawCircleAA(manhole[i].x + scroll_x + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - scroll_y, 15, 20, 0xFFFFFF, 1);
+				DrawStringToHandle(manhole[i].x + scroll_x - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - scroll_y - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+			}
+			else {
+				DrawCircleAA(manhole[i].x + scroll_x + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - scroll_y, 15, 20, 0xFFCB33, 1);
+				DrawStringToHandle(manhole[i].x + scroll_x - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - scroll_y -20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+			}
+		}
+
+		if (manhole[i].type == 3) {
+			if (guid_timer < 50) {
+				DrawCircleAA(manhole[i].x + scroll_x + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - scroll_y, 15, 20, 0xFFFFFF, 1);
+				DrawStringToHandle(manhole[i].x + scroll_x - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - scroll_y - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+			}
+			else {
+				DrawCircleAA(manhole[i].x + scroll_x + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - scroll_y, 15, 20, 0xFFCB33, 1);
+				DrawStringToHandle(manhole[i].x + scroll_x - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - scroll_y - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+			}
 		}
 	}
 }
 
 void ELEMENT::Update(PLAYER* player,STAGE*stage) {
+
+	player_state = static_cast<int>(player->GetPlayerMoveState());
 	//プレイヤーのマップ内座標を設定
 	player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
 	player_map_y = floorf(player->GetPlayerY());
@@ -223,6 +263,8 @@ void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 	Manhole(player);
 	Acidrain_puddles(player);
 	
+	if (guid_timer < 100) { guid_timer++; }
+	else { guid_timer = 0; }
 }
 
 /// <summary>
@@ -308,7 +350,7 @@ void ELEMENT::Door(STAGE* stage) {
 		//	door[i].animtimer = 0;
 		//	door[i].flg = false;
 		//}
-		if ((player_map_x >= door[i].x +MAP_CEllSIZE) && (player_map_x <= door[i].x + MAP_CEllSIZE * 2) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
+		if ((player_map_x >= door[i].x +MAP_CEllSIZE+10) && (player_map_x <= door[i].x + MAP_CEllSIZE * 2) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
 			door[i].animtimer = 0;
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
@@ -331,9 +373,9 @@ void ELEMENT::Lift(PLAYER* player) {
 		}
 		if (lift[i].flg) {
 			if (lift[i].x != lift_goal[i].x) {
-				lift[i].x += lift_vector * 0.5;
+				lift[i].x += lift_vector * 4;
 				if (HitLift(player, player->GetPlayerScale())) {
-					player->SetPlayerX(player->GetPlayerX() + lift_vector * 0.5);
+					player->SetPlayerX(player->GetPlayerX() + lift_vector * 4);
 				}
 
 			}

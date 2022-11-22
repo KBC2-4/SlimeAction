@@ -80,8 +80,8 @@ void STAGE::Draw()const {
 	
 	//printfDx("%f",scroll_x);
 
-	for (int i = 0; i < MAP_HEIGHT; i++) {
-		for (int j = 0; j < MAP_WIDTH; j++) {
+	for (int i = 0; i < map_data.size(); i++) {
+		for (int j = 0; j < map_data.at(0).size(); j++) {
 			
 			//‰æ–ÊŠO‚Í•`‰æ‚µ‚È‚¢
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
