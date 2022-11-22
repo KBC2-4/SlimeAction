@@ -60,7 +60,7 @@ STAGE::STAGE(const char* stage_name) {
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
 	StageClear(player);
 	HalfwayPoint(player);
-	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && !element->HitLift(player->GetPlayerScale())) {
+	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && !element->HitLift(player, player->GetPlayerScale())) {
 		CameraWork(player);
 	}
 	
@@ -197,6 +197,7 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 92 //グレポン
 		|| block_type == 93	//トマトン
 		|| block_type == 95	//動く床
+		|| block_type == 96 //動く床(ゴール)
 		|| block_type == 97	//マンホールの蓋(出口)
 		|| block_type == 98	//マンホールの開いている蓋
 		|| block_type == 101//戻るブロック

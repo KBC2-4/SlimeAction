@@ -40,7 +40,7 @@ public:
 	void Button(PLAYER* player);		//3種類のボタン
 	void Door(STAGE*stage);						//ドアの処理
 	void Lift(PLAYER* player);			//動く床の処理
-	bool HitLift(float player_scale);						//動く床の当たり判定
+	bool HitLift(PLAYER* player, float player_scale);						//動く床の当たり判定
 	void Manhole(PLAYER* player);		//マンホールの処理
 	void Acidrain_puddles(PLAYER* player);		//酸性雨の水たまりの処理
 	std::vector<ELEMENT_DATA> GetHook() { return hook; }
