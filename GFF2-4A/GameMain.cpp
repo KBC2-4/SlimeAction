@@ -136,6 +136,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time)
 
 GAMEMAIN::~GAMEMAIN()
 {
+	DeleteGraph(background_image[0]);
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
 	DeleteSoundMem(cursor_move_se);
