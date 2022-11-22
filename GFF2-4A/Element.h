@@ -19,6 +19,7 @@ public:
 
 	};
 private:
+	int guid_font,guid_timer;
 	std::vector<ELEMENT_DATA> hook;			//フック
 	std::vector<ELEMENT_DATA> button;		//ボタン
 	std::vector<ELEMENT_DATA> door;			//ドア
@@ -27,6 +28,7 @@ private:
 	std::vector<ELEMENT_DATA> manhole;		//マンホール
 	std::vector<ELEMENT_DATA> acidrain_puddles;			//酸性雨の水たまり
 	float player_map_x, player_map_y;
+	int player_state;
 	int lift_vector;
 	//mutable int animtimer;
 	int door_close_se, press_the_button_se, switch_se, walk_puddle_se;
