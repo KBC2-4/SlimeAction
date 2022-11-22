@@ -21,7 +21,7 @@ AbstractScene* STAGE_SELECT::Update()
 	DeleteGraph(background_image[0]);
 	player->Update(element, stage);
 	stage->Update(player, element);
-	element->Update(player);
+	element->Update(player, stage);
 	
 	return this;
 }
