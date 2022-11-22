@@ -3,9 +3,9 @@
 
 STAGE_SELECT::STAGE_SELECT()
 {
-	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
+	background_image[0] = LoadGraph("Resource/Images/Stage/BackImpause_cash.bmp");
 	player = new PLAYER;
-	stage = new STAGE;
+	stage = new STAGE("StageSelect");
 	element = new ELEMENT();
 
 	int scrollx = -(1460 - 500);
@@ -15,6 +15,7 @@ STAGE_SELECT::STAGE_SELECT()
 
 STAGE_SELECT::~STAGE_SELECT()
 {
+	DeleteGraph(background_image[0]);
 	delete player;
 	delete stage;
 	delete element;
@@ -22,7 +23,7 @@ STAGE_SELECT::~STAGE_SELECT()
 
 AbstractScene* STAGE_SELECT::Update()
 {
-	DeleteGraph(background_image[0]);
+	
 	player->Update(element, stage);
 	stage->Update(player, element);
 	element->Update(player,stage);
@@ -38,8 +39,8 @@ AbstractScene* STAGE_SELECT::Update()
 void STAGE_SELECT::Draw() const
 {
 	//ステージ背景
-	DrawGraph(int(stage->GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
-	DrawTurnGraph(int(stage->GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
+	DrawGraph(static_cast<int>(stage->GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
+	DrawTurnGraph(static_cast<int>(stage->GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
 
 
 	//ステージの描画
