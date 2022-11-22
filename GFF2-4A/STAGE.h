@@ -31,7 +31,7 @@ protected:
 	std::vector<std::vector<int>> map_data;
 	static float scroll_x, scroll_y;	//マップスクロール量
 public:
-	STAGE();
+	STAGE(const char* stage_name = "MapData1");
 	//マップ情報の更新
 	void Update(PLAYER* player, ELEMENT* element);
 	//ステージの描画
@@ -59,7 +59,7 @@ public:
 	//画面スクロール座標Yの取得
 	float GetScrollY() { return scroll_y; }
 	//マップデータの読み込み
-	void LoadMapData(void);	
+	void LoadMapData(const char* stage_name);
 
 	void StageClear(PLAYER* player);
 

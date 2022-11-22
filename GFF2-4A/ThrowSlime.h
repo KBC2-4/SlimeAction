@@ -16,7 +16,8 @@ private:
 	bool throw_end;
 	std::vector<float>throw_x;
 	std::vector<float>throw_y;
-	bool throw_fall;
+	/*bool throw_fall;*/
+	bool throw_del;
 	float throw_bottom;
 
 	int move_type;
@@ -29,9 +30,9 @@ public:
 	void Draw(STAGE* stage) const;
 
 
-
+	bool checkdel() { return throw_del; }
 	bool Get_throwend() { return throw_end; }
-	bool Get_throwfall() { return throw_fall; }
+	/*bool Get_throwfall() { return throw_fall; }*/
 	int HitBlock(STAGE* stage);
 
 	/*int HitBlock(STAGE* stage);
