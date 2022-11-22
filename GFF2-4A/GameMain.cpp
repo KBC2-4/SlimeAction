@@ -182,7 +182,7 @@ AbstractScene* GAMEMAIN::Update()
 	if (pause->IsPause() == false) {
 		player->Update(element, stage);
 		stage->Update(player, element);	//ステージクリア用
-		element->Update(player);
+		element->Update(player,stage);
 		for (int i = 0; i < lemoner_count; i++)
 		{
 			if (lemoner[i] != nullptr)
@@ -245,8 +245,7 @@ AbstractScene* GAMEMAIN::Update()
 				}
 			}
 
-			stage->Update(player, element);	//ステージクリア用
-			element->Update(player);
+			
 
 			//ゲームオーバー
 			if (player->IsDeath()) {

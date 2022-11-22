@@ -4,6 +4,7 @@
 
 
 class PLAYER;
+class STAGE;
 
 class ELEMENT :
     public STAGE
@@ -33,9 +34,9 @@ private:
 public:
 	ELEMENT();
 	void Draw() const override;
-	void Update(PLAYER* player);
+	void Update(PLAYER* player,STAGE*stage);
 	void Button(PLAYER* player);		//3種類のボタン
-	void Door();						//ドアの処理
+	void Door(STAGE*stage);						//ドアの処理
 	void Lift(PLAYER* player);			//動く床の処理
 	bool HitLift(float player_scale);						//動く床の当たり判定
 	void Manhole(PLAYER* player);		//マンホールの処理

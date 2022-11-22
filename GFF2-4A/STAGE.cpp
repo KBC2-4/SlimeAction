@@ -82,6 +82,7 @@ void STAGE::Draw()const {
 
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
+			
 			//‰æ–ÊŠO‚Í•`‰æ‚µ‚È‚¢
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
 				if (map_data.at(i).at(j) < 89 && map_data.at(i).at(j) != 68

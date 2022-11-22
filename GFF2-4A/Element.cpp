@@ -158,7 +158,6 @@ ELEMENT::ELEMENT() {
 }
 
 void ELEMENT::Draw() const {
-	
 	//DrawFormatString(100,50,0xffffff,"map_data:%d",map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE]);
 	//static int animtimer = 0;
 	//printfDx("%d", animtimer);
@@ -213,13 +212,13 @@ void ELEMENT::Draw() const {
 	}
 }
 
-void ELEMENT::Update(PLAYER* player) {
+void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 	//プレイヤーのマップ内座標を設定
 	player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
 	player_map_y = floorf(player->GetPlayerY());
 
 	Button(player);
-	Door();
+	Door(stage);
 	Lift(player);
 	Manhole(player);
 	Acidrain_puddles(player);
@@ -296,25 +295,25 @@ void ELEMENT::Button(PLAYER* player) {
 /// <summary>
 /// ドアの処理
 /// </summary>
-void ELEMENT::Door() {
+void ELEMENT::Door(STAGE* stage) {
 	for (int i = 0; i < door.size(); i++) {
 		if (door[i].flg == true) {
 			door[i].animtimer++;
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
-			map_data[y][x] = 64;
-			map_data[y - 1][x] = 65;
+			stage->SetMapData(y, x, 64);
+			stage->SetMapData(y - 1, x, 65);
 		}
 		//if (door[i].animtimer > 180) {
 		//	door[i].animtimer = 0;
 		//	door[i].flg = false;
 		//}
-		if ((player_map_x >= door[i].x + 25) && (player_map_x <= door[i].x + MAP_CEllSIZE / 2) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
+		if ((player_map_x >= door[i].x +MAP_CEllSIZE) && (player_map_x <= door[i].x + MAP_CEllSIZE * 2) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
 			door[i].animtimer = 0;
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
-			map_data[y][x] = 66;
-			map_data[y - 1][x] = 67;
+			stage->SetMapData(y, x, 66);
+			stage->SetMapData(y - 1, x, 67);
 			door[i].flg = false;
 			if (CheckSoundMem(door_close_se) == FALSE)PlaySoundMem(door_close_se, DX_PLAYTYPE_BACK, TRUE);
 			
