@@ -63,7 +63,7 @@ STAGE::STAGE(const char* stage_name) {
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
 	StageClear(player);
 	HalfwayPoint(player);
-	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && !element->HitLift(player->GetPlayerScale())) {
+	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && !element->HitLift(player, player->GetPlayerScale())) {
 		CameraWork(player);
 	}
 	
