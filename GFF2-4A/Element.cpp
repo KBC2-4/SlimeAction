@@ -331,9 +331,9 @@ void ELEMENT::Lift(PLAYER* player) {
 		}
 		if (lift[i].flg) {
 			if (lift[i].x != lift_goal[i].x) {
-				lift[i].x += lift_vector * 0.5;
+				lift[i].x += lift_vector * 4;
 				if (HitLift(player->GetPlayerScale())) {
-					player->SetPlayerX(player->GetPlayerX() + lift_vector * 0.5);
+					player->SetPlayerX(player->GetPlayerX() + lift_vector * 4);
 				}
 
 			}
