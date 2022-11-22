@@ -6,8 +6,11 @@
 DRAW_RANKING::DRAW_RANKING()
 {
 	wait_time = 0;
-
-	best_time = RANKING::ReadRanking();
+	RANKING::ReadRanking();
+	for (int i = 0; i < 3; i++)
+	{
+		best_time[i] = RANKING::GetBestTime(i);
+	}
 
 }
 
@@ -27,18 +30,21 @@ AbstractScene* DRAW_RANKING::Update()
 void DRAW_RANKING::Draw() const
 {
 	DrawBox(0, 0, 1280, 720, 0xffffff, TRUE);
-	SetFontSize(80);
-	DrawString(300, 100, "BestTime",0x000000);
+	SetFontSize(140);
+	DrawString(400, 100, "BestTime",0x000000);
 
 	SetFontSize(64);
-
-	DrawString(100,300,"1ステージ : ", 0x000000);
-	if (best_time != -1)
+	for (int i = 0; i < 3; i++)
 	{
-		DrawFormatString(300, 300, 0x000000, "%5d.%.3d", best_time / 1000, best_time % 1000);
+		DrawFormatString(300, 300 + (75 * i), 0x000000, "%dステージ :", i+1);
+		if (best_time[i] != -1)
+		{
+			DrawFormatString(700, 300 + (75 * i), 0x000000, "%5d.%.3d秒", best_time[i] / 1000, best_time[i] % 1000);
+		}
+		
 	}
 	if (wait_time % 120 < 60)
 	{
-		DrawString(200, 500, "Aボタンでタイトルに戻る", 0x000000);
+		DrawString(300, 600, "Aボタンでタイトルに戻る", 0x000000);
 	}
 }

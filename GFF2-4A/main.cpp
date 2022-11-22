@@ -3,6 +3,7 @@
 #include"SceneManager.h"
 #include"Title.h"
 #include"GameMain.h"
+#include "DrawRanking.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -26,7 +27,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SceneManager* sceneMng;
 	try
 	{
-		sceneMng = new SceneManager((AbstractScene*)new GAMEMAIN());
+		sceneMng = new SceneManager((AbstractScene*)new DRAW_RANKING());
 
 	}
 	catch (const char* err)
