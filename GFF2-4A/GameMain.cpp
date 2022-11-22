@@ -254,7 +254,11 @@ AbstractScene* GAMEMAIN::Update()
 
 			//ゲームオーバー
 			if (player->IsDeath()) {
-				if (restart == false && stage->GetHalfwayPointFlg() == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
+				if (!restart && stage->GetHalfwayPointFlg()) 
+				{ 
+					return new GAMEMAIN(true); 
+					halfway_time = GetNowCount() - time; 
+				}
 				return new GameOver();
 			}
 
