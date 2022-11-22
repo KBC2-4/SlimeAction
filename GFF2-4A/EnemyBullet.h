@@ -14,7 +14,7 @@ private:
     double player_x, player_y;        //プレイヤーの座標
     double dis_x, dis_y;              //プレイヤーと敵の距離
     double bullet_sx, bullet_sy;      //弾のX、Yそれぞれのスピード
-    int map_x, map_y;
+    int map_x, map_y;                 //弾のマップ上のX, Y（int型）
     float mapd_x, mapd_y;
     bool end_flg;                     //弾の消えるアニメーションをするかどうか
     bool bullet_flag;                 //弾を消すかどうか
