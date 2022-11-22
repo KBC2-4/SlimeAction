@@ -775,11 +775,13 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 			if (player_right > block_left && player_left < block_right) {
 				if (player_bottom > block_top && player_top < block_bottom) {
 					int block_type = stage->GetMapData(i, j);
-					if (!hit_ceil) {
+					if (!hit_ceil || player_state != PLAYER_MOVE_STATE::JUMP) {
 						//ドアの判定
-						//if ((block_type == 66 || block_type == 67) && move_x > 0) {
-						//	//return;
-						//}
+						if ((block_type == 66 || block_type == 67) && move_x > 0) {
+							if (fabsf(player_left - block_right) < SPEED) {
+								return;
+							}
+						}
 						player_x = old_player_x;
 						if (hitBullet) {
 							player_x -= move_x * player_scale * SPEED * 2;
