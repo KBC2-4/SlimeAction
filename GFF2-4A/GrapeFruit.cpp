@@ -5,7 +5,7 @@
 
 #include <vector>
 
-
+//コンストラクタ
 
 GRAPEFRUIT::GRAPEFRUIT()
 {
@@ -13,11 +13,8 @@ GRAPEFRUIT::GRAPEFRUIT()
 	if (image[0] = LoadGraph("Resource/Images/Enemy/gurepon.png") == -1)
 		throw "Resource/Images/Enemy/gurepon.png";
 	shootcount = 0;
-	hitflg = false;
 	delete_flg = false;
 	rad = 0.0;
-	for (int i = 0; i < 2; i++)
-		rads[i] = 0.0;
 	flag[3] = false;
 	x = 0;
 	spawn_map_x = 0;
@@ -25,8 +22,6 @@ GRAPEFRUIT::GRAPEFRUIT()
 	target_x = 200;
 	animation_timer = 0;
 	animation_type = 0;
-	check_hit_count = 0;
-	hit_flg = false;
 	for (int i = 0; i < 2; i++)
 	{
 		face_image[i] = 0;
@@ -37,6 +32,8 @@ GRAPEFRUIT::GRAPEFRUIT()
 	}
 	bullet_count = 3;
 }
+
+//引数付のコンストラクタ
 
 GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 {
@@ -60,10 +57,6 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 		face_image[i] = image[i];
 		fruit_image[i] = image[(i + 1) * 6];
 	}
-	for (int i = 0; i < 2; i++)
-	{
-		rads[i] = 0.0;
-	}
 	for (int i = 0; i < 3; i++)
 	{
 		bullet[i] = nullptr;
@@ -71,17 +64,23 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	this->player = player;
 	this->stage = stage;
 	bullet_count = 3;
-
-	hit_flg = false;
 }
 
+
+//アップデート
 void GRAPEFRUIT::Update()
 {
+	//アニメーションの時間を加算
 	++animation_timer;
+
+	//動きのステート
 	switch (state)
 	{
+		//待機状態
 	case ENEMY_STATE::IDOL:
 		break;
+
+		//動いている
 	case ENEMY_STATE::MOVE:
 		ChangeAngle();
 		if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280))
@@ -92,8 +91,9 @@ void GRAPEFRUIT::Update()
 				state = ENEMY_STATE::PRESS;
 			}
 		}
-
 		break;
+
+		//アニメーションをリセットする
 	case ENEMY_STATE::RETURN:
 		ChangeAngle();
 		if (ReturnAnimation())
@@ -103,6 +103,8 @@ void GRAPEFRUIT::Update()
 			state = ENEMY_STATE::MOVE;
 		}
 		break;
+
+		//弾を撃つ
 	case ENEMY_STATE::PRESS:
 		ChangeAngle();
 		if (PressAnimation())
@@ -120,10 +122,14 @@ void GRAPEFRUIT::Update()
 			state = ENEMY_STATE::RETURN;
 		}
 		break;
+
+		//落ちる時
 	case ENEMY_STATE::FALL:
 		Move();
 		FallAnimation();
 		break;
+
+		//死
 	case ENEMY_STATE::DETH:
 		if (DethAnimation())
 		{
@@ -152,35 +158,45 @@ void GRAPEFRUIT::Update()
 			}
 		}
 	}
-
+	
+	//当たり判定
 	Hit();
 
+	//画面内にいるかどうか
 	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY() < 0) || (y + stage->GetScrollY() > 720))		//画面外に出るとアイドル状態にする
 	{
-		state = ENEMY_STATE::IDOL;
+		state = ENEMY_STATE::IDOL;		//ステートを待機状態へ
 	}
 	else if (state == ENEMY_STATE::IDOL)	//画面内にいて、アイドル状態のとき敵の方向を向くようにする
 	{
+		//アニメーション時間をリセットし、ステートをムーブへ
 		animation_timer = 0;
 		state = ENEMY_STATE::MOVE;
 	}
 	else {}
 }
 
+//おちたときの動き
 void GRAPEFRUIT::Move()
 {
+	//下へ落ちる
 	y += 5;
+	//弾のフラグをFALSEへ
 	for (int i = 0; i < 3; i++)
 	{
-		flag[i] = false;
+		if (flag[i])
+		{
+			flag[i] = false;
+		}
 	}
 	
 }
 
-
+//当たり判定
 
 void GRAPEFRUIT::Hit()
 {
+	//呼ばれた時にスライムのクラス変数を作成
 	ThrowSlime throw_slime;
 
 	float bx1, by1, bx2, by2;
@@ -222,6 +238,7 @@ void GRAPEFRUIT::Hit()
 	}
 }
 
+//弾を撃つときのつぶれるアニメーション
 bool GRAPEFRUIT::PressAnimation()
 {
 
@@ -253,6 +270,8 @@ bool GRAPEFRUIT::PressAnimation()
 	}
 	return ret;
 }
+
+//つぶれた状態から元の状態に戻すアニメーション
 bool GRAPEFRUIT::ReturnAnimation()
 {
 	bool ret = false;
@@ -288,6 +307,8 @@ bool GRAPEFRUIT::ReturnAnimation()
 	return ret;
 }
 
+
+//落ちるアニメーション
 void GRAPEFRUIT::FallAnimation()
 {
 	if (animation_timer % ANIMATION_TIME == 0)
@@ -303,6 +324,8 @@ void GRAPEFRUIT::FallAnimation()
 		}
 	}
 }
+
+//死ぬアニメーション
 bool GRAPEFRUIT::DethAnimation()
 {
 	bool ret = false;
@@ -327,7 +350,7 @@ bool GRAPEFRUIT::DethAnimation()
 	return ret;
 }
 
-
+//描画
 void GRAPEFRUIT::Draw() const
 {
 	for (int i = 0; i < 2; i++)
@@ -348,6 +371,7 @@ void GRAPEFRUIT::Draw() const
 	}
 }
 
+//X座標をゲットする
 int GRAPEFRUIT::GetX()
 {
 	return x;

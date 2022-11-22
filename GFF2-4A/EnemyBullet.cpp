@@ -1,6 +1,8 @@
 #include "EnemyBullet.h"
 #include <math.h>
 
+
+//コンストラクタ
 ENEMY_BULLET::ENEMY_BULLET()
 {
 	player = nullptr;
@@ -19,9 +21,12 @@ ENEMY_BULLET::ENEMY_BULLET()
 	end_flg = false;
 	delete_flg = false;
 	hit_flg = false;
+	image = 0;
 	rad_x = 0.0;
 	map_x = 0;
 	map_y = 0;
+	mapd_x = 0.0;
+	mapd_y = 0.0;
 	image_index = 0;
 	animation_timer = 0;
 	animation_type = 0;
@@ -35,6 +40,7 @@ ENEMY_BULLET::ENEMY_BULLET()
 	}
 }
 
+//引数付きコンストラクタ
 ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, double dis, float scroll,double p_rad,int index)
 {
 	if (LoadDivGraph("Resource/images/Enemy/Enemy_Bullet.png", 4, 4, 1, 20, 20, bullet_images) == -1)
@@ -65,8 +71,11 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	scroll_x = abs(scroll);
 	map_x = 0;
 	map_y = 0;
+	mapd_x = 0.0;
+	mapd_y = 0.0;
 	rad = p_rad;
 	image_index = index;
+	image = 0;
 	animation_timer = 0;
 	animation_type = 0;
 	stage = aug_stage;
@@ -79,15 +88,18 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	bullet_sy = dis_y / hypote * 5;
 }
 
+//描画
 void ENEMY_BULLET::Draw() const
 {
 	DrawRotaGraph(static_cast<int>(GetDrawX()), bullet_y, 2, rad + (-90 * (PI / 180)), image, TRUE);
 }
 
+//アップデート
 void ENEMY_BULLET::Update()
 {
 
-	animation_timer++;
+	animation_timer++;        //アニメーションの時間を加算
+	//アニメーションを終わらせる
 	if (end_flg)
 	{
 		if (EndAnimation())
@@ -97,9 +109,10 @@ void ENEMY_BULLET::Update()
 	}
 	else
 	{
-	Move();
-	Hit();
+	Move();	//あにめーしょんのうごき
+	Hit();  //プレイヤーとの当たり判定
 	}
+	//弾がプレイヤーに当たっていたら
 	if (hit_flg)
 	{
 		if (player->GetLife() > 0)
@@ -126,18 +139,20 @@ void ENEMY_BULLET::Move()
 	bullet_x += bullet_sx;
 	bullet_y += bullet_sy;
 
-
+	//マップ上の値を代入
 	mapd_x = bullet_x / MAP_CEllSIZE;
 	mapd_y = (bullet_y + IMAGE_Y_SIZE)  / MAP_CEllSIZE;
 
+	//ダブル型のマップ上の値をイント型に
 	map_x = (int)(mapd_x);
 	map_y = (int)(mapd_y);
 	MoveAnimation();
 }
 
+//アニメーションを終わらせる
 bool ENEMY_BULLET::EndAnimation()
 {
-	bool ret = false;
+	bool ret = false;           //アニメーションが終わっているかどうかのフラグ
 	if (animation_timer < 50)	//50フレーム間アニメーションをする
 	{
 		if (animation_timer % ANIMATION_TIMER == 0)
