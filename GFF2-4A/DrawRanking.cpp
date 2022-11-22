@@ -1,47 +1,44 @@
 #include "DrawRanking.h"
+#include "Ranking.h"
+#include "PadInput.h"
+#include "Title.h"
 
 DRAW_RANKING::DRAW_RANKING()
 {
 	wait_time = 0;
 
-	if ((Image = LoadGraph("images/Ranking.bmp")) == -1)
-	{
-		throw "\nRanking Image Err\n\n";
-	}
-	data = Ranking::ReadRanking();
+	best_time = RANKING::ReadRanking();
 
 }
 
 AbstractScene* DRAW_RANKING::Update()
 {
-	if (++wait_time > 60)
-	{
-		wait_time = 0;
-	}
-	// スペースキーでメニューに戻る
-	if (KeyFlagManager::GetKeyFlag() & PAD_INPUT_M)
+
+	++wait_time;
+
+	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
 	{
 		return new Title();
 	}
+
 	return this;
 }
 
 void DRAW_RANKING::Draw() const
 {
+	DrawBox(0, 0, 1280, 720, 0xffffff, TRUE);
+	SetFontSize(80);
+	DrawString(300, 100, "BestTime",0x000000);
 
-	//ランキング画像表示
-	DrawGraph(0, 0, Image, FALSE);
+	SetFontSize(64);
 
-	// ランキング一覧を表示
-	SetFontSize(30);
-	for (int i = 0; i < 10; i++) {
-		DrawFormatString(80, 170 + i * 25, 0xFFFFFF, "%2d   %10s     %10d",
-			data[i].no, data[i].name, data[i].score);
+	DrawString(100,300,"1ステージ : ", 0x000000);
+	if (best_time != -1)
+	{
+		DrawFormatString(300, 300, 0x000000, "%5d.%.3d", best_time / 1000, best_time % 1000);
 	}
-
-	// 文字の表示(点滅)
-	if (wait_time < 30) {
-		SetFontSize(24);
-		DrawString(150, 450, "--  Press [SPACE] Key  --", 0xFF0000);
+	if (wait_time % 120 < 60)
+	{
+		DrawString(200, 500, "Aボタンでタイトルに戻る", 0x000000);
 	}
 }

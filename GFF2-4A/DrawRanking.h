@@ -6,7 +6,7 @@ class DRAW_RANKING :
 {
 private:
 	int wait_time;
-
+	int best_time;
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -15,7 +15,7 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~DRAW_RANKING();
+	~DRAW_RANKING() {}
 	/// <summary>
 	/// 描画以外の更新を実行
 	/// </summary>

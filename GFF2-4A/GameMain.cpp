@@ -256,11 +256,10 @@ AbstractScene* GAMEMAIN::Update()
 					return new GAMEMAIN(true, halfway_time);
 				}
 				return new GameOver();
-				
 			}
 
 			//ステージクリア
-			if (stage->GetClearFlg()) { return new RESULT(true, time + halfway_time); };
+			if (stage->GetClearFlg())
 			{ 
 				return new RESULT(true, time + halfway_time); 
 			}
@@ -282,6 +281,7 @@ AbstractScene* GAMEMAIN::Update()
 
 	return this;
 }
+
 void GAMEMAIN::Draw() const
 {
 
