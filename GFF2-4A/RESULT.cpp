@@ -7,9 +7,9 @@ RESULT::RESULT(bool issue, int clear_time) {
 		throw "Resource/Images/Enemy/mi_hasya_kao.png";
 	}
 
-	/*if ((gameover_background_image = LoadGraph("Resource/Images/Result/gurepon.png")) == -1) {
+	if ((gameover_background_image = LoadGraph("Resource/Images/Result/gurepon.png")) == -1) {
 		throw "Resource/Images/Enemy/gurepon.png";
-	}*/
+	}
 
 	if ((count_se = LoadSoundMem("Resource/Sounds/SE/321.wav")) == -1) {
 		throw "Resource/Sounds/SE/321.wav";
@@ -29,14 +29,14 @@ RESULT::RESULT(bool issue, int clear_time) {
 		}
 	}
 
-	/*for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++) {
 		char dis_bad_se[30];
 		sprintf_s(dis_bad_se, sizeof(dis_bad_se), "Resource/Sounds/SE/bad%d.wav", i + 1);
 
 		if ((bad_se[i] = LoadSoundMem(dis_bad_se)) == -1) {
 			throw dis_bad_se;
 		}
-	}*/
+	}
 
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8,-1,8);
 	menu_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
@@ -57,7 +57,7 @@ RESULT::RESULT(bool issue, int clear_time) {
 
 RESULT::~RESULT() {
 	DeleteGraph(clear_background_image);
-	/*DeleteGraph(gameover_background_image);*/
+	DeleteGraph(gameover_background_image);
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
 	DeleteFontToHandle(time_font);
@@ -65,7 +65,7 @@ RESULT::~RESULT() {
 	DeleteSoundMem(count_se);
 	DeleteSoundMem(ok_se);
 	for(int i = 0; i < 4; i++)DeleteSoundMem(good_se[i]);
-	/*for (int i = 0; i < 4; i++)DeleteSoundMem(bad_se[i]);*/
+	for (int i = 0; i < 4; i++)DeleteSoundMem(bad_se[i]);
 }
 
 AbstractScene* RESULT::Update() {

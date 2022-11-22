@@ -14,7 +14,7 @@
 float STAGE::scroll_x = 0;
 float STAGE::scroll_y = 0;
 
-STAGE::STAGE() {
+STAGE::STAGE(const char* stage_name) {
 	//**map_data = 0;
 	*block_image1 = 0;
 	*stage_image = 0;
@@ -37,7 +37,8 @@ STAGE::STAGE() {
 	//map_data.resize(MAP_HEIGHT);
 
 	//InitStage();
-	LoadMapData();
+
+	LoadMapData(stage_name);
 	clearflg = false;
 	clearbox = {0,0};
 	halfwaypointbox = {0,0};
@@ -231,9 +232,11 @@ bool STAGE::HitThrowSlime(int y, int x) {
 /// <summary>
 /// マップデータの読み込み
 /// </summary>
-void STAGE::LoadMapData(void) {
+void STAGE::LoadMapData(const char* stage_name) {
 
-		std::ifstream ifs("Resource/Map_Data/MapData1.csv");
+		char buf[37];
+		sprintf_s(buf, sizeof(buf), "Resource/Map_Data/%s.csv", stage_name);
+		std::ifstream ifs(buf);
 
 		std::string str = "";
 		int i = 0, j = 0;
