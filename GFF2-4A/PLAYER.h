@@ -58,6 +58,10 @@ private:
 	float player_top = 0, player_bottom = 0;
 	float rebound_x;
 	float jump_move_x;
+	bool is_ground;		//地面についてるかどうか
+	bool hit_ceil;
+
+	bool hitBullet;
 	int life;
 	int now_image;			//描画する画像
 	int images[ANIMATION_TYPE][10];		//アニメーションの画像
@@ -157,11 +161,11 @@ public:
 	void Move();
 	void Draw(STAGE* stage) const;
 	void HookMove(ELEMENT* element, STAGE* stage);
-	void JumpMove(ELEMENT* element, STAGE* stage);
+	void JumpMove();
 	void Throw(STAGE* stage);
 	void MoveAnimation();
 	void Update(ELEMENT*element, STAGE* stage);
-	void HitBlock(STAGE* stage);
+	void HitBlock(ELEMENT* element, STAGE* stage);
 	void Scroll(float move_x);
 	int HitPlayer(float x, float y, int diameter,int type);	//type::土管=1,
 
@@ -177,7 +181,7 @@ public:
 	int GetThrowCnt() { return throw_slime.size(); }
 	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
-	bool GetBullet(int* bullet);	//ドロップした玉を拾う処理
+	/*bool GetBullet(int* bullet);*/	//ドロップした玉を拾う処理
 	double GetSpeed() { return speed; }
 	float GetMoveX() { return move_x; }
 
