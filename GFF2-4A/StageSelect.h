@@ -14,6 +14,8 @@ private:
 	STAGE* stage;	//ステージ
 	ELEMENT* element;	//ステージ内要素
 
+	float player_map_x, player_map_y;
+
 public:
 	/// <summary>
 	/// コンストラクタ

@@ -170,6 +170,7 @@ void ELEMENT::Draw() const {
 	//DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
 	//デバッグ用
 
+	//フックのガイド表示
 	for (int i = 0; i < hook.size(); i++) {
 		if (player_state != static_cast<int>(PLAYER_MOVE_STATE::HOOK)) {
 			if (guid_timer < 50) {
@@ -227,6 +228,7 @@ void ELEMENT::Draw() const {
 		}else{
 			DrawGraph(manhole[i].x + scroll_x, manhole[i].y - scroll_y, block_image1[67], TRUE);
 
+			//マンホールのガイド表示
 			if (guid_timer < 50) {
 				DrawCircleAA(manhole[i].x + scroll_x + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - scroll_y, 15, 20, 0xFFFFFF, 1);
 				DrawStringToHandle(manhole[i].x + scroll_x - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - scroll_y - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
@@ -254,7 +256,7 @@ void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 
 	player_state = static_cast<int>(player->GetPlayerMoveState());
 	//プレイヤーのマップ内座標を設定
-	player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
+	player_map_x = roundf(player->GetPlayerX() - stage->GetScrollX());
 	player_map_y = floorf(player->GetPlayerY());
 
 	Button(player);

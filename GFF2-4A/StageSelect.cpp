@@ -1,9 +1,11 @@
 #include "StageSelect.h"
+#include "Title.h"
 #include "DxLib.h"
 
 STAGE_SELECT::STAGE_SELECT()
 {
-	background_image[0] = LoadGraph("Resource/Images/Stage/BackImpause_cash.bmp");
+	//background_image[0] = LoadGraph("Resource/Images/Stage/BackImpause_cash.bmp");
+	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
 	player = new PLAYER;
 	stage = new STAGE("StageSelect");
 	element = new ELEMENT();
@@ -11,6 +13,10 @@ STAGE_SELECT::STAGE_SELECT()
 	int scrollx = -(1460 - 500);
 	stage->SetScrollX(scrollx);	//スポーン地点をセット
 	player->SetPlayerX(80); //プレイヤーの画面内座標をセット
+
+	player_map_x = 0;
+	player_map_y = 0;
+
 }
 
 STAGE_SELECT::~STAGE_SELECT()
@@ -23,6 +29,9 @@ STAGE_SELECT::~STAGE_SELECT()
 
 AbstractScene* STAGE_SELECT::Update()
 {
+
+	player_map_x = roundf(player->GetPlayerX() - stage->GetScrollX());
+	player_map_y = floorf(player->GetPlayerY());
 	
 	player->Update(element, stage);
 	stage->Update(player, element);
@@ -33,6 +42,9 @@ AbstractScene* STAGE_SELECT::Update()
 		return new STAGE_SELECT();
 	}
 
+	if ((player_map_x >= 20 * MAP_CEllSIZE  - MAP_CEllSIZE / 2) && (player_map_x <= 20 * MAP_CEllSIZE + MAP_CEllSIZE / 2)) {
+		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { return new Title(); }
+	}
 	return this;
 }
 
