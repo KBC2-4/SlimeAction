@@ -756,7 +756,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		}
 	}
 	
-	if (element->HitLift(player_scale)) {
+	if (element->HitLift(this, player_scale)) {
 		is_ground = true;
 	}
 
@@ -778,7 +778,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 					if (!hit_ceil || player_state != PLAYER_MOVE_STATE::JUMP) {
 						//ドアの判定
 						if ((block_type == 66 || block_type == 67) && move_x > 0) {
-							if (fabsf(player_left - block_right) < SPEED) {
+							if (fabsf(player_left - block_right) < SPEED * player_scale) {
 								return;
 							}
 						}
