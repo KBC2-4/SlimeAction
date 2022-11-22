@@ -22,6 +22,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time)
 	tomaton_count = 0;
 	item_count = 0;
 	item_num = 0;
+	item_rand = 0;
 
 	player = new PLAYER;
 	stage = new STAGE;
@@ -35,7 +36,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time)
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
 		{
-			if (stage->GetMapDat(i, j) == 93)
+			if (stage->GetMapData(i, j) == 93)
 			{
 				tomaton_count++;
 				item_count++;
@@ -64,7 +65,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time)
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
 		{
-			if (stage->GetMapDat(i, j) == 92)
+			if (stage->GetMapData(i, j) == 92)
 			{
 				gurepon_count++;
 				spawn_point.push_back(std::vector<int>(2));
@@ -93,7 +94,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time)
 	{
 		for (int j = 0; j < MAP_WIDTH; j++)
 		{
-			if (stage->GetMapDat(i, j) == 91)
+			if (stage->GetMapData(i, j) == 91)
 			{
 				lemoner_count++;
 				spawn_point.push_back(std::vector<int>(2));
@@ -189,8 +190,12 @@ AbstractScene* GAMEMAIN::Update()
 				lemoner[i]->Update();
 				if (lemoner[i]->GetDeleteFlag())
 				{
+					item_rand = GetRand(5);
 					//アイテムを生成
-					item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX());
+					if (item_rand == 0)
+					{
+						item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX());
+					}
 					delete lemoner[i];
 					lemoner[i] = nullptr;
 				}
@@ -204,8 +209,12 @@ AbstractScene* GAMEMAIN::Update()
 		{
 			if (gurepon[i] != nullptr && gurepon[i]->GetDeleteFlg())
 			{
+				item_rand = GetRand(5);
 				//アイテムを生成
-				item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
+				if (item_rand == 0)
+				{
+					item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
+				}
 				delete gurepon[i];
 				gurepon[i] = nullptr;
 			}
@@ -241,11 +250,11 @@ AbstractScene* GAMEMAIN::Update()
 
 			//ゲームオーバー
 			if (player->IsDeath()) {
-				if (restart == false && stage->GetHalfwayPointFlg() == true) { 
+				if (!restart && stage->GetHalfwayPointFlg()) { 
 					halfway_time =  time - GetNowCount();
 					return new GAMEMAIN(true,halfway_time); 
 				}
-				return new RESULT(false);
+				return new GameOver();
 			}
 
 			//ステージクリア
@@ -274,8 +283,8 @@ void GAMEMAIN::Draw() const
 {
 
 	//ステージ背景
-	DrawGraph(int(STAGE::GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
-	DrawTurnGraph(int(STAGE::GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
+	DrawGraph(int(stage->GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
+	DrawTurnGraph(int(stage->GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
 
 
 	//ステージの描画
@@ -283,7 +292,7 @@ void GAMEMAIN::Draw() const
 	stage->Draw();
 
 	//プレイヤーの描画
-	player->Draw();
+	player->Draw(stage);
 
 	//レモナーの描画
 	for (int i = 0; i < lemoner_count; i++)

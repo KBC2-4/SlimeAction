@@ -22,11 +22,11 @@ ELEMENT::ELEMENT() {
 	}
 
 	ELEMENT_DATA data;
-	for (int i = 0; i < MAP_HEIGHT; i++)
+	for (int i = 0; i < map_data.size(); i++)
 	{
-		for (int j = 0; j < MAP_WIDTH; j++)
+		for (int j = 0; j < map_data.at(0).size(); j++)
 		{
-			switch (map_data[i][j])
+			switch (map_data.at(i).at(j))
 			{
 				//ƒ{ƒ^ƒ“‰¡
 			case 61:
