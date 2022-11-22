@@ -2,7 +2,7 @@
 #include "Title.h"
 #include <vector>
 
-GAMEMAIN::GAMEMAIN(bool restert)
+GAMEMAIN::GAMEMAIN(bool restert, int halfway_time)
 {
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 	std::vector<std::vector<int>> spawn_point;
@@ -17,11 +17,12 @@ GAMEMAIN::GAMEMAIN(bool restert)
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
 	time = GetNowCount();
-	if (restart == false)halfway_time = 0;
+	this->halfway_time = halfway_time;
 	lemoner_count = 0;
 	tomaton_count = 0;
 	item_count = 0;
 	item_num = 0;
+	item_rand = 0;
 
 	player = new PLAYER;
 	stage = new STAGE;
@@ -189,8 +190,12 @@ AbstractScene* GAMEMAIN::Update()
 				lemoner[i]->Update();
 				if (lemoner[i]->GetDeleteFlag())
 				{
+					item_rand = GetRand(5);
 					//アイテムを生成
-					item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX());
+					if (item_rand == 0)
+					{
+						item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX());
+					}
 					delete lemoner[i];
 					lemoner[i] = nullptr;
 				}
@@ -204,8 +209,12 @@ AbstractScene* GAMEMAIN::Update()
 		{
 			if (gurepon[i] != nullptr && gurepon[i]->GetDeleteFlg())
 			{
+				item_rand = GetRand(5);
 				//アイテムを生成
-				item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
+				if (item_rand == 0)
+				{
+					item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
+				}
 				delete gurepon[i];
 				gurepon[i] = nullptr;
 			}
@@ -241,12 +250,17 @@ AbstractScene* GAMEMAIN::Update()
 
 			//ゲームオーバー
 			if (player->IsDeath()) {
-				if (restart == false && stage->GetHalfwayPointFlg() == true) { return new GAMEMAIN(true); halfway_time = GetNowCount() - time; }
+				if (restart == false && stage->GetHalfwayPointFlg() == true) { 
+					halfway_time =  time - GetNowCount();
+					return new GAMEMAIN(true,halfway_time); 
+				}
 				return new RESULT(false);
 			}
 
 			//ステージクリア
-			if (stage->GetClearFlg()) { return new RESULT(true, time + halfway_time); };
+			if (stage->GetClearFlg()) { 
+				return new RESULT(true, time + halfway_time); 
+			};
 		}
 	}
 	else {	//ポーズ画面のセレクター

@@ -155,6 +155,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="GrapeFruit.cpp" />
     <ClCompile Include="ITEMBALL.cpp" />
     <ClCompile Include="Lemon.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="RESULT.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="STAGE.cpp" />
+    <ClCompile Include="StageSelect.cpp" />
     <ClCompile Include="ThrowSlime.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tomato.cpp" />
@@ -180,6 +182,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="GameMain.h" />
+    <ClInclude Include="GameOver.h" />
     <ClInclude Include="GrapeFruit.h" />
     <ClInclude Include="ITEMBALL.h" />
     <ClInclude Include="Lemon.h" />
@@ -189,6 +192,7 @@
     <ClInclude Include="RESULT.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="STAGE.h" />
+    <ClInclude Include="StageSelect.h" />
     <ClInclude Include="ThrowSlime.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tomato.h" />

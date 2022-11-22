@@ -31,6 +31,7 @@ private:
 	//アイテムの数用変数
 	int item_count;
 	int item_num;
+	int item_rand;
 
 	bool restart;	//復活フラグ
 
@@ -46,7 +47,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	GAMEMAIN(bool restert = false);
+	GAMEMAIN(bool restert = false, int halfway_time = 0);
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
@@ -60,5 +61,7 @@ public:
 	/// 描画に関することを実装
 	/// </summary>
 	void Draw() const override;
+
+	void ItemTrunc();
 };
 
