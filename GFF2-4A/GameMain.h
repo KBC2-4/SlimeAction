@@ -13,6 +13,7 @@ class GAMEMAIN :
     public AbstractScene
 {
 private:
+	//”wŒi‰æ‘œ
 	int background_image[5];
 	int title_font, menu_font;	//ƒtƒHƒ“ƒg
 	int cursor_move_se, ok_se;	//SE
