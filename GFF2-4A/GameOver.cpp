@@ -12,7 +12,9 @@ GameOver::GameOver()
 	}
 
 	//Select用fontを初期化
+
 	Select_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+
 	//Bボタンを押すのを促す文字列用fontを初期化
 	Button_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
