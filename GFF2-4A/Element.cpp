@@ -350,7 +350,7 @@ void ELEMENT::Door(STAGE* stage) {
 		//	door[i].animtimer = 0;
 		//	door[i].flg = false;
 		//}
-		if ((player_map_x >= door[i].x +MAP_CEllSIZE) && (player_map_x <= door[i].x + MAP_CEllSIZE * 2) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
+		if ((player_map_x >= door[i].x +MAP_CEllSIZE+10) && (player_map_x <= door[i].x + MAP_CEllSIZE * 2) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
 			door[i].animtimer = 0;
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
@@ -373,9 +373,9 @@ void ELEMENT::Lift(PLAYER* player) {
 		}
 		if (lift[i].flg) {
 			if (lift[i].x != lift_goal[i].x) {
-				lift[i].x += lift_vector * 0.5;
+				lift[i].x += lift_vector * 4;
 				if (HitLift(player->GetPlayerScale())) {
-					player->SetPlayerX(player->GetPlayerX() + lift_vector * 0.5);
+					player->SetPlayerX(player->GetPlayerX() + lift_vector * 4);
 				}
 
 			}
