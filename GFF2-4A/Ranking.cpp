@@ -1,18 +1,21 @@
 #include "Ranking.h"
 #include "DxLib.h"
 
+
+int RANKING::best_time[3];
 void RANKING::Insert(int time , int stage)
 {
-	int best_time;
-	best_time = ReadRanking();
+	
+	ReadRanking();
 
-	if ((time < best_time) || (best_time == -1))
+	if ((time < best_time[stage]) || (best_time[stage] == -1))
 	{
-		SaveRanking(time);
+		best_time[stage] = time;
+		SaveRanking();
 	}
 }
 
-void RANKING::SaveRanking(int best_time) {
+void RANKING::SaveRanking(void) {
 	FILE* fp = NULL;
 
 	//ファイルオープン
@@ -20,26 +23,27 @@ void RANKING::SaveRanking(int best_time) {
 	{
 		throw "Resource/BestTime/BestTime.txt";
 	}
-	//ハイスコアデータを読み込む
-	fprintf_s(fp, "%d", best_time);
+	//ベストタイムを書き込む
+	for (int i = 0; i < 3; i++)
+	{
+		fprintf_s(fp, "%d\n", best_time[i]);
+	}
 	fclose(fp);
 }
 
-int RANKING::ReadRanking(void) {
+void RANKING::ReadRanking(void) {
 	FILE* fp = NULL;
-
-	int best_time;
 
 	//ファイルオープン
 	if (fopen_s(&fp, "Resource/BestTime/BestTime.txt", "r") != 0)
 	{
 		throw "Resource/BestTime/BestTime.txt";
 	}
-	//ハイスコアデータを読み込む
-	fscanf_s(fp, "%d", &best_time);
+	//ベストタイムを読み込む
+	for (int i = 0; i < 3; i++)
+	{
+		fscanf_s(fp, "%d", &best_time[i]);
+	}
 	fclose(fp);
-
-	return best_time;
 }
-
 
