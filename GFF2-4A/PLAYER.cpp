@@ -11,7 +11,7 @@ float PLAYER::player_x, PLAYER::player_y;
 /*コンストラクタ*/
 PLAYER::PLAYER() {
 	player_x = 80.0f;
-	player_y = 1240.0f;
+	player_y = 500.0f;
 	rebound_x = SPEED;
 	map_x = 0;
 	map_y = 0;

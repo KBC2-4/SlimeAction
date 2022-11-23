@@ -20,10 +20,11 @@ STAGE::STAGE(const char* stage_name) {
 	*stage_image = 0;
 	//scroll_x = -8640;
 	scroll_x = 0;
-	scroll_y = -720;
+	if (stage_name == "StageSelect") { scroll_y = 0; }
+	else if (stage_name == "Stage01") { scroll_y = -700; }
 
-	player_x_old = 20.f;
-	player_y_old = 500.f;
+	player_x_old = 0;
+	player_y_old = 0;
 	player_vector_x = 0;
 	player_vector_y = 0;
 
@@ -79,9 +80,9 @@ void STAGE::Draw()const {
 
 	for (int i = 0; i < map_data.size(); i++) {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
-			
+			//if (map_data.at(i).at(j) == 72)DrawFormatString(100 + j * 20, 50, 0xffffff, "%d %d", i, j);
 			//画面外は描画しない
-			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
+			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && i * MAP_CEllSIZE + scroll_y >= -80&&i*MAP_CEllSIZE+scroll_y<=720) {
 				if (
 					map_data.at(i).at(j) != 68
 					&& map_data.at(i).at(j) != 102
@@ -132,13 +133,13 @@ void STAGE::CameraWork(PLAYER* player) {
 			}
 		}
 
-		//y軸スクロール
-		if ((player_vector_y > 0 && player->GetPlayerY() <= 360||player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL&&scroll_y>-720) && player_y_old != player->GetPlayerY()) {
-			scroll_y += scroll_speedY * player_vector_y;
-			if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
-				scroll_y -= scroll_speedY * player_vector_y;
-			}
-		}
+		////y軸スクロール
+		//if ((player_vector_y > 0 && player->GetPlayerY() <= 360||player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL&&scroll_y>-720) && player_y_old != player->GetPlayerY()) {
+		//	scroll_y += scroll_speedY * player_vector_y;
+		//	if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
+		//		scroll_y -= scroll_speedY * player_vector_y;
+		//	}
+		//}
 
 	
 	/*if (player->GetPlayerY()>=720) {
