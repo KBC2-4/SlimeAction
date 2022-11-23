@@ -27,7 +27,7 @@ STAGE::STAGE(const char* stage_name) {
 	player_vector_x = 0;
 	player_vector_y = 0;
 
-	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1) == -1) {
+	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 110, 10, 11, 80, 80, block_image1) == -1) {
 		throw "Resource/Images/Stage/map_chips.png";
 	}
 
@@ -81,16 +81,18 @@ void STAGE::Draw()const {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
 			
 			//âÊñ äOÇÕï`âÊÇµÇ»Ç¢
-			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && i*MAP_CEllSIZE+scroll_y>=-80&&i*MAP_CEllSIZE+scroll_y<=720) {
-				if (map_data.at(i).at(j) < 89 && map_data.at(i).at(j) != 68
-					|| (map_data.at(i).at(j) <= 74	//é_ê´âJÇÃêÖÇΩÇ‹ÇËÇï`âÊÇµÇ»Ç¢
-												////É}ÉìÉzÅ[ÉãÇÃäJÇ¢ÇƒÇ¢ÇÈäWÇï`âÊÇµÇ»Ç¢
-					&& map_data.at(i).at(j) >= 79)
+			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
+				if (
+					map_data.at(i).at(j) != 68
+					&& map_data.at(i).at(j) != 102
+					&& map_data.at(i).at(j) != 103
+					&& (map_data.at(i).at(j) <= 88	
+												////89Å`90î‘ë‰Çï`âÊÇµÇ»Ç¢
+						|| map_data.at(i).at(j) >= 100)
 					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
 			}
 			//ÉåÉÇÉiÅ[Ç∆ÉOÉåÉ|ÉìÇÕÉcÉãÇæÇØï`âÊÇ∑ÇÈ
 			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
-			if (map_data.at(i).at(j) == 101) { DrawBox(j * MAP_CEllSIZE + scroll_x - MAP_CEllSIZE / 2, (i - 1) * MAP_CEllSIZE - MAP_CEllSIZE / 2, j * MAP_CEllSIZE + scroll_x + MAP_CEllSIZE / 2, (i - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2, 0xFFCB33, TRUE); }
 		}
 	}
 

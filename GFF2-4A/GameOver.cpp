@@ -1,5 +1,6 @@
 #include "GameOver.h"
 #include "GameMain.h"
+#include "StageSelect.h"
 #include "DxLib.h"
 
 GameOver::GameOver()
@@ -65,7 +66,7 @@ AbstractScene* GameOver::Update()
 		{
 
 		case  GAMEOVER_MENU::ReSelect:
-			return new Title();
+			return new STAGE_SELECT();
 			break;
 
 		case GAMEOVER_MENU::NewGame:

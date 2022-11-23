@@ -2,8 +2,6 @@
 #include <Windows.h>
 #include <vector>
 
-#define MAP_HEIGHT 14
-#define MAP_WIDTH 117
 #define MAP_CEllSIZE 80
 
 class PLAYER;
@@ -27,7 +25,7 @@ private:
 	float player_vector_y;					//プレイヤーの移動方向y
 
 protected:
-	int block_image1[100];		//ステージブロック画像
+	int block_image1[110];		//ステージブロック画像
 	std::vector<std::vector<int>> map_data;
 	static float scroll_x, scroll_y;	//マップスクロール量
 public:
@@ -38,6 +36,12 @@ public:
 	virtual void Draw() const;
 	//ステージの初期化
 	//void InitStage();
+
+	//マップサイズのGeter
+	POINT GetMapSize(void) { POINT mapsize{ map_data.size(),map_data.at(0).size(), };  return mapsize; }
+
+	//マップ画像番号Geter
+	int GetMapImage(int num) { return block_image1[num]; }
 
 	//カメラワーク
 	void CameraWork(PLAYER* player);

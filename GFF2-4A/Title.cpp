@@ -1,6 +1,7 @@
 #include "Title.h"
 #include "GameMain.h"
 #include "StageSelect.h"
+#include "DrawRanking.h"
 #include "DxLib.h"
 
 
@@ -76,7 +77,7 @@ AbstractScene* Title::Update()
 		case MENU::RANKING:
 			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); 
 			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1); 
-			return new GameOver();	//デバッグ用でGameOverへ移動
+			return new DRAW_RANKING();
 			break;
 
 		case MENU::END:
