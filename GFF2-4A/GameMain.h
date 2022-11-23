@@ -48,7 +48,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	GAMEMAIN(bool restert = false, int halfway_time = 0, const char* stage_name = "MapData1");
+	GAMEMAIN(bool restert = false, int halfway_time = 0, const char* stage_name = "StageSelect");
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
