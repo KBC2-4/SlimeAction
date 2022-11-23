@@ -40,6 +40,9 @@ public:
 	//マップサイズのGeter
 	POINT GetMapSize(void) { POINT mapsize{ map_data.size(),map_data.at(0).size(), };  return mapsize; }
 
+	//マップ画像番号Geter
+	int GetMapImage(int num) { return block_image1[num]; }
+
 	//カメラワーク
 	void CameraWork(PLAYER* player);
 	

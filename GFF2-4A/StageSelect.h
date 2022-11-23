@@ -10,6 +10,7 @@ private:
 	//背景画像
 	int background_image[5];
 	int guid_font, buttonguid_font;
+	int effect_timer;
 
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ

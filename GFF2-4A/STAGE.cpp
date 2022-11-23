@@ -93,7 +93,6 @@ void STAGE::Draw()const {
 			}
 			//レモナーとグレポンはツルだけ描画する
 			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
-			if (map_data.at(i).at(j) == 101) { DrawBox(j * MAP_CEllSIZE + scroll_x - MAP_CEllSIZE / 2, (i - 1) * MAP_CEllSIZE - MAP_CEllSIZE / 2, j * MAP_CEllSIZE + scroll_x + MAP_CEllSIZE / 2, (i - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2, 0xFFCB33, TRUE); }
 		}
 	}
 
