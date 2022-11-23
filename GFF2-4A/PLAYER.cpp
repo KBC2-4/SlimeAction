@@ -738,7 +738,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		}
 		else {
 			int block_type = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE));
-			if (block_type == 68 || block_type == 69) {
+			if (block_type == 68) {
 				is_manhole = true;
 				is_ground = false;
 			}
