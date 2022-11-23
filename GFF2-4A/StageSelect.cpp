@@ -46,6 +46,8 @@ STAGE_SELECT::STAGE_SELECT()
 
 STAGE_SELECT::~STAGE_SELECT()
 {
+	DeleteFontToHandle(guid_font);
+	DeleteFontToHandle(buttonguid_font);
 	DeleteGraph(background_image[0]);
 	delete player;
 	delete stage;
@@ -73,7 +75,7 @@ AbstractScene* STAGE_SELECT::Update()
 	}
 
 	if ((player_map_x >= stage_move[1].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[1].x + MAP_CEllSIZE / 2)) {
-		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { return new GAMEMAIN(false, 0, "MapData1"); }
+		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { return new GAMEMAIN(false, 0, "Stage01"); }
 	}
 
 	if ((player_map_x >= 11 * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= 11 * MAP_CEllSIZE + MAP_CEllSIZE / 2)) {

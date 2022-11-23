@@ -21,7 +21,7 @@ STAGE::STAGE(const char* stage_name) {
 	//scroll_x = -8640;
 	scroll_x = 0;
 	if (stage_name == "StageSelect") { scroll_y = 0; }
-	else if (stage_name == "Stage01") { scroll_y = -700; }
+	else if (stage_name == "Stage01") { scroll_y = 0; }
 
 	player_x_old = 0;
 	player_y_old = 0;
@@ -98,8 +98,11 @@ void STAGE::Draw()const {
 	}
 
 	//中間地点　描画
-	if(halfwaypoint == false){ DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[88], TRUE); }
-	else{ DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
+	//中間地点がない場合は描画しない。
+	if (halfwaypointbox.x != 0) {
+		if (halfwaypoint == false) { DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[88], TRUE); }
+		else { DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
+	}
 	
 }
 
@@ -141,7 +144,7 @@ void STAGE::CameraWork(PLAYER* player) {
 		//	}
 		//}
 
-	
+
 	/*if (player->GetPlayerY()>=720) {
 		scroll_y = -320;
 	}

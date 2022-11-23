@@ -26,7 +26,6 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	item_rand = 0;
 
 	player = new PLAYER;
-	if(stage_name=="Stage01"){ player->SetPlayerY(1240); }
 	
 	stage = new STAGE(stage_name);
 	pause = new PAUSE;
