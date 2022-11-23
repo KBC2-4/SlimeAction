@@ -258,9 +258,10 @@ AbstractScene* GAMEMAIN::Update()
 			}
 
 			//ステージクリア
-			if (stage->GetClearFlg()) { 
+			if (stage->GetClearFlg())
+			{ 
 				return new RESULT(true, time + halfway_time); 
-			};
+			}
 		}
 	}
 	else {	//ポーズ画面のセレクター
@@ -279,6 +280,7 @@ AbstractScene* GAMEMAIN::Update()
 
 	return this;
 }
+
 void GAMEMAIN::Draw() const
 {
 

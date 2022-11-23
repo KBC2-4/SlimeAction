@@ -109,7 +109,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 		player_x = 40 * player_scale;
 	}
 	if (player_x + stage->GetScrollX() >= 1280 - MAP_CEllSIZE / 2 * player_scale) {
-		player_x = 1280 - MAP_CEllSIZE / 2 * player_scale;
+		player_x = 1280 - MAP_CEllSIZE / 2 * player_scale - stage->GetScrollX();
 	}
 
 	//描画する画像のセット
@@ -738,7 +738,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		}
 		else {
 			int block_type = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE));
-			if (block_type == 68 || block_type == 69) {
+			if (block_type == 68) {
 				is_manhole = true;
 				is_ground = false;
 			}
