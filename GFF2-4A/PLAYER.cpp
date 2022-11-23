@@ -109,7 +109,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 		player_x = 40 * player_scale;
 	}
 	if (player_x + stage->GetScrollX() >= 1280 - MAP_CEllSIZE / 2 * player_scale) {
-		player_x = 1280 - MAP_CEllSIZE / 2 * player_scale;
+		player_x = 1280 - MAP_CEllSIZE / 2 * player_scale - stage->GetScrollX();
 	}
 
 	//描画する画像のセット
