@@ -1,5 +1,6 @@
 #include "Result.h"
 #include "GameMain.h"
+#include "Ranking.h"
 #include "DxLib.h"
 
 RESULT::RESULT(bool issue, int clear_time) {
@@ -47,7 +48,10 @@ RESULT::RESULT(bool issue, int clear_time) {
 	else{ timer = 8 * 60; }
 	
 	win = issue;
-
+	if (issue)
+	{
+		RANKING::Insert(clear_time, 1);
+	}
 	this->clear_time =  GetNowCount() - clear_time;
 	se_randnum = GetRand(3);
 
