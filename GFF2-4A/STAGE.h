@@ -55,7 +55,7 @@ public:
 	//スライムのかけらの当たり判定
 	bool HitThrowSlime(int y, int x);
 	//画面スクロール座標Xをセット
-	static bool SetScrollPos(int move_x);
+	bool SetScrollPos(int move_x);
 	//画面スクロール座標Xの取得
 	float GetScrollX() { return scroll_x; };	
 	//画面スクロール座標Yの取得
