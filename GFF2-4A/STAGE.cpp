@@ -20,7 +20,7 @@ STAGE::STAGE(const char* stage_name) {
 	*stage_image = 0;
 	//scroll_x = -8640;
 	scroll_x = 0;
-	scroll_y = 0;
+	scroll_y = -720;
 
 	player_x_old = 20.f;
 	player_y_old = 500.f;
@@ -60,7 +60,7 @@ STAGE::STAGE(const char* stage_name) {
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
 	StageClear(player);
 	HalfwayPoint(player);
-	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && !element->HitLift(player, player->GetPlayerScale())) {
+	if (/*player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && */!element->HitLift(player, player->GetPlayerScale())) {
 		CameraWork(player);
 	}
 	
@@ -69,9 +69,9 @@ void STAGE::Update(PLAYER* player, ELEMENT* element) {
 void STAGE::Draw()const {
 	//デバッグ
 	//DrawFormatString(200, 100, 0xffffff, "oldx:%f", player_x_old);
-	//DrawFormatString(350, 100, 0xffffff, "vectorx:%f", player_vector_x);
+	//DrawFormatString(350, 100, 0xffffff, "vectory:%f", player_vector_y);
 	//DrawFormatString(100, 200, 0xffffff, "scroll_x:%f", scroll_x);
-	//DrawFormatString(200, 200, 0xffffff, "scroll_y:%f", scroll_y);
+	//DrawFormatString(300, 200, 0xffffff, "scroll_y:%f", scroll_y);
 	//ゲームクリア時
 	if (clearflg == true) {DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
 	
@@ -106,31 +106,47 @@ void STAGE::Draw()const {
 /// ステージスクロール関数
 /// </summary>
 void STAGE::CameraWork(PLAYER* player) {
-	//プレイヤーxベクトルの判定
-		if (player->GetPlayerX() - player_x_old > 0) {
+	int scroll_speedY = 5;
+		//プレイヤーxベクトルの判定
+		if (player->GetPlayerX() > player_x_old) {
 			player_vector_x = 1;
 		}
-		else if (player->GetPlayerX() - player_x_old < 0) {
+		else if (player->GetPlayerX() < player_x_old) {
 			player_vector_x = -1;
 		}
 	
-	
-
-
-	if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
-		scroll_x -= 5 * player_vector_x;
-		if (scroll_x > 0 || scroll_x <= -(80 * static_cast<int>(map_data.at(0).size()) - 1280)) {
-			scroll_x += 5 * player_vector_x;
+		//プレイヤーyベクトルの判定
+		if (player->GetPlayerY() < player_y_old) {
+			player_vector_y = 1;
 		}
-	}
+		else if (player->GetPlayerY() > player_y_old) {
+			player_vector_y = -1;
+			//scroll_speedY = 10;
+		}
+
+		//x軸スクロール
+		if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
+			scroll_x -= 5 * player_vector_x;
+			if (scroll_x > 0 || scroll_x <= -(80 * static_cast<int>(map_data.at(0).size()) - 1280)) {
+				scroll_x += 5 * player_vector_x;
+			}
+		}
+
+		//y軸スクロール
+		if ((player_vector_y > 0 && player->GetPlayerY() <= 360||player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL&&scroll_y>-720) && player_y_old != player->GetPlayerY()) {
+			scroll_y += scroll_speedY * player_vector_y;
+			if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
+				scroll_y -= scroll_speedY * player_vector_y;
+			}
+		}
 
 	
-	if (player->GetPlayerY()>=720) {
+	/*if (player->GetPlayerY()>=720) {
 		scroll_y = -320;
 	}
 	else if (player->GetPlayerY() < 640) {
 		scroll_y = 0;
-	}
+	}*/
 
 	if (player_x_old != player->GetPlayerX()) {
 		player_x_old = player->GetPlayerX();

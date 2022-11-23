@@ -11,7 +11,7 @@ float PLAYER::player_x, PLAYER::player_y;
 /*コンストラクタ*/
 PLAYER::PLAYER() {
 	player_x = 80.0f;
-	player_y = 500.0f;
+	player_y = 1240.0f;
 	rebound_x = SPEED;
 	map_x = 0;
 	map_y = 0;
@@ -162,12 +162,12 @@ void PLAYER::Draw(STAGE *stage)const {
 			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
 			float angle = atan2(diff_y, diff_x) + DX_PI_F;
 			if (move_type == 0) {
-				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny, 80, 80,
+				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 80, 80,
 					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
 					images[3][1], TRUE, move_type);
 			}
 			else {
-				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny, 80, 80,
+				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 80, 80,
 					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
 					images[3][0], TRUE, move_type);
 			}
