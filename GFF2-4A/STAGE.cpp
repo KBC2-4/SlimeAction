@@ -84,6 +84,8 @@ void STAGE::Draw()const {
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
 				if (
 					map_data.at(i).at(j) != 68
+					&& map_data.at(i).at(j) != 102
+					&& map_data.at(i).at(j) != 103
 					&& (map_data.at(i).at(j) <= 88	
 												////89`90”Ô‘ä‚ð•`‰æ‚µ‚È‚¢
 						|| map_data.at(i).at(j) >= 100)

@@ -9,12 +9,15 @@ class STAGE_SELECT :
 private:
 	//背景画像
 	int background_image[5];
+	int guid_font, buttonguid_font;
 
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
 	ELEMENT* element;	//ステージ内要素
 
 	float player_map_x, player_map_y;
+	POINT stage_return;
+	POINT stage_move[4];
 
 public:
 	/// <summary>

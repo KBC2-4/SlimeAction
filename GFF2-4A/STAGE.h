@@ -2,8 +2,6 @@
 #include <Windows.h>
 #include <vector>
 
-#define MAP_HEIGHT 14
-#define MAP_WIDTH 117
 #define MAP_CEllSIZE 80
 
 class PLAYER;
@@ -38,6 +36,9 @@ public:
 	virtual void Draw() const;
 	//ステージの初期化
 	//void InitStage();
+
+	//マップサイズのGeter
+	POINT GetMapSize(void) { POINT mapsize{ map_data.size(),map_data.at(0).size(), };  return mapsize; }
 
 	//カメラワーク
 	void CameraWork(PLAYER* player);

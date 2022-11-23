@@ -762,9 +762,9 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 
 	//壁の判定
 	int screen_left = static_cast<int>(-stage->GetScrollX() / MAP_CEllSIZE);
-	for (int i = 0; i < MAP_HEIGHT; i++) {
+	for (int i = 0; i < stage->GetMapSize().x; i++) {
 		for (int j = screen_left; j < screen_left + 20; j++) {
-			if (j >= MAP_WIDTH) break;
+			if (j >= stage->GetMapSize().y) break;
 			if (!stage->HitMapDat(i, j)) continue;
 			
 			float block_left = j * MAP_CEllSIZE;

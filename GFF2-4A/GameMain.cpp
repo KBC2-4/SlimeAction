@@ -2,7 +2,7 @@
 #include "Title.h"
 #include <vector>
 
-GAMEMAIN::GAMEMAIN(bool restert, int halfway_time)
+GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 {
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 	std::vector<std::vector<int>> spawn_point;
@@ -25,16 +25,16 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time)
 	item_rand = 0;
 
 	player = new PLAYER;
-	stage = new STAGE;
+	stage = new STAGE(stage_name);
 	pause = new PAUSE;
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
 
 	//とまトン生成する数を数える
-	for (int i = 0, point = 0; i < MAP_HEIGHT; i++)
+	for (int i = 0, point = 0; i < stage->GetMapSize().x; i++)
 	{
-		for (int j = 0; j < MAP_WIDTH; j++)
+		for (int j = 0; j < stage->GetMapSize().y; j++)
 		{
 			if (stage->GetMapData(i, j) == 93)
 			{
@@ -61,9 +61,9 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time)
 	spawn_point.clear();
 
 	//グレポンを生成する数を数える
-	for (int i = 0, point = 0; i < MAP_HEIGHT; i++)
+	for (int i = 0, point = 0; i < stage->GetMapSize().x; i++)
 	{
-		for (int j = 0; j < MAP_WIDTH; j++)
+		for (int j = 0; j < stage->GetMapSize().y; j++)
 		{
 			if (stage->GetMapData(i, j) == 92)
 			{
@@ -90,9 +90,9 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time)
 	spawn_point.clear();
 
 	//レモナー生成する数を数える
-	for (int i = 0, point = 0; i < MAP_HEIGHT; i++)
+	for (int i = 0, point = 0; i < stage->GetMapSize().x; i++)
 	{
-		for (int j = 0; j < MAP_WIDTH; j++)
+		for (int j = 0; j < stage->GetMapSize().y; j++)
 		{
 			if (stage->GetMapData(i, j) == 91)
 			{
