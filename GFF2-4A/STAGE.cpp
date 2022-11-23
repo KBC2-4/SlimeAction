@@ -27,7 +27,7 @@ STAGE::STAGE(const char* stage_name) {
 	player_vector_x = 0;
 	player_vector_y = 0;
 
-	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1) == -1) {
+	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 110, 10, 11, 80, 80, block_image1) == -1) {
 		throw "Resource/Images/Stage/map_chips.png";
 	}
 
@@ -82,10 +82,11 @@ void STAGE::Draw()const {
 			
 			//‰æ–ÊŠO‚Í•`‰æ‚µ‚È‚¢
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
-				if (map_data.at(i).at(j) < 89 && map_data.at(i).at(j) != 68
-					|| (map_data.at(i).at(j) <= 74	//_«‰J‚Ì…‚½‚Ü‚è‚ğ•`‰æ‚µ‚È‚¢
-												////ƒ}ƒ“ƒz[ƒ‹‚ÌŠJ‚¢‚Ä‚¢‚éŠW‚ğ•`‰æ‚µ‚È‚¢
-					&& map_data.at(i).at(j) >= 79)
+				if (
+					map_data.at(i).at(j) != 68
+					&& (map_data.at(i).at(j) <= 88	
+												////89`90”Ô‘ä‚ğ•`‰æ‚µ‚È‚¢
+						|| map_data.at(i).at(j) >= 100)
 					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
 			}
 			//ƒŒƒ‚ƒi[‚ÆƒOƒŒƒ|ƒ“‚Íƒcƒ‹‚¾‚¯•`‰æ‚·‚é

@@ -27,7 +27,7 @@ private:
 	float player_vector_y;					//プレイヤーの移動方向y
 
 protected:
-	int block_image1[100];		//ステージブロック画像
+	int block_image1[110];		//ステージブロック画像
 	std::vector<std::vector<int>> map_data;
 	static float scroll_x, scroll_y;	//マップスクロール量
 public:
