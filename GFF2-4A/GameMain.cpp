@@ -18,6 +18,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
 	time = GetNowCount();
 	this->halfway_time = halfway_time;
+	this->stage_name = stage_name;
 	lemoner_count = 0;
 	tomaton_count = 0;
 	item_count = 0;
@@ -256,7 +257,7 @@ AbstractScene* GAMEMAIN::Update()
 					halfway_time =  time - GetNowCount();
 					return new GAMEMAIN(true,halfway_time); 
 				}
-				return new GameOver();
+				return new GameOver(stage_name);
 			}
 
 			//ステージクリア
@@ -269,7 +270,7 @@ AbstractScene* GAMEMAIN::Update()
 	else {	//ポーズ画面のセレクター
 		pause->Update();
 		if (pause->GetSelectMenu() == 2) { return new Title(); }
-		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(); }
+		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(false,0,stage_name); }
 		else if (pause->GetSelectMenu() == 3) { pause->SetPause(); }
 	}
 
