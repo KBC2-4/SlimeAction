@@ -65,6 +65,7 @@ private:
 	int life;
 	int now_image;			//描画する画像
 	int images[ANIMATION_TYPE][10];		//アニメーションの画像
+	int hp_img;
 	int move_type;			//左か右の移動(反転用)
 	float move_x;
 	int animation_frame;	//アニメーションのフレームのカウント

@@ -61,6 +61,9 @@ PLAYER::PLAYER() {
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/Slime_Bullet.png")) == -1) {
 		throw "Resource/Images/Player/Slime_Bullet.png";
 	}
+	if ((hp_img = LoadGraph("Resource/Images/Player/hp.png")) == -1) {
+		throw "Resource/Images/Player/hp.png";
+	}
 
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	animation_frame = 0;
@@ -194,7 +197,7 @@ void PLAYER::Draw(STAGE *stage)const {
 		}
 	}
 	for (int i = 0; i < life - 1; i++) {
-		DrawRotaGraph(30 + 50 * i, 20, 1.5, 1, throw_ball_image, TRUE);
+		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
 	}
 
 }
