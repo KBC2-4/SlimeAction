@@ -11,8 +11,6 @@
 #include "PLAYER.h"
 #include "RESULT.h"
 
-float STAGE::scroll_x = 0;
-float STAGE::scroll_y = 0;
 
 STAGE::STAGE(const char* stage_name) {
 	//**map_data = 0;
@@ -20,13 +18,15 @@ STAGE::STAGE(const char* stage_name) {
 	*stage_image = 0;
 	//scroll_x = -8640;
 	scroll_x = 0;
-	scroll_y = 0;
-	player_x_old = 20.f;
-	player_y_old = 500.f;
+	if (stage_name == "StageSelect") { scroll_y = 0; }
+	else if (stage_name == "Stage01") { scroll_y = -700; }
+
+	player_x_old = 0;
+	player_y_old = 0;
 	player_vector_x = 0;
 	player_vector_y = 0;
 
-	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 100, 10, 10, 80, 80, block_image1) == -1) {
+	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 110, 10, 11, 80, 80, block_image1) == -1) {
 		throw "Resource/Images/Stage/map_chips.png";
 	}
 
@@ -44,10 +44,6 @@ STAGE::STAGE(const char* stage_name) {
 	halfwaypointbox = {0,0};
 	halfwaypoint = false;
 
-	int iy = 0;
-	int yx = 0;
-	iy = map_data.size();
-	yx = map_data.at(0).size();
 
 	for (int i = 0; i < map_data.size(); i++) {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
@@ -63,7 +59,7 @@ STAGE::STAGE(const char* stage_name) {
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
 	StageClear(player);
 	HalfwayPoint(player);
-	if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && !element->HitLift(player->GetPlayerScale())) {
+	if (/*player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK && */!element->HitLift(player, player->GetPlayerScale())) {
 		CameraWork(player);
 	}
 	
@@ -72,33 +68,39 @@ void STAGE::Update(PLAYER* player, ELEMENT* element) {
 void STAGE::Draw()const {
 	//デバッグ
 	//DrawFormatString(200, 100, 0xffffff, "oldx:%f", player_x_old);
-	//DrawFormatString(350, 100, 0xffffff, "vectorx:%f", player_vector_x);
+	//DrawFormatString(350, 100, 0xffffff, "vectory:%f", player_vector_y);
 	//DrawFormatString(100, 200, 0xffffff, "scroll_x:%f", scroll_x);
-	//DrawFormatString(200, 200, 0xffffff, "scroll_y:%f", scroll_y);
+	//DrawFormatString(300, 200, 0xffffff, "scroll_y:%f", scroll_y);
 	//ゲームクリア時
 	if (clearflg == true) {DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
 	
 	//printfDx("%f",scroll_x);
 
-	for (int i = 0; i < MAP_HEIGHT; i++) {
-		for (int j = 0; j < MAP_WIDTH; j++) {
+	for (int i = 0; i < map_data.size(); i++) {
+		for (int j = 0; j < map_data.at(0).size(); j++) {
+			//if (map_data.at(i).at(j) == 72)DrawFormatString(100 + j * 20, 50, 0xffffff, "%d %d", i, j);
 			//画面外は描画しない
-			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && j * MAP_CEllSIZE + scroll_y >= -300) {
-				if (map_data.at(i).at(j) < 89 && map_data.at(i).at(j) != 68
-					|| (map_data.at(i).at(j) <= 74	//酸性雨の水たまりを描画しない
-												////マンホールの開いている蓋を描画しない
-					&& map_data.at(i).at(j) >= 79)
+			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && i * MAP_CEllSIZE + scroll_y >= -80&&i*MAP_CEllSIZE+scroll_y<=720) {
+				if (
+					map_data.at(i).at(j) != 68
+					&& map_data.at(i).at(j) != 102
+					&& map_data.at(i).at(j) != 103
+					&& (map_data.at(i).at(j) <= 88	
+												////89～90番台を描画しない
+						|| map_data.at(i).at(j) >= 100)
 					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
 			}
 			//レモナーとグレポンはツルだけ描画する
 			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
-			
 		}
 	}
 
 	//中間地点　描画
-	if(halfwaypoint == false){ DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[88], TRUE); }
-	else{ DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
+	//中間地点がない場合は描画しない。
+	if (halfwaypointbox.x != 0) {
+		if (halfwaypoint == false) { DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[88], TRUE); }
+		else { DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
+	}
 	
 }
 
@@ -106,31 +108,47 @@ void STAGE::Draw()const {
 /// ステージスクロール関数
 /// </summary>
 void STAGE::CameraWork(PLAYER* player) {
-	//プレイヤーxベクトルの判定
-		if (player->GetPlayerX() - player_x_old > 0) {
+	int scroll_speedY = 5;
+		//プレイヤーxベクトルの判定
+		if (player->GetPlayerX() > player_x_old) {
 			player_vector_x = 1;
 		}
-		else if (player->GetPlayerX() - player_x_old < 0) {
+		else if (player->GetPlayerX() < player_x_old) {
 			player_vector_x = -1;
 		}
 	
-	
-
-
-	if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
-		scroll_x -= 5 * player_vector_x;
-		if (scroll_x > 0 || scroll_x <= -(80 * MAP_WIDTH - 640)) {
-			scroll_x += 5 * player_vector_x;
+		//プレイヤーyベクトルの判定
+		if (player->GetPlayerY() < player_y_old) {
+			player_vector_y = 1;
 		}
-	}
+		else if (player->GetPlayerY() > player_y_old) {
+			player_vector_y = -1;
+			//scroll_speedY = 10;
+		}
 
-	
-	if (player->GetPlayerY()>=720) {
+		//x軸スクロール
+		if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
+			scroll_x -= 5 * player_vector_x;
+			if (scroll_x > 0 || scroll_x <= -(80 * static_cast<int>(map_data.at(0).size()) - 1280)) {
+				scroll_x += 5 * player_vector_x;
+			}
+		}
+
+		//y軸スクロール
+		if ((player_vector_y > 0 && player->GetPlayerY() <= 360||player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL&& scroll_y>-720) && player_y_old != player->GetPlayerY()) {
+			scroll_y += scroll_speedY * player_vector_y;
+			if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
+				scroll_y -= scroll_speedY * player_vector_y;
+			}
+		}
+
+
+	/*if (player->GetPlayerY()>=720) {
 		scroll_y = -320;
 	}
 	else if (player->GetPlayerY() < 640) {
 		scroll_y = 0;
-	}
+	}*/
 
 	if (player_x_old != player->GetPlayerX()) {
 		player_x_old = player->GetPlayerX();
@@ -159,7 +177,7 @@ void STAGE::PuddleProcess(){
 /// </summary>
 bool STAGE::SetScrollPos(int move_x) {
 	scroll_x -= 5 * move_x;
-	if (scroll_x >= 0 || scroll_x <= -(80 * MAP_WIDTH - 640)) {
+	if (scroll_x >= 0 || scroll_x <= -(80 * static_cast<int>(map_data.at(0).size()) - 640)) {
 	scroll_x += 5 * move_x;
 		return true;
 	}
@@ -199,8 +217,13 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 92 //グレポン
 		|| block_type == 93	//トマトン
 		|| block_type == 95	//動く床
+		|| block_type == 96 //動く床(ゴール)
 		|| block_type == 97	//マンホールの蓋(出口)
 		|| block_type == 98	//マンホールの開いている蓋
+		|| block_type == 101//戻るブロック
+		|| block_type == 102//ステージ1ブロック
+		|| block_type == 103//ステージ2ブロック
+		|| block_type == 104//ステージ3ブロック
 		) {
 		return false;
 	}
@@ -223,6 +246,10 @@ bool STAGE::HitThrowSlime(int y, int x) {
 		|| block_type == 73	//ゴール
 		|| block_type == 97	//マンホールの蓋End
 		|| block_type == 98	//マンホールの開いている蓋
+		|| block_type == 101//戻るブロック
+		|| block_type == 102//ステージ1ブロック
+		|| block_type == 103//ステージ2ブロック
+		|| block_type == 104//ステージ3ブロック
 		) {
 		return false;
 	}
@@ -238,6 +265,8 @@ void STAGE::LoadMapData(const char* stage_name) {
 		sprintf_s(buf, sizeof(buf), "Resource/Map_Data/%s.csv", stage_name);
 		std::ifstream ifs(buf);
 
+		map_data.clear();
+		map_data.shrink_to_fit();
 		std::string str = "";
 		int i = 0, j = 0;
 		while (std::getline(ifs,str))
@@ -263,7 +292,7 @@ void STAGE::LoadMapData(const char* stage_name) {
 /// </summary>
 void STAGE::StageClear(PLAYER *player) {
 	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - STAGE::GetScrollX()));
-	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()));
+	int player_map_y = static_cast<int>(floorf(player->GetPlayerY())-STAGE::GetScrollY());
 	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox.x , clearbox.y);
 
 	//旗に触れるとゲームクリア

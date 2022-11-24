@@ -109,7 +109,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 		player_x = 40 * player_scale;
 	}
 	if (player_x + stage->GetScrollX() >= 1280 - MAP_CEllSIZE / 2 * player_scale) {
-		player_x = 1280 - MAP_CEllSIZE / 2 * player_scale;
+		player_x = 1280 - MAP_CEllSIZE / 2 * player_scale - stage->GetScrollX();
 	}
 
 	//描画する画像のセット
@@ -162,12 +162,12 @@ void PLAYER::Draw(STAGE *stage)const {
 			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
 			float angle = atan2(diff_y, diff_x) + DX_PI_F;
 			if (move_type == 0) {
-				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny, 80, 80,
+				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 80, 80,
 					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
 					images[3][1], TRUE, move_type);
 			}
 			else {
-				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny, 80, 80,
+				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 80, 80,
 					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
 					images[3][0], TRUE, move_type);
 			}
@@ -738,7 +738,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		}
 		else {
 			int block_type = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE));
-			if (block_type == 68 || block_type == 69) {
+			if (block_type == 68) {
 				is_manhole = true;
 				is_ground = false;
 			}
@@ -756,15 +756,15 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		}
 	}
 	
-	if (element->HitLift(player_scale)) {
+	if (element->HitLift(this, player_scale)) {
 		is_ground = true;
 	}
 
 	//壁の判定
 	int screen_left = static_cast<int>(-stage->GetScrollX() / MAP_CEllSIZE);
-	for (int i = 0; i < MAP_HEIGHT; i++) {
+	for (int i = 0; i < stage->GetMapSize().x; i++) {
 		for (int j = screen_left; j < screen_left + 20; j++) {
-			if (j >= MAP_WIDTH) break;
+			if (j >= stage->GetMapSize().y) break;
 			if (!stage->HitMapDat(i, j)) continue;
 			
 			float block_left = j * MAP_CEllSIZE;
@@ -775,11 +775,13 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 			if (player_right > block_left && player_left < block_right) {
 				if (player_bottom > block_top && player_top < block_bottom) {
 					int block_type = stage->GetMapData(i, j);
-					if (!hit_ceil) {
+					if (!hit_ceil || player_state != PLAYER_MOVE_STATE::JUMP) {
 						//ドアの判定
-						//if ((block_type == 66 || block_type == 67) && move_x > 0) {
-						//	//return;
-						//}
+						if ((block_type == 66 || block_type == 67) && move_x > 0) {
+							if (fabsf(player_left - block_right) < SPEED * player_scale) {
+								return;
+							}
+						}
 						player_x = old_player_x;
 						if (hitBullet) {
 							player_x -= move_x * player_scale * SPEED * 2;

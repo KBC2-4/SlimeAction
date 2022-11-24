@@ -2,8 +2,6 @@
 #include <Windows.h>
 #include <vector>
 
-#define MAP_HEIGHT 14
-#define MAP_WIDTH 117
 #define MAP_CEllSIZE 80
 
 class PLAYER;
@@ -27,17 +25,23 @@ private:
 	float player_vector_y;					//プレイヤーの移動方向y
 
 protected:
-	int block_image1[100];		//ステージブロック画像
+	int block_image1[110];		//ステージブロック画像
 	std::vector<std::vector<int>> map_data;
-	static float scroll_x, scroll_y;	//マップスクロール量
+	float scroll_x, scroll_y;	//マップスクロール量
 public:
-	STAGE(const char* stage_name = "MapData1");
+	STAGE(const char* stage_name = "StageSelect");
 	//マップ情報の更新
 	void Update(PLAYER* player, ELEMENT* element);
 	//ステージの描画
 	virtual void Draw() const;
 	//ステージの初期化
 	//void InitStage();
+
+	//マップサイズのGeter
+	POINT GetMapSize(void) { POINT mapsize{ map_data.size(),map_data.at(0).size(), };  return mapsize; }
+
+	//マップ画像番号Geter
+	int GetMapImage(int num) { return block_image1[num]; }
 
 	//カメラワーク
 	void CameraWork(PLAYER* player);
@@ -48,12 +52,14 @@ public:
 	void HookProcess();
 	//////マップ配列の値を取得
 	int GetMapData(int y, int x);
+	//マップ配列の値を設定
+	void SetMapData(int y, int x, int mapchip_num) { map_data[y][x] = mapchip_num; }
 	//マップの当たり判定 
 	bool HitMapDat(int y, int x); 
 	//スライムのかけらの当たり判定
 	bool HitThrowSlime(int y, int x);
 	//画面スクロール座標Xをセット
-	static bool SetScrollPos(int move_x);
+	bool SetScrollPos(int move_x);
 	//画面スクロール座標Xの取得
 	float GetScrollX() { return scroll_x; };	
 	//画面スクロール座標Yの取得
