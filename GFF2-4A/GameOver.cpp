@@ -13,7 +13,9 @@ GameOver::GameOver(const char* stage_name)
 	}
 
 	//Select用fontを初期化
+
 	Select_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+
 	//Bボタンを押すのを促す文字列用fontを初期化
 	Button_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
@@ -67,12 +69,12 @@ AbstractScene* GameOver::Update()
 		switch (static_cast<GAMEOVER_MENU>(SelectCount))
 		{
 
-		case  GAMEOVER_MENU::ReSelect:
-			return new STAGE_SELECT();
+		case GAMEOVER_MENU::NewGame:
+			return new GAMEMAIN(false, 0, stage_name);
 			break;
 
-		case GAMEOVER_MENU::NewGame:
-			return new GAMEMAIN(false,0,stage_name);
+		case  GAMEOVER_MENU::ReSelect:
+			return new STAGE_SELECT();
 			break;
 
 		default:
@@ -96,8 +98,8 @@ void GameOver::Draw() const
 	DrawLine(0, 460, 1280, 460, 0x000000);
 
 	//Select用String
-	DrawStringToHandle(330, 360, "GameSelect", SelectCount == 0 ? 0x95ff89 : 0x000000, Select_font, 0x000000);
-	DrawStringToHandle(445, 460, "Restart", SelectCount == 1 ? 0x95ff89 : 0x000000, Select_font, 0x000000);
+	DrawStringToHandle(330, 460, "GameSelect", SelectCount == 0 ? 0x0a6500 : 0x1aff00, Select_font, 0x000000);
+	DrawStringToHandle(445, 360, "Restart", SelectCount == 1 ? 0x0a6500 : 0x1aff00, Select_font, 0x000000);
 
 	if (timer % 120 < 60)
 	{
