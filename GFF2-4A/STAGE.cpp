@@ -69,8 +69,7 @@ void STAGE::Draw()const {
 	//デバッグ
 	//DrawFormatString(200, 100, 0xffffff, "oldx:%f", player_x_old);
 	//DrawFormatString(350, 100, 0xffffff, "vectory:%f", player_vector_y);
-	//DrawFormatString(100, 200, 0xffffff, "scroll_x:%f", scroll_x);
-	//DrawFormatString(300, 200, 0xffffff, "scroll_y:%f", scroll_y);
+	//DrawFormatString(200, 100, 0xffffff, "%2f %2f", scroll_x,scroll_y);
 	//ゲームクリア時
 	if (clearflg == true) {DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
 	
@@ -108,7 +107,7 @@ void STAGE::Draw()const {
 /// ステージスクロール関数
 /// </summary>
 void STAGE::CameraWork(PLAYER* player) {
-	int scroll_speedY = 5;
+	int scroll_speedY = 7;
 		//プレイヤーxベクトルの判定
 		if (player->GetPlayerX() > player_x_old) {
 			player_vector_x = 1;
@@ -135,7 +134,7 @@ void STAGE::CameraWork(PLAYER* player) {
 		}
 
 		//y軸スクロール
-		if ((player_vector_y > 0 && player->GetPlayerY() <= 360||player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL&& scroll_y>-720) && player_y_old != player->GetPlayerY()) {
+		if ((player_vector_y > 0 && player->GetPlayerY() <= 240||player_vector_y<0&& (scroll_y>0 &&map_data.size()<=14)|| (scroll_y>-720&&map_data.size()>14)) && player_y_old != player->GetPlayerY()) {
 			scroll_y += scroll_speedY * player_vector_y;
 			if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
 				scroll_y -= scroll_speedY * player_vector_y;
@@ -197,7 +196,7 @@ int STAGE::GetMapData(int y, int x) {
 /// </summary>
 
 bool STAGE::HitMapDat(int y, int x) {
-	if (CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
+	if (PAD_INPUT::GetNowKey()==XINPUT_BUTTON_Y)return false;		//デバッグ用
 	int block_type = GetMapData(y, x);
 	if (
 		block_type == -1 //範囲外
@@ -292,7 +291,7 @@ void STAGE::LoadMapData(const char* stage_name) {
 /// </summary>
 void STAGE::StageClear(PLAYER *player) {
 	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - STAGE::GetScrollX()));
-	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()));
+	int player_map_y = static_cast<int>(floorf(player->GetPlayerY())-STAGE::GetScrollY());
 	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox.x , clearbox.y);
 
 	//旗に触れるとゲームクリア

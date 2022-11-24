@@ -31,12 +31,13 @@ private:
 	int player_state;
 	int lift_vector;
 	//mutable int animtimer;
+	bool hook_flg; //近くにあるフックにガイド表示させる為のフラグ。
 	int door_close_se, press_the_button_se, switch_se, walk_puddle_se;
 
 public:
 	ELEMENT(const char* stage_name = "StageSelect");
 	~ELEMENT();
-	void Draw() const override;
+	void Draw(STAGE* stage);
 	void Update(PLAYER* player,STAGE*stage);
 	void Button(PLAYER* player);		//3種類のボタン
 	void Door(STAGE*stage);						//ドアの処理
@@ -44,6 +45,7 @@ public:
 	bool HitLift(PLAYER* player, float player_scale);						//動く床の当たり判定
 	void Manhole(PLAYER* player);		//マンホールの処理
 	void Acidrain_puddles(PLAYER* player);		//酸性雨の水たまりの処理
+	void Hook_Distance(PLAYER* player, STAGE* stage);	//フックのガイド表示用距離計算
 	std::vector<ELEMENT_DATA> GetHook() { return hook; }
 	std::vector<ELEMENT_DATA>GetButton() { return button; }
 	std::vector<ELEMENT_DATA>GetDoor() { return door; }

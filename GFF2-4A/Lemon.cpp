@@ -88,7 +88,7 @@ void LEMON::Update()
 		ChangeAngle();
 		if (PressAnimation())
 		{
-			bullet = new ENEMY_BULLET(player, stage, x, y, 0, stage->GetScrollX(), rad, 1);
+			bullet = new ENEMY_BULLET(player, stage, x, y, 0, rad, 1);
 			animation_timer = 0;
 			animation_type = 0;
 			state = ENEMY_STATE::RETURN;

@@ -167,7 +167,8 @@ ELEMENT::~ELEMENT() {
 	hook.shrink_to_fit();
 }
 
-void ELEMENT::Draw() const {
+void ELEMENT::Draw(STAGE* stage)  {
+	//DrawFormatString(100, 50, 0xffffff, "%2f %2f", scroll_x, scroll_y);
 	//DrawFormatString(100,50,0xffffff,"map_data:%d",map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE]);
 	//static int animtimer = 0;
 	//printfDx("%d", animtimer);
@@ -177,29 +178,31 @@ void ELEMENT::Draw() const {
 
 	//フックのガイド表示
 	for (int i = 0; i < hook.size(); i++) {
-		if (player_state != static_cast<int>(PLAYER_MOVE_STATE::HOOK)) {
-			if (guid_timer < 50) {
-				DrawCircleAA(hook[i].x + scroll_x, hook[i].y + scroll_y, 15, 20, 0xFFFFFF, 1);
-				DrawStringToHandle(hook[i].x + scroll_x - 7, hook[i].y + scroll_y - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
-			}
-			else {
-				DrawCircleAA(hook[i].x + scroll_x, hook[i].y + scroll_y, 15, 20, 0xFFCB33, 1);
-				DrawStringToHandle(hook[i].x + scroll_x - 7, hook[i].y + scroll_y - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+		if (hook[i].flg == true) {
+			if (player_state != static_cast<int>(PLAYER_MOVE_STATE::HOOK)) {
+				if (guid_timer < 50) {
+					DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+				}
+				else {
+					DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
+					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+				}
 			}
 		}
 	}
 
 	//ボタン
 	for (int i = 0; i < button.size(); i++) {
-		if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
+		if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + stage->GetScrollX(), button[i].y + stage->GetScrollY() + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		if (button[i].type == 2 && button[i].flg == true) { 
-			DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30 + button[i].animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
+			DrawOvalAA(button[i].x + stage->GetScrollX(), button[i].y + stage->GetScrollY() + 30 + button[i].animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		}
 	}
 
 	//動く床
 	for (int i = 0; i < lift.size(); i++) {
-		DrawGraph(lift[i].x + scroll_x, lift[i].y - 25 + scroll_y, block_image1[94], TRUE);
+		DrawGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 25 + stage->GetScrollY(), block_image1[94], TRUE);
 		
 	}
 
@@ -208,7 +211,7 @@ void ELEMENT::Draw() const {
 		//if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		if (door[i].flg == true) {
 			//エフェクト
-			DrawOvalAA(door[i].x + scroll_x, door[i].y + scroll_y + 30 + door[i].animtimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+			DrawOvalAA(door[i].x + stage->GetScrollX(), door[i].y + stage->GetScrollY() + 30 + door[i].animtimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
 		}
 	}
 
@@ -218,40 +221,40 @@ void ELEMENT::Draw() const {
 			if (manhole[i].type == 1) {
 
 				if (manhole[i].animtimer < 240) {
-					DrawModiGraph(manhole[i].x + scroll_x, manhole[i].y + scroll_y - manhole[i].animtimer * 1.2,
-						manhole[i].x + scroll_x + MAP_CEllSIZE, manhole[i].y + scroll_y - manhole[i].animtimer * 1.2,
-						manhole[i].x + scroll_x + MAP_CEllSIZE, manhole[i].y + scroll_y + MAP_CEllSIZE,
-						manhole[i].x + scroll_x, manhole[i].y + scroll_y + MAP_CEllSIZE,
+					DrawModiGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * 1.2,
+						manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * 1.2,
+						manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
+						manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
 						block_image1[67], TRUE);
 				}
 				else {
-					DrawGraph(manhole[i].x + scroll_x, manhole[i].y + scroll_y, block_image1[97], TRUE);
+					DrawGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY(), block_image1[97], TRUE);
 				}
 			}
 			//DrawOvalAA(manhole[i].x + scroll_x, manhole[i].y + scroll_y + 30 + manhole[i].animtimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
 			
 		}else{
-			DrawGraph(manhole[i].x + scroll_x, manhole[i].y - scroll_y, block_image1[67], TRUE);
+			DrawGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y - stage->GetScrollY(), block_image1[67], TRUE);
 
 			//マンホールのガイド表示
 			if (guid_timer < 50) {
-				DrawCircleAA(manhole[i].x + scroll_x + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - scroll_y, 15, 20, 0xFFFFFF, 1);
-				DrawStringToHandle(manhole[i].x + scroll_x - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - scroll_y - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+				DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+				DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
 			}
 			else {
-				DrawCircleAA(manhole[i].x + scroll_x + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - scroll_y, 15, 20, 0xFFCB33, 1);
-				DrawStringToHandle(manhole[i].x + scroll_x - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - scroll_y -20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+				DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
+				DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - stage->GetScrollY() -20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
 			}
 		}
 
 		if (manhole[i].type == 3) {
 			if (guid_timer < 50) {
-				DrawCircleAA(manhole[i].x + scroll_x + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - scroll_y, 15, 20, 0xFFFFFF, 1);
-				DrawStringToHandle(manhole[i].x + scroll_x - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - scroll_y - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+				DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+				DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
 			}
 			else {
-				DrawCircleAA(manhole[i].x + scroll_x + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - scroll_y, 15, 20, 0xFFCB33, 1);
-				DrawStringToHandle(manhole[i].x + scroll_x - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - scroll_y - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+				DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 - stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
+				DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
 			}
 		}
 	}
@@ -262,7 +265,7 @@ void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 	player_state = static_cast<int>(player->GetPlayerMoveState());
 	//プレイヤーのマップ内座標を設定
 	player_map_x = roundf(player->GetPlayerX() - stage->GetScrollX());
-	player_map_y = floorf(player->GetPlayerY());
+	player_map_y = floorf(player->GetPlayerY()- stage->GetScrollY());
 
 	Button(player);
 	Door(stage);
@@ -272,6 +275,8 @@ void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 	
 	if (guid_timer < 100) { guid_timer++; }
 	else { guid_timer = 0; }
+
+	Hook_Distance(player,stage);	//フックのガイド表示用距離計算
 }
 
 /// <summary>
@@ -357,7 +362,7 @@ void ELEMENT::Door(STAGE* stage) {
 		//	door[i].animtimer = 0;
 		//	door[i].flg = false;
 		//}
-		if ((player_map_x >= door[i].x +MAP_CEllSIZE+10) && (player_map_x <= door[i].x + MAP_CEllSIZE * 2) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
+		if ((player_map_x >= door[i].x +MAP_CEllSIZE) && (player_map_x <= door[i].x + MAP_CEllSIZE+5) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
 			door[i].animtimer = 0;
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
@@ -435,7 +440,7 @@ void ELEMENT::Manhole(PLAYER* player) {
 				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
 				
 				if (manhole[i].flg == false) {
-					player->SetPlayerY(player->GetPlayerY() - 2.0f);
+					//player->SetPlayerY(player->GetPlayerY() - 2.0f);
 				}
 
 				if (manhole[i].animtimer >= 240) {
@@ -450,7 +455,7 @@ void ELEMENT::Manhole(PLAYER* player) {
 		if (manhole[i].type == 2) {
 			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE / 2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE /2) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
 				//プレイヤーの落下速度を遅くする
-				player->SetPlayerY(player->GetPlayerY() - 3.0f);
+				//player->SetPlayerY(player->GetPlayerY() - 3.0f);
 			}
 		}
 
@@ -501,5 +506,19 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 				}
 			}else{ acidrain_puddles[i].animtimer = 0; }
 		}
+	}
+}
+
+void ELEMENT::Hook_Distance(PLAYER* player, STAGE* stage) {
+	float min_distance = HOOK_MAX_DISTANCE + 80;
+	//フックのガイド表示用
+	//フックまでの距離計算
+	for (int i = 0; i < hook.size(); i++) {
+		float diff_x = hook[i].x - (player->GetPlayerX() - stage->GetScrollX());
+		float diff_y = hook[i].y - (player->GetPlayerY() - stage->GetScrollY());
+		float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
+		//距離が最短距離より近いとき
+		if (distance <= min_distance) { min_distance = distance; hook[i].flg = true; }
+		else { hook[i].flg = false; }
 	}
 }

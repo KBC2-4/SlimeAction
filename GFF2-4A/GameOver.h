@@ -5,8 +5,9 @@
 enum class GAMEOVER_MENU
 {
 
-	ReSelect=0,	//GameSelect
-	NewGame		//Restart
+
+	NewGame = 0,		//Restart
+	ReSelect			//GameSelect
 };
 
 class GameOver : public AbstractScene

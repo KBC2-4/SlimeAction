@@ -41,7 +41,7 @@ ENEMY_BULLET::ENEMY_BULLET()
 }
 
 //引数付きコンストラクタ
-ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, double dis, float scroll,double p_rad,int index)
+ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, double dis,double p_rad,int index)
 {
 	if (LoadDivGraph("Resource/images/Enemy/Enemy_Bullet.png", 4, 4, 1, 20, 20, bullet_images) == -1)
 	{
@@ -68,7 +68,10 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	delete_flg = false;
 	hit_flg = false;
 	rad_x = dis;
-	scroll_x = abs(scroll);
+	stage = aug_stage;
+	this->scroll_x = abs(stage->GetScrollX());
+	this->scroll_y = abs(stage->GetScrollY());
+
 	map_x = 0;
 	map_y = 0;
 	mapd_x = 0.0;
@@ -78,7 +81,6 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	image = 0;
 	animation_timer = 0;
 	animation_type = 0;
-	stage = aug_stage;
 	dis_x = (player_x + rad_x) - (my_x - static_cast<double>(scroll_x));
 	dis_y = player_y - my_y;
 
@@ -91,7 +93,7 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 //描画
 void ENEMY_BULLET::Draw() const
 {
-	DrawRotaGraph(static_cast<int>(GetDrawX()), bullet_y, 2, rad + (-90 * (PI / 180)), image, TRUE);
+	DrawRotaGraph(static_cast<int>(GetDrawX()), static_cast<int>(GetDrawY()), 2, rad + (-90 * (PI / 180)), image, TRUE);
 }
 
 //アップデート
@@ -137,7 +139,7 @@ void ENEMY_BULLET::Move()
 
 	//弾の移動
 	bullet_x += bullet_sx;
-	bullet_y += bullet_sy;
+	bullet_y -= bullet_sy;
 
 	//マップ上の値を代入
 	mapd_x = bullet_x / MAP_CEllSIZE;
@@ -188,8 +190,8 @@ void ENEMY_BULLET::Hit()
 
 	bx1 = GetDrawX();
 	bx2 = bx1 + 20;
-	by1 = bullet_y;
-   	by2 = by1 + 20;
+	by1 = GetDrawY();
+	by2 = by1 + 20;
 
 	if (px1 < bx2 && bx1 < px2 && py1 < by2 && by1 < py2)
 	{
@@ -210,3 +212,10 @@ float ENEMY_BULLET::GetDrawX() const
 	float ret = (bullet_x - scroll_x) + (static_cast<double>(scroll_x) + stage->GetScrollX());
 	return ret;
 }
+
+float ENEMY_BULLET::GetDrawY() const
+{
+	float ret = (bullet_y - scroll_y) + (static_cast<double>(scroll_y) + stage->GetScrollY());
+	return ret;
+}
+
