@@ -36,7 +36,7 @@ private:
 public:
 	ELEMENT(const char* stage_name = "StageSelect");
 	~ELEMENT();
-	void Draw() const override;
+	void Draw(STAGE* stage);
 	void Update(PLAYER* player,STAGE*stage);
 	void Button(PLAYER* player);		//3種類のボタン
 	void Door(STAGE*stage);						//ドアの処理

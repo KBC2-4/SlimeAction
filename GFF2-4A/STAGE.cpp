@@ -69,8 +69,7 @@ void STAGE::Draw()const {
 	//デバッグ
 	//DrawFormatString(200, 100, 0xffffff, "oldx:%f", player_x_old);
 	//DrawFormatString(350, 100, 0xffffff, "vectory:%f", player_vector_y);
-	//DrawFormatString(100, 200, 0xffffff, "scroll_x:%f", scroll_x);
-	//DrawFormatString(300, 200, 0xffffff, "scroll_y:%f", scroll_y);
+	//DrawFormatString(200, 100, 0xffffff, "%2f %2f", scroll_x,scroll_y);
 	//ゲームクリア時
 	if (clearflg == true) {DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
 	
