@@ -276,20 +276,7 @@ void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 	if (guid_timer < 100) { guid_timer++; }
 	else { guid_timer = 0; }
 
-
-	float min_distance = HOOK_MAX_DISTANCE;
-	//フックのガイド表示用
-	//フックまでの距離計算
-	for (int i = 0; i < hook.size(); i++) {
-		float diff_x = hook[i].x - (player->GetPlayerX() + stage->GetScrollX());
-		float diff_y = hook[i].y - player->GetPlayerY();
-		float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
-		//距離が最短距離より近いとき
-		if (distance <= min_distance) { min_distance = distance; hook[i].flg = true; }
-		else { hook[i].flg = false; }
-		if(GetNowCount() % 20 == 0)printfDx("%f\n", distance);
-		if (GetNowCount() % 20 == 0)printfDx("\t\t\t%f\n", min_distance);
-	}
+	Hook_Distance(player,stage);	//フックのガイド表示用距離計算
 }
 
 /// <summary>
@@ -519,5 +506,19 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 				}
 			}else{ acidrain_puddles[i].animtimer = 0; }
 		}
+	}
+}
+
+void ELEMENT::Hook_Distance(PLAYER* player, STAGE* stage) {
+	float min_distance = HOOK_MAX_DISTANCE + 80;
+	//フックのガイド表示用
+	//フックまでの距離計算
+	for (int i = 0; i < hook.size(); i++) {
+		float diff_x = hook[i].x - (player->GetPlayerX() - stage->GetScrollX());
+		float diff_y = hook[i].y - (player->GetPlayerY() - stage->GetScrollY());
+		float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
+		//距離が最短距離より近いとき
+		if (distance <= min_distance) { min_distance = distance; hook[i].flg = true; }
+		else { hook[i].flg = false; }
 	}
 }
