@@ -133,8 +133,7 @@ void RESULT::Draw() const {
 
 		DrawFormatStringToHandle(20, 540, 0x56F590, menu_font , "%2d秒後にリスタートします", timer / 60);
 	}
-
-	//ガイド点滅表示
+	
 	if (guide_timer < 50)
 	{
 
