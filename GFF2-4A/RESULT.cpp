@@ -1,5 +1,7 @@
 #include "Result.h"
 #include "GameMain.h"
+#include "Ranking.h"
+#include "StageSelect.h"
 #include "DxLib.h"
 
 RESULT::RESULT(bool issue, int clear_time) {
@@ -7,9 +9,9 @@ RESULT::RESULT(bool issue, int clear_time) {
 		throw "Resource/Images/Enemy/mi_hasya_kao.png";
 	}
 
-	/*if ((gameover_background_image = LoadGraph("Resource/Images/Result/gurepon.png")) == -1) {
+	if ((gameover_background_image = LoadGraph("Resource/Images/Result/gurepon.png")) == -1) {
 		throw "Resource/Images/Enemy/gurepon.png";
-	}*/
+	}
 
 	if ((count_se = LoadSoundMem("Resource/Sounds/SE/321.wav")) == -1) {
 		throw "Resource/Sounds/SE/321.wav";
@@ -29,14 +31,14 @@ RESULT::RESULT(bool issue, int clear_time) {
 		}
 	}
 
-	/*for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++) {
 		char dis_bad_se[30];
 		sprintf_s(dis_bad_se, sizeof(dis_bad_se), "Resource/Sounds/SE/bad%d.wav", i + 1);
 
 		if ((bad_se[i] = LoadSoundMem(dis_bad_se)) == -1) {
 			throw dis_bad_se;
 		}
-	}*/
+	}
 
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8,-1,8);
 	menu_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
@@ -47,8 +49,11 @@ RESULT::RESULT(bool issue, int clear_time) {
 	else{ timer = 8 * 60; }
 	
 	win = issue;
-
 	this->clear_time =  GetNowCount() - clear_time;
+	if (issue)
+	{
+		RANKING::Insert(this->clear_time, 1);
+	}
 	se_randnum = GetRand(3);
 
 	*effect_timer = 0;
@@ -57,7 +62,7 @@ RESULT::RESULT(bool issue, int clear_time) {
 
 RESULT::~RESULT() {
 	DeleteGraph(clear_background_image);
-	/*DeleteGraph(gameover_background_image);*/
+	DeleteGraph(gameover_background_image);
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
 	DeleteFontToHandle(time_font);
@@ -65,7 +70,7 @@ RESULT::~RESULT() {
 	DeleteSoundMem(count_se);
 	DeleteSoundMem(ok_se);
 	for(int i = 0; i < 4; i++)DeleteSoundMem(good_se[i]);
-	/*for (int i = 0; i < 4; i++)DeleteSoundMem(bad_se[i]);*/
+	for (int i = 0; i < 4; i++)DeleteSoundMem(bad_se[i]);
 }
 
 AbstractScene* RESULT::Update() {
@@ -73,13 +78,13 @@ AbstractScene* RESULT::Update() {
 	if(win == false && timer > 5 * 80){ PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
 	if (timer <= 5 * 60) { if (CheckSoundMem(count_se) == FALSE)PlaySoundMem(count_se, DX_PLAYTYPE_BACK, FALSE); }
 
-	if (--timer <= 60) { return new GAMEMAIN(); }
+	if (--timer <= 60) { return new STAGE_SELECT(); }
 
 	//ガイド点滅表示
 	if (guide_timer < 100) { guide_timer++; }
 	else { guide_timer = 0; }
 
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B && PAD_INPUT::GetPadState() == PAD_STATE::ON) { PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); return new GAMEMAIN(); }
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B && PAD_INPUT::GetPadState() == PAD_STATE::ON) { PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); return new STAGE_SELECT(); }
 
 	return this;
 }

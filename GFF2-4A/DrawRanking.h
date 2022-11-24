@@ -1,34 +1,21 @@
 #pragma once
 #include "AbstractScene.h"
-#include "PLAYER.h"
-#include "STAGE.h"
 
-class STAGE_SELECT :
-    public AbstractScene
+class DRAW_RANKING :
+	public AbstractScene
 {
 private:
-	//背景画像
-	int background_image[5];
-	int guid_font, buttonguid_font;
-	int effect_timer;
-
-	PLAYER* player;	//プレイヤー
-	STAGE* stage;	//ステージ
-	ELEMENT* element;	//ステージ内要素
-
-	float player_map_x, player_map_y;
-	POINT stage_return;
-	POINT stage_move[4];
-
+	int wait_time;
+	int best_time[3];
 public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	STAGE_SELECT();
+	DRAW_RANKING();
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~STAGE_SELECT();
+	~DRAW_RANKING() {}
 	/// <summary>
 	/// 描画以外の更新を実行
 	/// </summary>

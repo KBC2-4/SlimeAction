@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DrawRanking.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="PadInput.cpp" />
     <ClCompile Include="PAUSE.cpp" />
     <ClCompile Include="PLAYER.cpp" />
+    <ClCompile Include="Ranking.cpp" />
     <ClCompile Include="RESULT.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="STAGE.cpp" />
@@ -178,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractScene.h" />
+    <ClInclude Include="DrawRanking.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyBullet.h" />
@@ -189,6 +192,7 @@
     <ClInclude Include="PadInput.h" />
     <ClInclude Include="PAUSE.h" />
     <ClInclude Include="PLAYER.h" />
+    <ClInclude Include="Ranking.h" />
     <ClInclude Include="RESULT.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="STAGE.h" />

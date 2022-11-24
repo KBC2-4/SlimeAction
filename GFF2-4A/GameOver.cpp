@@ -1,8 +1,9 @@
 #include "GameOver.h"
 #include "GameMain.h"
+#include "StageSelect.h"
 #include "DxLib.h"
 
-GameOver::GameOver()
+GameOver::GameOver(const char* stage_name)
 {
 
 	//GameOverImage‚ð‰Šú‰»
@@ -25,6 +26,8 @@ GameOver::GameOver()
 	SelectCount = 0;
 
 	timer=0;
+
+	this->stage_name = stage_name;
 }
 
 GameOver::~GameOver()
@@ -67,11 +70,11 @@ AbstractScene* GameOver::Update()
 		{
 
 		case  GAMEOVER_MENU::ReSelect:
-			return new Title();
+			return new STAGE_SELECT();
 			break;
 
 		case GAMEOVER_MENU::NewGame:
-			return new GAMEMAIN();
+			return new GAMEMAIN(false,0,stage_name);
 			break;
 
 		default:
