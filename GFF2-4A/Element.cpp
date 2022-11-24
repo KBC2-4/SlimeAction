@@ -440,7 +440,7 @@ void ELEMENT::Manhole(PLAYER* player) {
 				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
 				
 				if (manhole[i].flg == false) {
-					player->SetPlayerY(player->GetPlayerY() - 2.0f);
+					//player->SetPlayerY(player->GetPlayerY() - 2.0f);
 				}
 
 				if (manhole[i].animtimer >= 240) {
@@ -455,7 +455,7 @@ void ELEMENT::Manhole(PLAYER* player) {
 		if (manhole[i].type == 2) {
 			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE / 2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE /2) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
 				//プレイヤーの落下速度を遅くする
-				player->SetPlayerY(player->GetPlayerY() - 3.0f);
+				//player->SetPlayerY(player->GetPlayerY() - 3.0f);
 			}
 		}
 
