@@ -1,4 +1,4 @@
-#include "Result.h"
+#include "RESULT.h"
 #include "GameMain.h"
 #include "DxLib.h"
 
@@ -36,10 +36,7 @@ RESULT::RESULT(bool issue, int clear_time)
 		}
 	}
 
-	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8,-1,8);
-	menu_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
-	AddFontResourceEx(TEXT("./Resource/Fonts/TimeAttack.otf"), FR_PRIVATE, NULL);
-	time_font = CreateFontToHandle("TimeAttack", 90, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8,DX_CHARSET_DEFAULT,5);
+	Result_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
 	if (issue == true) { timer = 10 * 60; }
 	else{ timer = 8 * 60; }
@@ -57,9 +54,7 @@ RESULT::~RESULT()
 {
 
 	DeleteGraph(Result_Image);
-	DeleteFontToHandle(title_font);
-	DeleteFontToHandle(menu_font);
-	DeleteFontToHandle(time_font);
+	DeleteFontToHandle(Result_font);
 	RemoveFontResourceEx(TEXT("./Resource/Fonts/TimeAttack.otf"), FR_PRIVATE, NULL);
 	DeleteSoundMem(count_se);
 	DeleteSoundMem(ok_se);
@@ -110,7 +105,6 @@ void RESULT::Draw() const {
 	{
 		DrawFillBox(0, 0, 1280, 720, 0x000000);
 		DrawExtendGraph(0, 0, 1280, 720, Result_Image, true);
-		DrawStringToHandle(330, 350, "クリアタイム", 0xF5EB67, time_font, 0xFFFFFF);
 
 		char dis_clear_time[20];	//文字列合成バッファー
 
@@ -129,16 +123,17 @@ void RESULT::Draw() const {
 		}
 
 		//クリアタイム
-		DrawStringToHandle(100, 400, dis_clear_time, 0xF5EB67, time_font, 0xFFFFFF);
+		DrawStringToHandle(330, 300, "クリアタイム", 0x1aff00, Result_font, 0x000000);
+		DrawStringToHandle(340, 400, dis_clear_time, 0x1aff00, Result_font, 0x000000);
 
-		DrawFormatStringToHandle(20, 540, 0x56F590, menu_font , "%2d秒後にリスタートします", timer / 60);
+		DrawFormatStringToHandle(30, 540, 0x56F590, Result_font, "%2d秒後にリスタートします", timer / 60);
 	}
 	
 	if (guide_timer < 50)
 	{
 
 		DrawCircleAA(530.0f, 668.0f, 22, 20, 0xFFFFFF, 1);
-		DrawExtendStringToHandle(518, 650, 0.4f, 0.4f, "B", 0xEB7415, menu_font, 0xFFFFFF);
-		DrawExtendStringToHandle(560, 650, 0.4f, 0.4f, "でスキップ", 0x76F567, menu_font, 0xFFFFFF);
+		DrawExtendStringToHandle(518, 650, 0.4f, 0.4f, "B", 0xEB7415, Result_font, 0xFFFFFF);
+		DrawExtendStringToHandle(560, 650, 0.4f, 0.4f, "でスキップ", 0x76F567, Result_font, 0xFFFFFF);
 	}
 }
