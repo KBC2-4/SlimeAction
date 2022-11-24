@@ -10,7 +10,7 @@ STAGE_SELECT::STAGE_SELECT()
 	guid_font = CreateFontToHandle("メイリオ", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	stage = new STAGE("StageSelect");
-	player = new PLAYER;
+	player = new PLAYER(stage);
 	element = new ELEMENT();
 
 	//int scrollx = -(1460 - 500);

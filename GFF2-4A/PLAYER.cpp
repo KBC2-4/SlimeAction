@@ -9,9 +9,10 @@
 float PLAYER::player_x, PLAYER::player_y;
 
 /*コンストラクタ*/
-PLAYER::PLAYER() {
+PLAYER::PLAYER(STAGE *stage) {
+	this->stage = stage;
 	player_x = 80.0f;
-	player_y = 500.0f;
+	player_y = 0.0f;
 	rebound_x = SPEED;
 	map_x = 0;
 	map_y = 0;

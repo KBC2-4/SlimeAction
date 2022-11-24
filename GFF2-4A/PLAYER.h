@@ -156,7 +156,7 @@ private:
 	STAGE *stage;
 
 public:
-	PLAYER();
+	PLAYER(STAGE* stage);
 
 	void Move();
 	void Draw(STAGE* stage) const;
@@ -173,7 +173,7 @@ public:
 	int GetLife() { return life; };
 	bool IsDeath() { return is_death; }
 	float GetPlayerX() { return player_x + stage->GetScrollX(); }
-	float GetPlayerY() { return player_y+stage->GetScrollY(); }
+	float GetPlayerY() { return player_y + stage->GetScrollY(); }
 
 	void SetPlayerX(float x) { player_x = x - stage->GetScrollX(); }
 	void SetPlayerY(float y) { player_y = y; }

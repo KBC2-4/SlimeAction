@@ -117,13 +117,14 @@ void STAGE::CameraWork(PLAYER* player) {
 		}
 	
 		//プレイヤーyベクトルの判定
-		if (player->GetPlayerY() < player_y_old) {
+		if (player->GetPlayerY() > player_y_old) {
 			player_vector_y = 1;
 		}
-		else if (player->GetPlayerY() > player_y_old) {
+		else if (player->GetPlayerY() < player_y_old) {
 			player_vector_y = -1;
 			//scroll_speedY = 10;
 		}
+		//player_vector_y = ceilf(player->GetPlayerY() - player_y_old);
 
 		//x軸スクロール
 		if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
@@ -133,11 +134,14 @@ void STAGE::CameraWork(PLAYER* player) {
 			}
 		}
 
+		clsDx();
+		printfDx("scroll_y: %f\n", player_vector_y);
+
 		//y軸スクロール
-		if ((player_vector_y > 0 && player->GetPlayerY() <= 360||player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL&& scroll_y>-720) && player_y_old != player->GetPlayerY()) {
-			scroll_y += scroll_speedY * player_vector_y;
-			if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
-				scroll_y -= scroll_speedY * player_vector_y;
+		if ((player_vector_y > 0 && player->GetPlayerY() >= 340 || player_vector_y < 0 && player->GetPlayerY() <= 380)/*||player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL&& scroll_y>-720)*/ && player_y_old != player->GetPlayerY()) {
+			scroll_y -= 5 * player_vector_y;
+			if (scroll_y > 0 || scroll_y <= -(80 * static_cast<int>(map_data.size()) - 720)) {
+				scroll_y += 5 * player_vector_y;
 			}
 		}
 
