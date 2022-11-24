@@ -1,6 +1,7 @@
 #include "RESULT.h"
 #include "GameMain.h"
 #include "DxLib.h"
+#include "StageSelect.h"
 
 RESULT::RESULT(bool issue, int clear_time) 
 {
@@ -69,7 +70,7 @@ AbstractScene* RESULT::Update()
 	if(win == false && timer > 5 * 80){ PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
 	if (timer <= 5 * 60) { if (CheckSoundMem(count_se) == FALSE)PlaySoundMem(count_se, DX_PLAYTYPE_BACK, FALSE); }
 
-	if (--timer <= 60) { return new GAMEMAIN(); }
+	if (--timer <= 60) { return new STAGE_SELECT(); }
 
 	//ガイド点滅表示
 	if (guide_timer < 100)
@@ -86,7 +87,7 @@ AbstractScene* RESULT::Update()
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B && PAD_INPUT::GetPadState() == PAD_STATE::ON) 
 	{
 
-		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); return new GAMEMAIN();
+		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); return new STAGE_SELECT();
 	}
 
 	return this;
