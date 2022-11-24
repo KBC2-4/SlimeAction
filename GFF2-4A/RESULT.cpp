@@ -49,11 +49,11 @@ RESULT::RESULT(bool issue, int clear_time) {
 	else{ timer = 8 * 60; }
 	
 	win = issue;
+	this->clear_time =  GetNowCount() - clear_time;
 	if (issue)
 	{
-		RANKING::Insert(clear_time, 1);
+		RANKING::Insert(this->clear_time, 1);
 	}
-	this->clear_time =  GetNowCount() - clear_time;
 	se_randnum = GetRand(3);
 
 	*effect_timer = 0;
