@@ -295,7 +295,7 @@ void STAGE::LoadMapData(const char* stage_name) {
 /// </summary>
 void STAGE::StageClear(PLAYER *player) {
 	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - STAGE::GetScrollX()));
-	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()));
+	int player_map_y = static_cast<int>(floorf(player->GetPlayerY())-STAGE::GetScrollY());
 	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox.x , clearbox.y);
 
 	//Šø‚ÉG‚ê‚é‚ÆƒQ[ƒ€ƒNƒŠƒA
