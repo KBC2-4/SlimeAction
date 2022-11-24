@@ -31,6 +31,7 @@ private:
 	int player_state;
 	int lift_vector;
 	//mutable int animtimer;
+	bool hook_flg; //近くにあるフックにガイド表示させる為のフラグ。
 	int door_close_se, press_the_button_se, switch_se, walk_puddle_se;
 
 public:

@@ -178,14 +178,16 @@ void ELEMENT::Draw(STAGE* stage)  {
 
 	//フックのガイド表示
 	for (int i = 0; i < hook.size(); i++) {
-		if (player_state != static_cast<int>(PLAYER_MOVE_STATE::HOOK)) {
-			if (guid_timer < 50) {
-				DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-				DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
-			}
-			else {
-				DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-				DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+		if (hook[i].flg == true) {
+			if (player_state != static_cast<int>(PLAYER_MOVE_STATE::HOOK)) {
+				if (guid_timer < 50) {
+					DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+				}
+				else {
+					DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
+					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+				}
 			}
 		}
 	}
@@ -273,6 +275,21 @@ void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 	
 	if (guid_timer < 100) { guid_timer++; }
 	else { guid_timer = 0; }
+
+
+	float min_distance = HOOK_MAX_DISTANCE;
+	//フックのガイド表示用
+	//フックまでの距離計算
+	for (int i = 0; i < hook.size(); i++) {
+		float diff_x = hook[i].x - (player->GetPlayerX() + stage->GetScrollX());
+		float diff_y = hook[i].y - player->GetPlayerY();
+		float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
+		//距離が最短距離より近いとき
+		if (distance <= min_distance) { min_distance = distance; hook[i].flg = true; }
+		else { hook[i].flg = false; }
+		if(GetNowCount() % 20 == 0)printfDx("%f\n", distance);
+		if (GetNowCount() % 20 == 0)printfDx("\t\t\t%f\n", min_distance);
+	}
 }
 
 /// <summary>
