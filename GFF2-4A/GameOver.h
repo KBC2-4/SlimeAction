@@ -18,10 +18,11 @@ private:
 	int Button_font;	//Bボタンを押すことを促す文字列用font
 	int Input_WaitTime;	//SelectcursorのWaitTime
 	int timer;			//表示非表示切り替え用のtimer変数
+	const char* stage_name;	//リスタート時のステージ選択用
 	
 public:
 	//コンストラクタ
-	GameOver();
+	GameOver(const char* stage_name);
 	//デストラクタ
 	~GameOver();
 	//描画以外の処理

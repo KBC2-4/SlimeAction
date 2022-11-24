@@ -11,8 +11,6 @@
 #include "PLAYER.h"
 #include "RESULT.h"
 
-float STAGE::scroll_x = 0;
-float STAGE::scroll_y = 0;
 
 STAGE::STAGE(const char* stage_name) {
 	//**map_data = 0;
@@ -98,8 +96,11 @@ void STAGE::Draw()const {
 	}
 
 	//中間地点　描画
-	if(halfwaypoint == false){ DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[88], TRUE); }
-	else{ DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
+	//中間地点がない場合は描画しない。
+	if (halfwaypointbox.x != 0) {
+		if (halfwaypoint == false) { DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[88], TRUE); }
+		else { DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
+	}
 	
 }
 
@@ -133,15 +134,15 @@ void STAGE::CameraWork(PLAYER* player) {
 			}
 		}
 
-		////y軸スクロール
-		//if ((player_vector_y > 0 && player->GetPlayerY() <= 360||player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL&&scroll_y>-720) && player_y_old != player->GetPlayerY()) {
-		//	scroll_y += scroll_speedY * player_vector_y;
-		//	if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
-		//		scroll_y -= scroll_speedY * player_vector_y;
-		//	}
-		//}
+		//y軸スクロール
+		if ((player_vector_y > 0 && player->GetPlayerY() <= 360||player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL&& scroll_y>-720) && player_y_old != player->GetPlayerY()) {
+			scroll_y += scroll_speedY * player_vector_y;
+			if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
+				scroll_y -= scroll_speedY * player_vector_y;
+			}
+		}
 
-	
+
 	/*if (player->GetPlayerY()>=720) {
 		scroll_y = -320;
 	}
@@ -264,6 +265,8 @@ void STAGE::LoadMapData(const char* stage_name) {
 		sprintf_s(buf, sizeof(buf), "Resource/Map_Data/%s.csv", stage_name);
 		std::ifstream ifs(buf);
 
+		map_data.clear();
+		map_data.shrink_to_fit();
 		std::string str = "";
 		int i = 0, j = 0;
 		while (std::getline(ifs,str))

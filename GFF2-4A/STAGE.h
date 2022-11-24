@@ -27,9 +27,9 @@ private:
 protected:
 	int block_image1[110];		//ステージブロック画像
 	std::vector<std::vector<int>> map_data;
-	static float scroll_x, scroll_y;	//マップスクロール量
+	float scroll_x, scroll_y;	//マップスクロール量
 public:
-	STAGE(const char* stage_name = "MapData1");
+	STAGE(const char* stage_name = "StageSelect");
 	//マップ情報の更新
 	void Update(PLAYER* player, ELEMENT* element);
 	//ステージの描画

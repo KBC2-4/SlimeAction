@@ -19,6 +19,7 @@ private:
 	int cursor_move_se, ok_se;	//SE
 	int time;		//経過時間
 	int halfway_time; //中間地点経過時の時間
+	const char* stage_name;	//リスタート時のステージ選択用
 
 	//レモナーの数用の変数
 	int lemoner_count;

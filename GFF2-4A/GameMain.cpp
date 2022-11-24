@@ -18,20 +18,24 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
 	time = GetNowCount();
 	this->halfway_time = halfway_time;
+	this->stage_name = stage_name;
 	lemoner_count = 0;
 	tomaton_count = 0;
 	item_count = 0;
 	item_num = 0;
 	item_rand = 0;
 
-	player = new PLAYER;
-	if(stage_name=="Stage01"){ player->SetPlayerY(1240); }
+
+	
 	
 	stage = new STAGE(stage_name);
+	player = new PLAYER;
 	pause = new PAUSE;
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
+
+	if (stage_name == "Stage01") { player->SetPlayerY(1240); }
 
 	//とまトン生成する数を数える
 	for (int i = 0, point = 0; i < stage->GetMapSize().x; i++)
@@ -125,7 +129,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 			item[i] = nullptr;
 		}
 	}
-	element = new ELEMENT();
+	element = new ELEMENT(stage_name);
 
 	this->restart = restert;
 
@@ -254,9 +258,9 @@ AbstractScene* GAMEMAIN::Update()
 			if (player->IsDeath()) {
 				if (!restart && stage->GetHalfwayPointFlg()) { 
 					halfway_time =  time - GetNowCount();
-					return new GAMEMAIN(true,halfway_time); 
+					return new GAMEMAIN(true,halfway_time,stage_name); 
 				}
-				return new GameOver();
+				return new GameOver(stage_name);
 			}
 
 			//ステージクリア
@@ -269,7 +273,7 @@ AbstractScene* GAMEMAIN::Update()
 	else {	//ポーズ画面のセレクター
 		pause->Update();
 		if (pause->GetSelectMenu() == 2) { return new Title(); }
-		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(); }
+		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(false,0,stage_name); }
 		else if (pause->GetSelectMenu() == 3) { pause->SetPause(); }
 	}
 
@@ -340,5 +344,11 @@ void GAMEMAIN::Draw() const
 	}
 
 	//デバッグ
-	//DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
+	if (CheckHitKey(KEY_INPUT_A)) {
+		DrawFormatString(100, 200, 0x000000, "ScrollX:%f", stage->GetScrollX());
+		DrawFormatString(100, 300, 0x000000, "ScrollY:%f", stage->GetScrollY());
+		DrawFormatString(100, 400, 0x000000, "MapData:%f", stage->GetMapData(player->GetPlayerY(), player->GetPlayerX()));
+		DrawFormatString(100, 500, 0x000000, "PlayerX%f", player->GetPlayerX());
+		DrawFormatString(100, 600, 0x000000, "PlayerY%f", player->GetPlayerY());
+	}
 }
