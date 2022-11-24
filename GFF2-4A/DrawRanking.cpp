@@ -39,7 +39,14 @@ void DRAW_RANKING::Draw() const
 		DrawFormatString(300, 300 + (75 * i), 0x000000, "%dステージ :", i+1);
 		if (best_time[i] != -1)
 		{
-			DrawFormatString(700, 300 + (75 * i), 0x000000, "%5d.%.3d秒", best_time[i] / 1000, best_time[i] % 1000);
+			if (best_time[i] / 1000 >= 60)
+			{
+				DrawFormatString(700, 300 + (75 * i), 0x000000, "%4d:%2d.%.3d", (best_time[i] / 1000) / 60, (best_time[i] / 1000) % 60, best_time[i] % 1000);
+			}
+			else 
+			{
+				DrawFormatString(700, 300 + (75 * i), 0x000000, "%5d.%.3d", best_time[i] / 1000, best_time[i] % 1000);
+			}
 		}
 		
 	}
