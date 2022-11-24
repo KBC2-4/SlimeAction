@@ -4,7 +4,7 @@
 class RESULT : public AbstractScene
 {
 private:
-	int clear_background_image,gameover_background_image;
+	int Result_Image;
 	int count_se, ok_se,good_se[4],bad_se[4];
 	int title_font, menu_font,time_font;
 	int timer, guide_timer;
