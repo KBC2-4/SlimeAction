@@ -35,6 +35,7 @@ private:
 
 public:
 	ELEMENT();
+	~ELEMENT();
 	void Draw() const override;
 	void Update(PLAYER* player,STAGE*stage);
 	void Button(PLAYER* player);		//3Ží—Þ‚Ìƒ{ƒ^ƒ“

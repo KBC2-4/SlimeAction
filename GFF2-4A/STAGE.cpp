@@ -267,6 +267,8 @@ void STAGE::LoadMapData(const char* stage_name) {
 		sprintf_s(buf, sizeof(buf), "Resource/Map_Data/%s.csv", stage_name);
 		std::ifstream ifs(buf);
 
+		map_data.clear();
+		map_data.shrink_to_fit();
 		std::string str = "";
 		int i = 0, j = 0;
 		while (std::getline(ifs,str))

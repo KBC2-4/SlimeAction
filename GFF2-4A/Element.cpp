@@ -162,6 +162,11 @@ ELEMENT::ELEMENT() {
 	
 }
 
+ELEMENT::~ELEMENT() {
+	hook.clear();
+	hook.shrink_to_fit();
+}
+
 void ELEMENT::Draw() const {
 	//DrawFormatString(100,50,0xffffff,"map_data:%d",map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE]);
 	//static int animtimer = 0;
