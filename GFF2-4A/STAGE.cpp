@@ -11,8 +11,6 @@
 #include "PLAYER.h"
 #include "RESULT.h"
 
-float STAGE::scroll_x = 0;
-float STAGE::scroll_y = 0;
 
 STAGE::STAGE(const char* stage_name) {
 	//**map_data = 0;

@@ -25,14 +25,17 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	item_num = 0;
 	item_rand = 0;
 
-	player = new PLAYER;
-	if (stage_name == "Stage01") { player->SetPlayerY(1240); }
+
+	
 	
 	stage = new STAGE(stage_name);
+	player = new PLAYER;
 	pause = new PAUSE;
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
+
+	if (stage_name == "Stage01") { player->SetPlayerY(1240); }
 
 	//とまトン生成する数を数える
 	for (int i = 0, point = 0; i < stage->GetMapSize().x; i++)
@@ -341,5 +344,11 @@ void GAMEMAIN::Draw() const
 	}
 
 	//デバッグ
-	//DrawFormatString(100, 200, 0x000000, "X%f", stage->GetScrollX());
+	if (CheckHitKey(KEY_INPUT_A)) {
+		DrawFormatString(100, 200, 0x000000, "ScrollX:%f", stage->GetScrollX());
+		DrawFormatString(100, 300, 0x000000, "ScrollY:%f", stage->GetScrollY());
+		DrawFormatString(100, 400, 0x000000, "MapData:%f", stage->GetMapData(player->GetPlayerY(), player->GetPlayerX()));
+		DrawFormatString(100, 500, 0x000000, "PlayerX%f", player->GetPlayerX());
+		DrawFormatString(100, 600, 0x000000, "PlayerY%f", player->GetPlayerY());
+	}
 }
