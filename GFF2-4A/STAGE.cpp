@@ -11,8 +11,6 @@
 #include "PLAYER.h"
 #include "RESULT.h"
 
-float STAGE::scroll_x = 0;
-float STAGE::scroll_y = 0;
 
 STAGE::STAGE(const char* stage_name) {
 	//**map_data = 0;
@@ -20,8 +18,6 @@ STAGE::STAGE(const char* stage_name) {
 	*stage_image = 0;
 	//scroll_x = -8640;
 	scroll_x = 0;
-	if (stage_name == "StageSelect") { scroll_y = 0; }
-	else if (stage_name == "Stage01") { scroll_y = 0; }
 
 	player_x_old = 0;
 	player_y_old = 0;

@@ -9,13 +9,13 @@ STAGE_SELECT::STAGE_SELECT()
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
 	guid_font = CreateFontToHandle("メイリオ", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
-	player = new PLAYER;
 	stage = new STAGE("StageSelect");
+	player = new PLAYER;
 	element = new ELEMENT();
 
-	int scrollx = -(1460 - 500);
-	stage->SetScrollX(scrollx);	//スポーン地点をセット
-	player->SetPlayerX(80); //プレイヤーの画面内座標をセット
+	//int scrollx = -(1460 - 500);
+	//stage->SetScrollX(scrollx);	//スポーン地点をセット
+	//player->SetPlayerX(80); //プレイヤーの画面内座標をセット
 
 	player_map_x = 0;
 	player_map_y = 0;
@@ -56,13 +56,13 @@ STAGE_SELECT::~STAGE_SELECT()
 
 AbstractScene* STAGE_SELECT::Update()
 {
-
-	player_map_x = roundf(player->GetPlayerX() - stage->GetScrollX());
-	player_map_y = floorf(player->GetPlayerY());
 	
 	player->Update(element, stage);
 	stage->Update(player, element);
 	element->Update(player,stage);
+
+	player_map_x = roundf(player->GetPlayerX() - stage->GetScrollX());
+	player_map_y = floorf(player->GetPlayerY());
 	
 	//落ちたらリスタート
 	if (player->IsDeath() == true) {
