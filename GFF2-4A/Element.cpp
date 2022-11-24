@@ -3,7 +3,7 @@
 #include "PLAYER.h"
 
 
-ELEMENT::ELEMENT() {
+ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 
 	guid_font = CreateFontToHandle("ÉÅÉCÉäÉI", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 

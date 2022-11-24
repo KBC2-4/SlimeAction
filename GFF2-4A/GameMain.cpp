@@ -125,7 +125,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 			item[i] = nullptr;
 		}
 	}
-	element = new ELEMENT();
+	element = new ELEMENT(stage_name);
 
 	this->restart = restert;
 

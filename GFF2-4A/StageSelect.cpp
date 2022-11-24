@@ -11,7 +11,7 @@ STAGE_SELECT::STAGE_SELECT()
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	player = new PLAYER;
 	stage = new STAGE("StageSelect");
-	element = new ELEMENT();
+	element = new ELEMENT("StageSelect");
 
 	int scrollx = -(1460 - 500);
 	stage->SetScrollX(scrollx);	//スポーン地点をセット
