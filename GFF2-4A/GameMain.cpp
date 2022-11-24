@@ -25,6 +25,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	item_num = 0;
 	item_rand = 0;
 
+
 	
 	
 	stage = new STAGE(stage_name);
@@ -33,6 +34,8 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	lemoner = nullptr;
 	gurepon = nullptr;
 	tomaton = nullptr;
+
+	if (stage_name == "Stage01") { player->SetPlayerY(1240); }
 
 	//‚Æ‚Üƒgƒ“¶¬‚·‚é”‚ğ”‚¦‚é
 	for (int i = 0, point = 0; i < stage->GetMapSize().x; i++)
@@ -126,7 +129,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 			item[i] = nullptr;
 		}
 	}
-	element = new ELEMENT();
+	element = new ELEMENT(stage_name);
 
 	this->restart = restert;
 
