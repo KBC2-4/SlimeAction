@@ -107,7 +107,7 @@ void STAGE::Draw()const {
 /// ステージスクロール関数
 /// </summary>
 void STAGE::CameraWork(PLAYER* player) {
-	int scroll_speedY = 5;
+	int scroll_speedY = 7;
 		//プレイヤーxベクトルの判定
 		if (player->GetPlayerX() > player_x_old) {
 			player_vector_x = 1;
@@ -134,7 +134,7 @@ void STAGE::CameraWork(PLAYER* player) {
 		}
 
 		//y軸スクロール
-		if ((player_vector_y > 0 && player->GetPlayerY() <= 360||player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL&& scroll_y>-720) && player_y_old != player->GetPlayerY()) {
+		if ((player_vector_y > 0 && player->GetPlayerY() <= 240||player_vector_y<0&& (scroll_y>0 &&map_data.size()<=14)|| (scroll_y>-720&&map_data.size()>14)) && player_y_old != player->GetPlayerY()) {
 			scroll_y += scroll_speedY * player_vector_y;
 			if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
 				scroll_y -= scroll_speedY * player_vector_y;
