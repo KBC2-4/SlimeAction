@@ -113,7 +113,7 @@ void GRAPEFRUIT::Update()
 			{
 				if (flag[i] == false)
 				{
-					bullet[i] = new ENEMY_BULLET(player, stage, x, y, i * 100.0, stage->GetScrollX(), rad, 0);
+					bullet[i] = new ENEMY_BULLET(player, stage, x, y, i * 100.0, rad, 0);
 					flag[i] = true;
 				}
 			}

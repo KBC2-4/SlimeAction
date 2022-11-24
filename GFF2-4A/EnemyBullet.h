@@ -18,8 +18,8 @@ private:
     float mapd_x, mapd_y;             //弾のマップ上のX,Y（double）
     bool end_flg;                     //弾の消えるアニメーションをするかどうか
     double rad_x;                     //角度変更用変数
-    float scroll_x;                   //スクロールの値
-    float GetDrawX() const;           //スクロールの値を計算する関数
+    float scroll_x;                   //スクロールの値(x)
+    float scroll_y;                   //スクロールの値(y)
     bool delete_flg;                  //デリートするためのフラグ
     bool hit_flg;                     //プレイヤーの投げたボールに当たったかどうかのフラグ
     int bullet_images[4];             //弾のアニメーション用の変数
@@ -34,9 +34,14 @@ private:
 
     const int ANIMATION_TIMER = 5;    //アニメーションの時間
     const int IMAGE_Y_SIZE = 20;      //画像の縦のサイズ
+
+private:
+    float GetDrawX() const;           //スクロールの値を計算する関数
+    float GetDrawY() const;           //スクロールの値を計算する関数
+
 public:
     ENEMY_BULLET();                   //最初のコンストラクタ
-    ENEMY_BULLET(PLAYER* player, STAGE* aug_stage, int x, int y, double dis, float scroll,double,int); //引数アリのコンストラクタ
+    ENEMY_BULLET(PLAYER* player, STAGE* aug_stage, int x, int y, double dis,double,int); //引数アリのコンストラクタ
     ~ENEMY_BULLET() {};               //デストラクタ
 
     void Update();                    //弾のアップデート
