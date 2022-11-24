@@ -69,12 +69,12 @@ AbstractScene* GameOver::Update()
 		switch (static_cast<GAMEOVER_MENU>(SelectCount))
 		{
 
-		case  GAMEOVER_MENU::ReSelect:
-			return new STAGE_SELECT();
+		case GAMEOVER_MENU::NewGame:
+			return new GAMEMAIN(false, 0, stage_name);
 			break;
 
-		case GAMEOVER_MENU::NewGame:
-			return new GAMEMAIN(false,0,stage_name);
+		case  GAMEOVER_MENU::ReSelect:
+			return new STAGE_SELECT();
 			break;
 
 		default:
@@ -98,8 +98,8 @@ void GameOver::Draw() const
 	DrawLine(0, 460, 1280, 460, 0x000000);
 
 	//Select—pString
-	DrawStringToHandle(330, 360, "GameSelect", SelectCount == 0 ? 0x95ff89 : 0x000000, Select_font, 0x000000);
-	DrawStringToHandle(445, 460, "Restart", SelectCount == 1 ? 0x95ff89 : 0x000000, Select_font, 0x000000);
+	DrawStringToHandle(330, 460, "GameSelect", SelectCount == 0 ? 0x0a6500 : 0x1aff00, Select_font, 0x000000);
+	DrawStringToHandle(445, 360, "Restart", SelectCount == 1 ? 0x0a6500 : 0x1aff00, Select_font, 0x000000);
 
 	if (timer % 120 < 60)
 	{
