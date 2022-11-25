@@ -17,12 +17,14 @@ private:
 	POINT clearbox;		//クリアになるボックス状範囲の座標
 	int anitimer;
 	POINT halfwaypointbox;		//中間地点座標
+	POINT spawn_point;			//スポーン地点座標
 
 	bool clearflg;			//クリア判定フラグ
 	bool halfwaypoint;		//中間地点フラグ
 	float player_x_old, player_y_old;		//旧プレイヤー座標
 	float player_vector_x;					//プレイヤーの移動方向x
 	float player_vector_y;					//プレイヤーの移動方向y
+
 
 protected:
 	int block_image1[110];		//ステージブロック画像
@@ -72,6 +74,7 @@ public:
 	bool GetClearFlg(void) { return clearflg; };
 
 	void SetScrollX(float scroll_x) { if (scroll_x < 0) { this->scroll_x = scroll_x; } }
+	void SetScrollY(float scroll_y) { if (scroll_y < 0) { this->scroll_y = scroll_y; } }
 
 	void HalfwayPoint(PLAYER* player);
 	//中間地点座標のGeter
@@ -79,5 +82,8 @@ public:
 
 	//中間地点通過したか判定フラグのGeter
 	bool GetHalfwayPointFlg(void) { return halfwaypoint; }
+
+	//スポーン地点のGeter
+	POINT GetSpawnPoint(void) { return spawn_point; }
 };
 

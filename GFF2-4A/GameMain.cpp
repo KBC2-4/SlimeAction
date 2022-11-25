@@ -134,9 +134,15 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	this->restart = restert;
 
 	if (restart == true) {
-		int scrollx = -(stage->GetHalfwayPoint().x - 500);
-		stage->SetScrollX(scrollx);	//スポーン地点をセット
+			int scrollx = -(stage->GetHalfwayPoint().x - 500);
+			stage->SetScrollX(scrollx);	//スポーン地点をセット
 		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
+	}
+	else {
+		//スポーン地点をセット
+		stage->SetScrollX(-(stage->GetSpawnPoint().x - MAP_CEllSIZE));
+		stage->SetScrollY(-(stage->GetSpawnPoint().y  - MAP_CEllSIZE - 400));
+		player->SetPlayer_Screen(stage->GetSpawnPoint());
 	}
 }
 
