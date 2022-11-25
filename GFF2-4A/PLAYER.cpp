@@ -9,10 +9,10 @@
 float PLAYER::player_x, PLAYER::player_y;
 
 /*コンストラクタ*/
-PLAYER::PLAYER() {
+PLAYER::PLAYER(STAGE* stage) {
+	this->stage = stage;
 	player_x = 80.0f;
 	player_y = 500.0f;
-	rebound_x = SPEED;
 	map_x = 0;
 	map_y = 0;
 	life = 5;
@@ -30,7 +30,6 @@ PLAYER::PLAYER() {
 	// 初期速度は０
 	speed = 0;
 
-	ve = 90.0;
 	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
 		throw "Resource/Images/Player/IdorSlime.png";
 	}
@@ -78,10 +77,6 @@ PLAYER::PLAYER() {
 /// プレイヤーの更新
 /// </summary>
 void PLAYER::Update(ELEMENT* element, STAGE* stage) {
-	//clsDx();
-	this->stage = stage;
-	int bullet;
-	rebound_x = SPEED * player_scale;
 	Move();
 	JumpMove();
 	HookMove(element, stage);
@@ -92,11 +87,6 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 			throw_slime.erase(throw_slime.begin() + i);
 		}
 	}
-	//if ((/*hitBullet = GetBullet(&bullet))*/stage->HitThrowSlime(static_cast<int>(floor(throw_y[0] / MAP_CEllSIZE)), static_cast<int>(throw_x[0] / MAP_CEllSIZE)) == true) {
-	//	/*throw_x.erase(throw_x.begin());
-	//	throw_y.erase(throw_y.begin());*/
-	//	throw_slime.erase(throw_slime.begin());
-	//}
 	HitBlock(element, stage);
 	throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
@@ -176,9 +166,6 @@ void PLAYER::Draw(STAGE *stage)const {
 			}
 		}
 		else {
-			//DrawRotaGraph3F(player_x + stage->GetScrollX(), player_y, 40, 80,
-			//	1/** player_scale*/, (hook_distance / (MAP_CEllSIZE / 2))* player_scale, (double)hook_angle,
-			//	images[3][1], TRUE, move_type);
 			DrawRotaGraph3F(player_x + stage->GetScrollX() + 20, (player_y + stage->GetScrollY()) + (1.6 - player_scale) * 40, 226, 80,
 				(hook_distance / (MAP_CEllSIZE * 3.5)) * player_scale, 1 * player_scale, (double)hook_angle,
 				images[3][1], TRUE, move_type);
@@ -294,24 +281,6 @@ void PLAYER::Move()
 	}
 }
 
-void PLAYER::Scroll(float move_x) {
-	//スクロールの処理
-	//bool isScroll = false;
-	////プレイヤーの位置が中心だったら
-	//if (move_x > 0 && player_x >= 620 || move_x < 0 && player_x <= 660) {
-	//	//スクロールが端まで行ってない時
-	//	if (!(isScroll = (stage->GetScrollX() >= 0 || stage->GetScrollX() <= -8080))) {
-	//		//プレイヤーの位置を中心に戻す
-	//		rebound_x = SPEED * 1.3f;
-	//		//player_x -= move_x * rebound_x;
-	//	}
-	//}
-	////スクロールしてない時
-	//if (!isScroll) {
-	//	rebound_x = SPEED; //反発力を変更
-	//}
-}
-
 /// <summary>
 /// フックの移動処理
 /// </summary>
@@ -330,8 +299,6 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 
 	//Bボタン押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
-		//フックの座標
-		//float hook_y, hook_x;
 		//フックまでの距離
 		float min_distance = HOOK_MAX_DISTANCE;
 
@@ -344,8 +311,6 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				float diff_x = pos.x - (player_x);
 				float diff_y = pos.y - player_y;
 				float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
-				//距離が最短距離より近いとき
-				//if (distance <= min_distance) {
 				//フックの角度
 				float angle = atan2f(diff_y, diff_x);
 				//移動の計算
@@ -365,7 +330,6 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				//配列に変換
 				int hook_map_x = x / MAP_CEllSIZE;
 				int hook_map_y = y / MAP_CEllSIZE;
-				//障害物がある場合は移動させない
 				//最短距離の更新
 				min_distance = distance;
 				//フックの座標の更新
@@ -496,8 +460,6 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 					if (speed > 0)speed -= 0.05;
 					if (speed < 0)speed += 0.05;
 				}
-				//player_x = hook_x + nx;
-				//player_y = hook_y + ny;
 			}
 		}
 	}
@@ -522,19 +484,12 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				player_state = PLAYER_MOVE_STATE::FALL;
 				animation_state = PLAYER_ANIM_STATE::IDLE;
 			}
-			/*jumppower = (16.0 - fabs(speed)) / 16.0;*/
 
 			jumppower = fabs(static_cast<float>(nx) / LENGTH);
-			//printfDx("%f\n", fabsf(static_cast<float>(nx) / LENGTH));
 			if (fabsf(nx) > LENGTH / 2) {
 				jump_request = true;
 			}
 			player_state = PLAYER_MOVE_STATE::FALL;
-			//jump_request = true;
-			/*if (speed < 0)jump_move_x = 1;		//フック後のジャンプ方向の修正
-			if (speed >= 0)jump_move_x = -1;
-			jump_request = true;
-			player_state = PLAYER_MOVE_STATE::JUMP;*/
 		}
 	}
 }
@@ -574,7 +529,6 @@ void PLAYER::JumpMove() {
 	}
 	//ジャンプ中
 	if (is_jump) {
-		//animation_state = PLAYER_ANIM_STATE::JUMP;
 		MoveAnimation();
 		velocity += 0.2f;
 		player_y += velocity;
@@ -591,7 +545,6 @@ void PLAYER::JumpMove() {
 
 		//地面じゃない時は落下
 		if (!is_ground) {
-			int object = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE));
 			velocity += 0.2f;
 			player_y += velocity;
 			player_state = PLAYER_MOVE_STATE::FALL;
@@ -652,18 +605,21 @@ void PLAYER::Throw(STAGE* stage) {
 		else if (angle < 90) throw_rad = 90 * M_PI / 180.0f;
 	}
 
-	vx0 = ve * (float)cos(throw_rad);
-	vy0 = ve * (float)sin(throw_rad);
+	float ve = 90;
 
-	g = 9.8;
-	dt = 0.15f;
+	float vx0 = ve * (float)cos(throw_rad);
+	float vy0 = ve * (float)sin(throw_rad);
 
-	x0 = player_x + stage->GetScrollX();
-	y0 = player_y + stage->GetScrollY();
+	float g = 9.8;
+	float dt = 0.15f;
 
-	vx = vx0; vy = vy0;
+	float x0 = player_x + stage->GetScrollX();
+	float y0 = player_y + stage->GetScrollY();
 
-	for (t = 0.0; y0 <= 720; t = t + dt) {
+	float vx = vx0;
+	float vy = vy0;
+
+	for (float t = 0.0; y0 <= 720; t = t + dt) {
 		x0 = x0 + vx * dt;
 		y0 = y0 - vy * dt;
 		vy = vy - g * dt;
@@ -681,7 +637,6 @@ void PLAYER::Throw(STAGE* stage) {
 				animation_type[2] = 0;
 				//投げる処理
 				throw_slime.push_back(ThrowSlime(throw_x, throw_y, stage));
-				//life--;
 				animation_state = PLAYER_ANIM_STATE::THROW;
 			}
 		}
@@ -709,10 +664,10 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 	//マップチップの座標のセット
 	map_x = (int)roundf((player_x) / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
-	player_left = (player_x - 30 * player_scale);
-	player_right = (player_x + 30 * player_scale);
-	player_top = (player_y - MAP_CEllSIZE / 2);
-	player_bottom = (player_y + MAP_CEllSIZE / 2);
+	float player_left = (player_x - 30 * player_scale);
+	float player_right = (player_x + 30 * player_scale);
+	float player_top = (player_y - MAP_CEllSIZE / 2);
+	float player_bottom = (player_y + MAP_CEllSIZE / 2);
 
 	//天井の判定
 	bool hit_ceil_center = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
@@ -786,9 +741,6 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 							}
 						}
 						player_x = old_player_x;
-						if (hitBullet) {
-							player_x -= move_x * player_scale * SPEED * 2;
-						}
 						break;
 					}
 				}
@@ -825,25 +777,6 @@ void PLAYER::MoveAnimation() {
 	}
 }
 
-//bool PLAYER::GetBullet(int* bullet) {
-//	float r1X, r1Y, r1XY;
-//	for (int i = 0; i < throw_slime.size(); i++) {
-//		r1X = throw_slime[i].GetThrowX() - player_x;
-//		r1Y = throw_slime[i].GetThrowY() - player_y;
-//		r1XY = sqrt(r1X * r1X + r1Y * r1Y);
-//		if (r1XY <= 40 + BULLETRADIUS && throw_slime[i].Get_throwfall() == true) {
-//			++life;
-//			if (life > 5) {
-//				life = 5;
-//				return false;
-//			}
-//			*bullet = i;
-//			return true;
-//		}
-//	}
-//	return false;
-//}
-
 void PLAYER::SetLife(int a)
 {
 	if (!is_damage) {
@@ -852,23 +785,4 @@ void PLAYER::SetLife(int a)
 		alpha_time = 120;
 		is_damage = true;
 	}
-}
-
-int PLAYER::HitPlayer(float x, float y, int diameter, int type) {
-	float px = GetPlayerX() - x;
-	float py = GetPlayerY() - y;
-	float pxy = sqrt(px * px + py * py); //ベクトル
-
-	float Pdiameter = 28 * life;	//プレーヤー直径
-	float Ediameter = diameter * 2;	//対象の直径
-	if (type == 1) {
-		if (pxy <= Pdiameter + diameter && Pdiameter <= Ediameter && (player_state == PLAYER_MOVE_STATE::IDLE || player_state == PLAYER_MOVE_STATE::MOVE)) {
-			return true;
-		}
-	}
-	/*if (type != 1) {
-		if()
-	}*/
-	return false;
-
 }

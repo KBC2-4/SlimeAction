@@ -29,7 +29,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	
 	
 	stage = new STAGE(stage_name);
-	player = new PLAYER;
+	player = new PLAYER(stage);
 	pause = new PAUSE;
 	lemoner = nullptr;
 	gurepon = nullptr;

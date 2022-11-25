@@ -8,8 +8,6 @@
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
 #define SPEED					3.0f	//プレイヤーのスピード
 #define DEVIATION				2000	//スティック入力の誤入力の範囲
-//#define ANIMATION_SWITCH_FRAME	1		//画像を切り替えるタイミング(フレーム)
-//#define IMAGE_MAX_NUM			10		//画像の枚数
 #define JUMP_VELOCITY			-5.8f	//ジャンプスピード
 #define HOOK_MAX_DISTANCE		280
 #define ANIMATION_TYPE			7
@@ -20,8 +18,6 @@
 #define G           9.81                // 重力加速度
 
 #define MIN_SIZE_SCALE		0.8f	//プレイヤーの最小サイズ(倍率)
-
-//ThrowSlime throw_slime;
 
 //移動ステート
 enum class PLAYER_MOVE_STATE {
@@ -54,14 +50,10 @@ private:
 	static float player_x, player_y;
 	float old_player_x, old_player_y;
 	int map_x, map_y;
-	float player_left = 0, player_right = 0;
-	float player_top = 0, player_bottom = 0;
-	float rebound_x;
 	float jump_move_x;
 	bool is_ground;		//地面についてるかどうか
 	bool hit_ceil;
 
-	bool hitBullet;
 	int life;
 	int now_image;			//描画する画像
 	int images[ANIMATION_TYPE][10];		//アニメーションの画像
@@ -75,13 +67,14 @@ private:
 	int jump_mode;			//停止ジャンプ(1)か移動ジャンプ(2)か
 	bool jump_request;
 	float jumppower;
+
+	//hook
 	bool is_hook_move;
 	float hook_angle;
 	float hook_distance;
-
 	float hook_y, hook_x;
 	int hook_index;
-
+	
 	double x;     // 紐を伸ばして一周させた場合に出来る円の線上の座標、０は紐が軸の真下に伸びた位置
 	double speed; // xの変化速度
 	double angle;
@@ -92,19 +85,12 @@ private:
 	//Throw
 	bool throw_preparation;
 	int throw_ball_image;
-	//double throw_x[100];// = 100;
-	//double throw_y[100];// = 560;
 	float throw_rad;
 
-	/*bool pressBtn = false;*/
 	std::vector<ThrowSlime> throw_slime;
-	std::vector<float>throw_x = {0};
-	std::vector<float>throw_y = {0};
+	std::vector<float>throw_x;
+	std::vector<float>throw_y;
 	int throw_index = 0;
-
-
-	float ve, vx0, vy0, vx, vy;
-	float g, dt, t,x0, y0;
 
 	//点滅用
 	bool is_damage;
@@ -157,7 +143,7 @@ private:
 	STAGE *stage;
 
 public:
-	PLAYER();
+	PLAYER(STAGE* stage);
 
 	void Move();
 	void Draw(STAGE* stage) const;
@@ -167,8 +153,6 @@ public:
 	void MoveAnimation();
 	void Update(ELEMENT*element, STAGE* stage);
 	void HitBlock(ELEMENT* element, STAGE* stage);
-	void Scroll(float move_x);
-	int HitPlayer(float x, float y, int diameter,int type);	//type::土管=1,
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
@@ -182,7 +166,6 @@ public:
 	int GetThrowCnt() { return throw_slime.size(); }
 	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
-	/*bool GetBullet(int* bullet);*/	//ドロップした玉を拾う処理
 	double GetSpeed() { return speed; }
 	float GetMoveX() { return move_x; }
 
