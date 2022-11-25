@@ -35,7 +35,6 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	gurepon = nullptr;
 	tomaton = nullptr;
 
-	if (stage_name == "Stage01") { player->SetPlayerY(1240); }
 
 	//とまトン生成する数を数える
 	for (int i = 0, point = 0; i < stage->GetMapSize().x; i++)
@@ -136,7 +135,8 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	if (restart == true) {
 			int scrollx = -(stage->GetHalfwayPoint().x - 500);
 			stage->SetScrollX(scrollx);	//スポーン地点をセット
-		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
+			stage->SetScrollY(-(stage->GetHalfwayPoint().y - MAP_CEllSIZE - 400));
+			player->SetPlayer_Screen(stage->GetHalfwayPoint());
 	}
 	else {
 		//スポーン地点をセット
