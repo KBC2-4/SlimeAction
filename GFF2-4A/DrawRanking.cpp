@@ -54,4 +54,5 @@ void DRAW_RANKING::Draw() const
 	{
 		DrawString(300, 600, "Aボタンでタイトルに戻る", 0x000000);
 	}
+	SetFontSize(-1);
 }
