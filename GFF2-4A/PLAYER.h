@@ -55,18 +55,15 @@ private:
 	bool hit_ceil;
 
 	int life;
-	int now_image;			//描画する画像
 	int images[ANIMATION_TYPE][10];		//アニメーションの画像
 	int hp_img;
 	int move_type;			//左か右の移動(反転用)
 	float move_x;
-	int animation_frame;	//アニメーションのフレームのカウント
-	int animation_type[ANIMATION_TYPE];		//今のアニメーションの添え字
-	int animation_phase[ANIMATION_TYPE];	//アニメーションの段階(0: 前半, 1: 後半)
-	int animation_mode;
 	int jump_mode;			//停止ジャンプ(1)か移動ジャンプ(2)か
+	bool is_jump;
 	bool jump_request;
 	float jumppower;
+	float jump_velocity;
 
 	//hook
 	bool is_hook_move;
@@ -100,41 +97,46 @@ private:
 	//プレイヤーのサイズ(倍率)
 	float player_scale;
 
-	//画像を切り替えるタイミング(フレーム)
-	const int animation_switch_frame[ANIMATION_TYPE] = {
-		3,	//アイドル
-		1,	//移動
-		3,	//投げる
-		1,
-		20,	//ジャンプ
-		20,	//落下中
-		2,	//着地
-	};
+	typedef struct Animation {
+		//画像を切り替えるタイミング(フレーム)
+		const int switch_frame;
 
-	//アニメーションの再生の仕方
-	//-1: 固定
-	// 0: 一枚目から再生したら逆再生する
-	// 1: 一枚目から再生したら一枚目に戻す
-	// 2: 最後までされたら最後の画像で固定
-	const int animation_play_type[ANIMATION_TYPE] = {
-		1,	//アイドル
-		0,	//移動
-		1,	//投げる
-		-1,
-		1,	//ジャンプ
-		2,	//落下中
-		1,	//着地
-	};
+		//アニメーションの再生の仕方
+		//-1: 固定
+		// 0: 一枚目から再生したら逆再生する
+		// 1: 一枚目から再生したら一枚目に戻す
+		// 2: 最後までされたら最後の画像で固定
+		const int play_type;
 
-	//アニメーション画像の枚数
-	const int animation_image_num[ANIMATION_TYPE] = {
-		9,	//アイドル
-		10,	//移動
-		7,	//投げる
-		1,
-		4,	//ジャンプ
-		4,	//落下中
-		10,	//着地
+		//アニメーション画像の枚数
+		const int image_num;
+
+		//アニメーションの優先度
+		const int priority;
+
+		//アニメーションのフレームのカウント
+		int frame = 0;
+
+		//今のアニメーションの添え字
+		int type = 0;
+
+		//play_typeが0のアニメーションの段階(0: 前半, 1: 後半)
+		int phase = 0;
+
+		//ループ再生かどうか(0: ループ再生)
+		int playMode;
+
+		//アニメーションの終了判定
+		bool endAnim;
+	};
+	Animation animation[ANIMATION_TYPE]{
+		{  3,  1,  9, 0 },	//アイドル
+		{  1,  0, 10, 0 },	//移動
+		{  3,  1,  7, 2 },	//投げる
+		{  1, -1,  1, 0 },	//フック
+		{ 20,  1,  4, 1 },	//ジャンプ
+		{ 20,  2,  4, 1 },	//落下
+		{  2,  1, 10, 1 },	//着地
 	};
 
 	//ステート変数
@@ -153,6 +155,7 @@ public:
 	void MoveAnimation();
 	void Update(ELEMENT*element, STAGE* stage);
 	void HitBlock(ELEMENT* element, STAGE* stage);
+	void ChangeAnimation(PLAYER_ANIM_STATE anim, bool compelChange = false);
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };

@@ -16,10 +16,12 @@ PLAYER::PLAYER(STAGE* stage) {
 	map_x = 0;
 	map_y = 0;
 	life = 5;
-	jumppower = 0.0;
+	jumppower = 0.0f;
+	jump_velocity = 0.0f;
 	jump_mode = 0;
 	jump_move_x = 0;
 	jump_request = false;
+	is_jump = false;
 	is_hook_move = false;
 	is_death = false;
 	is_damage = false;
@@ -65,34 +67,54 @@ PLAYER::PLAYER(STAGE* stage) {
 	}
 
 	animation_state = PLAYER_ANIM_STATE::IDLE;
-	animation_frame = 0;
-	animation_mode = 0;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
-		animation_type[i] = 0;
-		animation_phase[i] = 0;
+		animation[i].frame = 0;
+		animation[i].type = 0;
+		animation[i].phase = 0;
+		animation[i].playMode = 0;
+		animation[i].endAnim = false;
 	}
+
+	animation[static_cast<int>(PLAYER_ANIM_STATE::THROW)].playMode = 1;
+	animation[static_cast<int>(PLAYER_ANIM_STATE::LANDING)].playMode = 1;
 }
 
 /// <summary>
 /// プレイヤーの更新
 /// </summary>
 void PLAYER::Update(ELEMENT* element, STAGE* stage) {
+	//移動処理
 	Move();
+
+	//ジャンプ処理
 	JumpMove();
+
+	//フック処理
 	HookMove(element, stage);
+
+	//投げる処理
 	Throw(stage);
-	int throw_cnt = throw_slime.size();
+
+	//アニメーションの再生
+	MoveAnimation();
+
+	//ブロックとの当たり判定
+	HitBlock(element, stage);
+
+	//球を消す処理
 	for (int i = 0; i < throw_slime.size(); i++) {
 		if (throw_slime[i].checkdel() == true) {
 			throw_slime.erase(throw_slime.begin() + i);
 		}
 	}
-	HitBlock(element, stage);
-	throw_cnt = throw_slime.size();
+
+	//球の更新
+	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Update(stage);
 	}
 
+	//死判定
 	if (stage->GetMapData(map_y, map_x) == -1 || life <= 0) {
 		is_death = true;
 	}
@@ -105,15 +127,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 		player_x = 1280 - MAP_CEllSIZE / 2 * player_scale - stage->GetScrollX();
 	}
 
-	//描画する画像のセット
-	int image_type = 0;
-	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		image_type = static_cast<int>(animation_state);
-	}
-	now_image = images[image_type][animation_type[image_type]];
-
-
-
+	//点滅処理
 	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
 		if (alpha_time > 0) {
 			if (alpha_time % 20 < 10) {
@@ -130,6 +144,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 		}
 	}
 
+	//プレイヤーのサイズの更新
 	player_scale = static_cast<float>(life - 1) / static_cast<float>(MAX_LIFE) + MIN_SIZE_SCALE;
 }
 
@@ -145,10 +160,15 @@ void PLAYER::Draw(STAGE *stage)const {
 	}
 
 	//プレイヤーの表示
+	//フック中じゃない時
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
+		//描画する画像のセット
+		int image_type = static_cast<int>(animation_state);
+		int now_image = images[image_type][animation[image_type].type];
 		DrawRotaGraphF(player_x + stage->GetScrollX(), (player_y - 20 + stage->GetScrollY()) + (1.6 - player_scale) * 40, player_scale, 0.0, now_image, TRUE, move_type);
 	}
 	else {
+		//振り子中
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
 			float diff_x = nx;
 			float diff_y = ny;
@@ -165,6 +185,7 @@ void PLAYER::Draw(STAGE *stage)const {
 					images[3][0], TRUE, move_type);
 			}
 		}
+		//伸びる時
 		else {
 			DrawRotaGraph3F(player_x + stage->GetScrollX() + 20, (player_y + stage->GetScrollY()) + (1.6 - player_scale) * 40, 226, 80,
 				(hook_distance / (MAP_CEllSIZE * 3.5)) * player_scale, 1 * player_scale, (double)hook_angle,
@@ -174,15 +195,18 @@ void PLAYER::Draw(STAGE *stage)const {
 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
+	//ボールの描画
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
 		throw_slime[i].Draw(stage);
 	}
-	if (life > 1) {
-		for (int i = 0; i < throw_x.size(); i += 5) {
-			DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
-		}
+
+	//ボールの軌道の描画
+	for (int i = 0; i < throw_x.size(); i += 5) {
+		DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 	}
+
+	//ライフの描画
 	for (int i = 0; i < life - 1; i++) {
 		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
 	}
@@ -207,17 +231,11 @@ void PLAYER::Move()
 	{
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL) 
 		{
-			if (animation_state != PLAYER_ANIM_STATE::LANDING && animation_state != PLAYER_ANIM_STATE::THROW) 
-			{
-				animation_state = PLAYER_ANIM_STATE::MOVE;
-				animation_mode = 1;							//アニメーションの切り替え
-			}
-
 			move_type = (move_x > 0) ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
-
 			player_x += move_x * SPEED * player_scale;
 			jump_move_x = move_x;
 			player_state = PLAYER_MOVE_STATE::MOVE;	//ステートをMoveに切り替え
+			ChangeAnimation(PLAYER_ANIM_STATE::MOVE); //アニメーションの切り替え
 		}
 		else 
 		{
@@ -243,28 +261,19 @@ void PLAYER::Move()
 				}
 			}
 		}
-		MoveAnimation();
 	}
 	else //移動してない時
 	{
 		move_x = 0;
 		//移動アニメーションを後半へ移行
-		if (animation_type[1] > 1) 
+		int move = static_cast<int>(PLAYER_ANIM_STATE::MOVE);
+		if (animation[move].type > 1 && animation_state == PLAYER_ANIM_STATE::MOVE)
 		{
-			animation_phase[1] = 1;
-			MoveAnimation();
+			animation[move].phase = 1;
 		}
 		else //移動アニメーションが終わったらアイドルアニメーションの再生
 		{
-			if (animation_state != PLAYER_ANIM_STATE::JUMP && animation_state != PLAYER_ANIM_STATE::FALL && animation_state != PLAYER_ANIM_STATE::LANDING) 
-			{
-				if (animation_state != PLAYER_ANIM_STATE::THROW) 
-				{
-					animation_state = PLAYER_ANIM_STATE::IDLE;
-					animation_mode = 0;
-					MoveAnimation();
-				}
-			}
+			ChangeAnimation(PLAYER_ANIM_STATE::IDLE);
 		}
 		//ジャンプ中じゃないかったらステートを切り替える
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL) {
@@ -482,7 +491,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 			}
 			else {
 				player_state = PLAYER_MOVE_STATE::FALL;
-				animation_state = PLAYER_ANIM_STATE::IDLE;
+				ChangeAnimation(PLAYER_ANIM_STATE::IDLE);
 			}
 
 			jumppower = fabs(static_cast<float>(nx) / LENGTH);
@@ -499,9 +508,8 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 /// </summary>
 void PLAYER::JumpMove() {
 	if (PAD_INPUT::GetNowKey()== XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
-	static bool is_jump = false;		//ジャンプ中か
+	//static bool is_jump = false;		//ジャンプ中か
 	static float jump_y = 0;			//ジャンプの高さ
-	static float velocity = 0.0f;	//ジャンプと落下のスピード
 	//Aボタンを押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A || jump_request) {
 		//ジャンプ中じゃないとき
@@ -510,7 +518,7 @@ void PLAYER::JumpMove() {
 			jump_request = false;
 			is_jump = true;			//ジャンプ中に移行
 			jump_y = player_y - MAP_CEllSIZE * jumppower; //ジャンプの高さのセット
-			velocity = JUMP_VELOCITY;
+			jump_velocity = JUMP_VELOCITY;
 			//横移動してない時
 			if (player_state == PLAYER_MOVE_STATE::IDLE) {
 				jump_mode = 1;
@@ -520,61 +528,48 @@ void PLAYER::JumpMove() {
 				jump_mode = 2;
 			}
 			player_state = PLAYER_MOVE_STATE::JUMP;
-			animation_state = PLAYER_ANIM_STATE::JUMP;
-			animation_type[static_cast<int>(PLAYER_ANIM_STATE::JUMP)] = 0;
-			animation_type[static_cast<int>(PLAYER_ANIM_STATE::FALL)] = 0;
-			animation_type[static_cast<int>(PLAYER_ANIM_STATE::LANDING)] = 0;
-
+			ChangeAnimation(PLAYER_ANIM_STATE::JUMP);
 		}
 	}
 	//ジャンプ中
 	if (is_jump) {
-		MoveAnimation();
-		velocity += 0.2f;
-		player_y += velocity;
+		jump_velocity += 0.2f;
+		player_y += jump_velocity;
 
 		if (player_y <= jump_y || hit_ceil || player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			is_jump = false;
 			hit_ceil = false;
-			animation_state = PLAYER_ANIM_STATE::FALL;
-			velocity = 0;
+			jump_velocity = 0;
 		}
 	}
 	//落下中
 	else {
-
 		//地面じゃない時は落下
 		if (!is_ground) {
-			velocity += 0.2f;
-			player_y += velocity;
+			jump_velocity += 0.2f;
+			player_y += jump_velocity;
 			player_state = PLAYER_MOVE_STATE::FALL;
+			ChangeAnimation(PLAYER_ANIM_STATE::FALL);
 		}
 		//地面についた時
 		else {
 			if ((player_state == PLAYER_MOVE_STATE::FALL || player_state == PLAYER_MOVE_STATE::JUMP) && !is_hook_move) {
 				jumppower = 1.0;
 				float new_y = (float)(map_y - 1) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
-				if (fabsf(new_y - player_y) <= velocity) {
+				if (fabsf(new_y - player_y) <= jump_velocity) {
 					player_y = new_y;
 				}
-				velocity = 0;
+				jump_velocity = 0;
 				player_state = PLAYER_MOVE_STATE::IDLE;
-				animation_state = PLAYER_ANIM_STATE::LANDING;
+				ChangeAnimation(PLAYER_ANIM_STATE::LANDING);
 			}
 			if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
-				velocity = 0;
-			}
-		}
-		if (animation_state == PLAYER_ANIM_STATE::FALL) {
-			MoveAnimation();
-			if (animation_type[static_cast<int>(animation_state)] >= 4) {
-				animation_state = PLAYER_ANIM_STATE::LANDING;
+				jump_velocity = 0;
 			}
 		}
 		if (animation_state == PLAYER_ANIM_STATE::LANDING) {
-			MoveAnimation();
-			if (animation_type[static_cast<int>(animation_state)] >= 9) {
-				animation_state = PLAYER_ANIM_STATE::IDLE;
+			if (animation[static_cast<int>(animation_state)].endAnim) {
+				ChangeAnimation(PLAYER_ANIM_STATE::IDLE);
 			}
 		}
 	}
@@ -633,26 +628,14 @@ void PLAYER::Throw(STAGE* stage) {
 		if (!push_button) {
 			push_button = true;
 			if (life > 1) {
-				//アニメーションのリセット
-				animation_type[2] = 0;
 				//投げる処理
 				throw_slime.push_back(ThrowSlime(throw_x, throw_y, stage));
-				animation_state = PLAYER_ANIM_STATE::THROW;
+				ChangeAnimation(PLAYER_ANIM_STATE::THROW, true);
 			}
 		}
 	}
 	else {
 		push_button = false;
-	}
-
-	if (animation_state == PLAYER_ANIM_STATE::THROW) {
-		int throw_anim = static_cast<int>(PLAYER_ANIM_STATE::THROW);
-		if (animation_type[throw_anim] >= animation_image_num[throw_anim] - 1) {
-			animation_state = PLAYER_ANIM_STATE::IDLE;
-		}
-		else {
-			MoveAnimation();
-		}
 	}
 
 }
@@ -749,30 +732,53 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 	}
 }
 
+void PLAYER::ChangeAnimation(PLAYER_ANIM_STATE anim, bool compelChange) {
+	int now_anim_type = static_cast<int>(animation_state);
+	int next_anim_type = static_cast<int>(anim);
+	if (animation_state != anim || compelChange) {
+		if (animation[now_anim_type].priority <= animation[next_anim_type].priority || animation[now_anim_type].endAnim || compelChange) {
+			animation_state = anim;
+			int anim_type = static_cast<int>(anim);
+			animation[anim_type].frame = 0;
+			animation[anim_type].type = 0;
+			animation[anim_type].phase = 0;
+			animation[anim_type].endAnim = false;
+		}
+	}
+}
+
 /// <summary>
 /// アニメーションの切り替え
 /// </summary>
 void PLAYER::MoveAnimation() {
 	//画像の切り替えタイミングのとき
 	int type = static_cast<int>(animation_state);
-	if (++animation_frame % animation_switch_frame[type] == 0) {
+	if (++animation[type].frame % animation[type].switch_frame == 0) {
 		//前半のアニメーション
-		if (animation_phase[type] == 0) {
-			animation_type[type]++;
+		if (animation[type].phase == 0) {
+			animation[type].type++;
 		}
 		//後半のアニメーション
 		else {
-			if (animation_play_type[type] == 0) {
-				animation_type[type]--;
+			if (animation[type].play_type == 0) {
+				animation[type].type--;
 			}
-			else if (animation_play_type[type] == 1) {
-				animation_phase[type] = 0;
-				animation_type[type] = 1;
+			else if (animation[type].play_type == 1) {
+				//animation[type].phase = 0;
+				animation[type].type = 0;
 			}
 		}
 		//前半と後半の切り替え
-		if (animation_type[type] >= animation_image_num[type] - 1 || animation_type[type] <= 0) {
-			animation_phase[type] = (animation_phase[type] + 1) % 2;
+		if (animation[type].type >= animation[type].image_num - 1 || animation[type].type <= 0) {
+			if (animation[type].play_type == 0) {
+				if (animation[type].phase == 1) {
+					animation[type].endAnim = true;
+				}
+			}
+			else if (animation[type].play_type == 1) {
+				animation[type].endAnim = true;
+			}
+			animation[type].phase = (animation[type].phase + 1) % 2;
 		}
 	}
 }
