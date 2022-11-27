@@ -313,13 +313,14 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 
 		//フックの位置
 		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
-		if (player_state == PLAYER_MOVE_STATE::HOOK) {
-			if (hook_pos.size() >= hook_index) {
-				ELEMENT::ELEMENT_DATA pos = hook_pos[hook_index];
-				//距離計算
-				float diff_x = pos.x - (player_x);
-				float diff_y = pos.y - player_y;
-				float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
+		for (int i = 0; i < hook_pos.size(); i++) {
+			ELEMENT::ELEMENT_DATA pos = hook_pos[i];
+			//距離計算
+			float diff_x = pos.x - (player_x);
+			float diff_y = pos.y - player_y;
+			float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
+			//距離が最短距離より近いとき
+			if (distance <= min_distance) {
 				//フックの角度
 				float angle = atan2f(diff_y, diff_x);
 				//移動の計算
@@ -339,8 +340,13 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				//配列に変換
 				int hook_map_x = x / MAP_CEllSIZE;
 				int hook_map_y = y / MAP_CEllSIZE;
+				//障害物がある場合は移動させない
+				if (stage->GetMapData(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
+					continue;
+				}
 				//最短距離の更新
 				min_distance = distance;
+				hook_index = i;
 				//フックの座標の更新
 				hook_x = pos.x;
 				hook_y = pos.y;
@@ -348,61 +354,19 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				is_hook = true;
 			}
 		}
-		else {
-			for (int i = 0; i < hook_pos.size(); i++) {
-				ELEMENT::ELEMENT_DATA pos = hook_pos[i];
-				//距離計算
-				float diff_x = pos.x - (player_x);
-				float diff_y = pos.y - player_y;
-				float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
-				//距離が最短距離より近いとき
-				if (distance <= min_distance) {
-					//フックの角度
-					float angle = atan2f(diff_y, diff_x);
-					//移動の計算
-					move_x = cosf(angle) * SPEED * 3;
-					move_y = sinf(angle) * SPEED * 3;
-					//プレイヤーの現在の位置
-					float x = player_x;
-					float y = player_y;
-					//フックまでの移動経路に障害物がないか
-					while (!stage->HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
-						if (stage->GetMapData(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
-							break;
-						}
-						x += move_x;
-						y += move_y;
-					}
-					//配列に変換
-					int hook_map_x = x / MAP_CEllSIZE;
-					int hook_map_y = y / MAP_CEllSIZE;
-					//障害物がある場合は移動させない
-					if (stage->GetMapData(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
-						continue;
-					}
-					//最短距離の更新
-					min_distance = distance;
-					hook_index = i;
-					//フックの座標の更新
-					hook_x = pos.x;
-					hook_y = pos.y;
-					//フックが見つかった判定をtrue
-					is_hook = true;
-				}
-			}
-		}
 		//フックが見つかった時
 		if (is_hook) {
+			ChangeAnimation(PLAYER_ANIM_STATE::IDLE, true);
 			//移動中の時
 			if (!end_move) {
 				//フックまでの距離の計算
 				float y = hook_y - player_y;
 				float x = hook_x - (player_x);
 				hook_distance = sqrt(x * x + y * y);
+				//角度の計算
+				hook_angle = atan2f(y, x) + 180.0f * (DX_PI_F / 180.0f);
 				//フック移動してない時
 				if (!is_hook_move) {
-					//角度の計算
-					hook_angle = atan2f(y, x) + 180.0f * (DX_PI_F / 180.0f);
 					//移動方向の計算
 					move_x = cosf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
 					move_y = sinf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
@@ -477,11 +441,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 		//初期化		
 		end_move = false;
 		hook_index = -1;
-		is_hook_move = false;
-		if (player_state == PLAYER_MOVE_STATE::HOOK) {
-			player_x = hook_x + nx;
-			player_y = hook_y + ny;
-			player_y += 1;
+		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			//フック後のジャンプ方向の修正
 			if (input_lx < -DEVIATION) {
 				jump_move_x = -1;
@@ -491,15 +451,19 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 			}
 			else {
 				player_state = PLAYER_MOVE_STATE::FALL;
-				ChangeAnimation(PLAYER_ANIM_STATE::IDLE);
 			}
-
-			jumppower = fabs(static_cast<float>(nx) / LENGTH);
-			if (fabsf(nx) > LENGTH / 2) {
-				jump_request = true;
+			if (player_state == PLAYER_MOVE_STATE::HOOK) {
+				player_x = hook_x + nx;
+				player_y = hook_y + ny;
+				player_y += 1;
+				jumppower = fabs(static_cast<float>(nx) / LENGTH);
+				if (fabsf(nx) > LENGTH / 2) {
+					jump_request = true;
+				}
 			}
 			player_state = PLAYER_MOVE_STATE::FALL;
 		}
+		is_hook_move = false;
 	}
 }
 
@@ -735,7 +699,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 void PLAYER::ChangeAnimation(PLAYER_ANIM_STATE anim, bool compelChange) {
 	int now_anim_type = static_cast<int>(animation_state);
 	int next_anim_type = static_cast<int>(anim);
-	if (animation_state != anim || compelChange) {
+	if (animation_state != anim && player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move || compelChange) {
 		if (animation[now_anim_type].priority <= animation[next_anim_type].priority || animation[now_anim_type].endAnim || compelChange) {
 			animation_state = anim;
 			int anim_type = static_cast<int>(anim);
@@ -755,7 +719,7 @@ void PLAYER::MoveAnimation() {
 	int type = static_cast<int>(animation_state);
 	if (++animation[type].frame % animation[type].switch_frame == 0) {
 		//前半のアニメーション
-		if (animation[type].phase == 0) {
+		if (animation[type].phase == 0 && animation[type].type < animation[type].image_num - 1) {
 			animation[type].type++;
 		}
 		//後半のアニメーション
