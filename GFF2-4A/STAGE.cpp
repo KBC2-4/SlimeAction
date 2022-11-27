@@ -16,10 +16,8 @@ STAGE::STAGE(const char* stage_name) {
 	//**map_data = 0;
 	*block_image1 = 0;
 	*stage_image = 0;
-	//scroll_x = -8640;
 	scroll_x = 0;
-	if (stage_name == "StageSelect") { scroll_y = 0; }
-	else if (stage_name == "Stage01") { scroll_y = -700; }
+	scroll_y = 0;
 
 	player_x_old = 0;
 	player_y_old = 0;
@@ -43,6 +41,7 @@ STAGE::STAGE(const char* stage_name) {
 	clearbox = {0,0};
 	halfwaypointbox = {0,0};
 	halfwaypoint = false;
+	spawn_point = { 0,0 };
 
 
 	for (int i = 0; i < map_data.size(); i++) {
@@ -51,7 +50,16 @@ STAGE::STAGE(const char* stage_name) {
 			if (map_data.at(i).at(j) == 73) { clearbox.x  = j * MAP_CEllSIZE; clearbox.y = i * MAP_CEllSIZE; }
 			//中間地点座標を代入
 			if (map_data.at(i).at(j) == 90) { halfwaypointbox.x = j * MAP_CEllSIZE; halfwaypointbox.y = i * MAP_CEllSIZE; }
+
+			//スポーン地点座標を代入
+			if (map_data.at(i).at(j) == 777) { spawn_point.x = j * MAP_CEllSIZE; spawn_point.y = i * MAP_CEllSIZE; }
 		}
+	}
+	//スポーン地点をセット
+	if (spawn_point.x == 0 && spawn_point.y == 0) {
+		MessageBox(NULL, "スポーン地点がセットされていません。", "マップ読み込みエラー", MB_OK | MB_ICONERROR); 
+		spawn_point.x = 0;
+		spawn_point.y = 0;
 	}
 }
 	
@@ -223,6 +231,7 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 102//ステージ1ブロック
 		|| block_type == 103//ステージ2ブロック
 		|| block_type == 104//ステージ3ブロック
+		|| block_type == 777//スポーン地点ブロック
 		) {
 		return false;
 	}
@@ -249,6 +258,7 @@ bool STAGE::HitThrowSlime(int y, int x) {
 		|| block_type == 102//ステージ1ブロック
 		|| block_type == 103//ステージ2ブロック
 		|| block_type == 104//ステージ3ブロック
+		|| block_type == 777//スポーン地点ブロック
 		) {
 		return false;
 	}
@@ -290,8 +300,9 @@ void STAGE::LoadMapData(const char* stage_name) {
 /// ステージクリア時
 /// </summary>
 void STAGE::StageClear(PLAYER *player) {
-	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - STAGE::GetScrollX()));
-	int player_map_y = static_cast<int>(floorf(player->GetPlayerY())-STAGE::GetScrollY());
+
+	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - scroll_x));
+	int player_map_y = static_cast<int>(floorf(player->GetPlayerY())-scroll_y);
 	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox.x , clearbox.y);
 
 	//旗に触れるとゲームクリア
