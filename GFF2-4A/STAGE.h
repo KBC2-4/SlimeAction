@@ -22,6 +22,8 @@ private:
 	bool clearflg;			//クリア判定フラグ
 	bool halfwaypoint;		//中間地点フラグ
 	float player_x_old, player_y_old;		//旧プレイヤー座標
+	float player_longold;	//数フレーム前のプレイヤー座標
+	int count_timer;		//カウント用タイマー
 	float player_vector_x;					//プレイヤーの移動方向x
 	float player_vector_y;					//プレイヤーの移動方向y
 

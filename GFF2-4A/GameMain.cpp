@@ -141,7 +141,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	else {
 		//スポーン地点をセット
 		stage->SetScrollX(-(stage->GetSpawnPoint().x - MAP_CEllSIZE));
-		stage->SetScrollY(-(stage->GetSpawnPoint().y  - MAP_CEllSIZE - 400));
+		stage->SetScrollY(-(stage->GetSpawnPoint().y - MAP_CEllSIZE - 400/* - ((stage->GetMapSize().x - 14) * MAP_CEllSIZE))*/));
 		player->SetPlayer_Screen(stage->GetSpawnPoint());
 	}
 }
@@ -351,10 +351,10 @@ void GAMEMAIN::Draw() const
 
 	//デバッグ
 	if (CheckHitKey(KEY_INPUT_A)) {
-		DrawFormatString(100, 200, 0x000000, "ScrollX:%f", stage->GetScrollX());
-		DrawFormatString(100, 300, 0x000000, "ScrollY:%f", stage->GetScrollY());
-		DrawFormatString(100, 400, 0x000000, "MapData:%f", stage->GetMapData(player->GetPlayerY(), player->GetPlayerX()));
-		DrawFormatString(100, 500, 0x000000, "PlayerX%f", player->GetPlayerX());
-		DrawFormatString(100, 600, 0x000000, "PlayerY%f", player->GetPlayerY());
+		DrawFormatString(100, 150, 0xF77D0A, "ScrollX:%f", stage->GetScrollX());
+		DrawFormatString(100, 200, 0xF77D0A, "ScrollY:%f", stage->GetScrollY());
+		DrawFormatString(100, 250, 0xE04D02, "MapData:%f", stage->GetMapData(player->GetPlayerY(), player->GetPlayerX()));
+		DrawFormatString(100, 300, 0x02F896, "PlayerX%f", player->GetPlayerX());
+		DrawFormatString(100, 350, 0x02F896, "PlayerY%f", player->GetPlayerY());
 	}
 }

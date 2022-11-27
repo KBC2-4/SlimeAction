@@ -142,12 +142,43 @@ void STAGE::CameraWork(PLAYER* player) {
 		}
 
 		//y軸スクロール
-		if ((player_vector_y > 0 && player->GetPlayerY() <= 240||player_vector_y<0&& (scroll_y>0 &&map_data.size()<=14)|| (scroll_y>-720&&map_data.size()>14)) && player_y_old != player->GetPlayerY()) {
-			scroll_y += scroll_speedY * player_vector_y;
-			if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
-				scroll_y -= scroll_speedY * player_vector_y;
+		//if ((player_vector_y > 0 && player->GetPlayerY() <= 240 || player_vector_y < 0 && (scroll_y > 0 && map_data.size() <= 14) || (scroll_y > -720 && map_data.size() > 14)) && player_y_old != player->GetPlayerY()) {
+		//	scroll_y += scroll_speedY * player_vector_y;
+		//	if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
+		//		scroll_y -= scroll_speedY * player_vector_y;
+		//	}
+		//}
+
+
+		//x軸スクロールを元にy座標バージョンを作成
+		//if ((player_vector_y > 0 && player->GetPlayerY() >= 620 || player_vector_y < 0 && player->GetPlayerY() <= 300)) {
+		//	scroll_y -= 5 * player_vector_y;
+		//	//if (scroll_y > 0 || scroll_y <= -(80 * static_cast<int>(map_data.size()) - 720)) {
+		//	//	scroll_y += 5 * player_vector_y;
+		//	//}
+		//}
+
+		if (++count_timer % 60 == 0)player_longold = player->GetPlayerY();
+
+		//スポーン地点を基準に上げる位置を決める
+		if (scroll_y + player->GetPlayerY() < 0  && player->GetPlayerY() <= spawn_point.x - player->GetPlayerY() + 400) { scroll_y += 5; }
+		else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
+			if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().x + 400)) {
+
+				//急落下時は更に下げる。
+				if (player_longold - player->GetPlayerY() < -100) {
+					scroll_y -= 20;
+				}else{ scroll_y -= 5; }
 			}
 		}
+
+		
+		//マンホールの下にいった時	
+		//if (-scroll_y + player->GetPlayerY() > player->GetPlayerY())scroll_y--;
+		//for(unsigned int i=scroll_y )
+
+		//スクロールY-720とプレイヤーY520の誤差が200になるまで
+
 
 
 	/*if (player->GetPlayerY()>=720) {
@@ -324,7 +355,7 @@ void STAGE::StageClear(PLAYER *player) {
 void STAGE::HalfwayPoint(PLAYER *player) {
 	int player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
 	int player_map_y = floorf(player->GetPlayerY());
-	if ((player_map_x >= halfwaypointbox.x - MAP_CEllSIZE / 2) && (player_map_x <= halfwaypointbox.x + MAP_CEllSIZE / 2) && (player_map_y >= halfwaypointbox.y - MAP_CEllSIZE) && (player_map_y <= halfwaypointbox.y + MAP_CEllSIZE)) {
+	if ((player_map_x >= halfwaypointbox.x - MAP_CEllSIZE / 2) && (player_map_x <= halfwaypointbox.x + MAP_CEllSIZE / 2)/* && (player_map_y >= halfwaypointbox.y - MAP_CEllSIZE) && (player_map_y <= halfwaypointbox.y + MAP_CEllSIZE)*/) {
 		//デバッグ
 		//printfDx("aaa");
 		if (halfwaypoint == false) { PlaySoundMem(halfwaypoint_se, DX_PLAYTYPE_BACK, TRUE); 
