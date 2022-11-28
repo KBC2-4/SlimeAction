@@ -18,6 +18,7 @@ STAGE::STAGE(const char* stage_name) {
 	*stage_image = 0;
 	scroll_x = 0;
 	scroll_y = 0;
+	count_timer = 0;
 
 	player_x_old = 0;
 	player_y_old = 0;
@@ -39,8 +40,10 @@ STAGE::STAGE(const char* stage_name) {
 	LoadMapData(stage_name);
 	clearflg = false;
 	clearbox = {0,0};
+	clear_count = 3000;
 	halfwaypointbox = {0,0};
 	halfwaypoint = false;
+	halfway_timer = 0;
 	spawn_point = { 0,0 };
 
 
@@ -142,12 +145,43 @@ void STAGE::CameraWork(PLAYER* player) {
 		}
 
 		//y軸スクロール
-		if ((player_vector_y > 0 && player->GetPlayerY() <= 240||player_vector_y<0&& (scroll_y>0 &&map_data.size()<=14)|| (scroll_y>-720&&map_data.size()>14)) && player_y_old != player->GetPlayerY()) {
-			scroll_y += scroll_speedY * player_vector_y;
-			if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
-				scroll_y -= scroll_speedY * player_vector_y;
+		//if ((player_vector_y > 0 && player->GetPlayerY() <= 240 || player_vector_y < 0 && (scroll_y > 0 && map_data.size() <= 14) || (scroll_y > -720 && map_data.size() > 14)) && player_y_old != player->GetPlayerY()) {
+		//	scroll_y += scroll_speedY * player_vector_y;
+		//	if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
+		//		scroll_y -= scroll_speedY * player_vector_y;
+		//	}
+		//}
+
+
+		//x軸スクロールを元にy座標バージョンを作成
+		//if ((player_vector_y > 0 && player->GetPlayerY() >= 620 || player_vector_y < 0 && player->GetPlayerY() <= 300)) {
+		//	scroll_y -= 5 * player_vector_y;
+		//	//if (scroll_y > 0 || scroll_y <= -(80 * static_cast<int>(map_data.size()) - 720)) {
+		//	//	scroll_y += 5 * player_vector_y;
+		//	//}
+		//}
+
+		if (++count_timer % 60 == 0)player_longold = player->GetPlayerY();
+
+		//スポーン地点を基準に上げる位置を決める
+		if (scroll_y + player->GetPlayerY() < 0  && player->GetPlayerY() <= spawn_point.x - player->GetPlayerY() + 400) { scroll_y += 5; }
+		else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
+			if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().x + 400)) {
+
+				//急落下時は更に下げる。
+				if (player_longold - player->GetPlayerY() < -100) {
+					scroll_y -= 20;
+				}else{ scroll_y -= 5; }
 			}
 		}
+
+		
+		//マンホールの下にいった時	
+		//if (-scroll_y + player->GetPlayerY() > player->GetPlayerY())scroll_y--;
+		//for(unsigned int i=scroll_y )
+
+		//スクロールY-720とプレイヤーY520の誤差が200になるまで
+
 
 
 	/*if (player->GetPlayerY()>=720) {
@@ -204,7 +238,7 @@ int STAGE::GetMapData(int y, int x) {
 /// </summary>
 
 bool STAGE::HitMapDat(int y, int x) {
-	if (PAD_INPUT::GetNowKey()==XINPUT_BUTTON_Y)return false;		//デバッグ用
+	if (PAD_INPUT::GetNowKey()==XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
 	int block_type = GetMapData(y, x);
 	if (
 		block_type == -1 //範囲外
@@ -311,10 +345,10 @@ void STAGE::StageClear(PLAYER *player) {
 	}
 
 	if (clearflg == true) {
-		static int count = GetNowCount();
-		if ((GetNowCount() - count) > 3000) {
+
+		if (--clear_count <= 0) {
 			clearflg = false;
-			count = GetNowCount();
+			clear_count = 3000;
 		}
 		/*if (GetNowCount() % 30 == 0)printfDx("%d:::::%d\n", count, GetNowCount());*/
 	}
@@ -324,17 +358,17 @@ void STAGE::StageClear(PLAYER *player) {
 void STAGE::HalfwayPoint(PLAYER *player) {
 	int player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
 	int player_map_y = floorf(player->GetPlayerY());
-	if ((player_map_x >= halfwaypointbox.x - MAP_CEllSIZE / 2) && (player_map_x <= halfwaypointbox.x + MAP_CEllSIZE / 2) && (player_map_y >= halfwaypointbox.y - MAP_CEllSIZE) && (player_map_y <= halfwaypointbox.y + MAP_CEllSIZE)) {
+	if ((player_map_x >= halfwaypointbox.x - MAP_CEllSIZE / 2) && (player_map_x <= halfwaypointbox.x + MAP_CEllSIZE / 2)/* && (player_map_y >= halfwaypointbox.y - MAP_CEllSIZE) && (player_map_y <= halfwaypointbox.y + MAP_CEllSIZE)*/) {
 		//デバッグ
 		//printfDx("aaa");
 		if (halfwaypoint == false) { PlaySoundMem(halfwaypoint_se, DX_PLAYTYPE_BACK, TRUE); 
-		static int anitimer = 0;
-		if (++anitimer < 180) {
+		
+		if (++halfway_timer < 180) {
 			DrawOvalAA(halfwaypointbox.x + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
 			DrawOvalAA(halfwaypointbox.x + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
 			DrawOvalAA(halfwaypointbox.x + scroll_x + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
 		}
-		else if (180 <= anitimer)anitimer = 0;
+		else if (180 <= halfway_timer)halfway_timer = 0;
 		}
 		halfwaypoint = true;
 	}
