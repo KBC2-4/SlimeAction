@@ -156,6 +156,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 	player_map_x = 0;
 	player_map_y = 0;
 	lift_vector = 1;
+	keep_pushing = false;
 
 	player_state = 0;
 	guid_timer = 0;
@@ -284,7 +285,6 @@ void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 /// </summary>
 void ELEMENT::Button(PLAYER* player) {
 
-	static bool keep_pushing = false;	//‰Ÿ‚µ‘±‚¯‚Ä‚¢‚é‚©ƒtƒ‰ƒO
 
 	for (int i = 0; i < button.size(); i++) {
 		if(button[i].flg == true)button[i].animtimer++;

@@ -20,7 +20,9 @@ private:
 	POINT spawn_point;			//スポーン地点座標
 
 	bool clearflg;			//クリア判定フラグ
+	int clear_count;		//ステージクリア時のカウントタイマー
 	bool halfwaypoint;		//中間地点フラグ
+	int halfway_timer;		//中間地点用タイマー
 	float player_x_old, player_y_old;		//旧プレイヤー座標
 	float player_longold;	//数フレーム前のプレイヤー座標
 	int count_timer;		//カウント用タイマー
