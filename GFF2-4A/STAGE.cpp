@@ -50,7 +50,7 @@ STAGE::STAGE(const char* stage_name) {
 	for (int i = 0; i < map_data.size(); i++) {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
 			//クリア座標を代入
-			if (map_data.at(i).at(j) == 73) { clearbox.x  = j * MAP_CEllSIZE; clearbox.y = i * MAP_CEllSIZE; }
+			if (map_data.at(i).at(j) == 88) { clearbox.x  = j * MAP_CEllSIZE; clearbox.y = i * MAP_CEllSIZE; }
 			//中間地点座標を代入
 			if (map_data.at(i).at(j) == 90) { halfwaypointbox.x = j * MAP_CEllSIZE; halfwaypointbox.y = i * MAP_CEllSIZE; }
 
@@ -246,6 +246,7 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 21 //フロー木
 		|| block_type == 22 //アカシア木
 		|| block_type == 23 //オーク木
+		|| block_type == 31 //葉っぱ
 		|| block_type == 64	//ドア 
 		|| block_type == 65	//ドア 
 		|| block_type == 62	//ボタン(感圧式)
@@ -253,6 +254,10 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 69	//マンホールの中
 		|| block_type == 71	//ゴール
 		|| block_type == 73	//ゴール
+		|| block_type == 86	//クリア門
+		|| block_type == 87	//クリア門
+		|| block_type == 88	//クリア門
+		|| block_type == 89	//クリア門
 		|| block_type == 90 //中間地点
 		|| block_type == 91 //レモナー
 		|| block_type == 92 //グレポン
@@ -279,6 +284,7 @@ bool STAGE::HitThrowSlime(int y, int x) {
 	if (
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
+		|| block_type == 31 //葉っぱ
 		|| block_type == 61	//壁ボタン(感圧式)
 		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
@@ -286,6 +292,10 @@ bool STAGE::HitThrowSlime(int y, int x) {
 		|| block_type == 71	//ツタ
 		|| block_type == 72	//ツタ(捕まる部分)
 		|| block_type == 73	//ゴール
+		|| block_type == 86	//クリア門
+		|| block_type == 87	//クリア門
+		|| block_type == 88	//クリア門
+		|| block_type == 89	//クリア門
 		|| block_type == 97	//マンホールの蓋End
 		|| block_type == 98	//マンホールの開いている蓋
 		|| block_type == 101//戻るブロック
