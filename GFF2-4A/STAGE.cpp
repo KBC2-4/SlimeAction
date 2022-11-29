@@ -55,7 +55,7 @@ STAGE::STAGE(const char* stage_name) {
 			if (map_data.at(i).at(j) == 90) { halfwaypointbox.x = j * MAP_CEllSIZE; halfwaypointbox.y = i * MAP_CEllSIZE; }
 
 			//スポーン地点座標を代入
-			if (map_data.at(i).at(j) == 777) { spawn_point.x = j * MAP_CEllSIZE; spawn_point.y = i * MAP_CEllSIZE; }
+			if (map_data.at(i).at(j) == 777) { spawn_point.x = i * MAP_CEllSIZE; spawn_point.y = j * MAP_CEllSIZE; }
 		}
 	}
 	//スポーン地点をセット
@@ -164,7 +164,7 @@ void STAGE::CameraWork(PLAYER* player) {
 		if (++count_timer % 60 == 0)player_longold = player->GetPlayerY();
 
 		//スポーン地点を基準に上げる位置を決める
-		if (scroll_y + player->GetPlayerY() < 0  && player->GetPlayerY() <= spawn_point.x - player->GetPlayerY() + 400) { scroll_y += 5; }
+		if (scroll_y + player->GetPlayerY() < 0  && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400) { scroll_y += 5; }
 		else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
 			if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().x + 400)) {
 

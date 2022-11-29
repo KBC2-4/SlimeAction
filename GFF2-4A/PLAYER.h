@@ -177,7 +177,7 @@ public:
 
 	void SetPlayerX(float x) { player_x = x - stage->GetScrollX(); }
 	void SetPlayerY(float y) { player_y = y; }
-	void SetPlayer_Screen(POINT screen) { player_x = screen.x; player_y = screen.y; }
+	void SetPlayer_Screen(POINT screen) { player_x = screen.y; player_y = screen.x; }
 
 	int GetThrowCnt() { return throw_slime.size(); }
 	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
