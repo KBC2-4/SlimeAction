@@ -504,6 +504,7 @@ void PLAYER::JumpMove() {
 			is_jump = false;
 			hit_ceil = false;
 			jump_velocity = 0;
+			ChangeAnimation(PLAYER_ANIM_STATE::FALL);
 		}
 	}
 	//落下中
@@ -513,7 +514,6 @@ void PLAYER::JumpMove() {
 			jump_velocity += 0.2f;
 			player_y += jump_velocity;
 			player_state = PLAYER_MOVE_STATE::FALL;
-			ChangeAnimation(PLAYER_ANIM_STATE::FALL);
 		}
 		//地面についた時
 		else {
@@ -641,21 +641,18 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
 			is_ground = true;
 		}
-		else {
-			int block_type = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE));
-			if (block_type == 68) {
-				is_manhole = true;
-				is_ground = false;
-			}
-		}
 		if (stage->HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
 			!stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
 			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) && !is_manhole) {
 			is_ground = true;
 		}
-		else {
-			int block_type = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE));
-			if (block_type == 68 || block_type == 69) {
+		int block_type = stage->GetMapData((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+		int block_type1 = stage->GetMapData((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+		int block_type2 = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+		if (block_type == 68 || block_type1 == 68 || block_type2 == 68) {
+			float diff = fabsf((float)((int)(player_x / MAP_CEllSIZE) * MAP_CEllSIZE) - player_left);
+			if (diff < SPEED * player_scale) {
+				is_manhole = true;
 				is_ground = false;
 			}
 		}
