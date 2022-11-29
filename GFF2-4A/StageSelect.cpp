@@ -14,8 +14,8 @@ STAGE_SELECT::STAGE_SELECT()
 	element = new ELEMENT();
 
 	//スポーン地点をセット
-		stage->SetScrollX(-(stage->GetSpawnPoint().x - MAP_CEllSIZE));
-		stage->SetScrollY(-(stage->GetSpawnPoint().y - MAP_CEllSIZE * stage->GetMapSize().y));
+		stage->SetScrollX(-(stage->GetSpawnPoint().y - MAP_CEllSIZE));
+		stage->SetScrollY(-(stage->GetSpawnPoint().x - MAP_CEllSIZE * stage->GetMapSize().y));
 		player->SetPlayer_Screen(stage->GetSpawnPoint());
 
 	player_map_x = 0;
