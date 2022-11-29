@@ -18,15 +18,20 @@ ENEMY_BULLET::ENEMY_BULLET()
 	dis_y = 0.0;
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
+	hit_rad = 0.0;
 	end_flg = false;
 	delete_flg = false;
 	hit_flg = false;
+	right_side_hit = false;
+	left_side_hit = false;
 	image = 0;
 	rad_x = 0.0;
 	map_x = 0;
 	map_y = 0;
 	mapd_x = 0.0;
 	mapd_y = 0.0;
+	o_map_x = 0;
+	o_map_y = 0;
 	image_index = 0;
 	animation_timer = 0;
 	animation_type = 0;
@@ -50,7 +55,6 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	if (LoadDivGraph("Resource/images/Enemy/Bullet_End.png", 20, 10, 2, 60, 30, bullet_end_images) == -1)
 	{
 		throw "Resource/Images/Enemy/Bullet_End.png";
-
 	}
 	player = argu_player;
 	player_x = player->GetPlayerX();
@@ -64,9 +68,12 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	dis_y = 0.0;
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
+	hit_rad = -90 * (PI / 180);
 	end_flg = false;
 	delete_flg = false;
 	hit_flg = false;
+	right_side_hit = false;
+	left_side_hit = false;
 	rad_x = dis;
 	stage = aug_stage;
 	this->scroll_x = abs(stage->GetScrollX());
@@ -76,6 +83,8 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	map_y = 0;
 	mapd_x = 0.0;
 	mapd_y = 0.0;
+	o_map_x = 0;
+	o_map_y = 0;
 	rad = p_rad;
 	image_index = index;
 	image = 0;
@@ -93,7 +102,7 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 //描画
 void ENEMY_BULLET::Draw() const
 {
-	DrawRotaGraph(static_cast<int>(GetDrawX()), static_cast<int>(GetDrawY()), 2, rad + (-90 * (PI / 180)), image, TRUE);
+		DrawRotaGraph(static_cast<int>(GetDrawX()), static_cast<int>(GetDrawY()), 2, rad + hit_rad, image, TRUE);
 }
 
 //アップデート
@@ -131,7 +140,6 @@ void ENEMY_BULLET::Update()
 	{
 		delete_flg = true;
 	}
-
 }
 
 void ENEMY_BULLET::Move()
@@ -144,6 +152,9 @@ void ENEMY_BULLET::Move()
 	//マップ上の値を代入
 	mapd_x = bullet_x / MAP_CEllSIZE;
 	mapd_y = (bullet_y + IMAGE_Y_SIZE)  / MAP_CEllSIZE;
+
+	o_map_x = map_x;
+	o_map_y = map_y;
 
 	//ダブル型のマップ上の値をイント型に
 	map_x = (int)(mapd_x);
@@ -203,6 +214,19 @@ void ENEMY_BULLET::Hit()
 		end_flg = true;
 		animation_timer = 0;
 		animation_type = 0;
+		if (stage->HitMapDat(o_map_y + 1, o_map_x) == false)
+		{
+			if (rad > 90 * (PI / 180))
+			{
+				hit_rad = 0;
+			}
+			else {}
+			if (rad < 90 * (PI / 180))
+			{
+				hit_rad = 180 * (PI / 180);
+			}
+			else {}
+		}
 		rad = 1.6;
 	}
 }

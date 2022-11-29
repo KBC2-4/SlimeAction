@@ -48,7 +48,9 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	delete_flg = false;
 	image = new int[24];
 	if (LoadDivGraph("Resource/Images/Enemy/gurepon.png", 24, 6, 4, 80, 80, image) == -1)
+	{
 		throw "Resource/Images/Enemy/gurepon.png";
+	}
 	shootcount = 0;
 	target_x = 200;
 
