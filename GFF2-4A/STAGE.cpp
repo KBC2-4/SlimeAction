@@ -166,7 +166,7 @@ void STAGE::CameraWork(PLAYER* player) {
 		//スポーン地点を基準に上げる位置を決める
 		if (scroll_y + player->GetPlayerY() < 0  && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400) { scroll_y += 5; }
 		else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
-			if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().x + 400)) {
+			if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().y + 400)) {
 
 				//急落下時は更に下げる。
 				if (player_longold - player->GetPlayerY() < -100) {
