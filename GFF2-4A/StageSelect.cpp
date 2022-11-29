@@ -10,12 +10,12 @@ STAGE_SELECT::STAGE_SELECT()
 	guid_font = CreateFontToHandle("メイリオ", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	stage = new STAGE("StageSelect");
-	player = new PLAYER;
+	player = new PLAYER(stage);
 	element = new ELEMENT();
 
 	//スポーン地点をセット
-		stage->SetScrollX(-(stage->GetSpawnPoint().x - MAP_CEllSIZE));
-		stage->SetScrollY(-(stage->GetSpawnPoint().y - MAP_CEllSIZE * stage->GetMapSize().y));
+		stage->SetScrollX(-(stage->GetSpawnPoint().y - MAP_CEllSIZE));
+		stage->SetScrollY(-(stage->GetSpawnPoint().x - MAP_CEllSIZE * stage->GetMapSize().y));
 		player->SetPlayer_Screen(stage->GetSpawnPoint());
 
 	player_map_x = 0;

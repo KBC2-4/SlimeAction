@@ -82,7 +82,7 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	animation_timer = 0;
 	animation_type = 0;
 	dis_x = (player_x + rad_x) - (my_x - static_cast<double>(scroll_x));
-	dis_y = player_y - my_y;
+	dis_y = player_y - (my_y-static_cast<double>(scroll_y));
 
 	hypote = sqrt((dis_x * dis_x) + (dis_y * dis_y));
 
@@ -139,7 +139,7 @@ void ENEMY_BULLET::Move()
 
 	//弾の移動
 	bullet_x += bullet_sx;
-	bullet_y -= bullet_sy;
+	bullet_y += bullet_sy;
 
 	//マップ上の値を代入
 	mapd_x = bullet_x / MAP_CEllSIZE;
