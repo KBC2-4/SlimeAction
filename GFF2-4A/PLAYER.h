@@ -175,6 +175,8 @@ public:
 
 	float GetPlayerScale() { return player_scale; }
 
+	float GetJumpVelocity() { return jump_velocity; }
+
 	void SetLife(int a);
 
 	PLAYER_MOVE_STATE GetPlayerMoveState() { return player_state; }
