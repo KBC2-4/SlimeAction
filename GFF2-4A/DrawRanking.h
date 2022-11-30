@@ -7,6 +7,7 @@ class DRAW_RANKING :
 private:
 	int wait_time;
 	int best_time[3];
+	int image;
 public:
 	/// <summary>
 	/// コンストラクタ
