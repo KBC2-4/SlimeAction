@@ -48,7 +48,9 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	delete_flg = false;
 	image = new int[24];
 	if (LoadDivGraph("Resource/Images/Enemy/gurepon.png", 24, 6, 4, 80, 80, image) == -1)
+	{
 		throw "Resource/Images/Enemy/gurepon.png";
+	}
 	shootcount = 0;
 	target_x = 200;
 
@@ -85,7 +87,7 @@ void GRAPEFRUIT::Update()
 		ChangeAngle();
 		if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280))
 		{
-			if (++shootcount % 300 == 0) 
+			if (++shootcount % 300 == 0)
 			{
 				animation_timer = 0;
 				state = ENEMY_STATE::PRESS;
@@ -158,7 +160,7 @@ void GRAPEFRUIT::Update()
 			}
 		}
 	}
-	
+
 	//当たり判定
 	Hit();
 
@@ -189,7 +191,7 @@ void GRAPEFRUIT::Move()
 			flag[i] = false;
 		}
 	}
-	
+
 }
 
 //当たり判定
@@ -261,7 +263,7 @@ bool GRAPEFRUIT::PressAnimation()
 					fruit_image[i] = image[((animation_type % 3) * 2) + (6 * (i + 1))];
 				}
 			}
-			
+
 		}
 	}
 	else //アニメーションの終了
@@ -358,7 +360,7 @@ void GRAPEFRUIT::Draw() const
 		DrawRotaGraph(x + stage->GetScrollX(), (y + 5 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), fruit_image[i], TRUE);
 		DrawRotaGraph(x + stage->GetScrollX(), (y + 5 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), face_image[i], TRUE);
 	}
-	
+
 	if (flag)
 	{
 		for (int i = 0; i < bullet_count; i++)

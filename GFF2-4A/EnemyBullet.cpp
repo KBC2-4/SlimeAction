@@ -18,15 +18,20 @@ ENEMY_BULLET::ENEMY_BULLET()
 	dis_y = 0.0;
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
+	hit_rad = 0.0;
 	end_flg = false;
 	delete_flg = false;
 	hit_flg = false;
+	right_side_hit = false;
+	left_side_hit = false;
 	image = 0;
 	rad_x = 0.0;
 	map_x = 0;
 	map_y = 0;
 	mapd_x = 0.0;
 	mapd_y = 0.0;
+	o_map_x = 0;
+	o_map_y = 0;
 	image_index = 0;
 	animation_timer = 0;
 	animation_type = 0;
@@ -50,7 +55,6 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	if (LoadDivGraph("Resource/images/Enemy/Bullet_End.png", 20, 10, 2, 60, 30, bullet_end_images) == -1)
 	{
 		throw "Resource/Images/Enemy/Bullet_End.png";
-
 	}
 	player = argu_player;
 	player_x = player->GetPlayerX();
@@ -64,9 +68,12 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	dis_y = 0.0;
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
+	hit_rad = -90 * (PI / 180);
 	end_flg = false;
 	delete_flg = false;
 	hit_flg = false;
+	right_side_hit = false;
+	left_side_hit = false;
 	rad_x = dis;
 	stage = aug_stage;
 	this->scroll_x = abs(stage->GetScrollX());
@@ -76,13 +83,15 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	map_y = 0;
 	mapd_x = 0.0;
 	mapd_y = 0.0;
+	o_map_x = 0;
+	o_map_y = 0;
 	rad = p_rad;
 	image_index = index;
 	image = 0;
 	animation_timer = 0;
 	animation_type = 0;
 	dis_x = (player_x + rad_x) - (my_x - static_cast<double>(scroll_x));
-	dis_y = player_y - (my_y-static_cast<double>(scroll_y));
+	dis_y = player_y - (my_y-static_cast<double>(scroll_y) - stage->GetSpawnPoint().y);
 
 	hypote = sqrt((dis_x * dis_x) + (dis_y * dis_y));
 
@@ -93,7 +102,7 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 //描画
 void ENEMY_BULLET::Draw() const
 {
-	DrawRotaGraph(static_cast<int>(GetDrawX()), static_cast<int>(GetDrawY()), 2, rad + (-90 * (PI / 180)), image, TRUE);
+	DrawRotaGraph(static_cast<int>(GetDrawX()), static_cast<int>(GetDrawY()), 2, rad + hit_rad, image, TRUE);
 }
 
 //アップデート
@@ -131,7 +140,6 @@ void ENEMY_BULLET::Update()
 	{
 		delete_flg = true;
 	}
-
 }
 
 void ENEMY_BULLET::Move()
@@ -144,6 +152,10 @@ void ENEMY_BULLET::Move()
 	//マップ上の値を代入
 	mapd_x = bullet_x / MAP_CEllSIZE;
 	mapd_y = (bullet_y + IMAGE_Y_SIZE)  / MAP_CEllSIZE;
+
+	//自分が前いたマップ座標
+	o_map_x = map_x;
+	o_map_y = map_y;
 
 	//ダブル型のマップ上の値をイント型に
 	map_x = (int)(mapd_x);
@@ -183,10 +195,10 @@ void ENEMY_BULLET::Hit()
 	float px1, py1, px2, py2;
 	float bx1, by1, bx2, by2;
 
-	px1 = player->GetPlayerX() - 30;
-	px2 = px1 + 60;
-	py1 = player_y;
-	py2 = py1 + 40;
+	px1 = player->GetPlayerX() - (20 * (player->GetPlayerScale()));
+	px2 = px1 + (50 * (player->GetPlayerScale()));
+	py1 = player->GetPlayerY() + (20 * (2 - player->GetPlayerScale()));
+	py2 = py1 + (25 * (player->GetPlayerScale()));
 
 	bx1 = GetDrawX();
 	bx2 = bx1 + 20;
@@ -203,6 +215,19 @@ void ENEMY_BULLET::Hit()
 		end_flg = true;
 		animation_timer = 0;
 		animation_type = 0;
+		if (stage->GetMapData(o_map_y + 1, o_map_x) != stage->GetMapData(map_y,map_x))
+		{
+			if (rad > 90 * (PI / 180))
+			{
+				hit_rad = 0;
+			}
+			else {}
+			if (rad < 90 * (PI / 180))
+			{
+				hit_rad = 180 * (PI / 180);
+			}
+			else {}
+		}
 		rad = 1.6;
 	}
 }
@@ -216,6 +241,7 @@ float ENEMY_BULLET::GetDrawX() const
 float ENEMY_BULLET::GetDrawY() const
 {
 	float ret = (bullet_y - scroll_y) + (static_cast<double>(scroll_y) + stage->GetScrollY());
+	
 	return ret;
 }
 

@@ -25,4 +25,13 @@ void ENEMY::ChangeAngle()
 {
 	//自分を原点にプレイヤーとの角度を計算
 	rad = atan2f(player->GetPlayerY() - (y + stage->GetScrollY()), player->GetPlayerX() - (x + stage->GetScrollX()));
+	if (rad > 170 * (PI / 180))
+	{
+		rad = 170 * (PI / 180);
+	}
+
+	if (rad < 10 * (PI / 180))
+	{
+		rad = 10 * (PI / 180);
+	}
 }
