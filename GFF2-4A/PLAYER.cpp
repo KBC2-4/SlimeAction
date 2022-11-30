@@ -26,6 +26,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	is_death = false;
 	is_damage = false;
 	throw_preparation = false;
+	throw_interval = 0.0f;
 	player_state = PLAYER_MOVE_STATE::IDLE;
 	// 初期位置は軸の真下から左方向に45度傾いた位置
 	x = CLENGTH / b;
@@ -546,6 +547,9 @@ void PLAYER::Throw(STAGE* stage) {
 	throw_index = 0;
 	throw_x.clear();
 	throw_y.clear();
+
+	if (--throw_interval > 0) return;
+
 	int input_ry = PAD_INPUT::GetPadThumbRY();
 	int input_rx = PAD_INPUT::GetPadThumbRX();
 	if ((abs(input_rx) <= DEVIATION && abs(input_ry) <= DEVIATION) || input_ry < DEVIATION) {
@@ -593,11 +597,10 @@ void PLAYER::Throw(STAGE* stage) {
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_SHOULDER) {
 		if (!push_button) {
 			push_button = true;
-			if (life > 1) {
-				//投げる処理
-				throw_slime.push_back(ThrowSlime(throw_x, throw_y, stage));
-				ChangeAnimation(PLAYER_ANIM_STATE::THROW, true);
-			}
+			//投げる処理
+			throw_interval = THROW_INTERVAL;
+			throw_slime.push_back(ThrowSlime(throw_x, throw_y, stage));
+			ChangeAnimation(PLAYER_ANIM_STATE::THROW, true);
 		}
 	}
 	else {

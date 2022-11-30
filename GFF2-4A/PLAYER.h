@@ -11,6 +11,7 @@
 #define JUMP_VELOCITY			-5.8f	//ジャンプスピード
 #define HOOK_MAX_DISTANCE		280
 #define ANIMATION_TYPE			7
+#define THROW_INTERVAL			60		//投げるときのクールタイム
 
 #define PI 3.1415926535897932384626433832795
 #define LENGTH      200                 // 紐の長さ
@@ -81,6 +82,7 @@ private:
 
 	//Throw
 	bool throw_preparation;
+	int throw_interval;
 	int throw_ball_image;
 	float throw_rad;
 
