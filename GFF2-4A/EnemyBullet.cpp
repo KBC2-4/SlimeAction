@@ -153,6 +153,7 @@ void ENEMY_BULLET::Move()
 	mapd_x = bullet_x / MAP_CEllSIZE;
 	mapd_y = (bullet_y + IMAGE_Y_SIZE)  / MAP_CEllSIZE;
 
+	//自分が前いたマップ座標
 	o_map_x = map_x;
 	o_map_y = map_y;
 
@@ -214,7 +215,7 @@ void ENEMY_BULLET::Hit()
 		end_flg = true;
 		animation_timer = 0;
 		animation_type = 0;
-		if (stage->HitMapDat(o_map_y + 1, o_map_x) == false)
+		if (stage->GetMapData(o_map_y + 1, o_map_x) != stage->GetMapData(map_y,map_x))
 		{
 			if (rad > 90 * (PI / 180))
 			{
