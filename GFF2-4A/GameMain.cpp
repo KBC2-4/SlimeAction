@@ -142,6 +142,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 		//スポーン地点をセット
 		stage->SetScrollX(-(stage->GetSpawnPoint().y - MAP_CEllSIZE));
 		stage->SetScrollY(-(stage->GetSpawnPoint().x - MAP_CEllSIZE - 400/* - ((stage->GetMapSize().x - 14) * MAP_CEllSIZE))*/));
+		//stage->SetScrollY(-((stage->GetMapSize().x - 14) * MAP_CEllSIZE));
 		player->SetPlayer_Screen(stage->GetSpawnPoint());
 	}
 }
@@ -357,5 +358,6 @@ void GAMEMAIN::Draw() const
 		DrawFormatString(100, 300, 0x02F896, "PlayerX%f", player->GetPlayerX());
 		DrawFormatString(100, 350, 0x02F896, "PlayerY%f", player->GetPlayerY());
 		DrawFormatString(100, 400, 0x02F896, "SpawnPointY:%d", stage->GetSpawnPoint().y);
+		DrawFormatString(100, 450, 0x02F896, "Jump:%f", player->GetJumpVelocity());
 	}
 }

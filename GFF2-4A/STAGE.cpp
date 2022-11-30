@@ -169,6 +169,8 @@ void STAGE::CameraWork(PLAYER* player) {
 			if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().y + 400)) {
 
 				//急落下時は更に下げる。
+				//if (player->GetJumpVelocity() <= 5) {
+				//	scroll_y -= 10;
 				if (player_longold - player->GetPlayerY() < -100) {
 					scroll_y -= 20;
 				}else{ scroll_y -= 5; }
@@ -246,13 +248,15 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 21 //フロー木
 		|| block_type == 22 //アカシア木
 		|| block_type == 23 //オーク木
+		|| block_type == 24 //先生作木
 		|| block_type == 31 //葉っぱ
 		|| block_type == 64	//ドア 
 		|| block_type == 65	//ドア 
 		|| block_type == 62	//ボタン(感圧式)
 		|| block_type == 68	//マンホールの蓋
 		|| block_type == 69	//マンホールの中
-		|| block_type == 71	//ゴール
+		|| block_type == 71	//ツル中間
+		|| block_type == 72	//ツル
 		|| block_type == 73	//ゴール
 		|| block_type == 86	//クリア門
 		|| block_type == 87	//クリア門

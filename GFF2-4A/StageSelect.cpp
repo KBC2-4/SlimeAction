@@ -85,6 +85,10 @@ AbstractScene* STAGE_SELECT::Update()
 
 	if (effect_timer < 255) { effect_timer++; }
 	else { effect_timer = 0; }
+
+	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_X) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+		return new GAMEMAIN(false, 0, "DebugStage");
+	}
 	
 	return this;
 }
