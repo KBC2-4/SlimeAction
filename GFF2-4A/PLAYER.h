@@ -57,6 +57,7 @@ private:
 	int life;
 	int images[ANIMATION_TYPE][10];		//アニメーションの画像
 	int hp_img;
+	int hand_img;
 	int move_type;			//左か右の移動(反転用)
 	float move_x;
 	int jump_mode;			//停止ジャンプ(1)か移動ジャンプ(2)か

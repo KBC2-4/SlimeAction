@@ -65,6 +65,9 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((hp_img = LoadGraph("Resource/Images/Player/hp.png")) == -1) {
 		throw "Resource/Images/Player/hp.png";
 	}
+	if ((hand_img = LoadGraph("Resource/Images/Player/te.png")) == -1) {
+		throw "Resource/Images/Player/te.png";
+	}
 
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
@@ -177,12 +180,18 @@ void PLAYER::Draw(STAGE *stage)const {
 			if (move_type == 0) {
 				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 80, 80,
 					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
-					images[3][1], TRUE, move_type);
+					hand_img, TRUE, move_type);
+				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 40, 50,
+					player_scale, player_scale, 0,
+					images[0][0], TRUE, move_type);
 			}
 			else {
 				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 80, 80,
 					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
-					images[3][0], TRUE, move_type);
+					hand_img, TRUE, move_type);
+				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 40, 50,
+					player_scale, player_scale, 0,
+					images[0][0], TRUE, move_type);
 			}
 		}
 		//伸びる時
