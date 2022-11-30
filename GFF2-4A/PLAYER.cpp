@@ -578,7 +578,9 @@ void PLAYER::Throw(STAGE* stage) {
 	float vx = vx0;
 	float vy = vy0;
 
-	for (float t = 0.0; y0 <= 720; t = t + dt) {
+	float maxY = stage->GetMapSize().y * MAP_CEllSIZE;
+
+	for (float t = 0.0; y0 <= maxY; t = t + dt) {
 		x0 = x0 + vx * dt;
 		y0 = y0 - vy * dt;
 		vy = vy - g * dt;
