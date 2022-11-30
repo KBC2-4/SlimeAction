@@ -91,7 +91,7 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	animation_timer = 0;
 	animation_type = 0;
 	dis_x = (player_x + rad_x) - (my_x - static_cast<double>(scroll_x));
-	dis_y = player_y - (my_y-static_cast<double>(scroll_y));
+	dis_y = player_y - (my_y-static_cast<double>(scroll_y) - stage->GetSpawnPoint().y);
 
 	hypote = sqrt((dis_x * dis_x) + (dis_y * dis_y));
 
@@ -102,7 +102,7 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 //描画
 void ENEMY_BULLET::Draw() const
 {
-		DrawRotaGraph(static_cast<int>(GetDrawX()), static_cast<int>(GetDrawY()), 2, rad + hit_rad, image, TRUE);
+	DrawRotaGraph(static_cast<int>(GetDrawX()), static_cast<int>(GetDrawY()), 2, rad + hit_rad, image, TRUE);
 }
 
 //アップデート
@@ -195,10 +195,10 @@ void ENEMY_BULLET::Hit()
 	float px1, py1, px2, py2;
 	float bx1, by1, bx2, by2;
 
-	px1 = player->GetPlayerX() - 30;
-	px2 = px1 + 60;
-	py1 = player_y;
-	py2 = py1 + 40;
+	px1 = player->GetPlayerX() - (20 * (player->GetPlayerScale()));
+	px2 = px1 + (50 * (player->GetPlayerScale()));
+	py1 = player->GetPlayerY() + (20 * (2 - player->GetPlayerScale()));
+	py2 = py1 + (25 * (player->GetPlayerScale()));
 
 	bx1 = GetDrawX();
 	bx2 = bx1 + 20;
@@ -241,6 +241,7 @@ float ENEMY_BULLET::GetDrawX() const
 float ENEMY_BULLET::GetDrawY() const
 {
 	float ret = (bullet_y - scroll_y) + (static_cast<double>(scroll_y) + stage->GetScrollY());
+	
 	return ret;
 }
 
