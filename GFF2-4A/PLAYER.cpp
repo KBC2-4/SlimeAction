@@ -153,6 +153,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// プレイヤーの表示
 /// </summary>
 void PLAYER::Draw(STAGE *stage)const {
+	static float dis = 0.0f;
 	//デバッグ
 	//DrawFormatString(100, 50, 0xffffff, "%f", player_y);
 	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
@@ -163,6 +164,7 @@ void PLAYER::Draw(STAGE *stage)const {
 	//プレイヤーの表示
 	//フック中じゃない時
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
+		dis = 0.0f;
 		//描画する画像のセット
 		int image_type = static_cast<int>(animation_state);
 		int now_image = images[image_type][animation[image_type].type];
@@ -189,8 +191,9 @@ void PLAYER::Draw(STAGE *stage)const {
 		}
 		//伸びる時
 		else {
+			dis += hook_distance / 10.0f;
 			DrawRotaGraph3F(player_x + stage->GetScrollX() + 20, (player_y + stage->GetScrollY()) + (1.6 - player_scale) * 40, 226, 80,
-				(hook_distance / (MAP_CEllSIZE * 3.5)) * player_scale, 1 * player_scale, (double)hook_angle,
+				(dis / (MAP_CEllSIZE * 3.5)) * player_scale, 1 * (player_scale - 0.2), (double)hook_angle + M_PI,
 				images[3][1], TRUE, move_type);
 		}
 	}
