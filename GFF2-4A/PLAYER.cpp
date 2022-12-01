@@ -199,7 +199,7 @@ void PLAYER::Draw(STAGE *stage)const {
 		//伸びる時
 		else {
 			DrawRotaGraph3F(player_x + stage->GetScrollX() + 20, (player_y + stage->GetScrollY()) + (1.6 - player_scale) * 40, 226, 80,
-				(hook_distance / (MAP_CEllSIZE * 3.5)) * player_scale, 1 * player_scale, (double)hook_angle,
+				0.2-((hook_distance / (MAP_CEllSIZE * 3.5)) * player_scale), 1 * player_scale, (double)hook_angle,
 				images[3][1], TRUE, move_type);
 		}
 	}
