@@ -46,7 +46,7 @@ public:
 	void Door(STAGE*stage);						//ドアの処理
 	void Lift(PLAYER* player);			//動く床の処理
 	bool HitLift(PLAYER* player);						//動く床の当たり判定
-	void Manhole(PLAYER* player);		//マンホールの処理
+	void Manhole(PLAYER* player, STAGE* stage);		//マンホールの処理
 	void Acidrain_puddles(PLAYER* player);		//酸性雨の水たまりの処理
 	void Hook_Distance(PLAYER* player, STAGE* stage);	//フックのガイド表示用距離計算
 	std::vector<ELEMENT_DATA> GetHook() { return hook; }

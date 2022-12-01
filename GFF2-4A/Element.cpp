@@ -285,7 +285,7 @@ void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 	Button(player);
 	Door(stage);
 	Lift(player);
-	Manhole(player);
+	Manhole(player,stage);
 	Acidrain_puddles(player);
 	
 	if (guid_timer < 100) { guid_timer++; }
@@ -464,7 +464,7 @@ bool ELEMENT::HitLift(PLAYER* player) {
 /// <summary>
 /// ƒ}ƒ“ƒz[ƒ‹‚Ìˆ—
 /// </summary>
-void ELEMENT::Manhole(PLAYER* player) {
+void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 	for (int i = 0; i < manhole.size(); i++) {
 		if (manhole[i].flg == true && manhole[i].animtimer < 240)manhole[i].animtimer++;
 		if (manhole[i].animtimer > 240) {
@@ -482,7 +482,7 @@ void ELEMENT::Manhole(PLAYER* player) {
 				if (manhole[i].animtimer >= 240) {
 					int x = floor(manhole[i].x / MAP_CEllSIZE);
 					int y = floor(manhole[i].y / MAP_CEllSIZE);
-					map_data[y][x] = 98;
+					stage->SetMapData(y, x, 98);
 				}
 			}
 		}
