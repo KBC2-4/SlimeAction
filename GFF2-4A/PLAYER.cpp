@@ -757,5 +757,6 @@ void PLAYER::SetLife(int a)
 		player_state == PLAYER_MOVE_STATE::DAMAGE;
 		alpha_time = 120;
 		is_damage = true;
+		StartJoypadVibration(DX_INPUT_PAD1, 360, 320, -1);
 	}
 }

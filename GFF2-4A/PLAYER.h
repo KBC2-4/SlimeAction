@@ -164,6 +164,8 @@ public:
 	bool IsDeath() { return is_death; }
 	float GetPlayerX() { return player_x + stage->GetScrollX(); }
 	float GetPlayerY() { return player_y+stage->GetScrollY(); }
+	float GetOldPlayerX() { return old_player_x + stage->GetScrollX(); }
+	float GetOldPlayerY() { return old_player_y+stage->GetScrollY(); }
 
 	void SetPlayerX(float x) { player_x = x - stage->GetScrollX(); }
 	void SetPlayerY(float y) { player_y = y; }
