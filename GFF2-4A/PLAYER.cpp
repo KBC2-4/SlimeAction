@@ -65,10 +65,12 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((hp_img = LoadGraph("Resource/Images/Player/hp.png")) == -1) {
 		throw "Resource/Images/Player/hp.png";
 	}
-	if ((hand_img = LoadGraph("Resource/Images/Player/te.png")) == -1) {
-		throw "Resource/Images/Player/te.png";
+	if ((hand_img = LoadGraph("Resource/Images/Player/ta2.png")) == -1) {
+		throw "Resource/Images/Player/ta2.png";
 	}
-
+	if ((hand_img2 = LoadGraph("Resource/Images/Player/ta2_1.png")) == -1) {
+		throw "Resource/Images/Player/ta2_1.png";
+	}
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
 		animation[i].frame = 0;
@@ -178,17 +180,17 @@ void PLAYER::Draw(STAGE *stage)const {
 			float distance = sqrt(diff_y * diff_y + diff_x * diff_x);
 			float angle = atan2(diff_y, diff_x) + DX_PI_F;
 			if (move_type == 0) {
-				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 80, 80,
-					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
+				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 25, 75,
+					(distance) / MAP_CEllSIZE / 2, 0.4f, (double)angle,
 					hand_img, TRUE, move_type);
 				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 40, 50,
 					player_scale, player_scale, 0,
 					images[0][0], TRUE, move_type);
 			}
 			else {
-				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 80, 80,
-					(distance) / MAP_CEllSIZE / 2, 0.6f, (double)angle,
-					hand_img, TRUE, move_type);
+				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 25, 75,
+					(distance) / MAP_CEllSIZE / 2, 0.4f, (double)angle,
+					hand_img2, TRUE, move_type);
 				DrawRotaGraph3F(hook_x + nx + stage->GetScrollX(), hook_y + ny + stage->GetScrollY(), 40, 50,
 					player_scale, player_scale, 0,
 					images[0][0], TRUE, move_type);
