@@ -165,6 +165,7 @@ void PLAYER::Draw(STAGE *stage)const {
 		//描画する画像のセット
 		int image_type = static_cast<int>(animation_state);
 		int now_image = images[image_type][animation[image_type].type];
+
 		DrawRotaGraphF(player_x + stage->GetScrollX(), (player_y - 20 + stage->GetScrollY()) + (1.6 - player_scale) * 40, player_scale, 0.0, now_image, TRUE, move_type);
 	}
 	else {
@@ -658,7 +659,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		}
 	}
 	
-	if (element->HitLift(this, player_scale)) {
+	if (element->HitLift(this)) {
 		is_ground = true;
 	}
 

@@ -123,7 +123,16 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				hook.push_back(data);
 				break;
 
-				//ìÆÇ≠è∞
+				//ìÆÇ≠è∞(ècà⁄ìÆ)
+			case 94:
+				data.x = static_cast<float>((j * MAP_CEllSIZE));
+				data.y = static_cast<float>((i * MAP_CEllSIZE));
+				data.type = 1;
+				data.flg = false;
+				data.animtimer = 0;
+				lift.push_back(data);
+				break;
+				//ìÆÇ≠è∞(â°à⁄ìÆ)
 			case 95:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
@@ -156,6 +165,8 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 	player_map_x = 0;
 	player_map_y = 0;
 	lift_vector = 1;
+	lift_speedY = 1;
+	lift_speedX = 1;
 	keep_pushing = false;
 
 	player_state = 0;
@@ -380,41 +391,63 @@ void ELEMENT::Door(STAGE* stage) {
 /// </summary>
 void ELEMENT::Lift(PLAYER* player) {
 	for (int i = 0; i < lift.size(); i++) {
-		if (player_map_x>lift[i].x - 1280 && player_map_x<lift[i].x + 1280) {
+		if (HitLift(player)/*player_map_x > lift[i].x - 1280 && player_map_x < lift[i].x + 1280*/) {
 			lift[i].flg = true;
 		}
 		if (lift[i].flg) {
-			if (lift[i].x != lift_goal[i].x) {
-				lift[i].x += lift_vector * 4;
-				if (HitLift(player, player->GetPlayerScale())) {
-					player->SetPlayerX(player->GetPlayerX() + lift_vector * 4);
-				}
+			//ìÆÇ≠è∞(èc)ÇÃìÆÇ´
+			if (lift[i].type == 1) {
+				if (lift[i].y < lift_goal[i].y) { lift_vector = 1; }
+				else { lift_vector = -1; }
+				if (lift[i].y != lift_goal[i].y) {
+					
+					lift[i].y += lift_vector * lift_speedY;
+					/*else {
+						for (int lift_posY = lift[i].y - MAP_CEllSIZE * lift_vector; i >= 0; lift_posY -= lift_vector * MAP_CEllSIZE) {
+							if (map_data[lift_posY][int(lift[i].x) / MAP_CEllSIZE] == 95) {
+								lift_goal[i].y = lift_posY;
+								break;
+							}
+						}
+						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 95;
+						lift_vector *= -1;
+					}*/
 
+				}
 			}
+			//ìÆÇ≠è∞(â°)ÇÃìÆÇ´
 			else if (lift[i].type == 2) {
-				for (int lift_pos = lift[i].x - MAP_CEllSIZE * lift_vector; i >= 0; lift_pos -= lift_vector * MAP_CEllSIZE) {
-					if (map_data[int(lift[i].y) / MAP_CEllSIZE][lift_pos / MAP_CEllSIZE] == 95) {
-						lift_goal[i].x = lift_pos;
-						break;
+				if (lift[i].x < lift_goal[i].x) { lift_vector = 1; }
+				else { lift_vector = -1; }
+				if (lift[i].x != lift_goal[i].x) {
+					lift[i].x += lift_vector * lift_speedX;
+					if (HitLift(player)) {
+						player->SetPlayerX(player->GetPlayerX() + lift_vector * lift_speedX);
 					}
-				}
-				map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 95;
-				lift_vector *= -1;
-			}
+					else {
+						for (int lift_pos = lift[i].x - MAP_CEllSIZE * lift_vector; i >= 0; lift_pos -= lift_vector * MAP_CEllSIZE) {
+							if (map_data[int(lift[i].y) / MAP_CEllSIZE][lift_pos / MAP_CEllSIZE] == 95) {
+								lift_goal[i].x = lift_pos;
+								break;
+							}
+						}
+						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 95;
+					}
 
+				}
+			}
 		}
-		
 	}
-	
+
 }
 
 /// <summary>
 /// ÉvÉåÉCÉÑÅ[Ç∆ìÆÇ≠è∞ÇÃìñÇΩÇËîªíË
 /// </summary>
-bool ELEMENT::HitLift(PLAYER* player, float player_scale) {
+bool ELEMENT::HitLift(PLAYER* player) {
 	for (int i = 0; i < lift.size(); i++) {
-		if (player_map_x + player_scale * 25 >= lift[i].x && player_map_x - player_scale * 25 <= lift[i].x + MAP_CEllSIZE && player_map_y + MAP_CEllSIZE / 2 == lift[i].y
-			&& (map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] == 0 || map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] >= 95)) {
+		if (player_map_x + player->GetPlayerScale() * 25 >= lift[i].x && player_map_x - player->GetPlayerScale() * 25 <= lift[i].x + MAP_CEllSIZE && player_map_y + MAP_CEllSIZE / 2 >= lift[i].y &&player_map_y<=lift[i].y+10
+			/*&& (map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] == 0 || map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] >= 94)*/) {
 			if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::JUMP) {
 				player->SetPlayerY(lift[i].y - MAP_CEllSIZE / 2);
 			}
