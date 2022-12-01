@@ -164,16 +164,11 @@ void STAGE::CameraWork(PLAYER* player) {
 		if (++count_timer % 60 == 0)player_longold = player->GetPlayerY();
 
 		//スポーン地点を基準に上げる位置を決める
-		if (scroll_y + player->GetPlayerY() < 0  && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400) { scroll_y += 5; }
+		if (scroll_y + player->GetPlayerY() < 0  && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) { scroll_y += 5; }
 		else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
 			if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().y + 400)) {
-
-				//急落下時は更に下げる。
-				//if (player->GetJumpVelocity() <= 5) {
-				//	scroll_y -= 10;
-				if (player_longold - player->GetPlayerY() < -100) {
-					scroll_y -= 20;
-				}else{ scroll_y -= 5; }
+				//プレイヤーの落下速度に応じてスクロールYを下げる
+				if(player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
 			}
 		}
 
