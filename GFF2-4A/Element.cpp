@@ -124,7 +124,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				break;
 
 				//ìÆÇ≠è∞(ècà⁄ìÆ)
-			case 94:
+			case 51:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 1;
@@ -133,7 +133,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				lift.push_back(data);
 				break;
 				//ìÆÇ≠è∞(â°à⁄ìÆ)
-			case 95:
+			case 52:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 2;
@@ -143,7 +143,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				break;
 
 				//ìÆÇ≠è∞(ÉSÅ[Éã)
-			case 96:
+			case 53:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 0;
@@ -214,7 +214,7 @@ void ELEMENT::Draw(STAGE* stage)  {
 
 	//ìÆÇ≠è∞
 	for (int i = 0; i < lift.size(); i++) {
-		DrawGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 25 + stage->GetScrollY(), block_image1[94], TRUE);
+		DrawGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 25 + stage->GetScrollY(), block_image1[51], TRUE);
 		
 	}
 
@@ -404,12 +404,12 @@ void ELEMENT::Lift(PLAYER* player) {
 					lift[i].y += lift_vector * lift_speedY;
 					/*else {
 						for (int lift_posY = lift[i].y - MAP_CEllSIZE * lift_vector; i >= 0; lift_posY -= lift_vector * MAP_CEllSIZE) {
-							if (map_data[lift_posY][int(lift[i].x) / MAP_CEllSIZE] == 95) {
+							if (map_data[lift_posY][int(lift[i].x) / MAP_CEllSIZE] == 52) {
 								lift_goal[i].y = lift_posY;
 								break;
 							}
 						}
-						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 95;
+						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 52;
 						lift_vector *= -1;
 					}*/
 
@@ -426,12 +426,12 @@ void ELEMENT::Lift(PLAYER* player) {
 					}
 					else {
 						for (int lift_pos = lift[i].x - MAP_CEllSIZE * lift_vector; i >= 0; lift_pos -= lift_vector * MAP_CEllSIZE) {
-							if (map_data[int(lift[i].y) / MAP_CEllSIZE][lift_pos / MAP_CEllSIZE] == 95) {
+							if (map_data[int(lift[i].y) / MAP_CEllSIZE][lift_pos / MAP_CEllSIZE] == 52) {
 								lift_goal[i].x = lift_pos;
 								break;
 							}
 						}
-						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 95;
+						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 52;
 					}
 
 				}
@@ -447,7 +447,7 @@ void ELEMENT::Lift(PLAYER* player) {
 bool ELEMENT::HitLift(PLAYER* player) {
 	for (int i = 0; i < lift.size(); i++) {
 		if (player_map_x + player->GetPlayerScale() * 25 >= lift[i].x && player_map_x - player->GetPlayerScale() * 25 <= lift[i].x + MAP_CEllSIZE && player_map_y + MAP_CEllSIZE / 2 >= lift[i].y &&player_map_y<=lift[i].y+10
-			/*&& (map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] == 0 || map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] >= 94)*/) {
+			/*&& (map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] == 0 || map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] >= 51)*/) {
 			if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::JUMP) {
 				player->SetPlayerY(lift[i].y - MAP_CEllSIZE / 2);
 			}
