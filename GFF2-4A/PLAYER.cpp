@@ -66,7 +66,9 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((hp_img = LoadGraph("Resource/Images/Player/hp.png")) == -1) {
 		throw "Resource/Images/Player/hp.png";
 	}
-
+	if ((idle_nobi_img = LoadGraph("Resource/Images/Player/idle.png")) == -1) {
+		throw "Resource/Images/Player/idle.png";
+	}
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
 		animation[i].frame = 0;
@@ -192,9 +194,9 @@ void PLAYER::Draw(STAGE *stage)const {
 		//伸びる時
 		else {
 			dis += hook_distance / 10.0f;
-			DrawRotaGraph3F(player_x + stage->GetScrollX() + 20, (player_y + stage->GetScrollY()) + (1.6 - player_scale) * 40, 226, 80,
-				(dis / (MAP_CEllSIZE * 3.5)) * player_scale, 1 * (player_scale - 0.2), (double)hook_angle + M_PI,
-				images[3][1], TRUE, move_type);
+			DrawRotaGraph3F(player_x + stage->GetScrollX() + 20, (player_y + stage->GetScrollY()) + (1.6 - player_scale) * 40, 80, 40,
+				(dis / (MAP_CEllSIZE * 3.0)) * player_scale, 1 * player_scale, (double)hook_angle + M_PI,
+				idle_nobi_img, TRUE, move_type);
 		}
 	}
 

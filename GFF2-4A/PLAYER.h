@@ -72,6 +72,7 @@ private:
 	float hook_distance;
 	float hook_y, hook_x;
 	int hook_index;
+	int idle_nobi_img;
 	
 	double x;     // •R‚ğL‚Î‚µ‚Äˆêü‚³‚¹‚½ê‡‚Éo—ˆ‚é‰~‚Ìüã‚ÌÀ•WA‚O‚Í•R‚ª²‚Ì^‰º‚ÉL‚Ñ‚½ˆÊ’u
 	double speed; // x‚Ì•Ï‰»‘¬“x
