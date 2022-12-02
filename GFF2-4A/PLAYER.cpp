@@ -66,8 +66,8 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((hp_img = LoadGraph("Resource/Images/Player/hp.png")) == -1) {
 		throw "Resource/Images/Player/hp.png";
 	}
-	if ((idle_nobi_img = LoadGraph("Resource/Images/Player/idle.png")) == -1) {
-		throw "Resource/Images/Player/idle.png";
+	if ((idle_nobi_img = LoadGraph("Resource/Images/Player/FuckAnim2.png")) == -1) {
+		throw "Resource/Images/Player/FuckAnim2.png";
 	}
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
