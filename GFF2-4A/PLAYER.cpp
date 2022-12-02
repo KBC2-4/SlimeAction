@@ -416,18 +416,18 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				ny = sin(angle) * LENGTH;
 				if (speed >= 0) {
 					if (input_lx < -15000) {
-						speed += 0.05;
+						speed += 0.05 * 2.0f;
 					}
 					if (input_lx > 15000) {
-						speed -= 0.09;
+						speed -= 0.09 * 2.0f;
 					}
 				}
 				else if (speed < 0) {
 					if (input_lx < -15000) {
-						speed += 0.09;
+						speed += 0.09 * 2.0f;
 					}
 					if (input_lx > 15000) {
-						speed -= 0.05;
+						speed -= 0.05 * 2.0f;
 					}
 				}
 				if (hook_y + ny < hook_y) {
