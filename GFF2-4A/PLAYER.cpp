@@ -318,51 +318,55 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 
 	//Bボタン押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
-		//フックまでの距離
-		float min_distance = HOOK_MAX_DISTANCE;
-
-		//フックの位置
-		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
-		for (int i = 0; i < hook_pos.size(); i++) {
-			ELEMENT::ELEMENT_DATA pos = hook_pos[i];
-			//距離計算
-			float diff_x = pos.x - (player_x);
-			float diff_y = pos.y - player_y;
-			float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
-			//距離が最短距離より近いとき
-			if (distance <= min_distance) {
-				//フックの角度
-				float angle = atan2f(diff_y, diff_x);
-				//移動の計算
-				move_x = cosf(angle) * SPEED * 3;
-				move_y = sinf(angle) * SPEED * 3;
-				//プレイヤーの現在の位置
-				float x = player_x;
-				float y = player_y;
-				//フックまでの移動経路に障害物がないか
-				while (!stage->HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
-					if (stage->GetMapData(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
-						break;
+		if (player_state != PLAYER_MOVE_STATE::HOOK) {
+			//フックまでの距離
+			float min_distance = HOOK_MAX_DISTANCE;
+			//フックの位置
+			std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
+			for (int i = 0; i < hook_pos.size(); i++) {
+				ELEMENT::ELEMENT_DATA pos = hook_pos[i];
+				//距離計算
+				float diff_x = pos.x - (player_x);
+				float diff_y = pos.y - player_y;
+				float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
+				//距離が最短距離より近いとき
+				if (distance <= min_distance) {
+					//フックの角度
+					float angle = atan2f(diff_y, diff_x);
+					//移動の計算
+					move_x = cosf(angle) * SPEED * 3;
+					move_y = sinf(angle) * SPEED * 3;
+					//プレイヤーの現在の位置
+					float x = player_x;
+					float y = player_y;
+					//フックまでの移動経路に障害物がないか
+					while (!stage->HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
+						if (stage->GetMapData(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
+							break;
+						}
+						x += move_x;
+						y += move_y;
 					}
-					x += move_x;
-					y += move_y;
+					//配列に変換
+					int hook_map_x = x / MAP_CEllSIZE;
+					int hook_map_y = y / MAP_CEllSIZE;
+					//障害物がある場合は移動させない
+					if (stage->GetMapData(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
+						continue;
+					}
+					//最短距離の更新
+					min_distance = distance;
+					hook_index = i;
+					//フックの座標の更新
+					hook_x = pos.x;
+					hook_y = pos.y;
+					//フックが見つかった判定をtrue
+					is_hook = true;
 				}
-				//配列に変換
-				int hook_map_x = x / MAP_CEllSIZE;
-				int hook_map_y = y / MAP_CEllSIZE;
-				//障害物がある場合は移動させない
-				if (stage->GetMapData(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
-					continue;
-				}
-				//最短距離の更新
-				min_distance = distance;
-				hook_index = i;
-				//フックの座標の更新
-				hook_x = pos.x;
-				hook_y = pos.y;
-				//フックが見つかった判定をtrue
-				is_hook = true;
 			}
+		}
+		else {
+			is_hook = true;
 		}
 		//フックが見つかった時
 		if (is_hook) {
@@ -660,10 +664,10 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) && !is_manhole) {
 			is_ground = true;
 		}
-		int block_type = stage->GetMapData((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		int block_type1 = stage->GetMapData((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		int block_type2 = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		if (block_type == 98 || block_type1 == 98 || block_type2 == 98) {
+		int block_type_center = stage->GetMapData((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+		int block_type_top = stage->GetMapData((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+		int block_type_bottom = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+		if (block_type_center == 98 || block_type_top == 98 || block_type_bottom == 98) {
 			float diff = fabsf((float)((int)(player_x / MAP_CEllSIZE) * MAP_CEllSIZE) - player_left);
 			if (diff < SPEED * player_scale) {
 				is_manhole = true;
