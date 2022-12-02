@@ -69,7 +69,7 @@ void LEMON::Update()
 		break;
 	case ENEMY_STATE::MOVE:
 		ChangeAngle();
-		if (++shootcount % 180 == 0)
+		if (shootcount++ % 60 == 0)
 		{
 			animation_timer = 0;
 			state = ENEMY_STATE::PRESS;
