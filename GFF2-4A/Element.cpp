@@ -214,8 +214,7 @@ void ELEMENT::Draw(STAGE* stage)  {
 
 	//ìÆÇ≠è∞
 	for (int i = 0; i < lift.size(); i++) {
-		DrawGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 25 + stage->GetScrollY(), block_image1[51], TRUE);
-		
+		DrawExtendGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 31 + stage->GetScrollY(), lift[i].x + LIFT_SIZE + stage->GetScrollX(), lift[i].y + 70 + stage->GetScrollY(), block_image1[51], TRUE);		
 	}
 
 	//ÉhÉA
@@ -427,7 +426,7 @@ void ELEMENT::Lift(PLAYER* player) {
 					if (HitLift(player)) {
 						player->SetPlayerX(player->GetPlayerX() + lift_vector * lift_speedX);
 					}
-					else {
+					/*else {
 						for (int lift_pos = lift[i].x - MAP_CEllSIZE * lift_vector; i >= 0; lift_pos -= lift_vector * MAP_CEllSIZE) {
 							if (map_data[int(lift[i].y) / MAP_CEllSIZE][lift_pos / MAP_CEllSIZE] == 52) {
 								lift_goal[i].x = lift_pos;
@@ -435,7 +434,7 @@ void ELEMENT::Lift(PLAYER* player) {
 							}
 						}
 						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 52;
-					}
+					}*/
 
 				}
 			}
@@ -449,7 +448,7 @@ void ELEMENT::Lift(PLAYER* player) {
 /// </summary>
 bool ELEMENT::HitLift(PLAYER* player) {
 	for (int i = 0; i < lift.size(); i++) {
-		if (player_map_x + player->GetPlayerScale() * 25 >= lift[i].x && player_map_x - player->GetPlayerScale() * 25 <= lift[i].x + MAP_CEllSIZE && player_map_y + MAP_CEllSIZE / 2 >= lift[i].y &&player_map_y<=lift[i].y+10
+		if (player_map_x + player->GetPlayerScale() * 25 >= lift[i].x && player_map_x - player->GetPlayerScale() * 25 <= lift[i].x + LIFT_SIZE && player_map_y + MAP_CEllSIZE / 2 >= lift[i].y &&player_map_y<=lift[i].y+10
 			/*&& (map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] == 0 || map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] >= 51)*/) {
 			if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::JUMP) {
 				player->SetPlayerY(lift[i].y - MAP_CEllSIZE / 2);
