@@ -658,7 +658,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		int block_type = stage->GetMapData((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
 		int block_type1 = stage->GetMapData((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
 		int block_type2 = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		if (block_type == 68 || block_type1 == 68 || block_type2 == 68) {
+		if (block_type == 98 || block_type1 == 98 || block_type2 == 98) {
 			float diff = fabsf((float)((int)(player_x / MAP_CEllSIZE) * MAP_CEllSIZE) - player_left);
 			if (diff < SPEED * player_scale) {
 				is_manhole = true;
@@ -666,7 +666,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 			}
 		}
 	}
-	
+
 	if (element->HitLift(this)) {
 		is_ground = true;
 	}

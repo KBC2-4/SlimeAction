@@ -124,7 +124,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				break;
 
 				//動く床(縦移動)
-			case 94:
+			case 51:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 1;
@@ -133,7 +133,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				lift.push_back(data);
 				break;
 				//動く床(横移動)
-			case 95:
+			case 52:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 2;
@@ -143,7 +143,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				break;
 
 				//動く床(ゴール)
-			case 96:
+			case 53:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 0;
@@ -214,7 +214,7 @@ void ELEMENT::Draw(STAGE* stage)  {
 
 	//動く床
 	for (int i = 0; i < lift.size(); i++) {
-		DrawGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 25 + stage->GetScrollY(), block_image1[94], TRUE);
+		DrawGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 25 + stage->GetScrollY(), block_image1[51], TRUE);
 		
 	}
 
@@ -229,44 +229,47 @@ void ELEMENT::Draw(STAGE* stage)  {
 
 	//マンホール
 	for (int i = 0; i < manhole.size(); i++) {
-		if (manhole[i].flg == true) {
-			if (manhole[i].type == 1) {
+		if (manhole[i].type != 2) {
+			if (manhole[i].flg == true) {
+				if (manhole[i].type == 1) {
 
-				if (manhole[i].animtimer < 240) {
-					DrawModiGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * 1.2,
-						manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * 1.2,
-						manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
-						manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
-						block_image1[67], TRUE);
+					if (manhole[i].animtimer < 240) {
+						DrawModiGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * 1.2,
+							manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * 1.2,
+							manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
+							manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
+							block_image1[67], TRUE);
+					}
+					else {
+						DrawGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY(), block_image1[97], TRUE);
+					}
+				}
+				//DrawOvalAA(manhole[i].x + scroll_x, manhole[i].y + scroll_y + 30 + manhole[i].animtimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+
+			}
+			else {
+				DrawGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY(), block_image1[67], TRUE);
+
+				//マンホールのガイド表示
+				if (guid_timer < 50) {
+					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
 				}
 				else {
-					DrawGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY(), block_image1[97], TRUE);
+					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
+					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
 				}
 			}
-			//DrawOvalAA(manhole[i].x + scroll_x, manhole[i].y + scroll_y + 30 + manhole[i].animtimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
-			
-		}else{
-			DrawGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY(), block_image1[67], TRUE);
 
-			//マンホールのガイド表示
-			if (guid_timer < 50) {
-				DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-				DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
-			}
-			else {
-				DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-				DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() -20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
-			}
-		}
-
-		if (manhole[i].type == 3) {
-			if (guid_timer < 50) {
-				DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-				DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
-			}
-			else {
-				DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-				DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+			if (manhole[i].type == 3) {
+				if (guid_timer < 50) {
+					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+				}
+				else {
+					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
+					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+				}
 			}
 		}
 	}
@@ -282,7 +285,7 @@ void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 	Button(player);
 	Door(stage);
 	Lift(player);
-	Manhole(player);
+	Manhole(player,stage);
 	Acidrain_puddles(player);
 	
 	if (guid_timer < 100) { guid_timer++; }
@@ -404,12 +407,12 @@ void ELEMENT::Lift(PLAYER* player) {
 					lift[i].y += lift_vector * lift_speedY;
 					/*else {
 						for (int lift_posY = lift[i].y - MAP_CEllSIZE * lift_vector; i >= 0; lift_posY -= lift_vector * MAP_CEllSIZE) {
-							if (map_data[lift_posY][int(lift[i].x) / MAP_CEllSIZE] == 95) {
+							if (map_data[lift_posY][int(lift[i].x) / MAP_CEllSIZE] == 52) {
 								lift_goal[i].y = lift_posY;
 								break;
 							}
 						}
-						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 95;
+						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 52;
 						lift_vector *= -1;
 					}*/
 
@@ -426,12 +429,12 @@ void ELEMENT::Lift(PLAYER* player) {
 					}
 					else {
 						for (int lift_pos = lift[i].x - MAP_CEllSIZE * lift_vector; i >= 0; lift_pos -= lift_vector * MAP_CEllSIZE) {
-							if (map_data[int(lift[i].y) / MAP_CEllSIZE][lift_pos / MAP_CEllSIZE] == 95) {
+							if (map_data[int(lift[i].y) / MAP_CEllSIZE][lift_pos / MAP_CEllSIZE] == 52) {
 								lift_goal[i].x = lift_pos;
 								break;
 							}
 						}
-						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 95;
+						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 52;
 					}
 
 				}
@@ -447,7 +450,7 @@ void ELEMENT::Lift(PLAYER* player) {
 bool ELEMENT::HitLift(PLAYER* player) {
 	for (int i = 0; i < lift.size(); i++) {
 		if (player_map_x + player->GetPlayerScale() * 25 >= lift[i].x && player_map_x - player->GetPlayerScale() * 25 <= lift[i].x + MAP_CEllSIZE && player_map_y + MAP_CEllSIZE / 2 >= lift[i].y &&player_map_y<=lift[i].y+10
-			/*&& (map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] == 0 || map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] >= 94)*/) {
+			/*&& (map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] == 0 || map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] >= 51)*/) {
 			if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::JUMP) {
 				player->SetPlayerY(lift[i].y - MAP_CEllSIZE / 2);
 			}
@@ -461,7 +464,7 @@ bool ELEMENT::HitLift(PLAYER* player) {
 /// <summary>
 /// マンホールの処理
 /// </summary>
-void ELEMENT::Manhole(PLAYER* player) {
+void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 	for (int i = 0; i < manhole.size(); i++) {
 		if (manhole[i].flg == true && manhole[i].animtimer < 240)manhole[i].animtimer++;
 		if (manhole[i].animtimer > 240) {
@@ -479,7 +482,7 @@ void ELEMENT::Manhole(PLAYER* player) {
 				if (manhole[i].animtimer >= 240) {
 					int x = floor(manhole[i].x / MAP_CEllSIZE);
 					int y = floor(manhole[i].y / MAP_CEllSIZE);
-					map_data[y][x] = 98;
+					stage->SetMapData(y, x, 98);
 				}
 			}
 		}
