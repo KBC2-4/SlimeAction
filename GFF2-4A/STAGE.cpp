@@ -140,7 +140,7 @@ void STAGE::CameraWork(PLAYER* player, ELEMENT* element) {
 		}
 
 		//xŽ²ƒXƒNƒ[ƒ‹
-		if (element->HitLift(player)) { scroll_speed_x = element->GetLift_SpeedX(); }
+		//if (element->HitLift(player)) { scroll_speed_x = element->GetLift_SpeedX(); }
 		if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
 			scroll_x -= scroll_speed_x * player_vector_x;
 			if (scroll_x > 0 || scroll_x <= -(80 * static_cast<int>(map_data.at(0).size()) - 1280)) {
