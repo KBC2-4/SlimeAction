@@ -2,6 +2,7 @@
 #include "STAGE.h"
 #include <vector>
 
+#define LIFT_SIZE 160
 
 class PLAYER;
 class STAGE;
