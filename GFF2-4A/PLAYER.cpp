@@ -121,6 +121,9 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	if (stage->GetMapData(map_y, map_x) == -1 || life <= 0) {
 		is_death = true;
 	}
+	if (player_y + stage->GetScrollY() > 720){
+		is_death = true;
+	}
 
 	//画面端の判定
 	if (player_x <= 40 * player_scale) {
