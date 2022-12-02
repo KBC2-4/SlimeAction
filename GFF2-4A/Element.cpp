@@ -525,7 +525,7 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 	for (int i = 0; i < acidrain_puddles.size(); i++) {
 
 		if (acidrain_puddles[i].flg == false)acidrain_puddles[i].animtimer++;
-		if (acidrain_puddles[i].animtimer > 180 || acidrain_puddles[i].animtimer == 1) {
+		if (acidrain_puddles[i].animtimer > 120) {
 			acidrain_puddles[i].animtimer = 0;
 			acidrain_puddles[i].flg = true;
 		}
