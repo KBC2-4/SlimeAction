@@ -56,5 +56,7 @@ public:
 	std::vector<ELEMENT_DATA>GetLift() { return lift; }
 	std::vector<ELEMENT_DATA>GetManhole() { return manhole; }
 	std::vector<ELEMENT_DATA>GetAcidrain_puddles() { return acidrain_puddles; }
+	float GetLift_SpeedX() { return lift_speedX; }
+	float GetLift_SpeedY() { return lift_speedY; }
 };
 

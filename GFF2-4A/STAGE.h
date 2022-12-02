@@ -28,7 +28,8 @@ private:
 	int count_timer;		//カウント用タイマー
 	float player_vector_x;					//プレイヤーの移動方向x
 	float player_vector_y;					//プレイヤーの移動方向y
-
+	float scroll_speed_x;					//スクロール移動量(x)
+	float scroll_speed_y;					//スクロール移動量(y)
 
 protected:
 	int block_image1[110];		//ステージブロック画像
@@ -50,7 +51,7 @@ public:
 	int GetMapImage(int num) { return block_image1[num]; }
 
 	//カメラワーク
-	void CameraWork(PLAYER* player);
+	void CameraWork(PLAYER* player, ELEMENT* element);
 	
 	//水たまりの処理
 	void PuddleProcess();

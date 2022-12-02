@@ -166,7 +166,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 	player_map_y = 0;
 	lift_vector = 1;
 	lift_speedY = 1;
-	lift_speedX = 1;
+	lift_speedX = 3;
 	keep_pushing = false;
 
 	player_state = 0;
