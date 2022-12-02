@@ -57,7 +57,15 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 		throw "Resource/Images/Enemy/Bullet_End.png";
 	}
 	player = argu_player;
-	player_x = player->GetPlayerX();
+	if (player->GetMoveX() > 0)
+	{
+		player_x = player->GetPlayerX();
+	}
+	else
+	{
+		player_x = player->GetPlayerX();
+	}
+
 	player_y = player->GetPlayerY();
 	bullet_x = x;
 	bullet_y = y;
@@ -95,8 +103,8 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 
 	hypote = sqrt((dis_x * dis_x) + (dis_y * dis_y));
 
-	bullet_sx = dis_x / hypote * 5;
-	bullet_sy = dis_y / hypote * 5;
+	bullet_sx = dis_x / hypote * BULLET_SPEED;
+	bullet_sy = dis_y / hypote * BULLET_SPEED;
 }
 
 //•`‰æ
