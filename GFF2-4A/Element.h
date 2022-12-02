@@ -2,6 +2,7 @@
 #include "STAGE.h"
 #include <vector>
 
+#define LIFT_SIZE 160
 
 class PLAYER;
 class STAGE;
@@ -46,7 +47,7 @@ public:
 	void Door(STAGE*stage);						//ドアの処理
 	void Lift(PLAYER* player);			//動く床の処理
 	bool HitLift(PLAYER* player);						//動く床の当たり判定
-	void Manhole(PLAYER* player);		//マンホールの処理
+	void Manhole(PLAYER* player, STAGE* stage);		//マンホールの処理
 	void Acidrain_puddles(PLAYER* player);		//酸性雨の水たまりの処理
 	void Hook_Distance(PLAYER* player, STAGE* stage);	//フックのガイド表示用距離計算
 	std::vector<ELEMENT_DATA> GetHook() { return hook; }
@@ -55,5 +56,7 @@ public:
 	std::vector<ELEMENT_DATA>GetLift() { return lift; }
 	std::vector<ELEMENT_DATA>GetManhole() { return manhole; }
 	std::vector<ELEMENT_DATA>GetAcidrain_puddles() { return acidrain_puddles; }
+	float GetLift_SpeedX() { return lift_speedX; }
+	float GetLift_SpeedY() { return lift_speedY; }
 };
 

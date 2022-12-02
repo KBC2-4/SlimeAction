@@ -18,12 +18,15 @@ STAGE::STAGE(const char* stage_name) {
 	*stage_image = 0;
 	scroll_x = 0;
 	scroll_y = 0;
+	scroll_speed_x = 5;
+	scroll_speed_y = 5;
 	count_timer = 0;
 
 	player_x_old = 0;
 	player_y_old = 0;
 	player_vector_x = 0;
 	player_vector_y = 0;
+
 
 	if (LoadDivGraph("Resource/Images/Stage/map_chips.png", 110, 10, 11, 80, 80, block_image1) == -1) {
 		throw "Resource/Images/Stage/map_chips.png";
@@ -70,7 +73,7 @@ STAGE::STAGE(const char* stage_name) {
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
 	StageClear(player);
 	HalfwayPoint(player);
-	CameraWork(player);
+	CameraWork(player,element);
 }
 
 void STAGE::Draw()const {
@@ -92,6 +95,9 @@ void STAGE::Draw()const {
 					map_data.at(i).at(j) != 68
 					&& map_data.at(i).at(j) != 102
 					&& map_data.at(i).at(j) != 103
+					&& map_data.at(i).at(j) != 51	//動く床3つ
+					&& map_data.at(i).at(j) != 52
+					&& map_data.at(i).at(j) != 53	
 					&& (map_data.at(i).at(j) <= 88	
 												////89～90番台を描画しない
 						|| map_data.at(i).at(j) >= 100)
@@ -114,7 +120,7 @@ void STAGE::Draw()const {
 /// <summary>
 /// ステージスクロール関数
 /// </summary>
-void STAGE::CameraWork(PLAYER* player) {
+void STAGE::CameraWork(PLAYER* player, ELEMENT* element) {
 	int scroll_speedY = 7;
 		//プレイヤーxベクトルの判定
 		if (player->GetPlayerX() > player_x_old) {
@@ -134,10 +140,11 @@ void STAGE::CameraWork(PLAYER* player) {
 		}
 
 		//x軸スクロール
+		if (element->HitLift(player)) { scroll_speed_x = element->GetLift_SpeedX(); }
 		if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
-			scroll_x -= 5 * player_vector_x;
+			scroll_x -= scroll_speed_x * player_vector_x;
 			if (scroll_x > 0 || scroll_x <= -(80 * static_cast<int>(map_data.at(0).size()) - 1280)) {
-				scroll_x += 5 * player_vector_x;
+				scroll_x += scroll_speed_x * player_vector_x;
 			}
 		}
 
@@ -161,7 +168,7 @@ void STAGE::CameraWork(PLAYER* player) {
 		if (++count_timer % 60 == 0)player_longold = player->GetPlayerY();
 
 		//スポーン地点を基準に上げる位置を決める
-		if (scroll_y + player->GetPlayerY() < 0  && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) { scroll_y += 5; }
+		if (scroll_y + player->GetPlayerY() < 0  && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) { scroll_y += scroll_speed_y; }
 		else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
 			if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().y + 400)) {
 				//プレイヤーの落下速度に応じてスクロールYを下げる
