@@ -509,7 +509,6 @@ void PLAYER::JumpMove() {
 			is_jump = false;
 			hit_ceil = false;
 			jump_velocity = 0;
-			ChangeAnimation(PLAYER_ANIM_STATE::FALL);
 		}
 	}
 	//落下中
@@ -519,6 +518,7 @@ void PLAYER::JumpMove() {
 			jump_velocity += 0.2f;
 			player_y += jump_velocity;
 			player_state = PLAYER_MOVE_STATE::FALL;
+			ChangeAnimation(PLAYER_ANIM_STATE::FALL);
 		}
 		//地面についた時
 		else {
