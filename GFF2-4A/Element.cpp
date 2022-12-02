@@ -2,7 +2,6 @@
 #include "Element.h"
 #include "PLAYER.h"
 
-
 ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 
 	guid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
@@ -24,6 +23,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 	}
 
 	ELEMENT_DATA data;
+	DEFAULT_POS default_data;
 	for (int i = 0; i < map_data.size(); i++)
 	{
 		for (int j = 0; j < map_data.at(0).size(); j++)
@@ -127,19 +127,25 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 			case 51:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
+				default_data.x = data.x;
+				default_data.y = data.y;
 				data.type = 1;
 				data.flg = false;
 				data.animtimer = 0;
 				lift.push_back(data);
+				lift_default_pos.push_back(default_data);
 				break;
 				//動く床(横移動)
 			case 52:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
+				default_data.x = data.x;
+				default_data.y = data.y;
 				data.type = 2;
 				data.flg = false;
 				data.animtimer = 0;
 				lift.push_back(data);
+				lift_default_pos.push_back(default_data);
 				break;
 
 				//動く床(ゴール)
@@ -187,7 +193,6 @@ void ELEMENT::Draw(STAGE* stage)  {
 	//DrawFormatString(200, 100, 0xFFFFFF, "acidrain_puddles.x%f\acidrain_puddles.y%f", acidrain_puddles[1].x, acidrain_puddles[1].y);
 	//DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
 	//デバッグ用
-
 	//フックのガイド表示
 	for (int i = 0; i < hook.size(); i++) {
 		if (hook[i].flg == true) {
@@ -283,7 +288,7 @@ void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 
 	Button(player);
 	Door(stage);
-	Lift(player);
+	Lift(player,stage);
 	Manhole(player,stage);
 	Acidrain_puddles(player);
 	
@@ -391,11 +396,12 @@ void ELEMENT::Door(STAGE* stage) {
 /// <summary>
 /// 動く床の処理
 /// </summary>
-void ELEMENT::Lift(PLAYER* player) {
+void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 	for (int i = 0; i < lift.size(); i++) {
-		if (HitLift(player)/*player_map_x > lift[i].x - 1280 && player_map_x < lift[i].x + 1280*/) {
+		if (player_map_x > lift[i].x - 1280 && player_map_x < lift[i].x + 1280) {
 			lift[i].flg = true;
 		}
+		else { false; }
 		if (lift[i].flg) {
 			//動く床(縦)の動き
 			if (lift[i].type == 1) {
@@ -420,22 +426,18 @@ void ELEMENT::Lift(PLAYER* player) {
 			//動く床(横)の動き
 			else if (lift[i].type == 2) {
 				if (lift[i].x < lift_goal[i].x) { lift_vector = 1; }
-				else { lift_vector = -1; }
+				else if(lift[i].x > lift_goal[i].x) { lift_vector = -1; }
+
 				if (lift[i].x != lift_goal[i].x) {
 					lift[i].x += lift_vector * lift_speedX;
 					if (HitLift(player)) {
 						player->SetPlayerX(player->GetPlayerX() + lift_vector * lift_speedX);
 					}
-					/*else {
-						for (int lift_pos = lift[i].x - MAP_CEllSIZE * lift_vector; i >= 0; lift_pos -= lift_vector * MAP_CEllSIZE) {
-							if (map_data[int(lift[i].y) / MAP_CEllSIZE][lift_pos / MAP_CEllSIZE] == 52) {
-								lift_goal[i].x = lift_pos;
-								break;
-							}
-						}
-						map_data[int(lift[i].y) / MAP_CEllSIZE][int(lift[i].x) / MAP_CEllSIZE] = 52;
-					}*/
-
+				}
+				else {
+					float work = lift_goal[i].x;
+					lift_goal[i].x = lift_default_pos[i].x;
+					lift_default_pos[i].x = work;
 				}
 			}
 		}
