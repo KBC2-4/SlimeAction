@@ -17,7 +17,9 @@ public:
 		int type;
 		bool flg = false;
 		int animtimer = 0;
-
+	};
+	struct DEFAULT_POS {
+		float x, y;
 	};
 private:
 	int guid_font,guid_timer;
@@ -25,6 +27,8 @@ private:
 	std::vector<ELEMENT_DATA> button;		//ボタン
 	std::vector<ELEMENT_DATA> door;			//ドア
 	std::vector<ELEMENT_DATA> lift;			//動く床
+	std::vector<DEFAULT_POS>lift_default_pos;	//動く床の最初の座標
+
 	std::vector<ELEMENT_DATA>lift_goal;		//動く床のゴール地点
 	std::vector<ELEMENT_DATA> manhole;		//マンホール
 	std::vector<ELEMENT_DATA> acidrain_puddles;			//酸性雨の水たまり
@@ -45,7 +49,7 @@ public:
 	void Update(PLAYER* player,STAGE*stage);
 	void Button(PLAYER* player);		//3種類のボタン
 	void Door(STAGE*stage);						//ドアの処理
-	void Lift(PLAYER* player);			//動く床の処理
+	void Lift(PLAYER* player, STAGE* stage);			//動く床の処理
 	bool HitLift(PLAYER* player);						//動く床の当たり判定
 	void Manhole(PLAYER* player, STAGE* stage);		//マンホールの処理
 	void Acidrain_puddles(PLAYER* player);		//酸性雨の水たまりの処理
