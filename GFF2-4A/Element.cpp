@@ -266,13 +266,24 @@ void ELEMENT::Draw(STAGE* stage)  {
 			}
 
 			if (manhole[i].type == 3) {
+				int map_x = manhole[i].x / MAP_CEllSIZE - MAP_CEllSIZE / 2;
+				int map_y = manhole[i].y / MAP_CEllSIZE - MAP_CEllSIZE / 2;
+				//printfDx("%d\t\t\t%d", map_x, map_y);
+				//int manhole_y;
+				for (int y = 0; manhole.size(); i++) { 
+					//manhole_y = manhole[i].y + y;
+					map_y = manhole[y].y / MAP_CEllSIZE - MAP_CEllSIZE / 2;
+					if (map_data.at(map_y).at(map_x) != 69) { map_y++; }
+					else { map_y = map_y * MAP_CEllSIZE + MAP_CEllSIZE / 2; }
+
+				}
 				if (guid_timer < 50) {
-					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
 				}
 				else {
-					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
+					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
 				}
 			}
 		}
