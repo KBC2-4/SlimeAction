@@ -249,6 +249,9 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 23 //オーク木
 		|| block_type == 24 //先生作木
 		|| block_type == 31 //葉っぱ
+		|| block_type == 51	//動く床(縦)
+		|| block_type == 52	//動く床(横)
+		|| block_type == 53	//動く床(ゴール)
 		|| block_type == 64	//ドア 
 		|| block_type == 65	//ドア 
 		|| block_type == 62	//ボタン(感圧式)
@@ -265,9 +268,6 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 91 //レモナー
 		|| block_type == 92 //グレポン
 		|| block_type == 93	//トマトン
-		|| block_type == 94	//動く床(縦)
-		|| block_type == 95	//動く床(横)
-		|| block_type == 96 //動く床(ゴール)
 		|| block_type == 97	//マンホールの蓋(出口)
 		|| block_type == 98	//マンホールの開いている蓋
 		|| block_type == 101//戻るブロック
