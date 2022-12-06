@@ -41,6 +41,7 @@ STAGE::STAGE(const char* stage_name) {
 	//InitStage();
 
 	LoadMapData(stage_name);
+	temporary_hit = 0;
 	clearflg = false;
 	clearbox = {0,0};
 	clear_count = 3000;
@@ -275,6 +276,7 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 103//ステージ2ブロック
 		|| block_type == 104//ステージ3ブロック
 		|| block_type == 777//スポーン地点ブロック
+		|| block_type == temporary_hit	//一時的な当たり判定
 		) {
 		return false;
 	}

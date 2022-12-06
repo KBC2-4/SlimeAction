@@ -35,6 +35,7 @@ protected:
 	int block_image1[110];		//ステージブロック画像
 	std::vector<std::vector<int>> map_data;
 	float scroll_x, scroll_y;	//マップスクロール量
+	int temporary_hit;		//一時的な当たり判定
 public:
 	STAGE(const char* stage_name = "StageSelect");
 	//マップ情報の更新
