@@ -275,6 +275,9 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 102//ステージ1ブロック
 		|| block_type == 103//ステージ2ブロック
 		|| block_type == 104//ステージ3ブロック
+		|| block_type == 105//ステージ3ブロック
+		|| block_type == 106//ステージ3ブロック
+		|| block_type == 107//ステージ3ブロック
 		|| block_type == 777//スポーン地点ブロック
 		|| block_type == temporary_hit	//一時的な当たり判定
 		) {

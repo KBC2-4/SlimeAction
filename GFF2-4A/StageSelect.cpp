@@ -40,6 +40,16 @@ STAGE_SELECT::STAGE_SELECT()
 			case 103:
 				stage_move[1].x = j * MAP_CEllSIZE;
 				stage_move[1].y = i * MAP_CEllSIZE;
+
+			case 104:
+			case 105:
+				stage_move[2].x = j * MAP_CEllSIZE;
+				stage_move[2].y = i * MAP_CEllSIZE;
+
+			case 106:
+			case 107:
+				stage_move[3].x = j * MAP_CEllSIZE;
+				stage_move[3].y = i * MAP_CEllSIZE;
 			}
 		}
 	}
@@ -77,6 +87,14 @@ AbstractScene* STAGE_SELECT::Update()
 
 	if ((player_map_x >= stage_move[1].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[1].x + MAP_CEllSIZE / 2)) {
 		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { return new GAMEMAIN(false, 0, "Stage01"); }
+	}
+
+	if ((player_map_x >= stage_move[2].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[2].x + MAP_CEllSIZE / 2)) {
+		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { return new GAMEMAIN(false, 0, "Stage02"); }
+	}
+
+	if ((player_map_x >= stage_move[3].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[3].x + MAP_CEllSIZE / 2)) {
+		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { return new GAMEMAIN(false, 0, "Stage03"); }
 	}
 
 	if ((player_map_x >= 11 * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= 11 * MAP_CEllSIZE + MAP_CEllSIZE / 2)) {
@@ -134,6 +152,32 @@ void STAGE_SELECT::Draw() const
 
 		DrawCircleAA(stage_move[1].x + stage->GetScrollX(), stage_move[1].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
 		DrawStringToHandle(stage_move[1].x + stage->GetScrollX() - 7, stage_move[1].y + stage->GetScrollY() - 12, "B", 0xEB7415, buttonguid_font, 0xFFFFFF);
+	}
+
+	//ステージ2
+	if ((player_map_x >= stage_move[2].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[2].x + MAP_CEllSIZE / 2)) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
+		DrawOvalAA(stage_move[2].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[2].y - MAP_CEllSIZE + stage->GetScrollY(), 100, 80, 18, 0x000000, FALSE, 1.0F);
+		DrawOvalAA(stage_move[2].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[2].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 18, 0xFFFFFF, TRUE, 0.0F);
+		//DrawString(stage_move[2].x + MAP_CEllSIZE / 2, stage_move[2].y + MAP_CEllSIZE, "STAGE 1" , 0x6AF6C5, 0x000000);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		DrawExtendStringToHandle(stage_move[2].x + stage->GetScrollX() - 55, stage_move[2].y - MAP_CEllSIZE - 10 + stage->GetScrollY(), 0.6f, 0.6f, "２ステージ", 0xD65701, guid_font, 0x000000);
+
+		DrawCircleAA(stage_move[2].x + stage->GetScrollX(), stage_move[2].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+		DrawStringToHandle(stage_move[2].x + stage->GetScrollX() - 7, stage_move[2].y + stage->GetScrollY() - 12, "B", 0xEB7415, buttonguid_font, 0xFFFFFF);
+	}
+
+	//ステージ3
+	if ((player_map_x >= stage_move[3].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[3].x + MAP_CEllSIZE / 2)) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
+		DrawOvalAA(stage_move[3].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[3].y - MAP_CEllSIZE + stage->GetScrollY(), 100, 80, 18, 0x000000, FALSE, 1.0F);
+		DrawOvalAA(stage_move[3].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[3].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 18, 0xFFFFFF, TRUE, 0.0F);
+		//DrawString(stage_move[3].x + MAP_CEllSIZE / 2, stage_move[3].y + MAP_CEllSIZE, "STAGE 1" , 0x6AF6C5, 0x000000);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		DrawExtendStringToHandle(stage_move[3].x + stage->GetScrollX() - 55, stage_move[3].y - MAP_CEllSIZE - 10 + stage->GetScrollY(), 0.6f, 0.6f, "３ステージ", 0xD65701, guid_font, 0x000000);
+
+		DrawCircleAA(stage_move[3].x + stage->GetScrollX(), stage_move[3].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+		DrawStringToHandle(stage_move[3].x + stage->GetScrollX() - 7, stage_move[3].y + stage->GetScrollY() - 12, "B", 0xEB7415, buttonguid_font, 0xFFFFFF);
 	}
 
 	//サンプルステージ
