@@ -503,6 +503,8 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 				//if (manhole[i].animtimer == 180) {
 					//player->SetPlayerX(manhole[i].x);
 					player->SetPlayerY(manhole[i].y);
+					//ˆêŽž“I‚È“–‚½‚è”»’è‚ð‚Â‚¯‚éB
+					temporary_hit = 97;
 				//}
 				//player->SetPlayerY(player->GetPlayerY() - 10.0f);
 				//printfDx("%f",player->GetPlayerY());
