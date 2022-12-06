@@ -447,6 +447,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 					if (speed > 0)speed -= 0.05;
 					if (speed < 0)speed += 0.05;
 				}
+				StartJoypadVibration(DX_INPUT_PAD1, static_cast<int>(abs(speed) / 18.0 * 500.0), 1, -1);
 			}
 		}
 	}
