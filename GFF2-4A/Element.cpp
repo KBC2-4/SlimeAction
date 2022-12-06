@@ -22,6 +22,10 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 		throw "Resource/Sounds/SE/Stage/walk_puddle.wav";
 	}
 
+	if ((manhole_opened_se = LoadSoundMem("Resource/Sounds/SE/Stage/manhole_opened.wav")) == -1) {
+		throw "Resource/Sounds/SE/Stage/manhole_opened.wav";
+	}
+
 	ELEMENT_DATA data;
 	for (int i = 0; i < map_data.size(); i++)
 	{
@@ -227,9 +231,9 @@ void ELEMENT::Draw(STAGE* stage)  {
 			if (manhole[i].flg == true) {
 				if (manhole[i].type == 1) {
 
-					if (manhole[i].animtimer < 240) {
-						DrawModiGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * 1.2,
-							manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * 1.2,
+					if (manhole[i].animtimer < 20) {
+						DrawModiGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * (288 / 20),
+							manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * (288 / 20),
 							manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
 							manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
 							block_image1[67], TRUE);
@@ -462,7 +466,7 @@ bool ELEMENT::HitLift(PLAYER* player) {
 void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 	for (int i = 0; i < manhole.size(); i++) {
 		if (manhole[i].flg == true && manhole[i].animtimer < 240)manhole[i].animtimer++;
-		if (manhole[i].animtimer > 240) {
+		if (manhole[i].animtimer > 20) {
 			//manhole[i].animtimer = 0;
 			//manhole[i].flg = false;
 		}
@@ -474,7 +478,8 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 					//player->SetPlayerY(player->GetPlayerY() - 2.0f);
 				}
 
-				if (manhole[i].animtimer >= 240) {
+				if (manhole[i].animtimer >= 20) {
+					PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE);
 					int x = floor(manhole[i].x / MAP_CEllSIZE);
 					int y = floor(manhole[i].y / MAP_CEllSIZE);
 					stage->SetMapData(y, x, 98);
