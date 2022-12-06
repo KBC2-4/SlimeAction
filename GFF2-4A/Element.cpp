@@ -1,4 +1,3 @@
-
 #include "Element.h"
 #include "PLAYER.h"
 
@@ -126,6 +125,10 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 			case 51:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
+				data.lift_init_x = data.x;
+				data.lift_init_y = data.y;
+				data.lift_vector_x = 0;
+				data.lift_vector_y = 1;
 				data.type = 1;
 				data.flg = false;
 				data.animtimer = 0;
@@ -135,6 +138,10 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 			case 52:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
+				data.lift_init_x = data.x;
+				data.lift_init_y = data.y;
+				data.lift_vector_x = 1;
+				data.lift_vector_y = 0;
 				data.type = 2;
 				data.flg = false;
 				data.animtimer = 0;
@@ -395,33 +402,30 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 		if (lift[i].flg) {
 			//ìÆÇ≠è∞(èc)ÇÃìÆÇ´
 			if (lift[i].type == 1) {
-			//	if (lift[i].y < lift_goal[i].y) { lift_vector = 1; }
-			//	else { lift_vector = -1; }
-			//	if (lift[i].y != lift_goal[i].y) {
-			//		lift[i].y += lift_vector * lift_speedY;
-			//	}
-			//	else {
-			//		float work = lift_goal[i].y;
-			//		lift_goal[i].y = lift_default_pos[i].y;
-			//		lift_default_pos[i].y = work;
-			//	}
-			//}
-			////ìÆÇ≠è∞(â°)ÇÃìÆÇ´
-			//else if (lift[i].type == 2) {
-			//	if (lift[i].x < lift_goal[i].x) { lift_vector = 1; }
-			//	else if(lift[i].x > lift_goal[i].x) { lift_vector = -1; }
+				if (lift[i].y < lift_goal[i].y) { lift[i].lift_vector_y = 1; }
+				else { lift[i].lift_vector_y = -1; }
+				if (lift[i].y != lift_goal[i].y) {
+					lift[i].y += lift[i].lift_vector_y * 4;
+				}
+				else {
+					float work = lift_goal[i].y;
+					lift_goal[i].y = lift[i].lift_init_y;
+					lift[i].lift_init_y = work;
+				}
+			}
+			//ìÆÇ≠è∞(â°)ÇÃìÆÇ´
+			else if (lift[i].type == 2) {
+				if (lift[i].x < lift_goal[i].x) { lift[i].lift_vector_x = 1; }
+				else if(lift[i].x > lift_goal[i].x) { lift[i].lift_vector_x = -1; }
 
-			//	if (lift[i].x != lift_goal[i].x) {
-			//		lift[i].x += lift_vector * lift_speedX;
-			//		if (HitLift(player)) {
-			//			player->SetPlayerX(player->GetPlayerX() + lift_vector * lift_speedX);
-			//		}
-			//	}
-			//	else {
-			//		float work = lift_goal[i].x;
-			//		lift_goal[i].x = lift_default_pos[i].x;
-			//		lift_default_pos[i].x = work;
-			//	}
+				if (lift[i].x != lift_goal[i].x) {
+					lift[i].x += lift[i].lift_vector_x * 4;
+				}
+				else {
+					float work = lift_goal[i].x;
+					lift_goal[i].x = lift[i].lift_init_x;
+					lift[i].lift_init_x = work;
+				}
 			}
 		}
 	}
@@ -433,11 +437,13 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 /// </summary>
 bool ELEMENT::HitLift(PLAYER* player) {
 	for (int i = 0; i < lift.size(); i++) {
-		if (player_map_x + player->GetPlayerScale() * 25 >= lift[i].x && player_map_x - player->GetPlayerScale() * 25 <= lift[i].x + LIFT_SIZE && player_map_y + MAP_CEllSIZE / 2 >= lift[i].y &&player_map_y<=lift[i].y+10
+		if (player_map_x + player->GetPlayerScale() * 25 >= lift[i].x && player_map_x - player->GetPlayerScale() * 25 <= lift[i].x + LIFT_SIZE
+			&& player_map_y >= lift[i].y-MAP_CEllSIZE/2 && player_map_y <= lift[i].y + 10 && !((PAD_INPUT::GetNowKey() != XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
 			/*&& (map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] == 0 || map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] >= 51)*/) {
-			if (player->GetPlayerMoveState() != PLAYER_MOVE_STATE::JUMP) {
-				player->SetPlayerY(lift[i].y - MAP_CEllSIZE / 2+1);
-			}
+
+			player->SetPlayerY(lift[i].y - MAP_CEllSIZE / 2);
+
+			player->SetPlayerX(player->GetPlayerX() + lift[i].lift_vector_x * 4);
 			return true;
 		}
 	}
