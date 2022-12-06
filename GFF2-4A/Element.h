@@ -39,7 +39,7 @@ private:
 	//mutable int animtimer;
 	bool keep_pushing;						//ボタンを押し続けているかフラグ
 	bool hook_flg; //近くにあるフックにガイド表示させる為のフラグ。
-	int door_close_se, press_the_button_se, switch_se, walk_puddle_se;
+	int door_close_se, press_the_button_se, switch_se, walk_puddle_se, manhole_opened_se;
 
 public:
 	ELEMENT(const char* stage_name = "StageSelect");

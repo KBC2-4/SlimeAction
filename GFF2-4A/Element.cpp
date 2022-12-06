@@ -21,6 +21,10 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 		throw "Resource/Sounds/SE/Stage/walk_puddle.wav";
 	}
 
+	if ((manhole_opened_se = LoadSoundMem("Resource/Sounds/SE/Stage/manhole_opened.wav")) == -1) {
+		throw "Resource/Sounds/SE/Stage/manhole_opened.wav";
+	}
+
 	ELEMENT_DATA data;
 	for (int i = 0; i < map_data.size(); i++)
 	{
@@ -234,9 +238,9 @@ void ELEMENT::Draw(STAGE* stage)  {
 			if (manhole[i].flg == true) {
 				if (manhole[i].type == 1) {
 
-					if (manhole[i].animtimer < 240) {
-						DrawModiGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * 1.2,
-							manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * 1.2,
+					if (manhole[i].animtimer < 20) {
+						DrawModiGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * (288 / 20),
+							manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * (288 / 20),
 							manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
 							manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
 							block_image1[67], TRUE);
@@ -263,14 +267,25 @@ void ELEMENT::Draw(STAGE* stage)  {
 			}
 
 			if (manhole[i].type == 3) {
-				if (guid_timer < 50) {
-					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
-				}
-				else {
-					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
-				}
+				//int map_x = manhole[i].x / MAP_CEllSIZE - MAP_CEllSIZE / 2;
+				//int map_y = manhole[i].y / MAP_CEllSIZE - MAP_CEllSIZE / 2;
+				////printfDx("%d\t\t\t%d", map_x, map_y);
+				////int manhole_y;
+				//for (int y = 0; manhole.size(); i++) { 
+				//	//manhole_y = manhole[i].y + y;
+				//	map_y = manhole[y].y / MAP_CEllSIZE - MAP_CEllSIZE / 2;
+				//	if (map_data.at(map_y).at(map_x) != 69) { map_y++; }
+				//	else { map_y = map_y * MAP_CEllSIZE + MAP_CEllSIZE / 2; }
+
+				//}
+				//if (guid_timer < 50) {
+				//	DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+				//	DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+				//}
+				//else {
+				//	DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
+				//	DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+				//}
 			}
 		}
 	}
@@ -457,7 +472,7 @@ bool ELEMENT::HitLift(PLAYER* player) {
 void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 	for (int i = 0; i < manhole.size(); i++) {
 		if (manhole[i].flg == true && manhole[i].animtimer < 240)manhole[i].animtimer++;
-		if (manhole[i].animtimer > 240) {
+		if (manhole[i].animtimer > 20) {
 			//manhole[i].animtimer = 0;
 			//manhole[i].flg = false;
 		}
@@ -469,7 +484,8 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 					//player->SetPlayerY(player->GetPlayerY() - 2.0f);
 				}
 
-				if (manhole[i].animtimer >= 240) {
+				if (manhole[i].animtimer >= 20) {
+					PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE);
 					int x = floor(manhole[i].x / MAP_CEllSIZE);
 					int y = floor(manhole[i].y / MAP_CEllSIZE);
 					stage->SetMapData(y, x, 98);
@@ -498,6 +514,8 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 				//if (manhole[i].animtimer == 180) {
 					//player->SetPlayerX(manhole[i].x);
 					player->SetPlayerY(manhole[i].y);
+					//ˆêŽž“I‚È“–‚½‚è”»’è‚ð‚Â‚¯‚éB
+					temporary_hit = 97;
 				//}
 				//player->SetPlayerY(player->GetPlayerY() - 10.0f);
 				//printfDx("%f",player->GetPlayerY());
