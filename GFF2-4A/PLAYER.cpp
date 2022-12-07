@@ -503,7 +503,7 @@ void PLAYER::JumpMove() {
 	//Aボタンを押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A || jump_request) {
 		//ジャンプ中じゃないとき
-		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && player_state != PLAYER_MOVE_STATE::HOOK
+		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && player_state != PLAYER_MOVE_STATE::HOOK && is_ground
 			|| jump_request) {
 			jump_request = false;
 			is_jump = true;			//ジャンプ中に移行
@@ -516,6 +516,9 @@ void PLAYER::JumpMove() {
 			//横移動してるとき
 			else if (player_state == PLAYER_MOVE_STATE::MOVE) {
 				jump_mode = 2;
+			}
+			if (!is_ground) {
+				printfDx("HELLO");
 			}
 			player_state = PLAYER_MOVE_STATE::JUMP;
 			ChangeAnimation(PLAYER_ANIM_STATE::JUMP);
@@ -553,7 +556,6 @@ void PLAYER::JumpMove() {
 				jump_velocity = 0;
 				player_state = PLAYER_MOVE_STATE::IDLE;
 				ChangeAnimation(PLAYER_ANIM_STATE::LANDING);
-
 				PlaySoundMem(landingSE, DX_PLAYTYPE_BACK);
 			}
 			if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
