@@ -100,6 +100,11 @@ private:
 	//プレイヤーのサイズ(倍率)
 	float player_scale;
 
+	//サウンド
+	int damageSE;	//ダメージを食らったとき
+	int jumpSE;		//ジャンプしたとき
+	int landingSE;	//着地したとき
+
 	typedef struct Animation {
 		//画像を切り替えるタイミング(フレーム)
 		const int switch_frame;

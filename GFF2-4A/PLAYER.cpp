@@ -69,6 +69,17 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((idle_nobi_img = LoadGraph("Resource/Images/Player/FuckAnim2.png")) == -1) {
 		throw "Resource/Images/Player/FuckAnim2.png";
 	}
+
+	if ((damageSE = LoadSoundMem("Resource/Sounds/SE/Player/damage.wav")) == -1) {
+		throw "Resource/Sounds/SE/Player/damage.wav";
+	}
+	if ((jumpSE = LoadSoundMem("Resource/Sounds/SE/Player/jump.wav")) == -1) {
+		throw "Resource/Sounds/SE/Player/jump.wav";
+	}
+	if ((landingSE = LoadSoundMem("Resource/Sounds/SE/Player/landing.wav")) == -1) {
+		throw "Resource/Sounds/SE/Player/jump2.wav";
+	}
+	ChangeVolumeSoundMem(static_cast<int>(100.0 / 100.0 * 255.0), jumpSE);
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
 		animation[i].frame = 0;
@@ -508,6 +519,7 @@ void PLAYER::JumpMove() {
 			}
 			player_state = PLAYER_MOVE_STATE::JUMP;
 			ChangeAnimation(PLAYER_ANIM_STATE::JUMP);
+			PlaySoundMem(jumpSE, DX_PLAYTYPE_BACK);
 		}
 	}
 	//ジャンプ中
@@ -541,6 +553,8 @@ void PLAYER::JumpMove() {
 				jump_velocity = 0;
 				player_state = PLAYER_MOVE_STATE::IDLE;
 				ChangeAnimation(PLAYER_ANIM_STATE::LANDING);
+
+				PlaySoundMem(landingSE, DX_PLAYTYPE_BACK);
 			}
 			if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 				jump_velocity = 0;
@@ -771,5 +785,6 @@ void PLAYER::SetLife(int a)
 		alpha_time = 120;
 		is_damage = true;
 		StartJoypadVibration(DX_INPUT_PAD1, 360, 320, -1);
+		PlaySoundMem(damageSE, DX_PLAYTYPE_BACK);
 	}
 }
