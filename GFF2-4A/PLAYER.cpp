@@ -582,7 +582,7 @@ void PLAYER::Throw(STAGE* stage) {
 		else if (angle < 90) throw_rad = 90 * M_PI / 180.0f;
 	}
 
-	float ve = 90;
+	float ve = 110;
 
 	float vx0 = ve * (float)cos(throw_rad);
 	float vy0 = ve * (float)sin(throw_rad);
