@@ -66,7 +66,20 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((hp_img = LoadGraph("Resource/Images/Player/hp.png")) == -1) {
 		throw "Resource/Images/Player/hp.png";
 	}
+	if ((idle_nobi_img = LoadGraph("Resource/Images/Player/FuckAnim2.png")) == -1) {
+		throw "Resource/Images/Player/FuckAnim2.png";
+	}
 
+	if ((damageSE = LoadSoundMem("Resource/Sounds/SE/Player/damage.wav")) == -1) {
+		throw "Resource/Sounds/SE/Player/damage.wav";
+	}
+	if ((jumpSE = LoadSoundMem("Resource/Sounds/SE/Player/jump.wav")) == -1) {
+		throw "Resource/Sounds/SE/Player/jump.wav";
+	}
+	if ((landingSE = LoadSoundMem("Resource/Sounds/SE/Player/landing.wav")) == -1) {
+		throw "Resource/Sounds/SE/Player/jump2.wav";
+	}
+	ChangeVolumeSoundMem(static_cast<int>(100.0 / 100.0 * 255.0), jumpSE);
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
 		animation[i].frame = 0;
@@ -119,6 +132,9 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	if (stage->GetMapData(map_y, map_x) == -1 || life <= 0) {
 		is_death = true;
 	}
+	if (player_y + stage->GetScrollY() > 720){
+		is_death = true;
+	}
 
 	//画面端の判定
 	if (player_x <= 40 * player_scale) {
@@ -153,6 +169,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// プレイヤーの表示
 /// </summary>
 void PLAYER::Draw(STAGE *stage)const {
+	static float dis = 0.0f;
 	//デバッグ
 	//DrawFormatString(100, 50, 0xffffff, "%f", player_y);
 	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
@@ -163,6 +180,7 @@ void PLAYER::Draw(STAGE *stage)const {
 	//プレイヤーの表示
 	//フック中じゃない時
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
+		dis = 0.0f;
 		//描画する画像のセット
 		int image_type = static_cast<int>(animation_state);
 		int now_image = images[image_type][animation[image_type].type];
@@ -189,9 +207,10 @@ void PLAYER::Draw(STAGE *stage)const {
 		}
 		//伸びる時
 		else {
-			DrawRotaGraph3F(player_x + stage->GetScrollX() + 20, (player_y + stage->GetScrollY()) + (1.6 - player_scale) * 40, 226, 80,
-				(hook_distance / (MAP_CEllSIZE * 3.5)) * player_scale, 1 * player_scale, (double)hook_angle,
-				images[3][1], TRUE, move_type);
+			dis += hook_distance / 10.0f;
+			DrawRotaGraph3F(player_x + stage->GetScrollX() + 20, (player_y + stage->GetScrollY()) + (1.6 - player_scale) * 40, 80, 40,
+				(dis / (MAP_CEllSIZE * 3.0)) * player_scale, 1 * player_scale, (double)hook_angle + M_PI,
+				idle_nobi_img, TRUE, move_type);
 		}
 	}
 
@@ -310,51 +329,55 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 
 	//Bボタン押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
-		//フックまでの距離
-		float min_distance = HOOK_MAX_DISTANCE;
-
-		//フックの位置
-		std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
-		for (int i = 0; i < hook_pos.size(); i++) {
-			ELEMENT::ELEMENT_DATA pos = hook_pos[i];
-			//距離計算
-			float diff_x = pos.x - (player_x);
-			float diff_y = pos.y - player_y;
-			float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
-			//距離が最短距離より近いとき
-			if (distance <= min_distance) {
-				//フックの角度
-				float angle = atan2f(diff_y, diff_x);
-				//移動の計算
-				move_x = cosf(angle) * SPEED * 3;
-				move_y = sinf(angle) * SPEED * 3;
-				//プレイヤーの現在の位置
-				float x = player_x;
-				float y = player_y;
-				//フックまでの移動経路に障害物がないか
-				while (!stage->HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
-					if (stage->GetMapData(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
-						break;
+		if (player_state != PLAYER_MOVE_STATE::HOOK) {
+			//フックまでの距離
+			float min_distance = HOOK_MAX_DISTANCE;
+			//フックの位置
+			std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
+			for (int i = 0; i < hook_pos.size(); i++) {
+				ELEMENT::ELEMENT_DATA pos = hook_pos[i];
+				//距離計算
+				float diff_x = pos.x - (player_x);
+				float diff_y = pos.y - player_y;
+				float distance = sqrtf(diff_x * diff_x + diff_y * diff_y);
+				//距離が最短距離より近いとき
+				if (distance <= min_distance) {
+					//フックの角度
+					float angle = atan2f(diff_y, diff_x);
+					//移動の計算
+					move_x = cosf(angle) * SPEED * 3;
+					move_y = sinf(angle) * SPEED * 3;
+					//プレイヤーの現在の位置
+					float x = player_x;
+					float y = player_y;
+					//フックまでの移動経路に障害物がないか
+					while (!stage->HitMapDat(y / MAP_CEllSIZE, x / MAP_CEllSIZE)) {
+						if (stage->GetMapData(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
+							break;
+						}
+						x += move_x;
+						y += move_y;
 					}
-					x += move_x;
-					y += move_y;
+					//配列に変換
+					int hook_map_x = x / MAP_CEllSIZE;
+					int hook_map_y = y / MAP_CEllSIZE;
+					//障害物がある場合は移動させない
+					if (stage->GetMapData(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
+						continue;
+					}
+					//最短距離の更新
+					min_distance = distance;
+					hook_index = i;
+					//フックの座標の更新
+					hook_x = pos.x;
+					hook_y = pos.y;
+					//フックが見つかった判定をtrue
+					is_hook = true;
 				}
-				//配列に変換
-				int hook_map_x = x / MAP_CEllSIZE;
-				int hook_map_y = y / MAP_CEllSIZE;
-				//障害物がある場合は移動させない
-				if (stage->GetMapData(hook_map_y, hook_map_x) != 72) {		//フックの配列番号を入れる
-					continue;
-				}
-				//最短距離の更新
-				min_distance = distance;
-				hook_index = i;
-				//フックの座標の更新
-				hook_x = pos.x;
-				hook_y = pos.y;
-				//フックが見つかった判定をtrue
-				is_hook = true;
 			}
+		}
+		else {
+			is_hook = true;
 		}
 		//フックが見つかった時
 		if (is_hook) {
@@ -413,18 +436,18 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				ny = sin(angle) * LENGTH;
 				if (speed >= 0) {
 					if (input_lx < -15000) {
-						speed += 0.05;
+						speed += 0.05 * 2.0f;
 					}
 					if (input_lx > 15000) {
-						speed -= 0.09;
+						speed -= 0.09 * 2.0f;
 					}
 				}
 				else if (speed < 0) {
 					if (input_lx < -15000) {
-						speed += 0.09;
+						speed += 0.09 * 2.0f;
 					}
 					if (input_lx > 15000) {
-						speed -= 0.05;
+						speed -= 0.05 * 2.0f;
 					}
 				}
 				if (hook_y + ny < hook_y) {
@@ -435,6 +458,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 					if (speed > 0)speed -= 0.05;
 					if (speed < 0)speed += 0.05;
 				}
+				StartJoypadVibration(DX_INPUT_PAD1, static_cast<int>(abs(speed) / 18.0 * 500.0), 1, -1);
 			}
 		}
 	}
@@ -479,7 +503,7 @@ void PLAYER::JumpMove() {
 	//Aボタンを押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A || jump_request) {
 		//ジャンプ中じゃないとき
-		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && player_state != PLAYER_MOVE_STATE::HOOK
+		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && player_state != PLAYER_MOVE_STATE::HOOK && is_ground
 			|| jump_request) {
 			jump_request = false;
 			is_jump = true;			//ジャンプ中に移行
@@ -495,6 +519,7 @@ void PLAYER::JumpMove() {
 			}
 			player_state = PLAYER_MOVE_STATE::JUMP;
 			ChangeAnimation(PLAYER_ANIM_STATE::JUMP);
+			PlaySoundMem(jumpSE, DX_PLAYTYPE_BACK);
 		}
 	}
 	//ジャンプ中
@@ -506,7 +531,6 @@ void PLAYER::JumpMove() {
 			is_jump = false;
 			hit_ceil = false;
 			jump_velocity = 0;
-			ChangeAnimation(PLAYER_ANIM_STATE::FALL);
 		}
 	}
 	//落下中
@@ -516,6 +540,7 @@ void PLAYER::JumpMove() {
 			jump_velocity += 0.2f;
 			player_y += jump_velocity;
 			player_state = PLAYER_MOVE_STATE::FALL;
+			ChangeAnimation(PLAYER_ANIM_STATE::FALL);
 		}
 		//地面についた時
 		else {
@@ -528,6 +553,7 @@ void PLAYER::JumpMove() {
 				jump_velocity = 0;
 				player_state = PLAYER_MOVE_STATE::IDLE;
 				ChangeAnimation(PLAYER_ANIM_STATE::LANDING);
+				PlaySoundMem(landingSE, DX_PLAYTYPE_BACK);
 			}
 			if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 				jump_velocity = 0;
@@ -569,7 +595,7 @@ void PLAYER::Throw(STAGE* stage) {
 		else if (angle < 90) throw_rad = 90 * M_PI / 180.0f;
 	}
 
-	float ve = 90;
+	float ve = 110;
 
 	float vx0 = ve * (float)cos(throw_rad);
 	float vy0 = ve * (float)sin(throw_rad);
@@ -652,10 +678,10 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) && !is_manhole) {
 			is_ground = true;
 		}
-		int block_type = stage->GetMapData((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		int block_type1 = stage->GetMapData((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		int block_type2 = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		if (block_type == 98 || block_type1 == 98 || block_type2 == 98) {
+		int block_type_center = stage->GetMapData((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+		int block_type_top = stage->GetMapData((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+		int block_type_bottom = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+		if (block_type_center == 98 || block_type_top == 98 || block_type_bottom == 98) {
 			float diff = fabsf((float)((int)(player_x / MAP_CEllSIZE) * MAP_CEllSIZE) - player_left);
 			if (diff < SPEED * player_scale) {
 				is_manhole = true;
@@ -758,5 +784,6 @@ void PLAYER::SetLife(int a)
 		alpha_time = 120;
 		is_damage = true;
 		StartJoypadVibration(DX_INPUT_PAD1, 360, 320, -1);
+		PlaySoundMem(damageSE, DX_PLAYTYPE_BACK);
 	}
 }

@@ -15,7 +15,10 @@ GRAPEFRUIT::GRAPEFRUIT()
 	shootcount = 0;
 	delete_flg = false;
 	rad = 0.0;
-	flag[3] = false;
+	for (int i = 0; i < 3; i++)
+	{
+		flag[i] = false;
+	}
 	x = 0;
 	spawn_map_x = 0;
 	spawn_map_y = 0;
@@ -167,7 +170,13 @@ void GRAPEFRUIT::Update()
 	//画面内にいるかどうか
 	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY() < 0) || (y + stage->GetScrollY() > 720))		//画面外に出るとアイドル状態にする
 	{
-		state = ENEMY_STATE::IDOL;		//ステートを待機状態へ
+		state = ENEMY_STATE::IDOL;		//ステートをアイドル状態へ
+		//アイドル状態の画像に変更
+		for (int i = 0; i < 2; i++)
+		{
+			face_image[i] = image[i];
+			fruit_image[i] = image[(i + 1) * 6];
+		}
 	}
 	else if (state == ENEMY_STATE::IDOL)	//画面内にいて、アイドル状態のとき敵の方向を向くようにする
 	{
