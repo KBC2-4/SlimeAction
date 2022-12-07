@@ -132,7 +132,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				data.lift_init_x = data.x;
 				data.lift_init_y = data.y;
 				data.lift_vector_x = 0;
-				data.lift_vector_y = 1;
+				data.lift_vector_y = 0;
 				data.type = 1;
 				data.flg = false;
 				data.animtimer = 0;
@@ -144,7 +144,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.lift_init_x = data.x;
 				data.lift_init_y = data.y;
-				data.lift_vector_x = 1;
+				data.lift_vector_x = 0;
 				data.lift_vector_y = 0;
 				data.type = 2;
 				data.flg = false;
@@ -152,16 +152,19 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				lift.push_back(data);
 				break;
 
-				//ìÆÇ≠è∞(ÉSÅ[Éã)
+				//ìÆÇ≠è∞(ÉSÅ[Éãèc)
 			case 53:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
-				data.type = 0;
-				data.flg = false;
-				data.animtimer = 0;
-				lift_goal.push_back(data);
+				lift_goal_Y.push_back(data);
 				break;
 
+				//ìÆÇ≠è∞(ÉSÅ[Éãâ°)
+			case 54:
+				data.x = static_cast<float>((j * MAP_CEllSIZE));
+				data.y = static_cast<float>((i * MAP_CEllSIZE));
+				lift_goal_X.push_back(data);
+				break;
 		
 			default:
 				break;
@@ -219,6 +222,9 @@ void ELEMENT::Draw(STAGE* stage)  {
 	}
 
 	//ìÆÇ≠è∞
+	//DrawFormatString(100, 300, 0xffffff, "%f", lift_goal_X[0].x);
+	//DrawFormatString(200, 200, 0xffffff, "%f", lift[1].lift_init_x);
+	//DrawFormatString(100, 200, 0xffffff, "%d", lift[1].lift_vector_x);
 	for (int i = 0; i < lift.size(); i++) {
 		DrawExtendGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 31 + stage->GetScrollY(), lift[i].x + LIFT_SIZE + stage->GetScrollX(), lift[i].y + 70 + stage->GetScrollY(), block_image1[51], TRUE);		
 	}
@@ -409,7 +415,10 @@ void ELEMENT::Door(STAGE* stage) {
 /// ìÆÇ≠è∞ÇÃèàóù
 /// </summary>
 void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
+	int goal_num_x = 0;
+	int goal_num_y = 0;
 	for (int i = 0; i < lift.size(); i++) {
+		
 		if (player_map_x > lift[i].x - 1280 && player_map_x < lift[i].x + 1280) {
 			lift[i].flg = true;
 		}
@@ -417,30 +426,32 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 		if (lift[i].flg) {
 			//ìÆÇ≠è∞(èc)ÇÃìÆÇ´
 			if (lift[i].type == 1) {
-				if (lift[i].y < lift_goal[i].y) { lift[i].lift_vector_y = 1; }
+				if (lift[i].y < lift_goal_Y[goal_num_y].y) { lift[i].lift_vector_y = 1; }
 				else { lift[i].lift_vector_y = -1; }
-				if (lift[i].y != lift_goal[i].y) {
+				if (lift[i].y != lift_goal_Y[goal_num_y].y) {
 					lift[i].y += lift[i].lift_vector_y * 4;
 				}
 				else {
-					float work = lift_goal[i].y;
-					lift_goal[i].y = lift[i].lift_init_y;
+					float work = lift_goal_Y[goal_num_y].y;
+					lift_goal_Y[goal_num_y].y = lift[i].lift_init_y;
 					lift[i].lift_init_y = work;
 				}
+				goal_num_y++;
 			}
 			//ìÆÇ≠è∞(â°)ÇÃìÆÇ´
 			else if (lift[i].type == 2) {
-				if (lift[i].x < lift_goal[i].x) { lift[i].lift_vector_x = 1; }
-				else if(lift[i].x > lift_goal[i].x) { lift[i].lift_vector_x = -1; }
+				if (lift[i].x < lift_goal_X[goal_num_x].x) { lift[i].lift_vector_x = 1; }
+				else  { lift[i].lift_vector_x = -1; }
 
-				if (lift[i].x != lift_goal[i].x) {
+				if (lift[i].x != lift_goal_X[goal_num_x].x) {
 					lift[i].x += lift[i].lift_vector_x * 4;
 				}
 				else {
-					float work = lift_goal[i].x;
-					lift_goal[i].x = lift[i].lift_init_x;
+					float work = lift_goal_X[goal_num_x].x;
+					lift_goal_X[goal_num_x].x = lift[i].lift_init_x;
 					lift[i].lift_init_x = work;
 				}
+				goal_num_x++;
 			}
 		}
 	}

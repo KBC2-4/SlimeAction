@@ -30,7 +30,8 @@ private:
 	std::vector<ELEMENT_DATA> door;			//ドア
 	std::vector<ELEMENT_DATA> lift;			//動く床
 
-	std::vector<ELEMENT_DATA>lift_goal;		//動く床のゴール地点
+	std::vector<ELEMENT_DATA>lift_goal_Y;		//動く床のゴール地点(縦)
+	std::vector<ELEMENT_DATA>lift_goal_X;		//動く床のゴール地点(横)
 	std::vector<ELEMENT_DATA> manhole;		//マンホール
 	std::vector<ELEMENT_DATA> acidrain_puddles;			//酸性雨の水たまり
 	float player_map_x, player_map_y;
