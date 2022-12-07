@@ -129,10 +129,13 @@ void LEMON::Update()
 
 	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY() < 0))		//画面外に出るとアイドル状態にする
 	{
-		state = ENEMY_STATE::IDOL;
+		state = ENEMY_STATE::IDOL;	//ステートをアイドル状態へ
+		//アイドル状態の画像に変更
+		now_image = image[3];
 	}
 	else if (state == ENEMY_STATE::IDOL)	//画面内にいて、アイドル状態のとき敵の方向を向くようにする
 	{
+		// アニメーション時間をリセットし、ステートをムーブへ
 		animation_timer = 0;
 		state = ENEMY_STATE::MOVE;
 	}
