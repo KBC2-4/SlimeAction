@@ -517,9 +517,6 @@ void PLAYER::JumpMove() {
 			else if (player_state == PLAYER_MOVE_STATE::MOVE) {
 				jump_mode = 2;
 			}
-			if (!is_ground) {
-				printfDx("HELLO");
-			}
 			player_state = PLAYER_MOVE_STATE::JUMP;
 			ChangeAnimation(PLAYER_ANIM_STATE::JUMP);
 			PlaySoundMem(jumpSE, DX_PLAYTYPE_BACK);
