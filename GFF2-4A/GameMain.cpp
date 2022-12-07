@@ -136,7 +136,9 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 			int scrollx = -(stage->GetHalfwayPoint().x - 500);
 			stage->SetScrollX(scrollx);	//スポーン地点をセット
 			stage->SetScrollY(-(stage->GetHalfwayPoint().y - MAP_CEllSIZE - 400));
-			player->SetPlayer_Screen(stage->GetHalfwayPoint());
+			POINT buf = { stage->GetHalfwayPoint().y, stage->GetHalfwayPoint().x };
+			player->SetPlayer_Screen(buf);
+			
 	}
 	else {
 		//スポーン地点をセット
