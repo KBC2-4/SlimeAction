@@ -54,6 +54,7 @@ private:
 	float jump_move_x;
 	bool is_ground;		//地面についてるかどうか
 	bool hit_ceil;
+	float player_speed;
 
 	int life;
 	int images[ANIMATION_TYPE][10];		//アニメーションの画像
@@ -187,6 +188,8 @@ public:
 	float GetPlayerScale() { return player_scale; }
 
 	float GetJumpVelocity() { return jump_velocity; }
+
+	float GetPlayerSpeed() { return player_speed; }
 
 	void SetLife(int a);
 
