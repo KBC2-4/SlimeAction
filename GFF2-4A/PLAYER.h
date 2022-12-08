@@ -154,6 +154,7 @@ private:
 
 public:
 	PLAYER(STAGE* stage);
+	~PLAYER();
 
 	void Move();
 	void Draw(STAGE* stage) const;
