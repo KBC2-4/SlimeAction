@@ -72,6 +72,7 @@ private:
 	float hook_distance;
 	float hook_y, hook_x;
 	int hook_index;
+	int idle_nobi_img;
 	
 	double x;     // 紐を伸ばして一周させた場合に出来る円の線上の座標、０は紐が軸の真下に伸びた位置
 	double speed; // xの変化速度
@@ -98,6 +99,11 @@ private:
 
 	//プレイヤーのサイズ(倍率)
 	float player_scale;
+
+	//サウンド
+	int damageSE;	//ダメージを食らったとき
+	int jumpSE;		//ジャンプしたとき
+	int landingSE;	//着地したとき
 
 	typedef struct Animation {
 		//画像を切り替えるタイミング(フレーム)

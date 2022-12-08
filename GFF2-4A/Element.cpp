@@ -222,9 +222,6 @@ void ELEMENT::Draw(STAGE* stage)  {
 	}
 
 	//動く床
-	//DrawFormatString(100, 300, 0xffffff, "%f", lift_goal_X[0].x);
-	//DrawFormatString(200, 200, 0xffffff, "%f", lift[1].lift_init_x);
-	//DrawFormatString(100, 200, 0xffffff, "%d", lift[1].lift_vector_x);
 	for (int i = 0; i < lift.size(); i++) {
 		DrawExtendGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 31 + stage->GetScrollY(), lift[i].x + LIFT_SIZE + stage->GetScrollX(), lift[i].y + 70 + stage->GetScrollY(), block_image1[51], TRUE);		
 	}
@@ -542,9 +539,9 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 
 	for (int i = 0; i < acidrain_puddles.size(); i++) {
 
-		if (acidrain_puddles[i].flg == false)acidrain_puddles[i].animtimer++;
-		if (acidrain_puddles[i].animtimer > 120) {
-			acidrain_puddles[i].animtimer = 0;
+		if (acidrain_puddles[i].flg == false)acidrain_puddles[0].animtimer++;
+		if (acidrain_puddles[0].animtimer > 120) {
+			acidrain_puddles[0].animtimer = 0;
 			acidrain_puddles[i].flg = true;
 		}
 
@@ -552,14 +549,14 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 			if ((player_map_x >= acidrain_puddles[i].x - MAP_CEllSIZE / 2) && (player_map_x <= acidrain_puddles[i].x + MAP_CEllSIZE / 2) && (player_map_y >= acidrain_puddles[i].y - MAP_CEllSIZE) && (player_map_y <= acidrain_puddles[i].y + MAP_CEllSIZE)) {
 				//デバッグ
 				//printfDx("入ってるよ！");
-				if (CheckSoundMem(walk_puddle_se) == FALSE && acidrain_puddles[i].animtimer % 90 == 0)PlaySoundMem(walk_puddle_se, DX_PLAYTYPE_BACK, TRUE);
+				if (CheckSoundMem(walk_puddle_se) == FALSE && acidrain_puddles[0].animtimer % 90 == 0)PlaySoundMem(walk_puddle_se, DX_PLAYTYPE_BACK, TRUE);
 				//player->SetPlayerY(acidrain_puddles[i].y + 1.5f);
 				if (acidrain_puddles[i].flg == true) {
 					player->SetLife(player->GetLife() - 1);
 					//printfDx("残りライフ：%d",player->GetLife());		//デバッグ
 					acidrain_puddles[i].flg = false;
 				}
-			}else{ acidrain_puddles[i].animtimer = 0; }
+			}else{ /*acidrain_puddles[0].animtimer = 0;*/ }
 		}
 	}
 }
