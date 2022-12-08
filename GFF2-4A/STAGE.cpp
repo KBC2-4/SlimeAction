@@ -69,6 +69,11 @@ STAGE::STAGE(const char* stage_name) {
 		spawn_point.y = 0;
 	}
 }
+
+STAGE::~STAGE() {
+	DeleteGraph(*block_image1);
+	DeleteSoundMem(halfwaypoint_se);
+}
 	
 
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
@@ -96,6 +101,10 @@ void STAGE::Draw()const {
 					map_data.at(i).at(j) != 68
 					&& map_data.at(i).at(j) != 102
 					&& map_data.at(i).at(j) != 103
+					&& map_data.at(i).at(j) != 104
+					&& map_data.at(i).at(j) != 105
+					&& map_data.at(i).at(j) != 106
+					&& map_data.at(i).at(j) != 107
 					&& map_data.at(i).at(j) != 51	//ìÆÇ≠è∞3Ç¬
 					&& map_data.at(i).at(j) != 52
 					&& map_data.at(i).at(j) != 53	

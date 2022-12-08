@@ -7,6 +7,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 	std::vector<std::vector<int>> spawn_point;
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
+	background_image[1] = LoadGraph("Resource/Images/Stage/BackImage2.png");
 	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1) {
 		throw "Resource/Sounds/SE/cursor_move.wav";
 	}
@@ -300,8 +301,14 @@ void GAMEMAIN::Draw() const
 {
 
 	//ステージ背景
-	DrawGraph(int(stage->GetScrollX()) % 1280 + 1280, /*scroll_y*/0, background_image[0], FALSE);
-	DrawTurnGraph(int(stage->GetScrollX()) % 1280, /*scroll_y*/0, background_image[0], FALSE);
+	if (stage_name != "Stage02") {
+		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[0], FALSE);
+		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[0], FALSE);
+	}
+	else if(stage_name == "Stage02"){
+		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[1], FALSE);
+		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[1], FALSE);
+	}
 
 
 	//ステージの描画

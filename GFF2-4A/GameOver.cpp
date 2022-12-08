@@ -35,6 +35,7 @@ GameOver::~GameOver()
 
 	DeleteGraph(GameOverImage);
 	DeleteFontToHandle(Select_font);
+	DeleteFontToHandle(Button_font);
 }
 
 AbstractScene* GameOver::Update()
