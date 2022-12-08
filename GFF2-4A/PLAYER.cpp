@@ -423,7 +423,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 					//慣性的な奴
 					jump_move_x = move_x > 0 ? 1 : -1;
 					jump_mode == 2;
-					PlaySoundMem(hook_moveSE, DX_PLAYTYPE_BACK);
+					//PlaySoundMem(hook_moveSE, DX_PLAYTYPE_BACK);
 				}
 				//フックについてない時
 				if (hook_distance > 40) {
@@ -432,8 +432,8 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				}
 				//フックについたら移動処理の終了
 				else {
-					StopSoundMem(hook_moveSE);
-					PlaySoundMem(hook_pendulumSE, DX_PLAYTYPE_LOOP);
+					//StopSoundMem(hook_moveSE);
+					//PlaySoundMem(hook_pendulumSE, DX_PLAYTYPE_LOOP);
 					end_move = true;
 					//振り子の開始角度の設定
 					double angle = (double)hook_angle * (180.0 / M_PI) - 90.0;
@@ -497,7 +497,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 		hook_index = -1;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			//フック後のジャンプ方向の修正
-			StopSoundMem(hook_pendulumSE);
+			//StopSoundMem(hook_pendulumSE);
 			if (input_lx < -DEVIATION) {
 				jump_move_x = -1;
 			}
