@@ -8,6 +8,8 @@ TOMATO::TOMATO()
 	image_rate = 0.1;
 	spawn_map_x = 0;
 	spawn_map_y = 0;
+
+	now_image = 0;
 	image = new int[3];
 	if (LoadDivGraph("Resource/Images/Enemy/tomaton.png", 3, 3, 1, 80, 80, image) == -1)
 	{
@@ -29,6 +31,7 @@ TOMATO::TOMATO(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	image_rate = 0.1;
 	state = ENEMY_STATE::IDOL;
 
+	now_image = 0;
 	image = new int[9];
 	if (LoadDivGraph("Resource/Images/Enemy/tomaton.png", 3, 3, 1, 80, 80, image) == -1)
 	{
@@ -62,10 +65,14 @@ void TOMATO::Update()
 		Move();
 		Hit();
 		FallAnimation();
+		if (y + stage->GetScrollY() > 720)
+		{
+			state = ENEMY_STATE::DETH;
+		}
 		break;
 	case ENEMY_STATE::DETH:
 		//爆発し終え時または、画面外に出たらアイドル状態にする
-		if(DethAnimation() || (y > 720))
+		if(DethAnimation() || (y + stage->GetScrollY() > 720))
 		{
 			state = ENEMY_STATE::IDOL;
 			image_rate = 0;
@@ -102,7 +109,7 @@ void TOMATO::Hit()
 
 	bx1 = x - IMAGE_SIZE / 2;
 	bx2 = bx1 + IMAGE_SIZE;
-	by1 = y - IMAGE_SIZE / 2.5;
+	by1 = y + stage->GetScrollY() - IMAGE_SIZE / 2.5;
 	by2 = by1 + IMAGE_SIZE / 2;
 
 	//プレイヤーとの当たり判定
