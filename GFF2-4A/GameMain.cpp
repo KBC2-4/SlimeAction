@@ -208,7 +208,7 @@ AbstractScene* GAMEMAIN::Update()
 				{
 					item_rand = GetRand(5);
 					//ƒAƒCƒeƒ€‚ð¶¬
-					if (item_rand == 0 || true)
+					if (item_rand == 0)
 					{
 						item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX(),stage->GetScrollY());
 					}
