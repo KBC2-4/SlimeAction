@@ -185,6 +185,12 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 }
 
 ELEMENT::~ELEMENT() {
+	DeleteFontToHandle(guid_font);
+	DeleteSoundMem(door_close_se);
+	DeleteSoundMem(press_the_button_se);
+	DeleteSoundMem(switch_se);
+	DeleteSoundMem(walk_puddle_se);
+	DeleteSoundMem(manhole_opened_se);
 	hook.clear();
 	hook.shrink_to_fit();
 }
