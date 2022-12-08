@@ -6,7 +6,7 @@
 STAGE_SELECT::STAGE_SELECT()
 {
 	//background_image[0] = LoadGraph("Resource/Images/Stage/BackImpause_cash.bmp");
-	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage.png");
+	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png");
 	guid_font = CreateFontToHandle("メイリオ", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	stage = new STAGE("StageSelect");
