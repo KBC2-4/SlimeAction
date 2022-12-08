@@ -127,7 +127,8 @@ void LEMON::Update()
 	
 	Hit();
 
-	if ((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY() < 0))		//画面外に出るとアイドル状態にする
+	if (((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY() < 0) 
+		|| (y + stage->GetScrollY() > 720)) && (state != ENEMY_STATE::FALL && state != ENEMY_STATE::DETH))		//画面外に出るとアイドル状態にする
 	{
 		state = ENEMY_STATE::IDOL;	//ステートをアイドル状態へ
 		//アイドル状態の画像に変更

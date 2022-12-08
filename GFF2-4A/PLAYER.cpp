@@ -93,6 +93,12 @@ PLAYER::PLAYER(STAGE* stage) {
 	animation[static_cast<int>(PLAYER_ANIM_STATE::LANDING)].playMode = 1;
 }
 
+PLAYER::~PLAYER() {
+	DeleteSoundMem(damageSE);
+	DeleteSoundMem(jumpSE);
+	DeleteSoundMem(landingSE);
+}
+
 /// <summary>
 /// プレイヤーの更新
 /// </summary>

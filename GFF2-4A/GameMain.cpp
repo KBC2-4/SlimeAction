@@ -210,7 +210,7 @@ AbstractScene* GAMEMAIN::Update()
 					//アイテムを生成
 					if (item_rand == 0)
 					{
-						item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX());
+						item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX(),stage->GetScrollY());
 					}
 					delete lemoner[i];
 					lemoner[i] = nullptr;
@@ -229,7 +229,7 @@ AbstractScene* GAMEMAIN::Update()
 				//アイテムを生成
 				if (item_rand == 0)
 				{
-					item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX());
+					item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX(),stage->GetScrollY());
 				}
 				delete gurepon[i];
 				gurepon[i] = nullptr;
