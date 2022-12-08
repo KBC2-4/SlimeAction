@@ -223,6 +223,8 @@ void ELEMENT::Draw(STAGE* stage)  {
 
 	//ìÆÇ≠è∞
 	for (int i = 0; i < lift.size(); i++) {
+		/*DrawFormatString(100+i*100, 400, 0xffffff, "%f", lift_goal_X[i].x);
+		DrawBox(lift_goal_X[i].x + stage->GetScrollX(), lift_goal_X[i].y + stage->GetScrollY(), lift_goal_X[i].x + MAP_CEllSIZE * 2 + stage->GetScrollX(), lift_goal_X[i].y + MAP_CEllSIZE / 2 + stage->GetScrollY(),0xff0000,FALSE);*/
 		DrawExtendGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 31 + stage->GetScrollY(), lift[i].x + LIFT_SIZE + stage->GetScrollX(), lift[i].y + 70 + stage->GetScrollY(), block_image1[51], TRUE);		
 	}
 
