@@ -252,7 +252,8 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 31 //葉っぱ
 		|| block_type == 51	//動く床(縦)
 		|| block_type == 52	//動く床(横)
-		|| block_type == 53	//動く床(ゴール)
+		|| block_type == 53	//動く床(ゴール縦)
+		|| block_type == 54	//動く床(ゴール横)
 		|| block_type == 64	//ドア 
 		|| block_type == 65	//ドア 
 		|| block_type == 62	//ボタン(感圧式)
