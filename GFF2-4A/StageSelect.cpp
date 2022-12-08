@@ -141,6 +141,18 @@ void STAGE_SELECT::Draw() const
 	DrawGraph(stage_move[1].x + stage->GetScrollX(), stage_move[1].y + stage->GetScrollY(), stage->GetMapImage(102), TRUE);
 	SetDrawBright(255, 255, 255);
 
+	//ステージ2 ポータル描画
+	SetDrawBright(0, 255, 420 - effect_timer);
+	DrawGraph(stage_move[2].x + stage->GetScrollX(), stage_move[2].y + -MAP_CEllSIZE + stage->GetScrollY(), stage->GetMapImage(103), TRUE);
+	DrawGraph(stage_move[2].x + stage->GetScrollX(), stage_move[2].y + stage->GetScrollY(), stage->GetMapImage(104), TRUE);
+	SetDrawBright(255, 255, 255);
+
+	//ステージ3 ポータル描画
+	SetDrawBright(255 - effect_timer, 255, 255);
+	DrawGraph(stage_move[3].x + stage->GetScrollX(), stage_move[3].y + -MAP_CEllSIZE + stage->GetScrollY(), stage->GetMapImage(105), TRUE);
+	DrawGraph(stage_move[3].x + stage->GetScrollX(), stage_move[3].y + stage->GetScrollY(), stage->GetMapImage(106), TRUE);
+	SetDrawBright(255, 255, 255);
+
 	//ステージ1
 	if ((player_map_x >= stage_move[1].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[1].x + MAP_CEllSIZE / 2)) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
@@ -161,7 +173,7 @@ void STAGE_SELECT::Draw() const
 		DrawOvalAA(stage_move[2].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[2].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 18, 0xFFFFFF, TRUE, 0.0F);
 		//DrawString(stage_move[2].x + MAP_CEllSIZE / 2, stage_move[2].y + MAP_CEllSIZE, "STAGE 1" , 0x6AF6C5, 0x000000);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		DrawExtendStringToHandle(stage_move[2].x + stage->GetScrollX() - 55, stage_move[2].y - MAP_CEllSIZE - 10 + stage->GetScrollY(), 0.6f, 0.6f, "２ステージ", 0xD65701, guid_font, 0x000000);
+		DrawExtendStringToHandle(stage_move[2].x + stage->GetScrollX() - 55, stage_move[2].y - MAP_CEllSIZE - 10 + stage->GetScrollY(), 0.6f, 0.6f, "２ステージ", 0xFA5A47, guid_font, 0x000000);
 
 		DrawCircleAA(stage_move[2].x + stage->GetScrollX(), stage_move[2].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
 		DrawStringToHandle(stage_move[2].x + stage->GetScrollX() - 7, stage_move[2].y + stage->GetScrollY() - 12, "B", 0xEB7415, buttonguid_font, 0xFFFFFF);
@@ -174,7 +186,7 @@ void STAGE_SELECT::Draw() const
 		DrawOvalAA(stage_move[3].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[3].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 18, 0xFFFFFF, TRUE, 0.0F);
 		//DrawString(stage_move[3].x + MAP_CEllSIZE / 2, stage_move[3].y + MAP_CEllSIZE, "STAGE 1" , 0x6AF6C5, 0x000000);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		DrawExtendStringToHandle(stage_move[3].x + stage->GetScrollX() - 55, stage_move[3].y - MAP_CEllSIZE - 10 + stage->GetScrollY(), 0.6f, 0.6f, "３ステージ", 0xD65701, guid_font, 0x000000);
+		DrawExtendStringToHandle(stage_move[3].x + stage->GetScrollX() - 55, stage_move[3].y - MAP_CEllSIZE - 10 + stage->GetScrollY(), 0.6f, 0.6f, "３ステージ", 0x9511D9, guid_font, 0x000000);
 
 		DrawCircleAA(stage_move[3].x + stage->GetScrollX(), stage_move[3].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
 		DrawStringToHandle(stage_move[3].x + stage->GetScrollX() - 7, stage_move[3].y + stage->GetScrollY() - 12, "B", 0xEB7415, buttonguid_font, 0xFFFFFF);

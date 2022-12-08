@@ -101,6 +101,10 @@ void STAGE::Draw()const {
 					map_data.at(i).at(j) != 68
 					&& map_data.at(i).at(j) != 102
 					&& map_data.at(i).at(j) != 103
+					&& map_data.at(i).at(j) != 104
+					&& map_data.at(i).at(j) != 105
+					&& map_data.at(i).at(j) != 106
+					&& map_data.at(i).at(j) != 107
 					&& map_data.at(i).at(j) != 51	//“®‚­°3‚Â
 					&& map_data.at(i).at(j) != 52
 					&& map_data.at(i).at(j) != 53	
