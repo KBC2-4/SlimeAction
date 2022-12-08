@@ -7,6 +7,9 @@ STAGE_SELECT::STAGE_SELECT()
 {
 	//background_image[0] = LoadGraph("Resource/Images/Stage/BackImpause_cash.bmp");
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png");
+	if ((background_music = LoadSoundMem("Resource/Sounds/BGM/title.wav")) == -1) {
+		throw "Resource/Sounds/BGM/title.wav";
+	}
 	guid_font = CreateFontToHandle("メイリオ", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	stage = new STAGE("StageSelect");
@@ -53,12 +56,16 @@ STAGE_SELECT::STAGE_SELECT()
 			}
 		}
 	}
+
+	PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
 }
 
 STAGE_SELECT::~STAGE_SELECT()
 {
 	DeleteFontToHandle(guid_font);
 	DeleteFontToHandle(buttonguid_font);
+	StopSoundMem(background_music);
+	DeleteSoundMem(background_music);
 	DeleteGraph(background_image[0]);
 	delete player;
 	delete stage;

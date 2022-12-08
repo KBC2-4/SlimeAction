@@ -10,7 +10,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	background_image[1] = LoadGraph("Resource/Images/Stage/BackImage2.png");
 
 	if ((background_music[0] = LoadSoundMem("Resource/Sounds/BGM/stage1.wav")) == -1) {
-		throw "Resource/Sounds/BGM/stage01.wav";
+		throw "Resource/Sounds/BGM/stage1.wav";
 	}
 
 	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1) {
@@ -154,7 +154,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 		player->SetPlayer_Screen(stage->GetSpawnPoint());
 	}
 
-	PlaySoundMem(background_music[0], DX_PLAYTYPE_BACK);
+	PlaySoundMem(background_music[0], DX_PLAYTYPE_LOOP);
 }
 
 GAMEMAIN::~GAMEMAIN()
