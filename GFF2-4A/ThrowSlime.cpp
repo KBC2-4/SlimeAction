@@ -24,6 +24,10 @@ ThrowSlime::ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y, S
 	/*throw_fall = false;*/
 }
 
+void ThrowSlime::Finalize() {
+	DeleteGraph(image);
+}
+
 void ThrowSlime::Update(STAGE* stage) {
 	if (!throw_end) {
 		if (move_type == 0) {

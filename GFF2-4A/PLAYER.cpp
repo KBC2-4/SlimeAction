@@ -79,6 +79,12 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((landingSE = LoadSoundMem("Resource/Sounds/SE/Player/landing.wav")) == -1) {
 		throw "Resource/Sounds/SE/Player/jump2.wav";
 	}
+	if ((hook_moveSE = LoadSoundMem("Resource/Sounds/SE/Player/hook_move.wav")) == -1) {
+		throw "Resource/Sounds/SE/Player/hook_move.wav";
+	}
+	if ((hook_pendulumSE = LoadSoundMem("Resource/Sounds/SE/Player/hook_pendulum.wav")) == -1) {
+		throw "Resource/Sounds/SE/Player/hook_pendulum.wav";
+	}
 	ChangeVolumeSoundMem(static_cast<int>(100.0 / 100.0 * 255.0), jumpSE);
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
@@ -94,9 +100,20 @@ PLAYER::PLAYER(STAGE* stage) {
 }
 
 PLAYER::~PLAYER() {
+	DeleteGraph(throw_ball_image);
+	DeleteGraph(hp_img);
+	DeleteGraph(idle_nobi_img);
+	for (int i = 0; i < ANIMATION_TYPE; i++) {
+		for (int j = 0; j < 10; j++) {
+			DeleteGraph(images[i][j]);
+		}
+	}
+
 	DeleteSoundMem(damageSE);
 	DeleteSoundMem(jumpSE);
 	DeleteSoundMem(landingSE);
+	DeleteSoundMem(hook_moveSE);
+	DeleteSoundMem(hook_pendulumSE);
 }
 
 /// <summary>
@@ -124,6 +141,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	//球を消す処理
 	for (int i = 0; i < throw_slime.size(); i++) {
 		if (throw_slime[i].checkdel() == true) {
+			throw_slime[i].Finalize();
 			throw_slime.erase(throw_slime.begin() + i);
 		}
 	}
@@ -405,6 +423,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 					//慣性的な奴
 					jump_move_x = move_x > 0 ? 1 : -1;
 					jump_mode == 2;
+					PlaySoundMem(hook_moveSE, DX_PLAYTYPE_BACK);
 				}
 				//フックについてない時
 				if (hook_distance > 40) {
@@ -413,6 +432,8 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				}
 				//フックについたら移動処理の終了
 				else {
+					StopSoundMem(hook_moveSE);
+					PlaySoundMem(hook_pendulumSE, DX_PLAYTYPE_LOOP);
 					end_move = true;
 					//振り子の開始角度の設定
 					double angle = (double)hook_angle * (180.0 / M_PI) - 90.0;
@@ -476,6 +497,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 		hook_index = -1;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			//フック後のジャンプ方向の修正
+			StopSoundMem(hook_pendulumSE);
 			if (input_lx < -DEVIATION) {
 				jump_move_x = -1;
 			}

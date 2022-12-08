@@ -102,9 +102,11 @@ private:
 	float player_scale;
 
 	//サウンド
-	int damageSE;	//ダメージを食らったとき
-	int jumpSE;		//ジャンプしたとき
-	int landingSE;	//着地したとき
+	int damageSE;		//ダメージを食らったとき
+	int jumpSE;			//ジャンプしたとき
+	int landingSE;		//着地したとき
+	int hook_moveSE;	//フックへの移動時
+	int hook_pendulumSE;	//振り子運動時
 
 	typedef struct Animation {
 		//画像を切り替えるタイミング(フレーム)
