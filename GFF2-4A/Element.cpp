@@ -442,7 +442,7 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 				}
 				else {
 					lift[i].lift_wait_time++;
-					if (lift[i].lift_wait_time == 180) {
+					if (lift[i].lift_wait_time == 60) {
 						float work = lift_goal_Y[goal_num_y].y;
 						lift_goal_Y[goal_num_y].y = lift[i].lift_init_y;
 						lift[i].lift_init_y = work;
@@ -462,7 +462,7 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 				}
 				else {
 					lift[i].lift_wait_time++;
-					if (lift[i].lift_wait_time == 180) {
+					if (lift[i].lift_wait_time == 60) {
 						float work = lift_goal_X[goal_num_x].x;
 						lift_goal_X[goal_num_x].x = lift[i].lift_init_x;
 						lift[i].lift_init_x = work;
