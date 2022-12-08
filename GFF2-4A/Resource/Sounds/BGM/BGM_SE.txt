@@ -1,0 +1,18 @@
+gameover01
+link https://commons.nicovideo.jp/material/agreement/nc214988
+
+gameover02
+link https://commons.nicovideo.jp/material/agreement/nc187757
+
+gameclear01
+link https://commons.nicovideo.jp/material/agreement/nc248305
+
+gameclear02
+link https://commons.nicovideo.jp/material/agreement/nc131422
+
+title_select01
+link https://commons.nicovideo.jp/material/agreement/nc290180
+
+first01
+link https://commons.nicovideo.jp/material/agreement/nc290177
+
