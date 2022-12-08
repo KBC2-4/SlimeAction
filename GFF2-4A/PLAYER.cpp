@@ -245,13 +245,14 @@ void PLAYER::Draw(STAGE *stage)const {
 /// </summary>
 void PLAYER::Move() 
 {
+	player_speed = SPEED * fabsf(player_scale - 2.6f);
+	//player_speed = SPEED * player_scale;
 	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
 
 	//スティック入力の取得
 	old_player_x = player_x;
 	old_player_y = player_y;
 	int input_lx = PAD_INPUT::GetPadThumbLX();
-
 	//移動するとき
 	move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
 	if (input_lx < -DEVIATION || input_lx > DEVIATION) 
@@ -259,7 +260,7 @@ void PLAYER::Move()
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL) 
 		{
 			move_type = (move_x > 0) ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
-			player_x += move_x * SPEED * player_scale;
+			player_x += move_x * player_speed;
 			jump_move_x = move_x;
 			player_state = PLAYER_MOVE_STATE::MOVE;	//ステートをMoveに切り替え
 			ChangeAnimation(PLAYER_ANIM_STATE::MOVE); //アニメーションの切り替え
@@ -271,7 +272,7 @@ void PLAYER::Move()
 			
 			if (jump_mode == 1) //停止ジャンプだった時
 			{
-				player_x += jump_move_x * SPEED / 2 * player_scale;
+				player_x += jump_move_x * player_speed;
 			}
 			else //移動ジャンプだった時
 			{
@@ -280,11 +281,11 @@ void PLAYER::Move()
 				//ジャンプ中に反対方向に移動するとき
 				if (jump_move_x != move_x) 
 				{
-					player_x += jump_move_x * SPEED / 2 * player_scale;
+					player_x += jump_move_x * player_speed / 2.0f;
 				}
 				else 
 				{
-					player_x += jump_move_x * SPEED * player_scale;
+					player_x += jump_move_x * player_speed;
 				}
 			}
 		}
@@ -351,8 +352,8 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 					//フックの角度
 					float angle = atan2f(diff_y, diff_x);
 					//移動の計算
-					move_x = cosf(angle) * SPEED * 3;
-					move_y = sinf(angle) * SPEED * 3;
+					move_x = cosf(angle) * player_speed * 3;
+					move_y = sinf(angle) * player_speed * 3;
 					//プレイヤーの現在の位置
 					float x = player_x;
 					float y = player_y;
@@ -656,8 +657,8 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 
 	//天井の判定
 	bool hit_ceil_center = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-	bool hit_ceil_left = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_left + SPEED * player_scale) / MAP_CEllSIZE));
-	bool hit_ceil_right = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_right - SPEED * player_scale) / MAP_CEllSIZE));
+	bool hit_ceil_left = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_left + player_speed) / MAP_CEllSIZE));
+	bool hit_ceil_right = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_right - player_speed) / MAP_CEllSIZE));
 	hit_ceil = hit_ceil_center || hit_ceil_left || hit_ceil_right;
 	
 	//地面の判定
@@ -689,7 +690,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		int block_type_bottom = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
 		if (block_type_center == 98 || block_type_top == 98 || block_type_bottom == 98) {
 			float diff = fabsf((float)((int)(player_x / MAP_CEllSIZE) * MAP_CEllSIZE) - player_left);
-			if (diff < SPEED * player_scale) {
+			if (diff < player_speed) {
 				is_manhole = true;
 				is_ground = false;
 			}
@@ -718,7 +719,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 					if (!hit_ceil || player_state != PLAYER_MOVE_STATE::JUMP) {
 						//ドアの判定
 						if ((block_type == 66 || block_type == 67) && move_x > 0) {
-							if (fabsf(player_left - block_right) < SPEED * player_scale) {
+							if (fabsf(player_left - block_right) < player_speed) {
 								return;
 							}
 						}

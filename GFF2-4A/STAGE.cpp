@@ -106,7 +106,7 @@ void STAGE::Draw()const {
 					&& map_data.at(i).at(j) != 53	
 					&& (map_data.at(i).at(j) <= 88	
 												////89～90番台を描画しない
-						|| map_data.at(i).at(j) >= 100)
+						|| map_data.at(i).at(j) >= 100 && map_data.at(i).at(j) != 777)
 					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
 			}
 			//レモナーとグレポンはツルだけ描画する

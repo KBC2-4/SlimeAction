@@ -21,6 +21,7 @@ public:
 		float lift_init_x, lift_init_y;			//“®‚­°‚Ì‰ŠúÀ•W
 		int lift_vector_x;					//“®‚­°‚ÌˆÚ“®•ûŒü(‰¡)
 		int lift_vector_y;					//“®‚­°‚ÌˆÚ“®•ûŒü(c)
+		int lift_wait_time;					//“®‚­°‘Ò‹@ŠÔ
 	};
 	
 private:

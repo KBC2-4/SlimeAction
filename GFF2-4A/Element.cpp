@@ -133,6 +133,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				data.lift_init_y = data.y;
 				data.lift_vector_x = 0;
 				data.lift_vector_y = 0;
+				data.lift_wait_time = 0;
 				data.type = 1;
 				data.flg = false;
 				data.animtimer = 0;
@@ -146,6 +147,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				data.lift_init_y = data.y;
 				data.lift_vector_x = 0;
 				data.lift_vector_y = 0;
+				data.lift_wait_time = 0;
 				data.type = 2;
 				data.flg = false;
 				data.animtimer = 0;
@@ -229,6 +231,7 @@ void ELEMENT::Draw(STAGE* stage)  {
 
 	//ìÆÇ≠è∞
 	for (int i = 0; i < lift.size(); i++) {
+		//DrawFormatString(100 + i * 100, 400, 0xffffff, "%f", lift[i].x);
 		/*DrawFormatString(100+i*100, 400, 0xffffff, "%f", lift_goal_X[i].x);
 		DrawBox(lift_goal_X[i].x + stage->GetScrollX(), lift_goal_X[i].y + stage->GetScrollY(), lift_goal_X[i].x + MAP_CEllSIZE * 2 + stage->GetScrollX(), lift_goal_X[i].y + MAP_CEllSIZE / 2 + stage->GetScrollY(),0xff0000,FALSE);*/
 		DrawExtendGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 31 + stage->GetScrollY(), lift[i].x + LIFT_SIZE + stage->GetScrollX(), lift[i].y + 70 + stage->GetScrollY(), block_image1[51], TRUE);		
@@ -424,37 +427,47 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 	int goal_num_y = 0;
 	for (int i = 0; i < lift.size(); i++) {
 		
-		if (player_map_x > lift[i].x - 1280 && player_map_x < lift[i].x + 1280) {
-			lift[i].flg = true;
+		if (player_map_x > lift[i].x - 1280 && player_map_x < lift[i].x + 1280 && player_map_y>lift[i].y-720&&player_map_y<lift[i].y+720) {
+		lift[i].flg = true;
 		}
 		else { false; }
 		if (lift[i].flg) {
 			//ìÆÇ≠è∞(èc)ÇÃìÆÇ´
 			if (lift[i].type == 1) {
 				if (lift[i].y < lift_goal_Y[goal_num_y].y) { lift[i].lift_vector_y = 1; }
-				else { lift[i].lift_vector_y = -1; }
+				else if(lift[i].y > lift_goal_Y[goal_num_y].y) { lift[i].lift_vector_y = -1; }
+				else { lift[i].lift_vector_y = 0; }
 				if (lift[i].y != lift_goal_Y[goal_num_y].y) {
 					lift[i].y += lift[i].lift_vector_y * 4;
 				}
 				else {
-					float work = lift_goal_Y[goal_num_y].y;
-					lift_goal_Y[goal_num_y].y = lift[i].lift_init_y;
-					lift[i].lift_init_y = work;
+					lift[i].lift_wait_time++;
+					if (lift[i].lift_wait_time == 180) {
+						float work = lift_goal_Y[goal_num_y].y;
+						lift_goal_Y[goal_num_y].y = lift[i].lift_init_y;
+						lift[i].lift_init_y = work;
+						lift[i].lift_wait_time = 0;
+					}
 				}
 				goal_num_y++;
 			}
 			//ìÆÇ≠è∞(â°)ÇÃìÆÇ´
 			else if (lift[i].type == 2) {
 				if (lift[i].x < lift_goal_X[goal_num_x].x) { lift[i].lift_vector_x = 1; }
-				else  { lift[i].lift_vector_x = -1; }
+				else if(lift[i].x > lift_goal_X[goal_num_x].x) { lift[i].lift_vector_x = -1; }
+				else { lift[i].lift_vector_x = 0; }
 
 				if (lift[i].x != lift_goal_X[goal_num_x].x) {
 					lift[i].x += lift[i].lift_vector_x * 4;
 				}
 				else {
-					float work = lift_goal_X[goal_num_x].x;
-					lift_goal_X[goal_num_x].x = lift[i].lift_init_x;
-					lift[i].lift_init_x = work;
+					lift[i].lift_wait_time++;
+					if (lift[i].lift_wait_time == 180) {
+						float work = lift_goal_X[goal_num_x].x;
+						lift_goal_X[goal_num_x].x = lift[i].lift_init_x;
+						lift[i].lift_init_x = work;
+						lift[i].lift_wait_time = 0;
+					}
 				}
 				goal_num_x++;
 			}
