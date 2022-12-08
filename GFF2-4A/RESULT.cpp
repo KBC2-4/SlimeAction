@@ -66,8 +66,8 @@ RESULT::~RESULT()
 AbstractScene* RESULT::Update() 
 {
 
-	if (win == true && timer > 8 * 60) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
-	if(win == false && timer > 5 * 80){ PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
+	if (win == true && timer > 9 * 60) { if (!CheckSoundMem(good_se[se_randnum])) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); } }
+	if (win == false && timer > 5 * 80) { if (!CheckSoundMem(bad_se[se_randnum])) { PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); } }
 	if (timer <= 5 * 60) { if (CheckSoundMem(count_se) == FALSE)PlaySoundMem(count_se, DX_PLAYTYPE_BACK, FALSE); }
 
 	if (--timer <= 60) { return new STAGE_SELECT(); }

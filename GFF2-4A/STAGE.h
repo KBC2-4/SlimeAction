@@ -38,6 +38,7 @@ protected:
 	int temporary_hit;		//一時的な当たり判定
 public:
 	STAGE(const char* stage_name = "StageSelect");
+	~STAGE();
 	//マップ情報の更新
 	void Update(PLAYER* player, ELEMENT* element);
 	//ステージの描画
