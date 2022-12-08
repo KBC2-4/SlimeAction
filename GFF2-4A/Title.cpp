@@ -8,9 +8,9 @@
 Title::Title()
 {
 
-	if ((background_image = LoadGraph("Resource/Images/Stage/BackImage.png")) == -1) 
+	if ((background_image = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1) 
 	{
-		throw "Resource/Images/Stage/BackImage.png";
+		throw "Resource/Images/Stage/BackImage1.png";
 	}
 
 	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1) 
