@@ -69,6 +69,11 @@ STAGE::STAGE(const char* stage_name) {
 		spawn_point.y = 0;
 	}
 }
+
+STAGE::~STAGE() {
+	DeleteGraph(*block_image1);
+	DeleteSoundMem(halfwaypoint_se);
+}
 	
 
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
