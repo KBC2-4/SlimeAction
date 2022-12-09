@@ -90,9 +90,10 @@ void GRAPEFRUIT::Update()
 		ChangeAngle();
 		if ((x + stage->GetScrollX() > 0) && (x + stage->GetScrollX() < 1280))
 		{
-			if (shootcount++ % 120 == 0)
+			if (player->GetMapY() > map_y)
 			{
-				if (player->GetPlayerY() < y)
+
+				if (++shootcount % 120 == 0)
 				{
 					animation_timer = 0;
 					state = ENEMY_STATE::PRESS;

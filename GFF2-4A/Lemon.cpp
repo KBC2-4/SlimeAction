@@ -71,7 +71,7 @@ void LEMON::Update()
 		ChangeAngle();
 		if (player->GetMapY() > map_y)
 		{
-			if (shootcount++ % 60 == 0)
+			if (++shootcount % 60 == 0)
 			{
 				animation_timer = 0;
 				state = ENEMY_STATE::PRESS;
