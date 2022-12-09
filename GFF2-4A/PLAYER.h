@@ -193,6 +193,8 @@ public:
 
 	float GetPlayerSpeed() { return player_speed; }
 
+	int GetMapY() { return map_y; }
+
 	void SetLife(int a);
 
 	PLAYER_MOVE_STATE GetPlayerMoveState() { return player_state; }
