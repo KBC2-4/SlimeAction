@@ -514,7 +514,7 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 				}
 
 				if (manhole[i].animtimer >= 20) {
-					PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE);
+					if(!CheckSoundMem(manhole_opened_se))PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE);
 					int x = floor(manhole[i].x / MAP_CEllSIZE);
 					int y = floor(manhole[i].y / MAP_CEllSIZE);
 					stage->SetMapData(y, x, 98);
