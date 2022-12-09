@@ -321,6 +321,11 @@ void GAMEMAIN::Draw() const
 		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[1], FALSE);
 	}
 
+	if (stage_name == "Stage03" && stage->GetScrollY() < -960) {
+		DrawBox(0, 0, 25600, 1280, 0x20251F, TRUE);
+	}
+
+
 
 	//ステージの描画
 	element->Draw(stage);
