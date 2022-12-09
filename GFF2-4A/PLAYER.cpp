@@ -156,7 +156,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	if (stage->GetMapData(map_y, map_x) == -1 || life <= 0) {
 		is_death = true;
 	}
-	if (player_y + stage->GetScrollY() > 720){
+	if (player_y + stage->GetScrollY() > 720 && player_state != PLAYER_MOVE_STATE::HOOK){
 		is_death = true;
 	}
 
