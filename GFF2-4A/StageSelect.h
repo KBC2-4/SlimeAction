@@ -9,6 +9,7 @@ class STAGE_SELECT :
 private:
 	//”wŒi‰æ‘œ
 	int background_image[5];
+	int background_music;
 	int guid_font, buttonguid_font;
 	int effect_timer;
 
