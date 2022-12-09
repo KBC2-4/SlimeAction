@@ -328,8 +328,9 @@ void GAMEMAIN::Draw() const
 
 
 	//ステージの描画
-	stage->Draw();
 	element->Draw(stage);
+	stage->Draw();
+	
 	
 
 	//プレイヤーの描画
