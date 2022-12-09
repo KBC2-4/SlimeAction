@@ -11,6 +11,7 @@
 #include "PLAYER.h"
 #include "RESULT.h"
 
+#define _NDEBUG
 
 STAGE::STAGE(const char* stage_name) {
 	//**map_data = 0;
@@ -249,7 +250,10 @@ int STAGE::GetMapData(int y, int x) {
 /// </summary>
 
 bool STAGE::HitMapDat(int y, int x) {
+#ifdef _DEBUG
 	if (PAD_INPUT::GetNowKey()==XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
+#endif
+
 	int block_type = GetMapData(y, x);
 	if (
 		block_type == -1 //範囲外

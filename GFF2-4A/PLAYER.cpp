@@ -4,6 +4,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#define _NDEBUG
+
 //中心から240 フック
 
 float PLAYER::player_x, PLAYER::player_y;
@@ -526,7 +528,9 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 /// プレイヤーのジャンプ処理
 /// </summary>
 void PLAYER::JumpMove() {
+#ifdef _DEBUG
 	if (PAD_INPUT::GetNowKey()== XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
+#endif
 	//static bool is_jump = false;		//ジャンプ中か
 	static float jump_y = 0;			//ジャンプの高さ
 	//Aボタンを押したとき
