@@ -24,8 +24,9 @@ private:
 	float move_x, move_y;
 
 public:
-	ThrowSlime() {};
+	ThrowSlime() {}
 	ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y, STAGE* stage);
+	void Finalize();
 	void Update(STAGE* stage);
 	void Draw(STAGE* stage) const;
 

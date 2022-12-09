@@ -101,6 +101,10 @@ void STAGE::Draw()const {
 					map_data.at(i).at(j) != 68
 					&& map_data.at(i).at(j) != 102
 					&& map_data.at(i).at(j) != 103
+					&& map_data.at(i).at(j) != 104
+					&& map_data.at(i).at(j) != 105
+					&& map_data.at(i).at(j) != 106
+					&& map_data.at(i).at(j) != 107
 					&& map_data.at(i).at(j) != 51	//動く床3つ
 					&& map_data.at(i).at(j) != 52
 					&& map_data.at(i).at(j) != 53	
@@ -267,10 +271,10 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 71	//ツル中間
 		|| block_type == 72	//ツル
 		|| block_type == 73	//ゴール
+		|| block_type == 85	//クリア門
 		|| block_type == 86	//クリア門
 		|| block_type == 87	//クリア門
 		|| block_type == 88	//クリア門
-		|| block_type == 89	//クリア門
 		|| block_type == 90 //中間地点
 		|| block_type == 91 //レモナー
 		|| block_type == 92 //グレポン

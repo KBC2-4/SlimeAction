@@ -8,9 +8,13 @@
 Title::Title()
 {
 
-	if ((background_image = LoadGraph("Resource/Images/Stage/BackImage.png")) == -1) 
+	if ((background_image = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1) 
 	{
-		throw "Resource/Images/Stage/BackImage.png";
+		throw "Resource/Images/Stage/BackImage1.png";
+	}
+
+	if ((background_music = LoadSoundMem("Resource/Sounds/BGM/title.wav")) == -1) {
+		throw "Resource/Sounds/BGM/title.wav";
 	}
 
 	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1) 
@@ -29,12 +33,16 @@ Title::Title()
 	selectmenu = 0;
 	input_margin = 0;
 	timer = 0;
+
+	PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
 }
 
 Title::~Title() 
 {
 
 	DeleteGraph(background_image);
+	StopSoundMem(background_music);
+	DeleteSoundMem(background_music);
 	DeleteSoundMem(cursor_move_se);
 	DeleteSoundMem(ok_se);
 	DeleteFontToHandle(title_font);
