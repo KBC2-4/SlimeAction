@@ -263,10 +263,10 @@ void PLAYER::Draw(STAGE *stage)const {
 /// </summary>
 void PLAYER::Move() 
 {
-	player_speed = SPEED * fabsf(player_scale - 2.6f);
+	player_speed = SPEED + (MAX_LIFE - life) * 0.4f;
 	//player_speed = SPEED * player_scale;
 	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
-
+	
 	//スティック入力の取得
 	old_player_x = player_x;
 	old_player_y = player_y;
@@ -287,10 +287,9 @@ void PLAYER::Move()
 		{
 			if (jump_move_x == 0) jump_move_x = move_x;
 			move_type = (jump_move_x > 0) ? 0 : 1;
-			
 			if (jump_mode == 1) //停止ジャンプだった時
 			{
-				player_x += jump_move_x * player_speed;
+				player_x += jump_move_x * player_speed / 2.0f;
 			}
 			else //移動ジャンプだった時
 			{
@@ -674,7 +673,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
 	float player_left = (player_x - 30 * player_scale);
 	float player_right = (player_x + 30 * player_scale);
-	float player_top = (player_y - MAP_CEllSIZE / 2);
+	float player_top = (player_y - (player_scale - 0.6f) * MAP_CEllSIZE / 2);
 	float player_bottom = (player_y + MAP_CEllSIZE / 2);
 
 	//天井の判定
@@ -738,16 +737,16 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 			if (player_right > block_left && player_left < block_right) {
 				if (player_bottom > block_top && player_top < block_bottom) {
 					int block_type = stage->GetMapData(i, j);
-					if (!hit_ceil || player_state != PLAYER_MOVE_STATE::JUMP) {
-						//ドアの判定
-						if ((block_type == 66 || block_type == 67) && move_x > 0) {
-							if (fabsf(player_left - block_right) < player_speed) {
-								return;
-							}
+					int y = static_cast<int>(player_top / MAP_CEllSIZE);
+					if (hit_ceil && y == i) continue;
+					//ドアの判定
+					if ((block_type == 66 || block_type == 67) && move_x > 0) {
+						if (fabsf(player_left - block_right) < player_speed) {
+							return;
 						}
-						player_x = old_player_x;
-						break;
 					}
+					player_x = old_player_x;
+					break;
 				}
 			}
 		}

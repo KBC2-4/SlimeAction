@@ -6,7 +6,7 @@
 #include "STAGE.h"
 
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
-#define SPEED					3.0f	//プレイヤーのスピード
+#define SPEED					4.8f	//プレイヤーのスピード
 #define DEVIATION				2000	//スティック入力の誤入力の範囲
 #define JUMP_VELOCITY			-5.8f	//ジャンプスピード
 #define HOOK_MAX_DISTANCE		280
