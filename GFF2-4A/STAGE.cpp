@@ -11,6 +11,7 @@
 #include "PLAYER.h"
 #include "RESULT.h"
 
+#define _NDEBUG
 
 STAGE::STAGE(const char* stage_name) {
 	//**map_data = 0;

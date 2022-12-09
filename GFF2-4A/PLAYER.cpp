@@ -4,6 +4,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#define _NDEBUG
+
 //中心から240 フック
 
 float PLAYER::player_x, PLAYER::player_y;
