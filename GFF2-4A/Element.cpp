@@ -135,7 +135,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				data.lift_vector_y = 0;
 				data.lift_wait_time = 0;
 				data.type = 1;
-				data.flg = false;
+				data.flg = true;
 				data.animtimer = 0;
 				lift.push_back(data);
 				break;
@@ -149,7 +149,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				data.lift_vector_y = 0;
 				data.lift_wait_time = 0;
 				data.type = 2;
-				data.flg = false;
+				data.flg = true;
 				data.animtimer = 0;
 				lift.push_back(data);
 				break;
@@ -427,10 +427,10 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 	int goal_num_y = 0;
 	for (int i = 0; i < lift.size(); i++) {
 		
-		if (player_map_x > lift[i].x - 1280 && player_map_x < lift[i].x + 1280 && player_map_y>lift[i].y-720&&player_map_y<lift[i].y+720) {
+		/*if (player_map_x > lift[i].x - 1280 && player_map_x < lift[i].x + 1280 && player_map_y>lift[i].y-720&&player_map_y<lift[i].y+720) {
 		lift[i].flg = true;
 		}
-		else { false; }
+		else { false; }*/
 		if (lift[i].flg) {
 			//“®‚­°(c)‚Ì“®‚«
 			if (lift[i].type == 1) {
@@ -442,7 +442,7 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 				}
 				else {
 					lift[i].lift_wait_time++;
-					if (lift[i].lift_wait_time == 180) {
+					if (lift[i].lift_wait_time == 60) {
 						float work = lift_goal_Y[goal_num_y].y;
 						lift_goal_Y[goal_num_y].y = lift[i].lift_init_y;
 						lift[i].lift_init_y = work;
@@ -462,7 +462,7 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 				}
 				else {
 					lift[i].lift_wait_time++;
-					if (lift[i].lift_wait_time == 180) {
+					if (lift[i].lift_wait_time == 60) {
 						float work = lift_goal_X[goal_num_x].x;
 						lift_goal_X[goal_num_x].x = lift[i].lift_init_x;
 						lift[i].lift_init_x = work;
