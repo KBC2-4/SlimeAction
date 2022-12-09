@@ -27,7 +27,7 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	y = spawn_map_y * MAP_CEllSIZE;
 	hitflg = false;
 	delete_flag = false;
-	
+
 	//画像の取得
 	image = new int[15];
 	if (LoadDivGraph("Resource/Images/Enemy/lemon.png", 9, 9, 1, 80, 80, image) == -1)
@@ -44,7 +44,7 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	this->player = player;
 	this->stage = stage;
 
-	
+
 	now_image = image[3];
 	state = ENEMY_STATE::IDOL;
 
@@ -69,12 +69,13 @@ void LEMON::Update()
 		break;
 	case ENEMY_STATE::MOVE:
 		ChangeAngle();
-		if (shootcount++ % 60 == 0)
+		if (player->GetMapY() > map_y)
 		{
-			if (player->GetPlayerY() < y)
+			if (shootcount++ % 60 == 0)
 			{
 				animation_timer = 0;
 				state = ENEMY_STATE::PRESS;
+
 			}
 		}
 		break;
@@ -111,40 +112,42 @@ void LEMON::Update()
 		break;
 	}
 
-	//マップ上の座標の設定
-	map_x = x / MAP_CEllSIZE;
-	map_y = (y - IMAGE_SIZE / 2) / MAP_CEllSIZE;
 
-	//弾が存在しているときに弾の処理を行う
-	if (bullet != nullptr)
-	{
-		bullet->Update();
+//マップ上の座標の設定
+map_x = x / MAP_CEllSIZE;
+map_y = (y - IMAGE_SIZE / 2) / MAP_CEllSIZE;
 
-		//弾が画面外に出るか、何かに当たったら弾を削除
-		if (bullet->GetDeleteFlg())
-		{
-			delete bullet;
-			bullet = nullptr;
-		}
-	}
-	
-	Hit();
+//弾が存在しているときに弾の処理を行う
+if (bullet != nullptr)
+{
+	bullet->Update();
 
-	if (((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY() < 0) 
-		|| (y + stage->GetScrollY() > 720)) && (state != ENEMY_STATE::FALL && state != ENEMY_STATE::DETH))		//画面外に出るとアイドル状態にする
+	//弾が画面外に出るか、何かに当たったら弾を削除
+	if (bullet->GetDeleteFlg())
 	{
-		state = ENEMY_STATE::IDOL;	//ステートをアイドル状態へ
-		//アイドル状態の画像に変更
-		now_image = image[3];
+		delete bullet;
+		bullet = nullptr;
 	}
-	else if (state == ENEMY_STATE::IDOL)	//画面内にいて、アイドル状態のとき敵の方向を向くようにする
-	{
-		// アニメーション時間をリセットし、ステートをムーブへ
-		animation_timer = 0;
-		state = ENEMY_STATE::MOVE;
-	}
-	else{ }
 }
+
+Hit();
+
+if (((x + stage->GetScrollX() < -IMAGE_SIZE) || (x + stage->GetScrollX() > 1280 + IMAGE_SIZE) || (y + stage->GetScrollY() < 0)
+	|| (y + stage->GetScrollY() > 720)) && (state != ENEMY_STATE::FALL && state != ENEMY_STATE::DETH))		//画面外に出るとアイドル状態にする
+{
+	state = ENEMY_STATE::IDOL;	//ステートをアイドル状態へ
+	//アイドル状態の画像に変更
+	now_image = image[3];
+}
+else if (state == ENEMY_STATE::IDOL)	//画面内にいて、アイドル状態のとき敵の方向を向くようにする
+{
+	// アニメーション時間をリセットし、ステートをムーブへ
+	animation_timer = 0;
+	state = ENEMY_STATE::MOVE;
+}
+else {}
+}
+
 
 void LEMON::Move()
 {
@@ -184,7 +187,7 @@ void LEMON::Hit()
 	//地面やブロックとの当たり判定
 	if (state == ENEMY_STATE::FALL)
 	{
-		if (stage->HitMapDat(map_y + 1,map_x))
+		if (stage->HitMapDat(map_y + 1, map_x))
 		{
 			state = ENEMY_STATE::DETH;
 			animation_timer = 0;
@@ -209,7 +212,7 @@ bool LEMON::PressAnimation()
 			{
 				now_image = image[0];
 			}
-			
+
 		}
 	}
 	else //アニメーションの終了
