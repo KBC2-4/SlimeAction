@@ -93,7 +93,7 @@ void GRAPEFRUIT::Update()
 			if (player->GetMapY() > map_y)
 			{
 
-				if (++shootcount % 120 == 0)
+				if (++shootcount % 90 == 0)
 				{
 					animation_timer = 0;
 					state = ENEMY_STATE::PRESS;
