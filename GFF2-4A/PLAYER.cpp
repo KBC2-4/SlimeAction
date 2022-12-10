@@ -6,10 +6,6 @@
 
 #define _NDEBUG
 
-//中心から240 フック
-
-float PLAYER::player_x, PLAYER::player_y;
-
 /*コンストラクタ*/
 PLAYER::PLAYER(STAGE* stage) {
 	this->stage = stage;
@@ -407,6 +403,8 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 		}
 		//フックが見つかった時
 		if (is_hook) {
+			//ステートの変更
+			player_state = PLAYER_MOVE_STATE::GROW_HOOK;
 			ChangeAnimation(PLAYER_ANIM_STATE::IDLE, true);
 			//移動中の時
 			if (!end_move) {

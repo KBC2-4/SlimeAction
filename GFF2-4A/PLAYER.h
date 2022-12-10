@@ -22,14 +22,15 @@
 
 //移動ステート
 enum class PLAYER_MOVE_STATE {
-	IDLE = 0,//停止しているとき
-	MOVE,    //動いてるとき
-	JUMP,    //跳ぶ
-	FALL,	 //落下
-	THROW,   //投げる時
-	HOOK,    //フックをつかむとき
-	DAMAGE,  //ダメージを受けた時
-	DEAD,     //死んだとき
+	IDLE = 0,	//停止しているとき
+	MOVE,		//動いてるとき
+	JUMP,		//跳ぶ
+	FALL,		//落下
+	THROW,		//投げる時
+	GROW_HOOK,	//フックに伸びるとき
+	HOOK,		//振り子しているとき
+	DAMAGE,		//ダメージを受けた時
+	DEAD,		//死んだとき
 };
 
 //アニメーションステート
@@ -48,7 +49,7 @@ class PLAYER
 
 private:
 	bool is_death;
-	static float player_x, player_y;
+	float player_x, player_y;
 	float old_player_x, old_player_y;
 	int map_x, map_y;
 	float jump_move_x;
@@ -173,18 +174,18 @@ public:
 	int GetLife() { return life; };
 	bool IsDeath() { return is_death; }
 	float GetPlayerX() { return player_x + stage->GetScrollX(); }
-	float GetPlayerY() { return player_y+stage->GetScrollY(); }
+	float GetPlayerY() { return player_y + stage->GetScrollY(); }
 	float GetOldPlayerX() { return old_player_x + stage->GetScrollX(); }
-	float GetOldPlayerY() { return old_player_y+stage->GetScrollY(); }
+	float GetOldPlayerY() { return old_player_y + stage->GetScrollY(); }
 
 	void SetPlayerX(float x) { player_x = x - stage->GetScrollX(); }
 	void SetPlayerY(float y) { player_y = y; }
 	void SetPlayer_Screen(POINT screen) { player_x = screen.y; player_y = screen.x; }
 
-	int GetThrowCnt() { return throw_slime.size(); }
+	int GetThrowCnt() { return static_cast<int>(throw_slime.size()); }
 	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
-	double GetSpeed() { return speed; }
+	float GetSpeed() { return player_speed; }
 	float GetMoveX() { return move_x; }
 
 	float GetPlayerScale() { return player_scale; }
@@ -192,6 +193,7 @@ public:
 	float GetJumpVelocity() { return jump_velocity; }
 
 	float GetPlayerSpeed() { return player_speed; }
+	float GetPlayerHookSpeed() { return static_cast<float>(speed); }
 
 	int GetMapY() { return map_y; }
 
