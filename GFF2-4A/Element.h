@@ -18,10 +18,12 @@ public:
 		bool flg = false;
 		int animtimer = 0;
 		
-		float lift_init_x, lift_init_y;			//動く床の初期座標
+		float lift_init_x, lift_init_y;		//動く床の初期座標
+		float lift_goal_x, lift_goal_y;		//動く床の目標位置
 		int lift_vector_x;					//動く床の移動方向(横)
 		int lift_vector_y;					//動く床の移動方向(縦)
 		int lift_wait_time;					//動く床待機時間
+		
 	};
 	
 private:
@@ -30,9 +32,6 @@ private:
 	std::vector<ELEMENT_DATA> button;		//ボタン
 	std::vector<ELEMENT_DATA> door;			//ドア
 	std::vector<ELEMENT_DATA> lift;			//動く床
-
-	std::vector<ELEMENT_DATA>lift_goal_Y;		//動く床のゴール地点(縦)
-	std::vector<ELEMENT_DATA>lift_goal_X;		//動く床のゴール地点(横)
 	std::vector<ELEMENT_DATA> manhole;		//マンホール
 	std::vector<ELEMENT_DATA> acidrain_puddles;			//酸性雨の水たまり
 	float player_map_x, player_map_y;
