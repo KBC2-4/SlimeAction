@@ -11,6 +11,7 @@
 #include "PLAYER.h"
 #include "RESULT.h"
 
+#define _NDEBUG
 
 STAGE::STAGE(const char* stage_name) {
 	//**map_data = 0;
@@ -107,7 +108,8 @@ void STAGE::Draw()const {
 					&& map_data.at(i).at(j) != 107
 					&& map_data.at(i).at(j) != 51	//動く床3つ
 					&& map_data.at(i).at(j) != 52
-					&& map_data.at(i).at(j) != 53	
+					&& map_data.at(i).at(j) != 53
+					&& map_data.at(i).at(j) != 54
 					&& (map_data.at(i).at(j) <= 88	
 												////89～90番台を描画しない
 						|| map_data.at(i).at(j) >= 100 && map_data.at(i).at(j) != 777)
@@ -249,7 +251,7 @@ int STAGE::GetMapData(int y, int x) {
 /// </summary>
 
 bool STAGE::HitMapDat(int y, int x) {
-	if (PAD_INPUT::GetNowKey()==XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
+	if (/*PAD_INPUT::GetNowKey()==XINPUT_BUTTON_Y || */CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
 	int block_type = GetMapData(y, x);
 	if (
 		block_type == -1 //範囲外
