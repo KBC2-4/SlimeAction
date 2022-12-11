@@ -490,12 +490,12 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 bool ELEMENT::HitLift(PLAYER* player) {
 	for (int i = 0; i < lift.size(); i++) {
 		if (player_map_x + player->GetPlayerScale() * 25 >= lift[i].x && player_map_x - player->GetPlayerScale() * 25 <= lift[i].x + LIFT_SIZE
-			&& player_map_y >= lift[i].y-MAP_CEllSIZE/2 && player_map_y <= lift[i].y + 10 && !((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
+			&& player_map_y >= lift[i].y - MAP_CEllSIZE / 2 && player_map_y <= lift[i].y + 10 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::JUMP
 			/*&& (map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] == 0 || map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] >= 51)*/) {
 
 			player->SetPlayerY(lift[i].y - MAP_CEllSIZE / 2);
 
-			player->SetPlayerY(lift[i].y-MAP_CEllSIZE/2+ lift[i].lift_vector_y * 4);
+			player->SetPlayerY(lift[i].y - MAP_CEllSIZE / 2 + lift[i].lift_vector_y * 4);
 			player->SetPlayerX(player->GetPlayerX() + lift[i].lift_vector_x * 4);
 			return true;
 		}
