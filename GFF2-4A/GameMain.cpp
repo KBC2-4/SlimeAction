@@ -177,6 +177,9 @@ GAMEMAIN::~GAMEMAIN()
 	DeleteSoundMem(ok_se);
 	delete player;
 	delete stage;
+	delete pause;
+	delete[] item;
+	delete element;
 
 	//ƒŒƒ‚ƒi[‚Ìíœ
 	for (int i = 0; i < lemoner_count; i++) {
@@ -204,9 +207,6 @@ GAMEMAIN::~GAMEMAIN()
 			delete item[i];
 		}
 	}
-
-	delete[] item;
-	delete element;
 }
 
 AbstractScene* GAMEMAIN::Update()
