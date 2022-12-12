@@ -255,7 +255,9 @@ int STAGE::GetMapData(int y, int x) {
 /// </summary>
 
 bool STAGE::HitMapDat(int y, int x) {
-	if (/*PAD_INPUT::GetNowKey()==XINPUT_BUTTON_Y || */CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
+#ifdef _DEBUG
+	if (PAD_INPUT::GetNowKey()==XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
+#endif
 	int block_type = GetMapData(y, x);
 	if (
 		block_type == -1 //範囲外
