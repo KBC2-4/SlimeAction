@@ -3,6 +3,7 @@
 #include"SceneManager.h"
 #include"Title.h"
 #include"GameMain.h"
+#include "Option.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -71,6 +72,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	InitFontToHandle();	//全てのフォントデータを削除
 	InitGraph();		//読み込んだ全てのグラフィックデータを削除
+	InitSoundMem();		//読み込んだ全てのサウンドデータを削除
 	DxLib_End();
 	return 0;
 }

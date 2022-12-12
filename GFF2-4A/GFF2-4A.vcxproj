@@ -170,6 +170,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\PG\dxlib</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\PG\dxlib</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="Option.cpp" />
     <ClCompile Include="PadInput.cpp" />
     <ClCompile Include="PAUSE.cpp" />
     <ClCompile Include="PLAYER.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="GrapeFruit.h" />
     <ClInclude Include="ITEMBALL.h" />
     <ClInclude Include="Lemon.h" />
+    <ClInclude Include="Option.h" />
     <ClInclude Include="PadInput.h" />
     <ClInclude Include="PAUSE.h" />
     <ClInclude Include="PLAYER.h" />
