@@ -1,4 +1,6 @@
 #pragma once
+#include "Option.h"
+
 class PAUSE
 {
 private:
@@ -7,6 +9,8 @@ private:
 	int selectmenu;
 	int nextmenu;
 	bool pause_flg;	//ポーズフラグ
+
+	Option* option;
 
 public:
 	PAUSE();

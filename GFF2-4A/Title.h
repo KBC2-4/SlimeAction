@@ -3,6 +3,7 @@
 #include "STAGE.h"
 #include "GameOver.h"
 #include "PadInput.h"
+#include "Option.h"
 
 enum class MENU
 {
@@ -22,6 +23,8 @@ private:
 	int selectmenu;
 	int input_margin;
 	int timer;
+
+	Option* option;
 
 public:
 

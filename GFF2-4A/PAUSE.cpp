@@ -22,9 +22,12 @@ PAUSE::PAUSE() {
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+
+	option = new Option();
 }
 
 PAUSE::~PAUSE() {
+	delete option;
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
 	DeleteSoundMem(cursor_move_se);
@@ -32,19 +35,25 @@ PAUSE::~PAUSE() {
 }
 
 int PAUSE::Update(void) {
-	static int input_margin;
-	input_margin++;
-	if (PAD_INPUT::GetPadThumbLY() > 20000 && input_margin > 20) { selectmenu = (selectmenu + 3) % 4;  input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
-	if (PAD_INPUT::GetPadThumbLY() < -20000 && input_margin > 20) { selectmenu = (selectmenu + 1) % 4; input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
 
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
-		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
-		StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
-		if (selectmenu == 0) { pause_flg = !pause_flg; }
-		else if (selectmenu == 1) { pause_flg = !pause_flg;}
-		nextmenu = selectmenu;
+	if (option->GetOptionFlg() == true) {
+		option->Update();
 	}
-	return 0;
+	else {
+		static int input_margin;
+		input_margin++;
+		if (PAD_INPUT::GetPadThumbLY() > 20000 && input_margin > 20) { selectmenu = (selectmenu + 3) % 4;  input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
+		if (PAD_INPUT::GetPadThumbLY() < -20000 && input_margin > 20) { selectmenu = (selectmenu + 1) % 4; input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
+
+		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
+			if (selectmenu == 0 || selectmenu == 1) { pause_flg = !pause_flg; }
+			else if (selectmenu == 2) { option->ChangeOptionFlg(); }
+			nextmenu = selectmenu;
+		}
+	}
+		return 0;
 }
 
 void PAUSE::Draw(int pause_graph) {
@@ -60,4 +69,5 @@ void PAUSE::Draw(int pause_graph) {
 	DrawStringToHandle(440, 450, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
 	DrawStringToHandle(362, 540, "タイトルへ戻る", selectmenu == 3 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
 	
+	if (option->GetOptionFlg() == true) { option->Draw(); }
 }

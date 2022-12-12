@@ -43,10 +43,14 @@ Title::Title()
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+
+	option = new Option();
 }
 
 Title::~Title() 
 {
+	delete option;
+
 	DeleteGraph(background_image);
 	StopSoundMem(background_music);
 	DeleteSoundMem(background_music);
@@ -58,54 +62,59 @@ Title::~Title()
 
 AbstractScene* Title::Update()
 {
-
-	input_margin++;
-
-	if (PAD_INPUT::GetPadThumbLY() > 20000 && input_margin > 20) 
-	{ 
-
-		selectmenu = (selectmenu + 3) % 4;  
-		input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); 
-		StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); 
+	if (option->GetOptionFlg() == true) {
+		option->Update();
 	}
+	else {
 
-	if (PAD_INPUT::GetPadThumbLY() < -20000 && input_margin > 20) 
-	{ 
+		input_margin++;
 
-		selectmenu = (selectmenu + 1) % 4; input_margin = 0;
-		PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
-		StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
-	}
-
-	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) 
-	{
-		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
-		StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
-
-		switch (static_cast<MENU>(selectmenu))
+		if (PAD_INPUT::GetPadThumbLY() > 20000 && input_margin > 20)
 		{
 
-		case MENU::GAME_SELECT:
-			return new STAGE_SELECT();
-			break;
-
-		case MENU::RANKING:
-			return new DRAW_RANKING();
-			break;
-
-		case MENU::OPTION:
-			return new Option();
-			break;
-
-		case MENU::END:
-			return nullptr;
-			break;
-
-		default:
-			break;
+			selectmenu = (selectmenu + 3) % 4;
+			input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+			StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
 		}
+
+		if (PAD_INPUT::GetPadThumbLY() < -20000 && input_margin > 20)
+		{
+
+			selectmenu = (selectmenu + 1) % 4; input_margin = 0;
+			PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+			StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+		}
+
+		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
+		{
+			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
+
+			switch (static_cast<MENU>(selectmenu))
+			{
+
+			case MENU::GAME_SELECT:
+				return new STAGE_SELECT();
+				break;
+
+			case MENU::RANKING:
+				return new DRAW_RANKING();
+				break;
+
+			case MENU::OPTION:
+				option->ChangeOptionFlg();
+				break;
+
+			case MENU::END:
+				return nullptr;
+				break;
+
+			default:
+				break;
+			}
+		}
+		timer++;
 	}
-	timer++;
 	
 	return this;
 }
@@ -139,4 +148,5 @@ void Title::Draw()const
 		DrawExtendStringToHandle(600, 310, 0.4f, 0.4f, "‚ÅŒˆ’è", 0xEBA05E, menu_font, 0xFFFFFF);
 	}
 
+	if (option->GetOptionFlg() == true) { option->Draw(); }
 }

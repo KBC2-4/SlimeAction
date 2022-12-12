@@ -301,9 +301,17 @@ AbstractScene* GAMEMAIN::Update()
 	}
 	else {	//ポーズ画面のセレクター
 		pause->Update();
-		if (pause->GetSelectMenu() == 2) { return new Title(); }
+		if (pause->GetSelectMenu() == 3) { return new Title(); }
 		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(false,0,stage_name); }
-		else if (pause->GetSelectMenu() == 3) { pause->SetPause(); }
+		else if (pause->GetSelectMenu() == 4) { pause->SetPause(); }
+		else if (pause->GetSelectMenu() == 2) { 
+			//BGM
+			ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
+
+			//SE
+			ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+			ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+		}
 	}
 
 	//デバッグ

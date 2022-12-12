@@ -33,6 +33,8 @@ Option::Option() {
 
 	//SE
 	ChangeVolumeSoundMem(GetSEVolume(), cursor_move_se);
+
+	option_flg = false;
 }
 
 
@@ -43,10 +45,11 @@ Option::~Option() {
 	DeleteSoundMem(background_music);
 	DeleteFontToHandle(menu_font);
 	selectmenu = 0;
+	option_flg = false;
 }
 
 
-AbstractScene* Option::Update() {
+void Option::Update() {
 
 	input_margin++;
 	if (input_margin > 20) {
@@ -79,14 +82,12 @@ AbstractScene* Option::Update() {
 
 	//–ß‚é
 	if ((selectmenu == 2) && (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
-		return new Title();
+		ChangeOptionFlg();
 	}
-
-	return this;
 }
 
 
-void Option::Draw()const {
+void Option::Draw() {
 
 	DrawGraph(0, 0, background_image, false);
 
