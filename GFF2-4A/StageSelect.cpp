@@ -132,7 +132,7 @@ void STAGE_SELECT::Draw() const
 
 	//ステージの描画
 	element->Draw(stage);
-	stage->Draw();
+	stage->Draw(element);
 
 	//戻る
 	if ((player_map_x >= stage_return.x - MAP_CEllSIZE / 2) && (player_map_x <= stage_return.x + MAP_CEllSIZE / 2)) {
