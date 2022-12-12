@@ -6,12 +6,13 @@
 #include "STAGE.h"
 
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
-#define SPEED					4.8f	//プレイヤーのスピード
-#define DEVIATION				2000	//スティック入力の誤入力の範囲
-#define JUMP_VELOCITY			-5.8f	//ジャンプスピード
+#define SPEED					4.2f	//プレイヤーのスピード
+#define DEVIATION				10000	//スティック入力の誤入力の範囲
+#define JUMP_VELOCITY			-6.2f	//ジャンプスピード
 #define HOOK_MAX_DISTANCE		280
 #define ANIMATION_TYPE			7
 #define THROW_INTERVAL			60		//投げるときのクールタイム
+#define HOOK_INTERVAL			20
 
 #define PI 3.1415926535897932384626433832795
 #define LENGTH      200                 // 紐の長さ
@@ -29,7 +30,7 @@ enum class PLAYER_MOVE_STATE {
 	THROW,		//投げる時
 	GROW_HOOK,	//フックに伸びるとき
 	HOOK,		//振り子しているとき
-	DAMAGE,		//ダメージを受けた時
+	//DAMAGE,		//ダメージを受けた時
 	DEAD,		//死んだとき
 };
 
@@ -40,8 +41,8 @@ enum class PLAYER_ANIM_STATE {
 	THROW,	 //投げるアニメーション
 	HOOK,
 	JUMP,	//ジャンプアニメーション
-	FALL,
-	LANDING,
+	FALL,	//落下アニメーション
+	LANDING,//着地アニメーション
 };
 
 class PLAYER
@@ -75,6 +76,8 @@ private:
 	float hook_y, hook_x;
 	int hook_index;
 	int idle_nobi_img;
+	std::vector<int> hook_flag;
+	int hook_interval = 0;
 	
 	double x;     // 紐を伸ばして一周させた場合に出来る円の線上の座標、０は紐が軸の真下に伸びた位置
 	double speed; // xの変化速度
@@ -144,7 +147,7 @@ private:
 	Animation animation[ANIMATION_TYPE]{
 		{  3,  1,  9, 0 },	//アイドル
 		{  1,  0, 10, 0 },	//移動
-		{  3,  1,  7, 2 },	//投げる
+		{  2,  1,  7, 2 },	//投げる
 		{  1, -1,  1, 0 },	//フック
 		{ 20,  1,  4, 1 },	//ジャンプ
 		{ 20,  2,  4, 1 },	//落下

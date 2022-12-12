@@ -4,7 +4,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#define _NDEBUG
+//#define _NDEBUG
 
 /*コンストラクタ*/
 PLAYER::PLAYER(STAGE* stage) {
@@ -13,7 +13,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	player_y = 0.0f;
 	map_x = 0;
 	map_y = 0;
-	life = 5;
+	life = MAX_LIFE;
 	jumppower = 0.0f;
 	jump_velocity = 0.0f;
 	jump_mode = 0;
@@ -26,6 +26,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	throw_preparation = false;
 	throw_interval = 0.0f;
 	player_state = PLAYER_MOVE_STATE::IDLE;
+	hook_flag.clear();
 	// 初期位置は軸の真下から左方向に45度傾いた位置
 	x = CLENGTH / b;
 	// 初期速度は０
@@ -167,7 +168,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	}
 
 	//点滅処理
-	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
+	if (is_damage) {
 		if (alpha_time > 0) {
 			if (alpha_time % 20 < 10) {
 				alpha_param -= 25;
@@ -178,7 +179,6 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 			alpha_time--;
 		}
 		else {
-			player_state = PLAYER_MOVE_STATE::IDLE;
 			is_damage = false;
 		}
 	}
@@ -192,11 +192,9 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// </summary>
 void PLAYER::Draw(STAGE *stage)const {
 	static float dis = 0.0f;
-	//デバッグ
-	//DrawFormatString(100, 50, 0xffffff, "%f", player_y);
-	if (player_state == PLAYER_MOVE_STATE::DAMAGE || is_damage) {
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_param);
 
+	if (is_damage) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_param);
 	}
 
 	//プレイヤーの表示
@@ -253,7 +251,6 @@ void PLAYER::Draw(STAGE *stage)const {
 	for (int i = 0; i < life - 1; i++) {
 		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
 	}
-
 }
 
 /// <summary>
@@ -262,7 +259,6 @@ void PLAYER::Draw(STAGE *stage)const {
 void PLAYER::Move() 
 {
 	player_speed = SPEED + (MAX_LIFE - life) * 0.4f;
-	//player_speed = SPEED * player_scale;
 	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
 	
 	//スティック入力の取得
@@ -347,16 +343,18 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 
 	//スティック入力の取得
 	int input_lx = PAD_INPUT::GetPadThumbLX();
-
+	
 
 	//Bボタン押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
 		if (player_state != PLAYER_MOVE_STATE::HOOK) {
+			if (--hook_interval > 0) return;
 			//フックまでの距離
 			float min_distance = HOOK_MAX_DISTANCE;
 			//フックの位置
 			std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
 			for (int i = 0; i < hook_pos.size(); i++) {
+				//if (std::find(hook_flag.begin(), hook_flag.end(), i) != hook_flag.end()) continue;
 				ELEMENT::ELEMENT_DATA pos = hook_pos[i];
 				//距離計算
 				float diff_x = pos.x - (player_x);
@@ -405,7 +403,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 		if (is_hook) {
 			//ステートの変更
 			player_state = PLAYER_MOVE_STATE::GROW_HOOK;
-			ChangeAnimation(PLAYER_ANIM_STATE::IDLE, true);
+			ChangeAnimation(PLAYER_ANIM_STATE::IDLE, false);
 			//移動中の時
 			if (!end_move) {
 				//フックまでの距離の計算
@@ -493,10 +491,12 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 	if (!is_hook) {
 		//初期化		
 		end_move = false;
-		hook_index = -1;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			//フック後のジャンプ方向の修正
 			//StopSoundMem(hook_pendulumSE);
+			hook_interval = HOOK_INTERVAL;
+			hook_flag.push_back(hook_index);
+			//printfDx("%d\n", hook_index);
 			if (input_lx < -DEVIATION) {
 				jump_move_x = -1;
 			}
@@ -517,6 +517,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 			}
 			player_state = PLAYER_MOVE_STATE::FALL;
 		}
+		hook_index = -1;
 		is_hook_move = false;
 	}
 }
@@ -525,9 +526,9 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 /// プレイヤーのジャンプ処理
 /// </summary>
 void PLAYER::JumpMove() {
-	if (/*PAD_INPUT::GetNowKey()== XINPUT_BUTTON_Y || */CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
-	//static bool is_jump = false;		//ジャンプ中か
-	static float jump_y = 0;			//ジャンプの高さ
+#ifndef _NDEBUG
+	if (PAD_INPUT::GetNowKey()== XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
+#endif
 	//Aボタンを押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A || jump_request) {
 		//ジャンプ中じゃないとき
@@ -535,8 +536,7 @@ void PLAYER::JumpMove() {
 			|| jump_request) {
 			jump_request = false;
 			is_jump = true;			//ジャンプ中に移行
-			jump_y = player_y - MAP_CEllSIZE * jumppower; //ジャンプの高さのセット
-			jump_velocity = JUMP_VELOCITY;
+			jump_velocity = JUMP_VELOCITY * jumppower;
 			//横移動してない時
 			if (player_state == PLAYER_MOVE_STATE::IDLE) {
 				jump_mode = 1;
@@ -555,7 +555,9 @@ void PLAYER::JumpMove() {
 		jump_velocity += 0.2f;
 		player_y += jump_velocity;
 
-		if (player_y <= jump_y || hit_ceil || player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
+		ChangeAnimation(PLAYER_ANIM_STATE::JUMP);
+
+		if (jump_velocity >= 0.0f || hit_ceil || player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			is_jump = false;
 			hit_ceil = false;
 			jump_velocity = 0;
@@ -579,6 +581,7 @@ void PLAYER::JumpMove() {
 					player_y = new_y;
 				}
 				jump_velocity = 0;
+				hook_flag.clear();
 				player_state = PLAYER_MOVE_STATE::IDLE;
 				ChangeAnimation(PLAYER_ANIM_STATE::LANDING);
 				PlaySoundMem(landingSE, DX_PLAYTYPE_BACK);
@@ -661,7 +664,6 @@ void PLAYER::Throw(STAGE* stage) {
 	else {
 		push_button = false;
 	}
-
 }
 
 /// <summary>
@@ -719,6 +721,9 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 	}
 
 	if (!is_ground && element->HitLift(this)) {
+		if (animation_state != PLAYER_ANIM_STATE::THROW) {
+			//ChangeAnimation(PLAYER_ANIM_STATE::IDLE, true);
+		}
 		is_ground = true;
 	}
 
@@ -808,7 +813,7 @@ void PLAYER::SetLife(int a)
 {
 	if (!is_damage) {
 		life = a;
-		player_state == PLAYER_MOVE_STATE::DAMAGE;
+		//player_state = PLAYER_MOVE_STATE::DAMAGE;
 		alpha_time = 120;
 		is_damage = true;
 		StartJoypadVibration(DX_INPUT_PAD1, 360, 320, -1);
