@@ -61,7 +61,7 @@ AbstractScene* Title::Update()
 
 	input_margin++;
 
-	if (PAD_INPUT::GetPadThumbLY() > 1000 && input_margin > 20) 
+	if (PAD_INPUT::GetPadThumbLY() > 20000 && input_margin > 20) 
 	{ 
 
 		selectmenu = (selectmenu + 3) % 4;  
@@ -69,7 +69,7 @@ AbstractScene* Title::Update()
 		StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); 
 	}
 
-	if (PAD_INPUT::GetPadThumbLY() < -1000 && input_margin > 20) 
+	if (PAD_INPUT::GetPadThumbLY() < -20000 && input_margin > 20) 
 	{ 
 
 		selectmenu = (selectmenu + 1) % 4; input_margin = 0;

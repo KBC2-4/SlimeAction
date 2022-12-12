@@ -50,17 +50,17 @@ AbstractScene* Option::Update() {
 
 	input_margin++;
 	if (input_margin > 20) {
-		if ((PAD_INPUT::GetPadThumbLY() > 1000) || (PAD_INPUT::GetPadThumbLY() < -1000) || (PAD_INPUT::GetPadThumbLX() > 1000) || (PAD_INPUT::GetPadThumbLX() < -1000)) {
+		if ((PAD_INPUT::GetPadThumbLY() > 20000) || (PAD_INPUT::GetPadThumbLY() < -20000) || (PAD_INPUT::GetPadThumbLX() > 20000) || (PAD_INPUT::GetPadThumbLX() < -20000)) {
 			input_margin = 0;
 			PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
 			StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
 		}
 
-		if (PAD_INPUT::GetPadThumbLY() > 800) { selectmenu = (selectmenu + 2) % 3; }
+		if (PAD_INPUT::GetPadThumbLY() > 20000) { selectmenu = (selectmenu + 2) % 3; }
 
-		if (PAD_INPUT::GetPadThumbLY() < -800) { selectmenu = (selectmenu + 1) % 3; }
+		if (PAD_INPUT::GetPadThumbLY() < -20000) { selectmenu = (selectmenu + 1) % 3; }
 
-		if (PAD_INPUT::GetPadThumbLX() > 1000) {
+		if (PAD_INPUT::GetPadThumbLX() > 20000) {
 			if (selectmenu == 0 && bgm_vol < 255 * 90 / 100) { bgm_vol += 255 * 10 / 100;}
 			else if (selectmenu == 1 && se_vol < 255 * 90 / 100) { se_vol += 255 * 10 / 100; }
 			
@@ -68,7 +68,7 @@ AbstractScene* Option::Update() {
 			ChangeVolumeSoundMem(GetSEVolume(), cursor_move_se);
 		}
 
-		if (PAD_INPUT::GetPadThumbLX() < -1000) {
+		if (PAD_INPUT::GetPadThumbLX() < -20000) {
 			if (selectmenu == 0 && bgm_vol > 255 * 10 / 100) { bgm_vol -= 255 * 10 / 100; }
 			else if (selectmenu == 1 && se_vol > 255 * 10 / 100) { se_vol -= 255 * 10 / 100; }
 			
@@ -91,7 +91,7 @@ void Option::Draw()const {
 	DrawGraph(0, 0, background_image, false);
 
 	//ëIëÉÅÉjÉÖÅ[
-	DrawStringToHandle(555, 250, "BGM", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(555, 250, "BGM", selectmenu == 0 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
 
 	DrawOvalAA(620, 350, 180, 10, 30, 0x000000, FALSE, 2.0F);
 	DrawOvalAA(620, 350, 180 * bgm_vol / 255, 10 * bgm_vol / 255, 30, 0xFFEB91, TRUE, 0.0F);
@@ -101,5 +101,5 @@ void Option::Draw()const {
 	DrawOvalAA(620, 480, 180, 10, 30, 0x000000, FALSE, 2.0F);
 	DrawOvalAA(620, 480, 180 * se_vol / 255, 10 * se_vol / 255, 30, 0x11A7ED, TRUE, 0.0F);
 
-	DrawStringToHandle(550, 540, "ñﬂÇÈ", selectmenu == 2 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(548, 540, "ñﬂÇÈ", selectmenu == 2 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 }

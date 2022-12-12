@@ -34,8 +34,8 @@ PAUSE::~PAUSE() {
 int PAUSE::Update(void) {
 	static int input_margin;
 	input_margin++;
-	if (PAD_INPUT::GetPadThumbLY() > 1000 && input_margin > 20) { selectmenu = (selectmenu + 2) % 3;  input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
-	if (PAD_INPUT::GetPadThumbLY() < -1000 && input_margin > 20) { selectmenu = (selectmenu + 1) % 3; input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
+	if (PAD_INPUT::GetPadThumbLY() > 20000 && input_margin > 20) { selectmenu = (selectmenu + 3) % 4;  input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
+	if (PAD_INPUT::GetPadThumbLY() < -20000 && input_margin > 20) { selectmenu = (selectmenu + 1) % 4; input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
 
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
 		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
@@ -55,8 +55,9 @@ void PAUSE::Draw(int pause_graph) {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	DrawStringToHandle(380, 100, "ポーズ", 0x56F590, title_font, 0xFFFFFF);
 	//選択メニュー
-	DrawStringToHandle(400, 360, "ゲームへ戻る", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
-	DrawStringToHandle(440, 450, "リスタート", selectmenu == 1 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
-	DrawStringToHandle(362, 540, "タイトルへ戻る", selectmenu == 2 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(400, 270, "ゲームへ戻る", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(440, 360, "リスタート", selectmenu == 1 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(440, 450, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(362, 540, "タイトルへ戻る", selectmenu == 3 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
 	
 }

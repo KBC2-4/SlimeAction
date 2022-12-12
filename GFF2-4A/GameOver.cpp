@@ -46,7 +46,7 @@ AbstractScene* GameOver::Update()
 
 	/*ã“ü—Í‚©‚ÂWaitTime‚ª20‚æ‚è‘å‚«‚¢cursor‚ğã‚ÉA
 	Åã‚Ìê‡‚Í‰º‚Ö*/
-	if (PAD_INPUT::GetPadThumbLY() > 1000 && Input_WaitTime > 20)
+	if (PAD_INPUT::GetPadThumbLY() > 20000 && Input_WaitTime > 20)
 	{
 
 		SelectCount = (SelectCount + 1) % 2;
@@ -55,7 +55,7 @@ AbstractScene* GameOver::Update()
 
 	/*‰º“ü—Í‚©‚ÂWaitTime‚ª20‚æ‚è‘å‚«‚¢cursor‚ğ‰º‚ÉA
 	Åã‚Ìê‡‚Íã‚Ö*/
-	if (PAD_INPUT::GetPadThumbLY() < -1000 && Input_WaitTime > 20)
+	if (PAD_INPUT::GetPadThumbLY() < -20000 && Input_WaitTime > 20)
 	{
 
 		SelectCount = (SelectCount + 1) % 2;
