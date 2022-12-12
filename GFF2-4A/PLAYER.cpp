@@ -718,7 +718,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		}
 	}
 
-	if (element->HitLift(this)) {
+	if (!is_ground && element->HitLift(this)) {
 		is_ground = true;
 	}
 
