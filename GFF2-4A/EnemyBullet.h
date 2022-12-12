@@ -10,6 +10,7 @@ class ENEMY_BULLET
 {
 private:
     int my_x, my_y;                   //この敵の座標
+    int draw_x;                       //壁に当たった時に描画場所をずらすための変数
     double bullet_x, bullet_y, hypote;//弾の細かい座標と三角形の斜辺
     double player_x, player_y;        //プレイヤーの座標
     double dis_x, dis_y;              //プレイヤーと敵の距離
