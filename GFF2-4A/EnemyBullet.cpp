@@ -16,6 +16,7 @@ ENEMY_BULLET::ENEMY_BULLET()
 	my_y = 0.0;
 	dis_x = 0.0;
 	dis_y = 0.0;
+	draw_x = 0;
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
 	hit_rad = 0.0;
@@ -74,6 +75,7 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	my_y = y;
 	dis_x = 0.0;
 	dis_y = 0.0;
+	draw_x = 0;
 	bullet_sx = 0.0;
 	bullet_sy = 0.0;
 	hit_rad = -90 * (PI / 180);
@@ -110,7 +112,7 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 //描画
 void ENEMY_BULLET::Draw() const
 {
-	DrawRotaGraph(static_cast<int>(GetDrawX()), static_cast<int>(GetDrawY()), 2, rad + hit_rad, image, TRUE);
+	DrawRotaGraph(static_cast<int>(GetDrawX()) - draw_x, static_cast<int>(GetDrawY()), 2, rad + hit_rad, image, TRUE);
 }
 
 //アップデート
@@ -228,11 +230,13 @@ void ENEMY_BULLET::Hit()
 			if (rad > 90 * (PI / 180))
 			{
 				hit_rad = 0;
+				draw_x = -40;
 			}
 			else {}
 			if (rad < 90 * (PI / 180))
 			{
 				hit_rad = 180 * (PI / 180);
+				draw_x = 40;
 			}
 			else {}
 		}

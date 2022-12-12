@@ -2,6 +2,7 @@
 #include "GameMain.h"
 #include "StageSelect.h"
 #include "DrawRanking.h"
+#include "Option.h"
 #include "DxLib.h"
 
 
@@ -35,11 +36,20 @@ Title::Title()
 	timer = 0;
 
 	PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
+
+	option = new Option;
+
+	//BGM
+	ChangeVolumeSoundMem(option->GetBGMVolume(), background_music);
+
+	//SE
+	ChangeVolumeSoundMem(option->GetSEVolume(), cursor_move_se);
+	ChangeVolumeSoundMem(option->GetSEVolume(), ok_se);
 }
 
 Title::~Title() 
 {
-
+	delete option;
 	DeleteGraph(background_image);
 	StopSoundMem(background_music);
 	DeleteSoundMem(background_music);
@@ -57,7 +67,7 @@ AbstractScene* Title::Update()
 	if (PAD_INPUT::GetPadThumbLY() > 1000 && input_margin > 20) 
 	{ 
 
-		selectmenu = (selectmenu + 2) % 3;  
+		selectmenu = (selectmenu + 3) % 4;  
 		input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); 
 		StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); 
 	}
@@ -65,35 +75,32 @@ AbstractScene* Title::Update()
 	if (PAD_INPUT::GetPadThumbLY() < -1000 && input_margin > 20) 
 	{ 
 
-		selectmenu = (selectmenu + 1) % 3; input_margin = 0;
+		selectmenu = (selectmenu + 1) % 4; input_margin = 0;
 		PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
 		StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
 	}
 
 	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) 
 	{
+		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+		StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
 
 		switch (static_cast<MENU>(selectmenu))
 		{
 
 		case MENU::GAME_SELECT:
-			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); 
-			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1); 
 			return new STAGE_SELECT();
 			break;
 
 		case MENU::RANKING:
-			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); 
-			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1); 
 			return new DRAW_RANKING();
 			break;
 
+		case MENU::OPTION:
+			return new Option();
+			break;
+
 		case MENU::END:
-			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
-			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
-			InitFontToHandle();	//全てのフォントデータを削除
-			InitGraph();		//読み込んだ全てのグラフィックデータを削除
-			InitSoundMem();
 			return nullptr;
 			break;
 
@@ -123,7 +130,8 @@ void Title::Draw()const
 	//選択メニュー
 	DrawStringToHandle(510, 360, "プレイ", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font ,0xFFFFFF);
 	DrawStringToHandle(432, 450, "ランキング", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
-	DrawStringToHandle(550, 540, "終了", selectmenu == 2 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(432, 540, "オプション", selectmenu == 2 ? 0xE87D79 : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(560, 630, "終了", selectmenu == 3 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 
 
 	//操作案内

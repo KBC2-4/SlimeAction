@@ -490,7 +490,7 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 bool ELEMENT::HitLift(PLAYER* player) {
 	for (int i = 0; i < lift.size(); i++) {
 		if (player_map_x + player->GetPlayerScale() * 25 >= lift[i].x && player_map_x - player->GetPlayerScale() * 25 <= lift[i].x + LIFT_SIZE
-			&& player_map_y >= lift[i].y - MAP_CEllSIZE / 2 && player_map_y <= lift[i].y + 10 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::JUMP
+			&& player_map_y >= lift[i].y - MAP_CEllSIZE && player_map_y <= lift[i].y + 10 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::JUMP
 			/*&& (map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] == 0 || map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE] >= 51)*/) {
 
 			player->SetPlayerY(lift[i].y - MAP_CEllSIZE / 2);
