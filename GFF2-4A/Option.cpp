@@ -14,22 +14,15 @@ Option::Option() {
 		throw "Resource/Images/Stage/BackImage1.png";
 	}
 
-	if ((background_music = LoadSoundMem("Resource/Sounds/BGM/title.wav")) == -1) {
-		throw "Resource/Sounds/BGM/title.wav";
-	}
-
 	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1)
 	{
 		throw "Resource/Sounds/SE/cursor_move.wav";
 	}
 
-	PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
+	//PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
 
 	selectmenu = 0;
 	input_margin = 0;
-
-	//BGM
-	ChangeVolumeSoundMem(GetBGMVolume(), background_music);
 
 	//SE
 	ChangeVolumeSoundMem(GetSEVolume(), cursor_move_se);
@@ -41,8 +34,6 @@ Option::Option() {
 Option::~Option() {
 
 	DeleteGraph(background_image);
-	StopSoundMem(background_music);
-	DeleteSoundMem(background_music);
 	DeleteFontToHandle(menu_font);
 	selectmenu = 0;
 	option_flg = false;
@@ -67,7 +58,6 @@ void Option::Update() {
 			if (selectmenu == 0 && bgm_vol < 255 * 90 / 100) { bgm_vol += 255 * 10 / 100;}
 			else if (selectmenu == 1 && se_vol < 255 * 90 / 100) { se_vol += 255 * 10 / 100; }
 			
-			ChangeVolumeSoundMem(GetBGMVolume(), background_music);
 			ChangeVolumeSoundMem(GetSEVolume(), cursor_move_se);
 		}
 
@@ -75,7 +65,6 @@ void Option::Update() {
 			if (selectmenu == 0 && bgm_vol > 255 * 10 / 100) { bgm_vol -= 255 * 10 / 100; }
 			else if (selectmenu == 1 && se_vol > 255 * 10 / 100) { se_vol -= 255 * 10 / 100; }
 			
-			ChangeVolumeSoundMem(GetBGMVolume(), background_music);
 			ChangeVolumeSoundMem(GetSEVolume(), cursor_move_se);
 		}
 	}

@@ -64,6 +64,12 @@ AbstractScene* Title::Update()
 {
 	if (option->GetOptionFlg() == true) {
 		option->Update();
+		//BGM
+		ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music);
+
+		//SE
+		ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+		ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 	}
 	else {
 

@@ -8,7 +8,6 @@ class Option
 private:
     int menu_font;
     int background_image;
-    int background_music;
     int cursor_move_se;
     int input_margin;
     static int bgm_vol;        //BGM‚Ì‰¹—Ê
