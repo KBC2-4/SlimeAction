@@ -52,6 +52,11 @@ int PAUSE::Update(void) {
 			else if (selectmenu == 2) { option->ChangeOptionFlg(); }
 			nextmenu = selectmenu;
 		}
+
+		//Aボタンでもポーズを戻す
+		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+			pause_flg = !pause_flg;
+		}
 	}
 		return 0;
 }

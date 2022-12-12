@@ -134,6 +134,19 @@ void STAGE_SELECT::Draw() const
 	element->Draw(stage);
 	stage->Draw(element);
 
+	//ガイド表示
+	DrawStringToHandle(920, 668, "[ゲーム中]ポーズ", 0x91EB52, buttonguid_font, 0x000000);
+	DrawOvalAA(850, 680, 60, 17, 30, 0x000000, 1);
+	DrawStringToHandle(813, 668, "START", 0xFFFFFF, buttonguid_font, 0x000000);
+
+	DrawStringToHandle(630, 668, "アクション", 0x91EB52, buttonguid_font, 0x000000);
+	DrawCircleAA(610, 680, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(603, 668, "B", 0x6AF6C5, buttonguid_font, 0xFFFFFF);
+
+	DrawStringToHandle(450, 668, "ジャンプ", 0x91EB52, buttonguid_font, 0x000000);
+	DrawCircleAA(430, 680, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(423, 668, "A", 0xEB7415, buttonguid_font, 0xFFFFFF);
+
 	//戻る
 	if ((player_map_x >= stage_return.x - MAP_CEllSIZE / 2) && (player_map_x <= stage_return.x + MAP_CEllSIZE / 2)) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
