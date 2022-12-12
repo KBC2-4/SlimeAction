@@ -2,8 +2,8 @@
 #include "GameMain.h"
 #include "StageSelect.h"
 #include "DrawRanking.h"
-#include "Option.h"
 #include "DxLib.h"
+#include "Option.h"
 
 
 Title::Title()
@@ -37,19 +37,16 @@ Title::Title()
 
 	PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
 
-	option = new Option;
-
 	//BGM
-	ChangeVolumeSoundMem(option->GetBGMVolume(), background_music);
+	ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music);
 
 	//SE
-	ChangeVolumeSoundMem(option->GetSEVolume(), cursor_move_se);
-	ChangeVolumeSoundMem(option->GetSEVolume(), ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 }
 
 Title::~Title() 
 {
-	delete option;
 	DeleteGraph(background_image);
 	StopSoundMem(background_music);
 	DeleteSoundMem(background_music);
@@ -130,7 +127,7 @@ void Title::Draw()const
 	//選択メニュー
 	DrawStringToHandle(510, 360, "プレイ", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font ,0xFFFFFF);
 	DrawStringToHandle(432, 450, "ランキング", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
-	DrawStringToHandle(432, 540, "オプション", selectmenu == 2 ? 0xE87D79 : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(432, 540, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
 	DrawStringToHandle(560, 630, "終了", selectmenu == 3 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 
 

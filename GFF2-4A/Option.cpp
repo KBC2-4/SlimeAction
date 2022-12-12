@@ -3,6 +3,9 @@
 #include "PadInput.h"
 #include "Title.h"
 
+int Option::bgm_vol = 255 * 50 / 100;
+int Option::se_vol = 255 * 50 / 100;
+
 Option::Option() {
 	menu_font = CreateFontToHandle("UD ÉfÉWÉ^Éã ã≥â»èëëÃ N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
@@ -22,8 +25,6 @@ Option::Option() {
 
 	PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
 
-	bgm_vol = 255 * 50 / 100;
-	se_vol = 255 * 50 / 100;
 	selectmenu = 0;
 	input_margin = 0;
 
@@ -75,8 +76,7 @@ AbstractScene* Option::Update() {
 			ChangeVolumeSoundMem(GetSEVolume(), cursor_move_se);
 		}
 	}
-	clsDx();
-	printfDx("%d", se_vol);
+
 	//ñﬂÇÈ
 	if ((selectmenu == 2) && (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
 		return new Title();

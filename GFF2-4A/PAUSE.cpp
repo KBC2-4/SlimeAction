@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "PadInput.h"
 #include "Title.h"
+#include "Option.h"
 
 PAUSE::PAUSE() {
 	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1) {
@@ -17,6 +18,10 @@ PAUSE::PAUSE() {
 	nextmenu = 0;
 
 	pause_flg = false;
+
+	//SE
+	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 }
 
 PAUSE::~PAUSE() {

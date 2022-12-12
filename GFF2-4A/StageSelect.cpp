@@ -2,6 +2,7 @@
 #include "Title.h"
 #include "GameMain.h"
 #include "DxLib.h"
+#include "Option.h"
 
 STAGE_SELECT::STAGE_SELECT()
 {
@@ -58,6 +59,9 @@ STAGE_SELECT::STAGE_SELECT()
 	}
 
 	PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
+
+	//BGM
+	ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music);
 }
 
 STAGE_SELECT::~STAGE_SELECT()

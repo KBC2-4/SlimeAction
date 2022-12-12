@@ -1,6 +1,7 @@
 #include "GameMain.h"
 #include "Title.h"
 #include <vector>
+#include "Option.h"
 
 GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 {
@@ -155,6 +156,13 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	}
 
 	PlaySoundMem(background_music[0], DX_PLAYTYPE_LOOP);
+
+	//BGM
+	ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
+
+	//SE
+	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 }
 
 GAMEMAIN::~GAMEMAIN()

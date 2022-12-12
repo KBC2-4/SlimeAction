@@ -1,5 +1,6 @@
 #include "Element.h"
 #include "PLAYER.h"
+#include "Option.h"
 
 ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 
@@ -199,6 +200,14 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 
 	player_state = 0;
 	guid_timer = 0;
+
+
+	//SE
+	ChangeVolumeSoundMem(Option::GetSEVolume(), door_close_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), press_the_button_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), switch_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), walk_puddle_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), manhole_opened_se);
 	
 }
 

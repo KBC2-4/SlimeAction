@@ -11,8 +11,8 @@ private:
     int background_music;
     int cursor_move_se;
     int input_margin;
-    int bgm_vol;        //BGM‚Ì‰¹—Ê
-    int se_vol;         //SE‚Ì‰¹—Ê
+    static int bgm_vol;        //BGM‚Ì‰¹—Ê
+    static int se_vol;         //SE‚Ì‰¹—Ê
     int selectmenu;     //‘I‘ğ‚µ‚Ä‚¢‚éƒƒjƒ…[
 
 public:
@@ -26,7 +26,7 @@ public:
     //•`‰æ‚ÉŠÖ‚·‚é‚±‚Æ‚ğÀ‘•
     void Draw() const override;
 
-    int GetBGMVolume(void) { return bgm_vol; }
-    int GetSEVolume(void) { return se_vol; }
+    static int GetBGMVolume(void) { return bgm_vol; }
+    static int GetSEVolume(void) { return se_vol; }
 };
 
