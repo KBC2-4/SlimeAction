@@ -744,6 +744,10 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		is_ground = true;
 	}
 
+	if (is_ground) {
+		hook_interval = 0;
+	}
+
 	//壁の判定
 	int screen_left = static_cast<int>(-stage->GetScrollX() / MAP_CEllSIZE);
 	for (int i = 0; i < stage->GetMapSize().x; i++) {
@@ -828,12 +832,12 @@ void PLAYER::MoveAnimation() {
 
 void PLAYER::SetLife(int a)
 {
-	if (!is_damage) {
-		life = a;
+	if (life > a && !is_damage) {
 		//player_state = PLAYER_MOVE_STATE::DAMAGE;
 		alpha_time = 120;
 		is_damage = true;
 		StartJoypadVibration(DX_INPUT_PAD1, 360, 320, -1);
 		PlaySoundMem(damageSE, DX_PLAYTYPE_BACK);
 	}
+	life = a;
 }
