@@ -168,10 +168,6 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 		throw_slime[i].Update(stage);
 	}
 
-	//死判定
-	if (stage->GetMapData(map_y, map_x) == -1 || life <= 0) {
-		is_death = true;
-	}
 	if (player_y + stage->GetScrollY() > 720 && player_state != PLAYER_MOVE_STATE::HOOK){
 		is_death = true;
 	}
@@ -753,7 +749,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 	for (int i = 0; i < stage->GetMapSize().x; i++) {
 		for (int j = screen_left; j < screen_left + 20; j++) {
 			if (j >= stage->GetMapSize().y) break;
-			if (!stage->HitMapDat(i, j)) continue;
+			if (!stage->HitMapDat(i, j) && stage->GetMapData(i, j) != -1) continue;
 			
 			float block_left = j * MAP_CEllSIZE;
 			float block_right = block_left + MAP_CEllSIZE;
@@ -764,6 +760,10 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 				if (player_bottom > block_top && player_top < block_bottom) {
 					int block_type = stage->GetMapData(i, j);
 					int y = static_cast<int>(player_top / MAP_CEllSIZE);
+					//死判定
+					if (block_type == -1) {
+						is_death = true;
+					}
 					if (hit_ceil && y == i) continue;
 					//ドアの判定
 					if ((block_type == 66 || block_type == 67) && move_x > 0) {
