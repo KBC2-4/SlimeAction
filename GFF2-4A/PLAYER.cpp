@@ -82,7 +82,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((hook_moveSE = LoadSoundMem("Resource/Sounds/SE/Player/hook_move.wav")) == -1) {
 		throw "Resource/Sounds/SE/Player/hook_move.wav";
 	}
-	if ((hook_pendulumSE = LoadSoundMem("Resource/Sounds/SE/Player/hook_pendulum.wav")) == -1) {
+	if ((hook_pendulumSE = LoadSoundMem("Resource/Sounds/SE/Player/hook.wav")) == -1) {
 		throw "Resource/Sounds/SE/Player/hook_pendulum.wav";
 	}
 
@@ -447,7 +447,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				//フックについたら移動処理の終了
 				else {
 					//StopSoundMem(hook_moveSE);
-					//PlaySoundMem(hook_pendulumSE, DX_PLAYTYPE_LOOP);
+					PlaySoundMem(hook_pendulumSE, DX_PLAYTYPE_LOOP);
 					end_move = true;
 					//振り子の開始角度の設定
 					double angle = (double)hook_angle * (180.0 / M_PI) - 90.0;
@@ -510,7 +510,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 		end_move = false;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			//フック後のジャンプ方向の修正
-			//StopSoundMem(hook_pendulumSE);
+			StopSoundMem(hook_pendulumSE);
 			hook_interval = HOOK_INTERVAL;
 			hook_flag.push_back(hook_index);
 			//printfDx("%d\n", hook_index);
@@ -837,7 +837,7 @@ void PLAYER::SetLife(int a)
 		alpha_time = 120;
 		is_damage = true;
 		StartJoypadVibration(DX_INPUT_PAD1, 360, 320, -1);
-		PlaySoundMem(damageSE, DX_PLAYTYPE_BACK);
+		//PlaySoundMem(damageSE, DX_PLAYTYPE_BACK);
 	}
 	life = a;
 }
