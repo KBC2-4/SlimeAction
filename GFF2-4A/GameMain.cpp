@@ -178,11 +178,11 @@ GAMEMAIN::~GAMEMAIN()
 	delete player;
 	delete stage;
 	delete pause;
-	delete[] item;
 	delete element;
 
 	//ƒŒƒ‚ƒi[‚Ìíœ
-	for (int i = 0; i < lemoner_count; i++) {
+	for (int i = 0; i < lemoner_count; i++) 
+	{
 		delete lemoner[i];
 	}
 	delete[] lemoner;
@@ -207,6 +207,7 @@ GAMEMAIN::~GAMEMAIN()
 			delete item[i];
 		}
 	}
+	delete[] item;
 }
 
 AbstractScene* GAMEMAIN::Update()
