@@ -45,11 +45,11 @@ void DRAW_RANKING::Draw() const
 		{
 			if (best_time[i] / 1000 >= 60)
 			{
-				DrawFormatString(700, 300 + (75 * i), 0x000000, "%4d:%2d.%.3d", (best_time[i] / 1000) / 60, (best_time[i] / 1000) % 60, best_time[i] % 1000);
+				DrawFormatString(600, 300 + (75 * i), 0x000000, "%4d•ª%2d.%.3d•b", (best_time[i] / 1000) / 60, (best_time[i] / 1000) % 60, best_time[i] % 1000);
 			}
 			else 
 			{
-				DrawFormatString(600, 300 + (75 * i), 0x000000, "%5d.%.3d•b", best_time[i] / 1000, best_time[i] % 1000);
+				DrawFormatString(695, 300 + (75 * i), 0x000000, "%5d.%.3d•b", best_time[i] / 1000, best_time[i] % 1000);
 			}
 		}
 		

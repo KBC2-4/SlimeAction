@@ -165,7 +165,10 @@ void STAGE::CameraWork(PLAYER* player, ELEMENT* element) {
 			player_vector_y = -1;
 			//scroll_speedY = 10;
 		}
-
+		scroll_speed_x = player->GetPlayerSpeed();
+		if (player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK) {
+			scroll_speed_x = fabsf(player->GetPlayerHookSpeed());
+		}
 		//x軸スクロール
 		//if (element->HitLift(player)) { scroll_speed_x = element->GetLift_SpeedX(); }
 		if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
@@ -200,6 +203,9 @@ void STAGE::CameraWork(PLAYER* player, ELEMENT* element) {
 			if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().y + 400)) {
 				//プレイヤーの落下速度に応じてスクロールYを下げる
 				if(player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
+			}
+			if ((player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK || player->GetPlayerMoveState() == PLAYER_MOVE_STATE::GROW_HOOK) && player->GetPlayerY() > 500.0f) {
+				scroll_y -= 5;
 			}
 		}
 
