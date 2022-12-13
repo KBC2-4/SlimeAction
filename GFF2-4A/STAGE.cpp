@@ -12,7 +12,7 @@
 #include "RESULT.h"
 #include "Option.h"
 
-#define _NDEBUG
+#define _DEBUG
 
 STAGE::STAGE(const char* stage_name) {
 	//**map_data = 0;
@@ -105,6 +105,12 @@ void STAGE::Draw(ELEMENT* element)const {
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && i * MAP_CEllSIZE + scroll_y >= -80&&i*MAP_CEllSIZE+scroll_y<=720) {
 				if (
 					map_data.at(i).at(j) != 68
+					&& map_data.at(i).at(j) != 74
+					&& map_data.at(i).at(j) != 75
+					&& map_data.at(i).at(j) != 76
+					&& map_data.at(i).at(j) != 77
+					&& map_data.at(i).at(j) != 78
+					&& map_data.at(i).at(j) != 79
 					&& map_data.at(i).at(j) != 102
 					&& map_data.at(i).at(j) != 103
 					&& map_data.at(i).at(j) != 104
