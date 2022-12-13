@@ -265,7 +265,7 @@ void PLAYER::Draw(STAGE *stage)const {
 	}
 
 	//ライフの描画
-	for (int i = 0; i < life - 1; i++) {
+	for (int i = 0; i < life; i++) {
 		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
 	}
 }
