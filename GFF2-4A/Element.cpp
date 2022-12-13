@@ -109,8 +109,8 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 				//酸性雨の水たまり(左端)
 			case 74:
 			case 75:
-				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
-				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.x = static_cast<float>((j * MAP_CEllSIZE));
+				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 1;
 				data.animtimer = 0;
 				data.flg = false;
@@ -120,8 +120,8 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 				//酸性雨の水たまり(中央)
 			case 76:
 			case 77:
-				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
-				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.x = static_cast<float>((j * MAP_CEllSIZE));
+				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 2;
 				data.animtimer = 0;
 				data.flg = false;
@@ -131,8 +131,8 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 				//酸性雨の水たまり(右端)
 			case 78:
 			case 79:
-				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
-				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.x = static_cast<float>((j * MAP_CEllSIZE));
+				data.y = static_cast<float>((i * MAP_CEllSIZE));
 				data.type = 3;
 				data.animtimer = 0;
 				data.flg = false;
@@ -218,7 +218,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 
 	player_state = 0;
 	guid_timer = 0;
-
+	acidrain_puddles_anitimer = 0;
 
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume(), door_close_se);
@@ -345,6 +345,42 @@ void ELEMENT::Draw(STAGE* stage) {
 				//	DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
 				//}
 			}
+		}
+	}
+
+
+	//酸性雨の水たまり
+	for (int i = 0; i < acidrain_puddles.size(); i++) {
+		switch (acidrain_puddles[i].type)
+		{
+		case 1:		//左端
+			if (acidrain_puddles_anitimer > 5) {
+				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[74], TRUE);
+			}
+			else {
+				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[73], TRUE);
+			}
+			break;
+
+		case 2:		//中央
+			if (acidrain_puddles_anitimer > 5) {
+				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[76], TRUE);
+			}
+			else {
+				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[75], TRUE);
+			}
+			break;
+
+		case 3:		//右端
+			if (acidrain_puddles_anitimer > 5) {
+				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[78], TRUE);
+			}
+			else {
+				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[77], TRUE);
+			}
+			break;
+		default:
+			break;
 		}
 	}
 }
@@ -600,7 +636,8 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 }
 
 void ELEMENT::Acidrain_puddles(PLAYER* player) {
-
+	if (acidrain_puddles_anitimer < 10) { acidrain_puddles_anitimer++; }
+	else { acidrain_puddles_anitimer = 0; }
 	for (int i = 0; i < acidrain_puddles.size(); i++) {
 
 		if (acidrain_puddles[i].flg == false)acidrain_puddles[0].animtimer++;
@@ -608,21 +645,19 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 			acidrain_puddles[0].animtimer = 0;
 			acidrain_puddles[i].flg = true;
 		}
-
-		if (acidrain_puddles[i].type == 1) {	//酸性雨の水たまり
-			if ((player_map_x >= acidrain_puddles[i].x - MAP_CEllSIZE / 2) && (player_map_x <= acidrain_puddles[i].x + MAP_CEllSIZE / 2) && (player_map_y >= acidrain_puddles[i].y - MAP_CEllSIZE) && (player_map_y <= acidrain_puddles[i].y + MAP_CEllSIZE)) {
-				//デバッグ
-				//printfDx("入ってるよ！");
-				if (CheckSoundMem(walk_puddle_se) == FALSE && acidrain_puddles[0].animtimer % 90 == 0)PlaySoundMem(walk_puddle_se, DX_PLAYTYPE_BACK, TRUE);
-				//player->SetPlayerY(acidrain_puddles[i].y + 1.5f);
-				if (acidrain_puddles[i].flg == true) {
-					player->SetLife(player->GetLife() - 1);
-					//printfDx("残りライフ：%d",player->GetLife());		//デバッグ
-					acidrain_puddles[i].flg = false;
-				}
+		//酸性雨の水たまり
+		if ((player_map_x >= acidrain_puddles[i].x - MAP_CEllSIZE / 2) && (player_map_x <= acidrain_puddles[i].x + MAP_CEllSIZE / 2) && (player_map_y >= acidrain_puddles[i].y - MAP_CEllSIZE) && (player_map_y <= acidrain_puddles[i].y + MAP_CEllSIZE)) {
+			//デバッグ
+			//printfDx("入ってるよ！");
+			if (CheckSoundMem(walk_puddle_se) == FALSE && acidrain_puddles[0].animtimer % 90 == 0)PlaySoundMem(walk_puddle_se, DX_PLAYTYPE_BACK, TRUE);
+			//player->SetPlayerY(acidrain_puddles[i].y + 1.5f);
+			if (acidrain_puddles[i].flg == true) {
+				player->SetLife(player->GetLife() - 1);
+				//printfDx("残りライフ：%d",player->GetLife());		//デバッグ
+				acidrain_puddles[i].flg = false;
 			}
-			else { /*acidrain_puddles[0].animtimer = 0;*/ }
 		}
+		else { /*acidrain_puddles[0].animtimer = 0;*/ }
 	}
 }
 
