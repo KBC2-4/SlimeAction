@@ -5,7 +5,6 @@
 int RANKING::best_time[3];
 void RANKING::Insert(int time , int stage)
 {
-	
 	ReadRanking();
 	if ((time < best_time[stage - 1]) || (best_time[stage - 1] == -1))
 	{
