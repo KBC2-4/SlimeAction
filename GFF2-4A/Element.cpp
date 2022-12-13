@@ -333,6 +333,12 @@ void ELEMENT::Draw(STAGE* stage)  {
 
 void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 
+	ChangeVolumeSoundMem(Option::GetSEVolume(), door_close_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), press_the_button_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), switch_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), walk_puddle_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), manhole_opened_se);
+
 	player_state = static_cast<int>(player->GetPlayerMoveState());
 	//プレイヤーのマップ内座標を設定
 	player_map_x = roundf(player->GetPlayerX() - stage->GetScrollX());

@@ -93,6 +93,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume(), damageSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), jumpSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), landingSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), hook_moveSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), hook_pendulumSE);
 	
@@ -130,6 +131,14 @@ PLAYER::~PLAYER() {
 /// プレイヤーの更新
 /// </summary>
 void PLAYER::Update(ELEMENT* element, STAGE* stage) {
+
+		ChangeVolumeSoundMem(Option::GetSEVolume(), damageSE);
+		ChangeVolumeSoundMem(Option::GetSEVolume(), jumpSE);
+		ChangeVolumeSoundMem(Option::GetSEVolume(), landingSE);
+		ChangeVolumeSoundMem(Option::GetSEVolume(), hook_moveSE);
+		ChangeVolumeSoundMem(Option::GetSEVolume(), hook_pendulumSE);
+
+
 	//移動処理
 	Move();
 

@@ -14,6 +14,7 @@ PAUSE::PAUSE() {
 	}
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
+	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	selectmenu = 0;
 	nextmenu = 0;
 
@@ -30,6 +31,7 @@ PAUSE::~PAUSE() {
 	delete option;
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
+	DeleteFontToHandle(buttonguid_font);
 	DeleteSoundMem(cursor_move_se);
 	DeleteSoundMem(ok_se);
 }
@@ -62,17 +64,30 @@ int PAUSE::Update(void) {
 }
 
 void PAUSE::Draw(int pause_graph) {
+
+
 	GraphFilter(pause_graph, DX_GRAPH_FILTER_GAUSS, 16, 1000);
 	DrawGraph(0, 0, pause_graph, FALSE);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 	DrawFillBox(0, 0, 1280, 720, 0x000000);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	DrawStringToHandle(380, 100, "ポーズ", 0x56F590, title_font, 0xFFFFFF);
-	//選択メニュー
-	DrawStringToHandle(400, 270, "ゲームへ戻る", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
-	DrawStringToHandle(440, 360, "リスタート", selectmenu == 1 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
-	DrawStringToHandle(440, 450, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
-	DrawStringToHandle(362, 540, "タイトルへ戻る", selectmenu == 3 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
-	
-	if (option->GetOptionFlg() == true) { option->Draw(); }
+
+	//オプション画面へ入る
+	if (option->GetOptionFlg() == true) {
+		option->Draw();
+	}
+	else {
+
+		DrawStringToHandle(380, 100, "ポーズ", 0x56F590, title_font, 0xFFFFFF);
+		//選択メニュー
+		DrawStringToHandle(400, 270, "ゲームへ戻る", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(440, 360, "リスタート", selectmenu == 1 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(440, 450, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(362, 540, "タイトルへ戻る", selectmenu == 3 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
+
+		//ガイド表示
+		DrawStringToHandle(580, 668, "ゲームへ戻る", 0xFFA15C, buttonguid_font, 0x000000);
+		DrawCircleAA(560, 680, 15, 20, 0xFFFFFF, 1);
+		DrawStringToHandle(553, 668, "A", 0xEB7415, buttonguid_font, 0xFFFFFF);
+	}
 }

@@ -10,6 +10,7 @@
 
 #include "PLAYER.h"
 #include "RESULT.h"
+#include "Option.h"
 
 #define _NDEBUG
 
@@ -69,6 +70,8 @@ STAGE::STAGE(const char* stage_name) {
 		spawn_point.x = 0;
 		spawn_point.y = 0;
 	}
+
+	ChangeVolumeSoundMem(Option::GetSEVolume(), halfwaypoint_se);
 }
 
 STAGE::~STAGE() {
@@ -78,6 +81,8 @@ STAGE::~STAGE() {
 	
 
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
+	ChangeVolumeSoundMem(Option::GetSEVolume(), halfwaypoint_se);
+
 	StageClear(player);
 	HalfwayPoint(player);
 	CameraWork(player,element);

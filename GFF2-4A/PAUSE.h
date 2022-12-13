@@ -5,7 +5,7 @@ class PAUSE
 {
 private:
 	int cursor_move_se,ok_se;
-	int menu_font, title_font;
+	int menu_font, title_font, buttonguid_font;
 	int selectmenu;
 	int nextmenu;
 	bool pause_flg;	//ポーズフラグ

@@ -10,7 +10,7 @@ private:
 	//”wŒi‰æ‘œ
 	int background_image[5];
 	int background_music;
-	int guid_font, buttonguid_font;
+	int guid_font, buttonguid_font, stagename_font;
 	int effect_timer;
 
 	PLAYER* player;	//ƒvƒŒƒCƒ„[

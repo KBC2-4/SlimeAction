@@ -129,30 +129,36 @@ void Title::Draw()const
 {
 
 	DrawGraph(0, 0, background_image, false);
-	DrawStringToHandle(30, 100, "スライムアクション", 0x56F590, title_font ,0xFFFFFF);
 
-	//ボックス
-	//SetDrawBlendMode(DX_BLENDMODE_ALPHA,100);
-	//DrawBoxAA(400.0f, 300.0f, 800.0f, 680.0f, 0xF3F589, TRUE, 5.0f);
-	//SetDrawBlendMode(DX_BLENDGRAPHTYPE_NORMAL,0);
-
-	//矢印
-	//DrawCircleAA(475.0f, 398.0f + selectmenu * 90, 20, 3, 0xffffff, TRUE, 3.0f);
-
-	//選択メニュー
-	DrawStringToHandle(510, 360, "プレイ", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font ,0xFFFFFF);
-	DrawStringToHandle(432, 450, "ランキング", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
-	DrawStringToHandle(432, 540, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
-	DrawStringToHandle(560, 630, "終了", selectmenu == 3 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
-
-
-	//操作案内
-	if (timer % 120 < 60) 
-	{
-		DrawCircleAA(579.0f, 324.0f, 15, 20, 0xFFFFFF, 1);
-		DrawExtendStringToHandle(572, 310, 0.4f, 0.4f, "B", 0xEB7415, menu_font, 0xFFFFFF);
-		DrawExtendStringToHandle(600, 310, 0.4f, 0.4f, "で決定", 0xEBA05E, menu_font, 0xFFFFFF);
+	//オプション画面へ入る
+	if (option->GetOptionFlg() == true) { 
+		option->Draw(); 
 	}
+	else {
 
-	if (option->GetOptionFlg() == true) { option->Draw(); }
+		DrawStringToHandle(30, 100, "スライムアクション", 0x56F590, title_font, 0xFFFFFF);
+
+		//ボックス
+		//SetDrawBlendMode(DX_BLENDMODE_ALPHA,100);
+		//DrawBoxAA(400.0f, 300.0f, 800.0f, 680.0f, 0xF3F589, TRUE, 5.0f);
+		//SetDrawBlendMode(DX_BLENDGRAPHTYPE_NORMAL,0);
+
+		//矢印
+		//DrawCircleAA(475.0f, 398.0f + selectmenu * 90, 20, 3, 0xffffff, TRUE, 3.0f);
+
+		//選択メニュー
+		DrawStringToHandle(510, 360, "プレイ", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(432, 450, "ランキング", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(432, 540, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(560, 630, "終了", selectmenu == 3 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+
+
+		//操作案内
+		if (timer % 120 < 60)
+		{
+			DrawCircleAA(579.0f, 324.0f, 15, 20, 0xFFFFFF, 1);
+			DrawExtendStringToHandle(572, 310, 0.4f, 0.4f, "B", 0xEB7415, menu_font, 0xFFFFFF);
+			DrawExtendStringToHandle(600, 310, 0.4f, 0.4f, "で決定", 0xEBA05E, menu_font, 0xFFFFFF);
+		}
+	}
 }
