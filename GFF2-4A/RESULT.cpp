@@ -2,6 +2,7 @@
 #include "GameMain.h"
 #include "DxLib.h"
 #include "StageSelect.h"
+#include "Option.h"
 
 RESULT::RESULT(bool issue, int clear_time) 
 {
@@ -49,6 +50,10 @@ RESULT::RESULT(bool issue, int clear_time)
 
 	*effect_timer = 0;
 	guide_timer = 0;
+
+	//SE
+	ChangeVolumeSoundMem(Option::GetSEVolume(), count_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 }
 
 RESULT::~RESULT() 

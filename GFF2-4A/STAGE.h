@@ -42,7 +42,7 @@ public:
 	//マップ情報の更新
 	void Update(PLAYER* player, ELEMENT* element);
 	//ステージの描画
-	virtual void Draw() const;
+	virtual void Draw(ELEMENT* element) const;
 	//ステージの初期化
 	//void InitStage();
 

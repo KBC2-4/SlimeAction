@@ -3,6 +3,7 @@
 #include "Element.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "Option.h"
 
 //#define _NDEBUG
 
@@ -84,7 +85,15 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((hook_pendulumSE = LoadSoundMem("Resource/Sounds/SE/Player/hook_pendulum.wav")) == -1) {
 		throw "Resource/Sounds/SE/Player/hook_pendulum.wav";
 	}
-	ChangeVolumeSoundMem(static_cast<int>(100.0 / 100.0 * 255.0), jumpSE);
+
+
+	//SE
+	ChangeVolumeSoundMem(Option::GetSEVolume(), damageSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), jumpSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), landingSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), hook_moveSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), hook_pendulumSE);
+	
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
 		animation[i].frame = 0;
@@ -119,6 +128,14 @@ PLAYER::~PLAYER() {
 /// プレイヤーの更新
 /// </summary>
 void PLAYER::Update(ELEMENT* element, STAGE* stage) {
+
+		ChangeVolumeSoundMem(Option::GetSEVolume(), damageSE);
+		ChangeVolumeSoundMem(Option::GetSEVolume(), jumpSE);
+		ChangeVolumeSoundMem(Option::GetSEVolume(), landingSE);
+		ChangeVolumeSoundMem(Option::GetSEVolume(), hook_moveSE);
+		ChangeVolumeSoundMem(Option::GetSEVolume(), hook_pendulumSE);
+
+
 	//移動処理
 	Move();
 

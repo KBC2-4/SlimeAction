@@ -24,7 +24,7 @@ private:
 	int input_margin;
 	int timer;
 
-	Option* option;	//ƒIƒvƒVƒ‡ƒ“
+	Option* option;
 
 public:
 

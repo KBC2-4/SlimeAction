@@ -1,5 +1,6 @@
 #include "Element.h"
 #include "PLAYER.h"
+#include "Option.h"
 
 ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 
@@ -199,6 +200,14 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 
 	player_state = 0;
 	guid_timer = 0;
+
+
+	//SE
+	ChangeVolumeSoundMem(Option::GetSEVolume(), door_close_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), press_the_button_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), switch_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), walk_puddle_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), manhole_opened_se);
 	
 }
 
@@ -251,7 +260,7 @@ void ELEMENT::Draw(STAGE* stage)  {
 		//DrawFormatString(100 + i * 100, 400, 0xffffff, "%f", lift[i].x);
 		/*DrawFormatString(100+i*100, 400, 0xffffff, "%f", lift_goal_X[i].x);
 		DrawBox(lift_goal_X[i].x + stage->GetScrollX(), lift_goal_X[i].y + stage->GetScrollY(), lift_goal_X[i].x + MAP_CEllSIZE * 2 + stage->GetScrollX(), lift_goal_X[i].y + MAP_CEllSIZE / 2 + stage->GetScrollY(),0xff0000,FALSE);*/
-		DrawExtendGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 31 + stage->GetScrollY(), lift[i].x + LIFT_SIZE + stage->GetScrollX(), lift[i].y + 70 + stage->GetScrollY(), block_image1[51], TRUE);		
+		//DrawExtendGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 31 + stage->GetScrollY(), lift[i].x + LIFT_SIZE + stage->GetScrollX(), lift[i].y + 70 + stage->GetScrollY(), block_image1[51], TRUE);		
 	}
 
 	//ドア
@@ -323,6 +332,12 @@ void ELEMENT::Draw(STAGE* stage)  {
 }
 
 void ELEMENT::Update(PLAYER* player,STAGE*stage) {
+
+	ChangeVolumeSoundMem(Option::GetSEVolume(), door_close_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), press_the_button_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), switch_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), walk_puddle_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), manhole_opened_se);
 
 	player_state = static_cast<int>(player->GetPlayerMoveState());
 	//プレイヤーのマップ内座標を設定

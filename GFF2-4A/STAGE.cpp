@@ -10,6 +10,7 @@
 
 #include "PLAYER.h"
 #include "RESULT.h"
+#include "Option.h"
 
 #define _NDEBUG
 
@@ -69,6 +70,8 @@ STAGE::STAGE(const char* stage_name) {
 		spawn_point.x = 0;
 		spawn_point.y = 0;
 	}
+
+	ChangeVolumeSoundMem(Option::GetSEVolume(), halfwaypoint_se);
 }
 
 STAGE::~STAGE() {
@@ -78,12 +81,14 @@ STAGE::~STAGE() {
 	
 
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
+	ChangeVolumeSoundMem(Option::GetSEVolume(), halfwaypoint_se);
+
 	StageClear(player);
 	HalfwayPoint(player);
 	CameraWork(player,element);
 }
 
-void STAGE::Draw()const {
+void STAGE::Draw(ELEMENT* element)const {
 	//デバッグ
 	//DrawFormatString(200, 100, 0xffffff, "oldx:%f", player_x_old);
 	//DrawFormatString(350, 100, 0xffffff, "vectory:%f", player_vector_y);
@@ -118,6 +123,10 @@ void STAGE::Draw()const {
 			//レモナーとグレポンはツルだけ描画する
 			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
 		}
+	}
+	std::vector<ELEMENT::ELEMENT_DATA> lift_pos = element->GetLift();
+	for (int i = 0; i < lift_pos.size(); i++) {
+		DrawExtendGraph(lift_pos[i].x + scroll_x, lift_pos[i].y - 31 + scroll_y, lift_pos[i].x + LIFT_SIZE + scroll_x, lift_pos[i].y + 70 + scroll_y, block_image1[51], TRUE);
 	}
 
 	//中間地点　描画

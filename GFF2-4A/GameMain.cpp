@@ -1,6 +1,7 @@
 #include "GameMain.h"
 #include "Title.h"
 #include <vector>
+#include "Option.h"
 
 GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 {
@@ -155,6 +156,13 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	}
 
 	PlaySoundMem(background_music[0], DX_PLAYTYPE_LOOP);
+
+	//BGM
+	ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
+
+	//SE
+	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 }
 
 GAMEMAIN::~GAMEMAIN()
@@ -169,6 +177,9 @@ GAMEMAIN::~GAMEMAIN()
 	DeleteSoundMem(ok_se);
 	delete player;
 	delete stage;
+	delete pause;
+	delete[] item;
+	delete element;
 
 	//レモナーの削除
 	for (int i = 0; i < lemoner_count; i++) {
@@ -196,9 +207,6 @@ GAMEMAIN::~GAMEMAIN()
 			delete item[i];
 		}
 	}
-
-	delete[] item;
-	delete element;
 }
 
 AbstractScene* GAMEMAIN::Update()
@@ -293,9 +301,17 @@ AbstractScene* GAMEMAIN::Update()
 	}
 	else {	//ポーズ画面のセレクター
 		pause->Update();
-		if (pause->GetSelectMenu() == 2) { return new Title(); }
+		if (pause->GetSelectMenu() == 3) { return new Title(); }
 		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(false,0,stage_name); }
-		else if (pause->GetSelectMenu() == 3) { pause->SetPause(); }
+		else if (pause->GetSelectMenu() == 4) { pause->SetPause(); }
+		else if (pause->GetSelectMenu() == 2) { 
+			//BGM
+			ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
+
+			//SE
+			ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+			ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+		}
 	}
 
 	//デバッグ
@@ -329,7 +345,7 @@ void GAMEMAIN::Draw() const
 
 	//ステージの描画
 	element->Draw(stage);
-	stage->Draw();
+	stage->Draw(element);
 	
 	
 
