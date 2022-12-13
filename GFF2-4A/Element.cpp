@@ -2,7 +2,7 @@
 #include "PLAYER.h"
 #include "Option.h"
 
-ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
+ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 
 	guid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
@@ -38,13 +38,13 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				//ボタン横
 			case 61:
 				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2) + 25);
-				data.y = static_cast<float>(i * MAP_CEllSIZE + MAP_CEllSIZE / 2) ;
+				data.y = static_cast<float>(i * MAP_CEllSIZE + MAP_CEllSIZE / 2);
 				data.type = 1;
 				data.flg = false;
 				data.animtimer = 0;
 				button.push_back(data);
 				break;
-					
+
 				//ボタン(下)
 			case 62:
 				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
@@ -106,16 +106,34 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				manhole.push_back(data);
 				break;
 
-				//酸性雨の水たまり
+				//酸性雨の水たまり(左端)
 			case 74:
 			case 75:
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.type = 1;
+				data.animtimer = 0;
+				data.flg = false;
+				acidrain_puddles.push_back(data);
+				break;
+
+				//酸性雨の水たまり(中央)
 			case 76:
 			case 77:
+				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.type = 2;
+				data.animtimer = 0;
+				data.flg = false;
+				acidrain_puddles.push_back(data);
+				break;
+
+				//酸性雨の水たまり(右端)
 			case 78:
 			case 79:
 				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
-				data.type = 1;
+				data.type = 3;
 				data.animtimer = 0;
 				data.flg = false;
 				acidrain_puddles.push_back(data);
@@ -174,7 +192,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 					}
 					if (map_data.at(i).at(lift_pos) > 0 && (map_data.at(i).at(lift_pos) < 21 || map_data.at(i).at(lift_pos) > 24)) {
 						if (search_vector < 0) { break; }
-						lift_pos = j-1;
+						lift_pos = j - 1;
 						search_vector = -1;
 						continue;
 					}
@@ -189,9 +207,9 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 				break;
 			}
 
-			
+
 		}
-			
+
 	}
 
 	player_map_x = 0;
@@ -208,7 +226,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name){
 	ChangeVolumeSoundMem(Option::GetSEVolume(), switch_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), walk_puddle_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), manhole_opened_se);
-	
+
 }
 
 ELEMENT::~ELEMENT() {
@@ -222,7 +240,7 @@ ELEMENT::~ELEMENT() {
 	hook.shrink_to_fit();
 }
 
-void ELEMENT::Draw(STAGE* stage)  {
+void ELEMENT::Draw(STAGE* stage) {
 	//DrawFormatString(100, 50, 0xffffff, "%2f %2f", scroll_x, scroll_y);
 	//DrawFormatString(100,50,0xffffff,"map_data:%d",map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE]);
 	//static int animtimer = 0;
@@ -249,7 +267,7 @@ void ELEMENT::Draw(STAGE* stage)  {
 	//ボタン
 	for (int i = 0; i < button.size(); i++) {
 		if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + stage->GetScrollX(), button[i].y + stage->GetScrollY() + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
-		if (button[i].type == 2 && button[i].flg == true) { 
+		if (button[i].type == 2 && button[i].flg == true) {
 			DrawOvalAA(button[i].x + stage->GetScrollX(), button[i].y + stage->GetScrollY() + 30 + button[i].animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		}
 	}
@@ -331,7 +349,7 @@ void ELEMENT::Draw(STAGE* stage)  {
 	}
 }
 
-void ELEMENT::Update(PLAYER* player,STAGE*stage) {
+void ELEMENT::Update(PLAYER* player, STAGE* stage) {
 
 	ChangeVolumeSoundMem(Option::GetSEVolume(), door_close_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), press_the_button_se);
@@ -342,18 +360,18 @@ void ELEMENT::Update(PLAYER* player,STAGE*stage) {
 	player_state = static_cast<int>(player->GetPlayerMoveState());
 	//プレイヤーのマップ内座標を設定
 	player_map_x = roundf(player->GetPlayerX() - stage->GetScrollX());
-	player_map_y = floorf(player->GetPlayerY()- stage->GetScrollY());
+	player_map_y = floorf(player->GetPlayerY() - stage->GetScrollY());
 
 	Button(player);
 	Door(stage);
-	Lift(player,stage);
-	Manhole(player,stage);
+	Lift(player, stage);
+	Manhole(player, stage);
 	Acidrain_puddles(player);
-	
+
 	if (guid_timer < 100) { guid_timer++; }
 	else { guid_timer = 0; }
 
-	Hook_Distance(player,stage);	//フックのガイド表示用距離計算
+	Hook_Distance(player, stage);	//フックのガイド表示用距離計算
 }
 
 /// <summary>
@@ -363,11 +381,11 @@ void ELEMENT::Button(PLAYER* player) {
 
 
 	for (int i = 0; i < button.size(); i++) {
-		if(button[i].flg == true)button[i].animtimer++;
+		if (button[i].flg == true)button[i].animtimer++;
 		if (button[i].animtimer > 180 && keep_pushing == false) {
 			button[i].animtimer = 0;
 			button[i].flg = false;
-		}	
+		}
 
 		if (button[i].type == 1) {		//横ボタン
 			int max_ball_num = player->GetThrowCnt();
@@ -376,49 +394,50 @@ void ELEMENT::Button(PLAYER* player) {
 					//デバッグ
 					//printfDx("1番に入ってるよ！");
 					if (CheckSoundMem(press_the_button_se) == FALSE)PlaySoundMem(press_the_button_se, DX_PLAYTYPE_BACK, TRUE);
-					if(i < door.size() && i >= 0){
+					if (i < door.size() && i >= 0) {
 						int j = i + 1;
 						door[j].flg = true;
 					}
-					
+
 				}
 			}
 		}
-			if (button[i].type == 2) {	//ボタン
-				bool ball_flg = false;	//ボールの当たり判定フラグ
-				for (int ball_num = 0; ball_num < player->GetThrowCnt(); ball_num++) {
-					if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2 + 10) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2 - 10) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
-						ball_flg = true;
-					}
-					else { keep_pushing = false; }
+		if (button[i].type == 2) {	//ボタン
+			bool ball_flg = false;	//ボールの当たり判定フラグ
+			for (int ball_num = 0; ball_num < player->GetThrowCnt(); ball_num++) {
+				if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2 + 10) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2 - 10) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
+					ball_flg = true;
 				}
-
-				if ((ball_flg == true) || ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE-25 ) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2 ) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2))) {
-					//デバッグ
-					//printfDx("2番に入ってるよ！");
-					// 当たり判定バグる為一時停止
-					//if(ball_flg == false)player->SetPlayerY(button[i].y - 6.0f);
-					if (button[i].flg == false) {
-						if (CheckSoundMem(switch_se) == FALSE)PlaySoundMem(switch_se, DX_PLAYTYPE_BACK, TRUE);
-					}
-					keep_pushing = true; //押し続けている
-					button[i].flg = true;		//ボタンを押した
-					
-					if (i < door.size() && i >= 0) {
-						int j = i - 1;
-						door[j].flg = true;
-					}
-					
-				}else{ keep_pushing = false; }
+				else { keep_pushing = false; }
 			}
 
-			//一回限り
-			if (button[i].type == 3) {	//Onecボタン
-				if ((player_map_x >= button[i].x-MAP_CEllSIZE/2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2)&& (player_map_y >= button[i].y - MAP_CEllSIZE / 2)&& (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
-					//デバッグ
-					//printfDx("3番に入ってるよ！");
+			if ((ball_flg == true) || ((player_map_x >= button[i].x - MAP_CEllSIZE + 25) && (player_map_x <= button[i].x + MAP_CEllSIZE - 25) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2))) {
+				//デバッグ
+				//printfDx("2番に入ってるよ！");
+				// 当たり判定バグる為一時停止
+				//if(ball_flg == false)player->SetPlayerY(button[i].y - 6.0f);
+				if (button[i].flg == false) {
+					if (CheckSoundMem(switch_se) == FALSE)PlaySoundMem(switch_se, DX_PLAYTYPE_BACK, TRUE);
 				}
+				keep_pushing = true; //押し続けている
+				button[i].flg = true;		//ボタンを押した
+
+				if (i < door.size() && i >= 0) {
+					int j = i - 1;
+					door[j].flg = true;
+				}
+
 			}
+			else { keep_pushing = false; }
+		}
+
+		//一回限り
+		if (button[i].type == 3) {	//Onecボタン
+			if ((player_map_x >= button[i].x - MAP_CEllSIZE / 2) && (player_map_x <= button[i].x + MAP_CEllSIZE / 2) && (player_map_y >= button[i].y - MAP_CEllSIZE / 2) && (player_map_y <= button[i].y + MAP_CEllSIZE / 2)) {
+				//デバッグ
+				//printfDx("3番に入ってるよ！");
+			}
+		}
 	}
 }
 
@@ -438,7 +457,7 @@ void ELEMENT::Door(STAGE* stage) {
 		//	door[i].animtimer = 0;
 		//	door[i].flg = false;
 		//}
-		if ((player_map_x >= door[i].x +MAP_CEllSIZE) && (player_map_x <= door[i].x + MAP_CEllSIZE+5) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
+		if ((player_map_x >= door[i].x + MAP_CEllSIZE) && (player_map_x <= door[i].x + MAP_CEllSIZE + 5) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
 			door[i].animtimer = 0;
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
@@ -446,7 +465,7 @@ void ELEMENT::Door(STAGE* stage) {
 			stage->SetMapData(y - 1, x, 67);
 			door[i].flg = false;
 			if (CheckSoundMem(door_close_se) == FALSE)PlaySoundMem(door_close_se, DX_PLAYTYPE_BACK, TRUE);
-			
+
 		}
 	}
 }
@@ -460,7 +479,7 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 			//動く床(縦)の動き
 			if (lift[i].type == 1) {
 				if (lift[i].y < lift[i].lift_goal_y) { lift[i].lift_vector_y = 1; }
-				else if(lift[i].y > lift[i].lift_goal_y) { lift[i].lift_vector_y = -1; }
+				else if (lift[i].y > lift[i].lift_goal_y) { lift[i].lift_vector_y = -1; }
 				else { lift[i].lift_vector_y = 0; }
 				if (lift[i].y != lift[i].lift_goal_y) {
 					lift[i].y += lift[i].lift_vector_y * 4;
@@ -478,7 +497,7 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 			//動く床(横)の動き
 			else if (lift[i].type == 2) {
 				if (lift[i].x < lift[i].lift_goal_x) { lift[i].lift_vector_x = 1; }
-				else if(lift[i].x > lift[i].lift_goal_x) { lift[i].lift_vector_x = -1; }
+				else if (lift[i].x > lift[i].lift_goal_x) { lift[i].lift_vector_x = -1; }
 				else { lift[i].lift_vector_x = 0; }
 
 				if (lift[i].x != lift[i].lift_goal_x) {
@@ -532,13 +551,13 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 		if (manhole[i].type == 1) {
 			if ((player_map_x >= manhole[i].x) && (player_map_x <= manhole[i].x + MAP_CEllSIZE) && (player_map_y <= manhole[i].y + MAP_CEllSIZE) && (player_map_y >= manhole[i].y)) {
 				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
-				
+
 				if (manhole[i].flg == false) {
 					//player->SetPlayerY(player->GetPlayerY() - 2.0f);
 				}
 
 				if (manhole[i].animtimer >= 20) {
-					if(!CheckSoundMem(manhole_opened_se))PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE);
+					if (!CheckSoundMem(manhole_opened_se))PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE);
 					int x = floor(manhole[i].x / MAP_CEllSIZE);
 					int y = floor(manhole[i].y / MAP_CEllSIZE);
 					stage->SetMapData(y, x, 98);
@@ -548,7 +567,7 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 
 		//中間地点
 		if (manhole[i].type == 2) {
-			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE / 2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE /2) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
+			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE / 2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE / 2) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
 				//プレイヤーの落下速度を遅くする
 				//player->SetPlayerY(player->GetPlayerY() - 3.0f);
 			}
@@ -556,25 +575,25 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 
 		//出口
 		if (manhole[i].type == 3) {
-			if((player_map_x >= manhole[i].x - MAP_CEllSIZE /2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE /2)/* && (player_map_y <= manhole[i].y)*/){
+			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE / 2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE / 2) && (player_map_y >= manhole[i].y)) {
 				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
-			if (manhole[i].flg == true) {
+				if (manhole[i].flg == true) {
 
-				if (player->GetPlayerY() <= manhole[i].y) {
-					manhole[i].flg = false;
-				}
+					if (player->GetPlayerY() <= manhole[i].y) {
+						manhole[i].flg = false;
+					}
 
-				//if (manhole[i].animtimer == 180) {
-					//player->SetPlayerX(manhole[i].x);
+					//if (manhole[i].animtimer == 180) {
+						//player->SetPlayerX(manhole[i].x);
 					player->SetPlayerY(manhole[i].y);
 					//一時的な当たり判定をつける。
 					temporary_hit = 97;
-				//}
-				//player->SetPlayerY(player->GetPlayerY() - 10.0f);
-				//printfDx("%f",player->GetPlayerY());
-			}
-			//デバッグ
-			//printfDx("入っています。");
+					//}
+					//player->SetPlayerY(player->GetPlayerY() - 10.0f);
+					//printfDx("%f",player->GetPlayerY());
+				}
+				//デバッグ
+				//printfDx("入っています。");
 			}
 		}
 	}
@@ -601,7 +620,8 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 					//printfDx("残りライフ：%d",player->GetLife());		//デバッグ
 					acidrain_puddles[i].flg = false;
 				}
-			}else{ /*acidrain_puddles[0].animtimer = 0;*/ }
+			}
+			else { /*acidrain_puddles[0].animtimer = 0;*/ }
 		}
 	}
 }
