@@ -8,9 +8,16 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 {
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 	std::vector<std::vector<int>> spawn_point;
-	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png");
-	background_image[1] = LoadGraph("Resource/Images/Stage/BackImage2.png");
 	hp_img = LoadGraph("Resource/Images/Player/hp.png");
+
+	for (int i = 0; i < 2; i++) {
+		char dis_background_image[38];
+		sprintf_s(dis_background_image, sizeof(dis_background_image), "Resource/Images/Stage/BackImage%d.png", i + 1);
+
+		if ((background_image[i] = LoadGraph(dis_background_image)) == -1) {
+			throw dis_background_image;
+		}
+	}
 
 	for (int i = 0; i < 3; i++) {
 		char dis_stage_bgm[36];
@@ -185,6 +192,7 @@ GAMEMAIN::~GAMEMAIN()
 {
 	DeleteGraph(background_image[0]);
 	DeleteGraph(background_image[1]);
+	DeleteGraph(hp_img);
 
 	if (stage_name == "Stage01") {
 		StopSoundMem(background_music[0]);
