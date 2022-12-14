@@ -22,6 +22,9 @@ private:
 	int halfway_time; //中間地点経過時の時間
 	const char* stage_name;	//リスタート時のステージ選択用
 
+	//プレイヤーのライフの画像
+	int hp_img;
+
 	//レモナーの数用の変数
 	int lemoner_count;
 
