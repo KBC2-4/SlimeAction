@@ -187,16 +187,18 @@ GAMEMAIN::~GAMEMAIN()
 
 	if (stage_name == "Stage01") {
 		StopSoundMem(background_music[0]);
-		DeleteSoundMem(background_music[0]);
 	}
 	else if (stage_name == "Stage02") {
 		StopSoundMem(background_music[1]);
-		DeleteSoundMem(background_music[1]);
 	}
 	else if (stage_name == "Stage03") {
 		StopSoundMem(background_music[2]);
-		DeleteSoundMem(background_music[2]);
 	}
+
+	for (int i = 0; i < 3; i++) {
+		DeleteSoundMem(background_music[i]);
+	}
+
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
 	DeleteSoundMem(cursor_move_se);
