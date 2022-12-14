@@ -635,6 +635,9 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 	}
 }
 
+/// <summary>
+/// 酸性雨の水たまり
+/// </summary>
 void ELEMENT::Acidrain_puddles(PLAYER* player) {
 	if (acidrain_puddles_anitimer < 10) { acidrain_puddles_anitimer++; }
 	else { acidrain_puddles_anitimer = 0; }
@@ -646,18 +649,13 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 			acidrain_puddles[i].flg = true;
 		}
 		//酸性雨の水たまり
-		if ((player_map_x >= acidrain_puddles[i].x - MAP_CEllSIZE / 2) && (player_map_x <= acidrain_puddles[i].x + MAP_CEllSIZE / 2) && (player_map_y >= acidrain_puddles[i].y - MAP_CEllSIZE) && (player_map_y <= acidrain_puddles[i].y + MAP_CEllSIZE)) {
-			//デバッグ
-			//printfDx("入ってるよ！");
+		if ((player_map_x >= acidrain_puddles[i].x) && (player_map_x <= acidrain_puddles[i].x + MAP_CEllSIZE) && (player_map_y >= acidrain_puddles[i].y - MAP_CEllSIZE / 2) && (player_map_y <= acidrain_puddles[i].y)) {
 			if (CheckSoundMem(walk_puddle_se) == FALSE && acidrain_puddles[0].animtimer % 90 == 0)PlaySoundMem(walk_puddle_se, DX_PLAYTYPE_BACK, TRUE);
-			//player->SetPlayerY(acidrain_puddles[i].y + 1.5f);
 			if (acidrain_puddles[i].flg == true) {
 				player->SetLife(player->GetLife() - 1);
-				//printfDx("残りライフ：%d",player->GetLife());		//デバッグ
 				acidrain_puddles[i].flg = false;
 			}
 		}
-		else { /*acidrain_puddles[0].animtimer = 0;*/ }
 	}
 }
 
