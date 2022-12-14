@@ -10,6 +10,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	std::vector<std::vector<int>> spawn_point;
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png");
 	background_image[1] = LoadGraph("Resource/Images/Stage/BackImage2.png");
+	hp_img = LoadGraph("Resource/Images/Player/hp.png");
 
 	if ((background_music[0] = LoadSoundMem("Resource/Sounds/BGM/stage1.wav")) == -1) {
 		throw "Resource/Sounds/BGM/stage1.wav";
@@ -170,6 +171,7 @@ GAMEMAIN::~GAMEMAIN()
 {
 	DeleteGraph(background_image[0]);
 	DeleteGraph(background_image[1]);
+	DeleteGraph(hp_img);
 	StopSoundMem(background_music[0]);
 	DeleteSoundMem(background_music[0]);
 	DeleteFontToHandle(title_font);
@@ -357,6 +359,11 @@ void GAMEMAIN::Draw() const
 	}
 
 
+
+	//プレイヤーのライフの描画
+	for (int i = 0; i < player->GetLife(); i++) {
+		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
+	}
 
 	//ステージの描画
 	element->Draw(stage);

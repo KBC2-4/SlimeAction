@@ -63,9 +63,6 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/Slime_Bullet.png")) == -1) {
 		throw "Resource/Images/Player/Slime_Bullet.png";
 	}
-	if ((hp_img = LoadGraph("Resource/Images/Player/hp.png")) == -1) {
-		throw "Resource/Images/Player/hp.png";
-	}
 	if ((idle_nobi_img = LoadGraph("Resource/Images/Player/FuckAnim2.png")) == -1) {
 		throw "Resource/Images/Player/FuckAnim2.png";
 	}
@@ -109,7 +106,6 @@ PLAYER::PLAYER(STAGE* stage) {
 
 PLAYER::~PLAYER() {
 	DeleteGraph(throw_ball_image);
-	DeleteGraph(hp_img);
 	DeleteGraph(idle_nobi_img);
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
 		for (int j = 0; j < 10; j++) {
@@ -259,11 +255,6 @@ void PLAYER::Draw(STAGE *stage)const {
 	//ボールの軌道の描画
 	for (int i = 0; i < throw_x.size(); i += 5) {
 		DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
-	}
-
-	//ライフの描画
-	for (int i = 0; i < life; i++) {
-		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
 	}
 }
 
