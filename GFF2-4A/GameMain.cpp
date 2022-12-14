@@ -400,13 +400,6 @@ void GAMEMAIN::Draw() const
 		DrawBox(0, 0, 25600, 1280, 0x20251F, TRUE);
 	}
 
-
-
-	//プレイヤーのライフの描画
-	for (int i = 0; i < player->GetLife(); i++) {
-		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
-	}
-
 	//ステージの描画
 	element->Draw(stage);
 	stage->Draw(element);
@@ -466,5 +459,10 @@ void GAMEMAIN::Draw() const
 		DrawFormatString(100, 350, 0x02F896, "PlayerY%f", player->GetPlayerY());
 		DrawFormatString(100, 400, 0x02F896, "SpawnPointY:%d", stage->GetSpawnPoint().y);
 		DrawFormatString(100, 450, 0x02F896, "Jump:%f", player->GetJumpVelocity());
+	}
+
+	//プレイヤーのライフの描画
+	for (int i = 0; i < player->GetLife(); i++) {
+		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
 	}
 }
