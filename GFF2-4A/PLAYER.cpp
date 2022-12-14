@@ -365,13 +365,13 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 	//Bボタン押したとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
 		if (player_state != PLAYER_MOVE_STATE::HOOK) {
-			if (--hook_interval > 0) return;
+			//if (--hook_interval > 0) return;
 			//フックまでの距離
 			float min_distance = HOOK_MAX_DISTANCE;
 			//フックの位置
 			std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
 			for (int i = 0; i < hook_pos.size(); i++) {
-				//if (std::find(hook_flag.begin(), hook_flag.end(), i) != hook_flag.end()) continue;
+				if (std::find(hook_flag.begin(), hook_flag.end(), i) != hook_flag.end()) continue;
 				ELEMENT::ELEMENT_DATA pos = hook_pos[i];
 				//距離計算
 				float diff_x = pos.x - (player_x);
