@@ -168,7 +168,8 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 		throw_slime[i].Update(stage);
 	}
 
-	if (player_y + stage->GetScrollY() > 720 && player_state != PLAYER_MOVE_STATE::HOOK){
+	//死判定
+	if (player_y + stage->GetScrollY() > 720 && player_state != PLAYER_MOVE_STATE::HOOK || life <= 0){
 		is_death = true;
 	}
 
@@ -832,12 +833,13 @@ void PLAYER::MoveAnimation() {
 
 void PLAYER::SetLife(int a)
 {
-	if (life > a && !is_damage) {
+	if (life > a && is_damage) return;
+	if (life > a) {
 		//player_state = PLAYER_MOVE_STATE::DAMAGE;
 		alpha_time = 120;
 		is_damage = true;
 		StartJoypadVibration(DX_INPUT_PAD1, 360, 320, -1);
-		//PlaySoundMem(damageSE, DX_PLAYTYPE_BACK);
+		PlaySoundMem(damageSE, DX_PLAYTYPE_BACK);
 	}
 	life = a;
 }
