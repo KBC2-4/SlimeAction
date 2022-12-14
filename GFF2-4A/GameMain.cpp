@@ -11,8 +11,13 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png");
 	background_image[1] = LoadGraph("Resource/Images/Stage/BackImage2.png");
 
-	if ((background_music[0] = LoadSoundMem("Resource/Sounds/BGM/stage1.wav")) == -1) {
-		throw "Resource/Sounds/BGM/stage1.wav";
+	for (int i = 0; i < 3; i++) {
+		char dis_stage_bgm[36];
+		sprintf_s(dis_stage_bgm, sizeof(dis_stage_bgm), "Resource/Sounds/BGM/stage%d.wav", i + 1);
+
+		if ((background_music[i] = LoadSoundMem(dis_stage_bgm)) == -1) {
+			throw dis_stage_bgm;
+		}
 	}
 
 	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1) {
@@ -156,10 +161,19 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 		player->SetPlayer_Screen(stage->GetSpawnPoint());
 	}
 
-	PlaySoundMem(background_music[0], DX_PLAYTYPE_LOOP);
-
 	//BGM
-	ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
+	if (stage_name == "Stage01") {
+		PlaySoundMem(background_music[0], DX_PLAYTYPE_LOOP);
+		ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
+	}
+	else if (stage_name == "Stage02") {
+		PlaySoundMem(background_music[1], DX_PLAYTYPE_LOOP);
+		ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[1]);
+	}
+	else if (stage_name == "Stage03") {
+		PlaySoundMem(background_music[2], DX_PLAYTYPE_LOOP);
+		ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[2]);
+	}
 
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
@@ -170,8 +184,19 @@ GAMEMAIN::~GAMEMAIN()
 {
 	DeleteGraph(background_image[0]);
 	DeleteGraph(background_image[1]);
-	StopSoundMem(background_music[0]);
-	DeleteSoundMem(background_music[0]);
+
+	if (stage_name == "Stage01") {
+		StopSoundMem(background_music[0]);
+		DeleteSoundMem(background_music[0]);
+	}
+	else if (stage_name == "Stage02") {
+		StopSoundMem(background_music[1]);
+		DeleteSoundMem(background_music[1]);
+	}
+	else if (stage_name == "Stage03") {
+		StopSoundMem(background_music[2]);
+		DeleteSoundMem(background_music[2]);
+	}
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
 	DeleteSoundMem(cursor_move_se);
@@ -321,7 +346,15 @@ AbstractScene* GAMEMAIN::Update()
 		else if (pause->GetSelectMenu() == 4) { pause->SetPause(); }
 		else if (pause->GetSelectMenu() == 2) { 
 			//BGM
-			ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
+			if (stage_name == "Stage01") {
+				ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
+			}
+			else if (stage_name == "Stage02") {
+				ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[1]);
+			}
+			else if (stage_name == "Stage03") {
+				ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[2]);
+			}
 
 			//SE
 			ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);

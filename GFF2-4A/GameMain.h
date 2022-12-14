@@ -14,8 +14,8 @@ class GAMEMAIN :
 {
 private:
 	//背景画像
-	int background_image[5];
-	int background_music[5];		//BGM
+	int background_image[3];
+	int background_music[3];		//BGM
 	int title_font, menu_font;	//フォント
 	int cursor_move_se, ok_se;	//SE
 	int time;		//経過時間

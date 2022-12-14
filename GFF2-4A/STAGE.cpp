@@ -111,6 +111,7 @@ void STAGE::Draw(ELEMENT* element)const {
 					&& map_data.at(i).at(j) != 77
 					&& map_data.at(i).at(j) != 78
 					&& map_data.at(i).at(j) != 79
+					&& map_data.at(i).at(j) != 101		//戻る看板下で別途描画している為
 					&& map_data.at(i).at(j) != 102
 					&& map_data.at(i).at(j) != 103
 					&& map_data.at(i).at(j) != 104
@@ -128,6 +129,7 @@ void STAGE::Draw(ELEMENT* element)const {
 			}
 			//レモナーとグレポンはツルだけ描画する
 			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
+			if(map_data.at(i).at(j) == 101){ DrawExtendGraph((j - 1) * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, (j + 1) * MAP_CEllSIZE + scroll_x, (i + 1) * MAP_CEllSIZE + scroll_y, block_image1[100], TRUE); }
 		}
 	}
 	std::vector<ELEMENT::ELEMENT_DATA> lift_pos = element->GetLift();
