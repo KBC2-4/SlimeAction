@@ -579,7 +579,7 @@ bool ELEMENT::HitLift(PLAYER* player) {
 /// </summary>
 void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 	for (int i = 0; i < manhole.size(); i++) {
-		if (manhole[i].flg == true && manhole[i].animtimer < 240)manhole[i].animtimer++;
+		if (manhole[i].flg == true && manhole[i].animtimer < 20)manhole[i].animtimer++;
 		if (manhole[i].animtimer > 20) {
 			//manhole[i].animtimer = 0;
 			//manhole[i].flg = false;
@@ -592,8 +592,9 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 					//player->SetPlayerY(player->GetPlayerY() - 2.0f);
 				}
 
+				if (manhole[i].animtimer == 19 && !CheckSoundMem(manhole_opened_se))PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE);
+
 				if (manhole[i].animtimer >= 20) {
-					if (!CheckSoundMem(manhole_opened_se))PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE);
 					int x = floor(manhole[i].x / MAP_CEllSIZE);
 					int y = floor(manhole[i].y / MAP_CEllSIZE);
 					stage->SetMapData(y, x, 98);
