@@ -394,10 +394,6 @@ void GAMEMAIN::Draw() const
 
 
 
-	//プレイヤーのライフの描画
-	for (int i = 0; i < player->GetLife(); i++) {
-		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
-	}
 
 	//ステージの描画
 	element->Draw(stage);
@@ -440,6 +436,10 @@ void GAMEMAIN::Draw() const
 				item[i]->Draw();
 			}
 		}
+	}
+	//プレイヤーのライフの描画
+	for (int i = 0; i < player->GetLife(); i++) {
+		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
 	}
 
 	if (pause->IsPause() == true) { //ポーズ画面へ
