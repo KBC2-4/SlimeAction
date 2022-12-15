@@ -100,6 +100,9 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 			case 97:
 				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
 				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.lift_init_x = j;		//配列データ
+				data.lift_init_y = i;		//配列データ
+				data.lift_wait_time = 0;	//中間地点の数カウント用
 				data.type = 3;
 				data.flg = false;
 				data.animtimer = 0;
@@ -325,25 +328,25 @@ void ELEMENT::Draw(STAGE* stage) {
 			}
 
 			if (manhole[i].type == 3) {
-				//int map_x = manhole[i].x / MAP_CEllSIZE - MAP_CEllSIZE / 2;
-				//int map_y = manhole[i].y / MAP_CEllSIZE - MAP_CEllSIZE / 2;
-				////printfDx("%d\t\t\t%d", map_x, map_y);
-				////int manhole_y;
-				//for (int y = 0; manhole.size(); i++) { 
-				//	//manhole_y = manhole[i].y + y;
-				//	map_y = manhole[y].y / MAP_CEllSIZE - MAP_CEllSIZE / 2;
-				//	if (map_data.at(map_y).at(map_x) != 69) { map_y++; }
-				//	else { map_y = map_y * MAP_CEllSIZE + MAP_CEllSIZE / 2; }
+				if (manhole[i].flg == true) {
+					DrawGraph(manhole[i].x + stage->GetScrollX() - MAP_CEllSIZE / 2, manhole[i].y + stage->GetScrollY() - MAP_CEllSIZE / 2, block_image1[97], TRUE);
+				}
+				else {
+					DrawGraph(manhole[i].x + stage->GetScrollX() - MAP_CEllSIZE / 2, manhole[i].y + stage->GetScrollY() - MAP_CEllSIZE / 2, block_image1[67], TRUE);
+				}
+				//マンホールのガイド表示
 
-				//}
-				//if (guid_timer < 50) {
-				//	DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-				//	DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
-				//}
-				//else {
-				//	DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-				//	DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, map_y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
-				//}
+				int x = manhole[i].lift_init_x * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+				int y = manhole[i].lift_init_y * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+
+				if (guid_timer < 50) {
+					DrawCircleAA(x + stage->GetScrollX(), y - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+					DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+				}
+				else {
+					DrawCircleAA(x + stage->GetScrollX(), y - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
+					DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+				}
 			}
 		}
 	}
@@ -586,10 +589,13 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 		}
 		if (manhole[i].type == 1) {
 			if ((player_map_x >= manhole[i].x) && (player_map_x <= manhole[i].x + MAP_CEllSIZE) && (player_map_y <= manhole[i].y + MAP_CEllSIZE) && (player_map_y >= manhole[i].y)) {
-				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
+				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { 
+					stage->SetTemporary_Hit(999);
+					manhole[i].flg = true; 
+				}
 
 				if (manhole[i].flg == false) {
-					//player->SetPlayerY(player->GetPlayerY() - 2.0f);
+					stage->SetTemporary_Hit(69);
 				}
 
 				if (manhole[i].animtimer == 19 && !CheckSoundMem(manhole_opened_se))PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE);
@@ -612,25 +618,40 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 
 		//出口
 		if (manhole[i].type == 3) {
-			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE / 2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE / 2) && (player_map_y >= manhole[i].y)) {
+
+			int mapdata = stage->GetMapData(manhole[i].lift_init_y + 1, manhole[i].lift_init_x);
+
+			//中間地点の時にループ
+			while (mapdata == 69)
+			{
+				manhole[i].lift_init_y++;
+				mapdata = stage->GetMapData(manhole[i].lift_init_y, manhole[i].lift_init_x);
+
+				//中間の数をカウント
+				manhole[i].lift_wait_time++;
+			}
+
+			//マンホールの出口の左端から右端までのx座標かつマンホールの出口よりも下にいる場合
+			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE / 2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE / 2) && (player_map_y > manhole[i].y)) {
 				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
+
+
+				//Bボタンを押してflgがtrueになった時
 				if (manhole[i].flg == true) {
 
-					if (player->GetPlayerY() <= manhole[i].y) {
-						manhole[i].flg = false;
+					const int speed = manhole[i].lift_wait_time * 4;
+
+					if (player->GetPlayerY() + -stage->GetScrollY() > manhole[i].y) {
+						player->SetPlayerY((player->GetPlayerY() - stage->GetScrollY()) - speed);
 					}
 
-					//if (manhole[i].animtimer == 180) {
-						//player->SetPlayerX(manhole[i].x);
-					player->SetPlayerY(manhole[i].y);
-					//一時的な当たり判定をつける。
-					temporary_hit = 97;
-					//}
-					//player->SetPlayerY(player->GetPlayerY() - 10.0f);
-					//printfDx("%f",player->GetPlayerY());
+					if (player->GetPlayerY() + -stage->GetScrollY() < manhole[i].y) {
+						if (!CheckSoundMem(manhole_opened_se)) { PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE); }
+						//一時的な当たり判定をつける。
+						stage->SetTemporary_Hit(69);
+						manhole[i].flg = false;
+					}
 				}
-				//デバッグ
-				//printfDx("入っています。");
 			}
 		}
 	}

@@ -43,7 +43,7 @@ STAGE::STAGE(const char* stage_name) {
 	//InitStage();
 
 	LoadMapData(stage_name);
-	temporary_hit = 0;
+	temporary_hit = 999;
 	clearflg = false;
 	clearbox = {0,0};
 	clear_count = 3000;
@@ -278,6 +278,7 @@ bool STAGE::HitMapDat(int y, int x) {
 	if (PAD_INPUT::GetNowKey()==XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
 #endif
 	int block_type = GetMapData(y, x);
+	if (block_type == temporary_hit) { return true; }
 	if (
 		block_type == -1 //範囲外
 		|| block_type == 0	//水玉草
@@ -316,10 +317,10 @@ bool STAGE::HitMapDat(int y, int x) {
 		|| block_type == 106//ステージ3ブロック
 		|| block_type == 107//ステージ3ブロック
 		|| block_type == 777//スポーン地点ブロック
-		|| block_type == temporary_hit	//一時的な当たり判定
 		) {
 		return false;
 	}
+
 	return true;
 }
 /// <summary>

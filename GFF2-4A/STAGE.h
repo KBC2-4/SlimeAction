@@ -92,5 +92,8 @@ public:
 
 	//スポーン地点のGeter
 	POINT GetSpawnPoint(void) { return spawn_point; }
+
+	//一時的な当たり判定のSetter
+	void SetTemporary_Hit(int mapdata) { temporary_hit = mapdata; }
 };
 
