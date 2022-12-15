@@ -462,11 +462,10 @@ void GAMEMAIN::Draw() const
 	if (CheckHitKey(KEY_INPUT_A)) {
 		DrawFormatString(100, 150, 0xF77D0A, "ScrollX:%f", stage->GetScrollX());
 		DrawFormatString(100, 200, 0xF77D0A, "ScrollY:%f", stage->GetScrollY());
-		DrawFormatString(100, 250, 0xE04D02, "MapData:%d", stage->GetMapData((player->GetPlayerY() / MAP_CEllSIZE) + 1, player->GetPlayerX() / MAP_CEllSIZE));
+		DrawFormatString(100, 250, 0xE04D02, "MapData:%d", stage->GetMapData((player->GetPlayerY() / MAP_CEllSIZE) +1, player->GetPlayerX()/ MAP_CEllSIZE));
 		DrawFormatString(100, 300, 0x02F896, "PlayerX%f", player->GetPlayerX());
-		//プレイヤーのライフの描画
-		for (int i = 0; i < player->GetLife(); i++) {
-			DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
-		}
+		DrawFormatString(100, 350, 0x02F896, "PlayerY%f", player->GetPlayerY());
+		DrawFormatString(100, 400, 0x02F896, "SpawnPointY:%d", stage->GetSpawnPoint().y);
+		DrawFormatString(100, 450, 0x02F896, "Jump:%f", player->GetJumpVelocity());
 	}
 }
