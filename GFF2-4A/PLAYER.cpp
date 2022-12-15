@@ -27,7 +27,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	throw_preparation = false;
 	throw_interval = 0.0f;
 	player_state = PLAYER_MOVE_STATE::IDLE;
-	hook_flag.clear();
+	grabbed_hook_array.clear();
 	// 初期位置は軸の真下から左方向に45度傾いた位置
 	x = CLENGTH / b;
 	// 初期速度は０
@@ -359,7 +359,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 			//フックの位置
 			std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
 			for (int i = 0; i < hook_pos.size(); i++) {
-				if (std::find(hook_flag.begin(), hook_flag.end(), i) != hook_flag.end()) continue;
+				if (std::find(grabbed_hook_array.begin(), grabbed_hook_array.end(), i) != grabbed_hook_array.end()) continue;
 				ELEMENT::ELEMENT_DATA pos = hook_pos[i];
 				//距離計算
 				float diff_x = pos.x - (player_x);
@@ -500,7 +500,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 			//フック後のジャンプ方向の修正
 			StopSoundMem(hook_pendulumSE);
 			hook_interval = HOOK_INTERVAL;
-			hook_flag.push_back(hook_index);
+			grabbed_hook_array.push_back(hook_index);
 			//printfDx("%d\n", hook_index);
 			if (input_lx < -DEVIATION) {
 				jump_move_x = -1;
@@ -509,7 +509,12 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				jump_move_x = 1;
 			}
 			else {
-				player_state = PLAYER_MOVE_STATE::FALL;
+				if (nx < 0) {
+					jump_move_x = -1;
+				}
+				else {
+					jump_move_x = 1;
+				}
 			}
 			if (player_state == PLAYER_MOVE_STATE::HOOK) {
 				player_x = hook_x + nx;
@@ -586,7 +591,7 @@ void PLAYER::JumpMove() {
 					player_y = new_y;
 				}
 				jump_velocity = 0;
-				hook_flag.clear();
+				grabbed_hook_array.clear();
 				player_state = PLAYER_MOVE_STATE::IDLE;
 				ChangeAnimation(PLAYER_ANIM_STATE::LANDING);
 				PlaySoundMem(landingSE, DX_PLAYTYPE_BACK);
