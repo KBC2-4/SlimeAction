@@ -391,7 +391,7 @@ void GAMEMAIN::Draw() const
 		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[0], FALSE);
 		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[0], FALSE);
 	}
-	else if(stage_name == "Stage02"){
+	else if (stage_name == "Stage02") {
 		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[1], FALSE);
 		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[1], FALSE);
 	}
@@ -407,8 +407,8 @@ void GAMEMAIN::Draw() const
 	//ステージの描画
 	element->Draw(stage);
 	stage->Draw(element);
-	
-	
+
+
 
 	//プレイヤーの描画
 	player->Draw(stage);
@@ -462,10 +462,11 @@ void GAMEMAIN::Draw() const
 	if (CheckHitKey(KEY_INPUT_A)) {
 		DrawFormatString(100, 150, 0xF77D0A, "ScrollX:%f", stage->GetScrollX());
 		DrawFormatString(100, 200, 0xF77D0A, "ScrollY:%f", stage->GetScrollY());
-		DrawFormatString(100, 250, 0xE04D02, "MapData:%d", stage->GetMapData((player->GetPlayerY() / MAP_CEllSIZE) +1, player->GetPlayerX()/ MAP_CEllSIZE));
+		DrawFormatString(100, 250, 0xE04D02, "MapData:%d", stage->GetMapData((player->GetPlayerY() / MAP_CEllSIZE) + 1, player->GetPlayerX() / MAP_CEllSIZE));
 		DrawFormatString(100, 300, 0x02F896, "PlayerX%f", player->GetPlayerX());
-	//プレイヤーのライフの描画
-	for (int i = 0; i < player->GetLife(); i++) {
-		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
+		//プレイヤーのライフの描画
+		for (int i = 0; i < player->GetLife(); i++) {
+			DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
+		}
 	}
 }
