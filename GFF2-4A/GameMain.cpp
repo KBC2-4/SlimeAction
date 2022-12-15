@@ -396,9 +396,20 @@ void GAMEMAIN::Draw() const
 		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[1], FALSE);
 	}
 
-	if (stage_name == "Stage03" && stage->GetScrollY() < -960) {
-		DrawBox(0, 0, 25600, 1280, 0x20251F, TRUE);
+
+	//地下背景描画
+	if (stage_name == "Stage01") {
+		//ステージ１
+		DrawBox(stage->GetScrollX() + 6880, stage->GetScrollY() + 1380, stage->GetScrollX() + 10640, stage->GetScrollY() + 1900, 0x20251F, TRUE);
 	}
+	else if (stage_name == "Stage03") {
+		//ステージ3
+		DrawBox(0, stage->GetScrollY() + 1380, stage->GetScrollX() + 5120, stage->GetScrollY() + 4800, 0x20251F, TRUE);
+	}
+
+	/*if (stage_name == "Stage03" && stage->GetScrollY() < -960) {
+		DrawBox(0, 0, 25600, 1280, 0x20251F, TRUE);
+	}*/
 
 	for (int i = 0; i < player->GetLife(); i++) {
 		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
