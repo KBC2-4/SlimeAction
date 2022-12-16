@@ -415,47 +415,15 @@ void STAGE::LoadMapData(const char* stage_name) {
 			//map_data[i][j] = atoi(tmp);
 			map_data[i].push_back(std::stoi(tmp));
 
-			while (std::getline(stream,tmp,','))
-			{
-				std::string info[2];
-				std::istringstream streamtmp(tmp);
-				int k = 0;
-				while (std::getline(streamtmp, info[k], ':'))
-				{
-					//map_data.at(i).at(j) = std::stoi(tmp);
-					//map_data[i].push_back(std::stoi(tmp));
-					//j++;
-					k++;
-				}
-				//map_data.at(i).at(j) = std::stoi(tmp);
-				map_data[i].push_back(std::stoi(info[0]));
-				if ((map_data[i][j] == 61 || map_data[i][j] == 62) && info[1] != "") {
-					button_info.push_back(std::vector<int>());
-					button_info.at(button_info.size() - 1).push_back(i);
-					button_info.at(button_info.size() - 1).push_back(j);
-					button_info.at(button_info.size() - 1).push_back(std::stoi(info[1]));
-					/*button_info.resize(button_info.size() + 1);
-					button_info.at(button_info.size() - 1)[0] = i;
-					button_info.at(button_info.size() - 1)[1] = j;
-					button_info.at(button_info.size() - 1)[2] = std::stoi(info[1]);*/
-					//printfDx("%d,%d,%d\n",i,j, std::stoi(info[1]));
-				}
-				if (map_data[i][j] == 66 && info[1] != "") {
-					door_info.push_back(std::vector<int>());
-					door_info.at(door_info.size() - 1).push_back(i);
-					door_info.at(door_info.size() - 1).push_back(j);
-					door_info.at(door_info.size() - 1).push_back(std::stoi(info[1]));
-					/*door_info.resize(door_info.size() + 1);
-					door_info.at(door_info.size() - 1)[0] = i;
-					door_info.at(door_info.size() - 1)[1] = j;
-					door_info.at(door_info.size() - 1)[2] = std::stoi(info[1]);*/
-					//printfDx("%d,%d,%d\n",i,j, std::stoi(info[1]));
-				}
-				j++;
-			}
-			j = 0;
-			i++;
+			tmp = strtok_s(NULL, ",", &context);
+			j++;
 		}
+		j = 0;
+		i++;
+	}
+
+	FileRead_close(FileHandle);
+
 }
 
 
