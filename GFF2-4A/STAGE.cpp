@@ -410,10 +410,34 @@ void STAGE::LoadMapData(const char* stage_name) {
 	while (FileRead_gets(str, sizeof(str), FileHandle) != -1) {
 
 		char* tmp = strtok_s(str, ",", &context);
+		
 		map_data.push_back(std::vector<int>());
 		while (tmp != NULL) {
 			//map_data[i][j] = atoi(tmp);
+
+			std::string info[2];
+			std::istringstream streamtmp(tmp);
+			int k = 0;
+			while (std::getline(streamtmp, info[k], ':')) {
+				k++;
+			}
+
 			map_data[i].push_back(std::stoi(tmp));
+
+			//É{É^ÉìÇ∆ÉhÉAÇÃòAågî‘çÜÇäiî[
+			if ((map_data[i][j] == 61 || map_data[i][j] == 62) && info[1] != "") {
+				button_info.push_back(std::vector<int>());
+				button_info.at(button_info.size() - 1).push_back(i);
+				button_info.at(button_info.size() - 1).push_back(j);
+				button_info.at(button_info.size() - 1).push_back(std::stoi(info[1]));
+			}
+			if (map_data[i][j] == 66 && info[1] != "") {
+				door_info.push_back(std::vector<int>());
+				door_info.at(door_info.size() - 1).push_back(i);
+				door_info.at(door_info.size() - 1).push_back(j);
+				door_info.at(door_info.size() - 1).push_back(std::stoi(info[1]));
+
+			}
 
 			tmp = strtok_s(NULL, ",", &context);
 			j++;
