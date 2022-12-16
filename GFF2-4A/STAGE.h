@@ -34,6 +34,8 @@ private:
 protected:
 	int block_image1[110];		//ステージブロック画像
 	std::vector<std::vector<int>> map_data;
+	std::vector<std::vector<int>> door_info;
+	std::vector<std::vector<int>> button_info;
 	float scroll_x, scroll_y;	//マップスクロール量
 	int temporary_hit;		//一時的な当たり判定
 public:
@@ -92,5 +94,7 @@ public:
 
 	//スポーン地点のGeter
 	POINT GetSpawnPoint(void) { return spawn_point; }
+
+
 };
 

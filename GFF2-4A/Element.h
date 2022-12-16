@@ -24,6 +24,7 @@ public:
 		int lift_vector_y;					//動く床の移動方向(縦)
 		int lift_wait_time;					//動く床待機時間
 		
+		int pair_num;						//ボタンとドアのペア番号
 	};
 	
 private:

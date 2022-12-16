@@ -32,7 +32,9 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 		for (int j = 0; j < map_data.at(0).size(); j++)
 		{
 			int search_vector = 1;
-
+			int button_num_1 = 0;
+			int button_num_2 = 0;
+			int door_num = 0;
 			switch (map_data.at(i).at(j))
 			{
 				//ボタン横
@@ -42,6 +44,16 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 				data.type = 1;
 				data.flg = false;
 				data.animtimer = 0;
+				
+				//ボタンとドアの連携番号を格納
+				while (button_num_1 < button_info.size()) {
+					if (button_info.at(button_num_1).at(0) == i && button_info.at(button_num_1).at(1) == j) {
+						data.pair_num = button_info.at(button_num_1).at(2);
+						break;
+					}
+					button_num_1++;
+				}
+
 				button.push_back(data);
 				break;
 
@@ -52,6 +64,17 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 				data.type = 2;
 				data.flg = false;
 				data.animtimer = 0;
+
+				//ボタンとドアの連携番号を格納
+				while (button_num_2 < button_info.size()) {
+					if (button_info.at(button_num_2).at(0) == i && button_info.at(button_num_2).at(1) == j) {
+						data.pair_num = button_info.at(button_num_2).at(2);
+						break;
+					}
+					button_num_2++;
+
+				}
+				
 				button.push_back(data);
 				break;
 
@@ -73,6 +96,16 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 				data.type = 1;
 				data.flg = false;
 				data.animtimer = 0;
+
+				//ボタンとドアの連携番号を格納
+				while (door_num < door_info.size()) {
+					if (door_info.at(door_num).at(0) == i && door_info.at(door_num).at(1) == j) {
+						data.pair_num = door_info.at(door_num).at(2);
+						break;
+					}
+					door_num++;
+				}
+				
 				door.push_back(data);
 				break;
 
@@ -430,9 +463,17 @@ void ELEMENT::Button(PLAYER* player) {
 					//デバッグ
 					//printfDx("1番に入ってるよ！");
 					if (CheckSoundMem(press_the_button_se) == FALSE)PlaySoundMem(press_the_button_se, DX_PLAYTYPE_BACK, TRUE);
-					if (i < door.size() && i >= 0) {
+					/*if (i < door.size() && i >= 0) {
 						int j = i + 1;
-						door[j].flg = true;
+						door[i].flg = true;
+					}*/
+					int k = 0;
+					while (k < door.size()) {
+						if (button[i].pair_num == door[k].pair_num) {
+							door[k].flg = true;
+							break;
+						}
+						k++;
 					}
 
 				}
@@ -458,11 +499,18 @@ void ELEMENT::Button(PLAYER* player) {
 				keep_pushing = true; //押し続けている
 				button[i].flg = true;		//ボタンを押した
 
-				if (i < door.size() && i >= 0) {
+				/*if (i < door.size() && i >= 0) {
 					int j = i - 1;
-					door[j].flg = true;
+					door[i].flg = true;
+				}*/
+				int l = 0;
+				while (l < door.size()) {
+					if (button[i].pair_num == door[l].pair_num) {
+						door[l].flg = true;
+						break;
+					}
+					l++;
 				}
-
 			}
 			else { keep_pushing = false; }
 		}
