@@ -81,6 +81,9 @@ STAGE::~STAGE() {
 
 
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
+
+	//デバッグ
+	if (CheckHitKey(KEY_INPUT_C))clearflg = true;
 	ChangeVolumeSoundMem(Option::GetSEVolume(), halfwaypoint_se);
 
 	StageClear(player);
