@@ -45,9 +45,9 @@ STAGE::STAGE(const char* stage_name) {
 	LoadMapData(stage_name);
 	temporary_hit = 999;
 	clearflg = false;
-	clearbox = {0,0};
+	clearbox = { 0,0 };
 	clear_count = 3000;
-	halfwaypointbox = {0,0};
+	halfwaypointbox = { 0,0 };
 	halfwaypoint = false;
 	halfway_timer = 0;
 	spawn_point = { 0,0 };
@@ -56,7 +56,7 @@ STAGE::STAGE(const char* stage_name) {
 	for (int i = 0; i < map_data.size(); i++) {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
 			//クリア座標を代入
-			if (map_data.at(i).at(j) == 88) { clearbox.x  = j * MAP_CEllSIZE; clearbox.y = i * MAP_CEllSIZE; }
+			if (map_data.at(i).at(j) == 88) { clearbox.x = j * MAP_CEllSIZE; clearbox.y = i * MAP_CEllSIZE; }
 			//中間地点座標を代入
 			if (map_data.at(i).at(j) == 90) { halfwaypointbox.x = j * MAP_CEllSIZE; halfwaypointbox.y = i * MAP_CEllSIZE; }
 
@@ -66,7 +66,7 @@ STAGE::STAGE(const char* stage_name) {
 	}
 	//スポーン地点をセット
 	if (spawn_point.x == 0 && spawn_point.y == 0) {
-		MessageBox(NULL, "スポーン地点がセットされていません。", "マップ読み込みエラー", MB_OK | MB_ICONERROR); 
+		MessageBox(NULL, "スポーン地点がセットされていません。", "マップ読み込みエラー", MB_OK | MB_ICONERROR);
 		spawn_point.x = 0;
 		spawn_point.y = 0;
 	}
@@ -78,14 +78,14 @@ STAGE::~STAGE() {
 	DeleteGraph(*block_image1);
 	DeleteSoundMem(halfwaypoint_se);
 }
-	
+
 
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
 	ChangeVolumeSoundMem(Option::GetSEVolume(), halfwaypoint_se);
 
 	StageClear(player);
 	HalfwayPoint(player);
-	CameraWork(player,element);
+	CameraWork(player, element);
 }
 
 void STAGE::Draw(ELEMENT* element)const {
@@ -94,15 +94,15 @@ void STAGE::Draw(ELEMENT* element)const {
 	//DrawFormatString(350, 100, 0xffffff, "vectory:%f", player_vector_y);
 	//DrawFormatString(200, 100, 0xffffff, "%2f %2f", scroll_x,scroll_y);
 	//ゲームクリア時
-	if (clearflg == true) {DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47);}
-	
+	if (clearflg == true) { DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47); }
+
 	//printfDx("%f",scroll_x);
 
 	for (int i = 0; i < map_data.size(); i++) {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
 			//if (map_data.at(i).at(j) == 72)DrawFormatString(100 + j * 20, 50, 0xffffff, "%d %d", i, j);
 			//画面外は描画しない
-			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && i * MAP_CEllSIZE + scroll_y >= -80&&i*MAP_CEllSIZE+scroll_y<=720) {
+			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && i * MAP_CEllSIZE + scroll_y >= -80 && i * MAP_CEllSIZE + scroll_y <= 720) {
 				if (
 					map_data.at(i).at(j) != 68
 					&& map_data.at(i).at(j) != 74
@@ -122,14 +122,16 @@ void STAGE::Draw(ELEMENT* element)const {
 					&& map_data.at(i).at(j) != 52
 					&& map_data.at(i).at(j) != 53
 					&& map_data.at(i).at(j) != 54
-					&& (map_data.at(i).at(j) <= 88	
-												////89～90番台を描画しない
+					&& (map_data.at(i).at(j) <= 88
+						////89～90番台を描画しない
 						|| map_data.at(i).at(j) >= 100 && map_data.at(i).at(j) != 777)
-					) { DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
+					) {
+					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE);
+				}
 			}
 			//レモナーとグレポンはツルだけ描画する
 			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
-			if(map_data.at(i).at(j) == 101){ DrawExtendGraph((j - 1) * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, (j + 1) * MAP_CEllSIZE + scroll_x, (i + 1) * MAP_CEllSIZE + scroll_y, block_image1[100], TRUE); }
+			if (map_data.at(i).at(j) == 101) { DrawExtendGraph((j - 1) * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, (j + 1) * MAP_CEllSIZE + scroll_x, (i + 1) * MAP_CEllSIZE + scroll_y, block_image1[100], TRUE); }
 		}
 	}
 	std::vector<ELEMENT::ELEMENT_DATA> lift_pos = element->GetLift();
@@ -143,7 +145,7 @@ void STAGE::Draw(ELEMENT* element)const {
 		if (halfwaypoint == false) { DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[88], TRUE); }
 		else { DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
 	}
-	
+
 }
 
 /// <summary>
@@ -151,81 +153,81 @@ void STAGE::Draw(ELEMENT* element)const {
 /// </summary>
 void STAGE::CameraWork(PLAYER* player, ELEMENT* element) {
 	int scroll_speedY = 7;
-		//プレイヤーxベクトルの判定
-		if (player->GetPlayerX() > player_x_old) {
-			player_vector_x = 1;
-		}
-		else if (player->GetPlayerX() < player_x_old) {
-			player_vector_x = -1;
-		}
-	
-		//プレイヤーyベクトルの判定
-		if (player->GetPlayerY() < player_y_old) {
-			player_vector_y = 1;
-		}
-		else if (player->GetPlayerY() > player_y_old) {
-			player_vector_y = -1;
-			//scroll_speedY = 10;
-		}
-		scroll_speed_x = player->GetPlayerSpeed();
-		if (player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK) {
-			scroll_speed_x = fabsf(player->GetPlayerHookSpeed());
-		}
-		//x軸スクロール
-		//if (element->HitLift(player)) { scroll_speed_x = element->GetLift_SpeedX(); }
-		if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
-			scroll_x -= scroll_speed_x * player_vector_x;
-			if (scroll_x > 0 || scroll_x <= -(80 * static_cast<int>(map_data.at(0).size()) - 1280)) {
-				scroll_x += scroll_speed_x * player_vector_x;
-			}
-		}
-
-		//y軸スクロール
-		//if ((player_vector_y > 0 && player->GetPlayerY() <= 240 || player_vector_y < 0 && (scroll_y > 0 && map_data.size() <= 14) || (scroll_y > -720 && map_data.size() > 14)) && player_y_old != player->GetPlayerY()) {
-		//	scroll_y += scroll_speedY * player_vector_y;
-		//	if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
-		//		scroll_y -= scroll_speedY * player_vector_y;
-		//	}
-		//}
-
-
-		//x軸スクロールを元にy座標バージョンを作成
-		//if ((player_vector_y > 0 && player->GetPlayerY() >= 620 || player_vector_y < 0 && player->GetPlayerY() <= 300)) {
-		//	scroll_y -= 5 * player_vector_y;
-		//	//if (scroll_y > 0 || scroll_y <= -(80 * static_cast<int>(map_data.size()) - 720)) {
-		//	//	scroll_y += 5 * player_vector_y;
-		//	//}
-		//}
-
-		if (++count_timer % 60 == 0)player_longold = player->GetPlayerY();
-
-		//スポーン地点を基準に上げる位置を決める
-		if (scroll_y + player->GetPlayerY() < 0  && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) { scroll_y += scroll_speed_y; }
-		else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
-			if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().y + 400)) {
-				//プレイヤーの落下速度に応じてスクロールYを下げる
-				if(player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
-			}
-			if ((player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK || player->GetPlayerMoveState() == PLAYER_MOVE_STATE::GROW_HOOK) && player->GetPlayerY() > 500.0f) {
-				scroll_y -= 5;
-			}
-		}
-
-		
-		//マンホールの下にいった時	
-		//if (-scroll_y + player->GetPlayerY() > player->GetPlayerY())scroll_y--;
-		//for(unsigned int i=scroll_y )
-
-		//スクロールY-720とプレイヤーY520の誤差が200になるまで
-
-
-
-	/*if (player->GetPlayerY()>=720) {
-		scroll_y = -320;
+	//プレイヤーxベクトルの判定
+	if (player->GetPlayerX() > player_x_old) {
+		player_vector_x = 1;
 	}
-	else if (player->GetPlayerY() < 640) {
-		scroll_y = 0;
-	}*/
+	else if (player->GetPlayerX() < player_x_old) {
+		player_vector_x = -1;
+	}
+
+	//プレイヤーyベクトルの判定
+	if (player->GetPlayerY() < player_y_old) {
+		player_vector_y = 1;
+	}
+	else if (player->GetPlayerY() > player_y_old) {
+		player_vector_y = -1;
+		//scroll_speedY = 10;
+	}
+	scroll_speed_x = player->GetPlayerSpeed();
+	if (player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK) {
+		scroll_speed_x = fabsf(player->GetPlayerHookSpeed());
+	}
+	//x軸スクロール
+	//if (element->HitLift(player)) { scroll_speed_x = element->GetLift_SpeedX(); }
+	if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
+		scroll_x -= scroll_speed_x * player_vector_x;
+		if (scroll_x > 0 || scroll_x <= -(80 * static_cast<int>(map_data.at(0).size()) - 1280)) {
+			scroll_x += scroll_speed_x * player_vector_x;
+		}
+	}
+
+	//y軸スクロール
+	//if ((player_vector_y > 0 && player->GetPlayerY() <= 240 || player_vector_y < 0 && (scroll_y > 0 && map_data.size() <= 14) || (scroll_y > -720 && map_data.size() > 14)) && player_y_old != player->GetPlayerY()) {
+	//	scroll_y += scroll_speedY * player_vector_y;
+	//	if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
+	//		scroll_y -= scroll_speedY * player_vector_y;
+	//	}
+	//}
+
+
+	//x軸スクロールを元にy座標バージョンを作成
+	//if ((player_vector_y > 0 && player->GetPlayerY() >= 620 || player_vector_y < 0 && player->GetPlayerY() <= 300)) {
+	//	scroll_y -= 5 * player_vector_y;
+	//	//if (scroll_y > 0 || scroll_y <= -(80 * static_cast<int>(map_data.size()) - 720)) {
+	//	//	scroll_y += 5 * player_vector_y;
+	//	//}
+	//}
+
+	if (++count_timer % 60 == 0)player_longold = player->GetPlayerY();
+
+	//スポーン地点を基準に上げる位置を決める
+	if (scroll_y + player->GetPlayerY() < 0 && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) { scroll_y += scroll_speed_y; }
+	else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
+		if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().y + 400)) {
+			//プレイヤーの落下速度に応じてスクロールYを下げる
+			if (player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
+		}
+		if ((player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK || player->GetPlayerMoveState() == PLAYER_MOVE_STATE::GROW_HOOK) && player->GetPlayerY() > 500.0f) {
+			scroll_y -= 5;
+		}
+	}
+
+
+	//マンホールの下にいった時	
+	//if (-scroll_y + player->GetPlayerY() > player->GetPlayerY())scroll_y--;
+	//for(unsigned int i=scroll_y )
+
+	//スクロールY-720とプレイヤーY520の誤差が200になるまで
+
+
+
+/*if (player->GetPlayerY()>=720) {
+	scroll_y = -320;
+}
+else if (player->GetPlayerY() < 640) {
+	scroll_y = 0;
+}*/
 
 	if (player_x_old != player->GetPlayerX()) {
 		player_x_old = player->GetPlayerX();
@@ -245,7 +247,7 @@ void STAGE::HookProcess() {
 
 }
 
-void STAGE::PuddleProcess(){
+void STAGE::PuddleProcess() {
 
 }
 
@@ -255,7 +257,7 @@ void STAGE::PuddleProcess(){
 bool STAGE::SetScrollPos(int move_x) {
 	scroll_x -= 5 * move_x;
 	if (scroll_x >= 0 || scroll_x <= -(80 * static_cast<int>(map_data.at(0).size()) - 640)) {
-	scroll_x += 5 * move_x;
+		scroll_x += 5 * move_x;
 		return true;
 	}
 	return false;
@@ -275,7 +277,7 @@ int STAGE::GetMapData(int y, int x) {
 
 bool STAGE::HitMapDat(int y, int x) {
 #ifdef _DEBUG
-	if (PAD_INPUT::GetNowKey()==XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
 #endif
 	int block_type = GetMapData(y, x);
 	if (block_type == temporary_hit) { return true; }
@@ -353,7 +355,7 @@ bool STAGE::HitThrowSlime(int y, int x) {
 		) {
 		return false;
 	}
-		return true;
+	return true;
 }
 
 /// <summary>
@@ -361,43 +363,77 @@ bool STAGE::HitThrowSlime(int y, int x) {
 /// </summary>
 void STAGE::LoadMapData(const char* stage_name) {
 
-		char buf[37];
-		sprintf_s(buf, sizeof(buf), "Resource/Map_Data/%s.csv", stage_name);
-		std::ifstream ifs(buf);
+	char buf[37];
+	sprintf_s(buf, sizeof(buf), "Resource/Map_Data/%s.csv", stage_name);
+	//std::ifstream ifs(buf);
 
-		map_data.clear();
-		map_data.shrink_to_fit();
-		std::string str = "";
-		int i = 0, j = 0;
-		while (std::getline(ifs,str))
-		{
-			std::string tmp = "";
-			std::istringstream stream(str);
-			map_data.push_back(std::vector<int>());
+	//map_data.clear();
+	//map_data.shrink_to_fit();
+	////std::string str = "";
 
-			while (std::getline(stream,tmp,','))
-			{
-				//map_data.at(i).at(j) = std::stoi(tmp);
-				map_data[i].push_back(std::stoi(tmp));
-				j++;
-			}
-			j = 0;
-			i++;
+	//int i = 0, j = 0;
+
+	//while (std::getline(ifs, str))
+	//{
+	//	std::string tmp = "";
+	//	std::istringstream stream(str);
+	//	map_data.push_back(std::vector<int>());
+
+	//	while (std::getline(stream,tmp,','))
+	//	{
+	//		//map_data.at(i).at(j) = std::stoi(tmp);
+	//		map_data[i].push_back(std::stoi(tmp));
+	//		j++;
+	//	}
+	//	j = 0;
+	//	i++;
+	//}
+
+
+
+	//アーカイブ対応版
+
+
+	int FileHandle;
+	if ((FileHandle = FileRead_open(buf)) == 0) {
+		exit(1);
+	}
+
+	char str[642];		//一行の長さ
+	char* context;
+	int i = 0, j = 0;
+
+	while (FileRead_gets(str, sizeof(str), FileHandle) != -1) {
+
+		char* tmp = strtok_s(str, ",", &context);
+		map_data.push_back(std::vector<int>());
+		while (tmp != NULL) {
+			//map_data[i][j] = atoi(tmp);
+			map_data[i].push_back(std::stoi(tmp));
+
+			tmp = strtok_s(NULL, ",", &context);
+			j++;
 		}
+		j = 0;
+		i++;
+	}
+
+	FileRead_close(FileHandle);
+
 }
 
 
 /// <summary>
 /// ステージクリア時
 /// </summary>
-void STAGE::StageClear(PLAYER *player) {
+void STAGE::StageClear(PLAYER* player) {
 
 	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - scroll_x));
-	int player_map_y = static_cast<int>(floorf(player->GetPlayerY())-scroll_y);
-	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox.x , clearbox.y);
+	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()) - scroll_y);
+	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox.x, clearbox.y);
 
 	//旗に触れるとゲームクリア
-	if ((player_map_x >= clearbox.x  - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox.x  + MAP_CEllSIZE + 30) && (player_map_y >= clearbox.y - MAP_CEllSIZE / 2) && (player_map_y <= clearbox.y + MAP_CEllSIZE / 2)) {
+	if ((player_map_x >= clearbox.x - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox.x + MAP_CEllSIZE + 30) && (player_map_y >= clearbox.y - MAP_CEllSIZE / 2) && (player_map_y <= clearbox.y + MAP_CEllSIZE / 2)) {
 		clearflg = true;
 	}
 
@@ -409,23 +445,24 @@ void STAGE::StageClear(PLAYER *player) {
 		}
 		/*if (GetNowCount() % 30 == 0)printfDx("%d:::::%d\n", count, GetNowCount());*/
 	}
-	
+
 }
 
-void STAGE::HalfwayPoint(PLAYER *player) {
+void STAGE::HalfwayPoint(PLAYER* player) {
 	int player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
 	int player_map_y = floorf(player->GetPlayerY());
 	if ((player_map_x >= halfwaypointbox.x - MAP_CEllSIZE / 2) && (player_map_x <= halfwaypointbox.x + MAP_CEllSIZE / 2)/* && (player_map_y >= halfwaypointbox.y - MAP_CEllSIZE) && (player_map_y <= halfwaypointbox.y + MAP_CEllSIZE)*/) {
 		//デバッグ
 		//printfDx("aaa");
-		if (halfwaypoint == false) { PlaySoundMem(halfwaypoint_se, DX_PLAYTYPE_BACK, TRUE); 
-		
-		if (++halfway_timer < 180) {
-			DrawOvalAA(halfwaypointbox.x + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
-			DrawOvalAA(halfwaypointbox.x + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
-			DrawOvalAA(halfwaypointbox.x + scroll_x + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
-		}
-		else if (180 <= halfway_timer)halfway_timer = 0;
+		if (halfwaypoint == false) {
+			PlaySoundMem(halfwaypoint_se, DX_PLAYTYPE_BACK, TRUE);
+
+			if (++halfway_timer < 180) {
+				DrawOvalAA(halfwaypointbox.x + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+				DrawOvalAA(halfwaypointbox.x + scroll_x + MAP_CEllSIZE + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+				DrawOvalAA(halfwaypointbox.x + scroll_x + anitimer % 3, halfwaypointbox.y + scroll_y + 30 + anitimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+			}
+			else if (180 <= halfway_timer)halfway_timer = 0;
 		}
 		halfwaypoint = true;
 	}
