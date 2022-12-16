@@ -104,25 +104,26 @@ void STAGE::Draw(ELEMENT* element)const {
 			//‰æ–ÊŠO‚Í•`‰æ‚µ‚È‚¢
 			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && i * MAP_CEllSIZE + scroll_y >= -80 && i * MAP_CEllSIZE + scroll_y <= 720) {
 				if (
-					map_data.at(i).at(j) != 68
-					&& map_data.at(i).at(j) != 74
-					&& map_data.at(i).at(j) != 75
-					&& map_data.at(i).at(j) != 76
-					&& map_data.at(i).at(j) != 77
-					&& map_data.at(i).at(j) != 78
-					&& map_data.at(i).at(j) != 79
+					map_data.at(i).at(j) != 68		//ƒ}ƒ“ƒz[ƒ‹(ã)
+					&& map_data.at(i).at(j) != 62	 //ƒ{ƒ^ƒ“
+					&& map_data.at(i).at(j) != 74	//Ž_«‰J‚Ì…‚½‚Ü‚è
+					&& map_data.at(i).at(j) != 75	//Ž_«‰J‚Ì…‚½‚Ü‚è
+					&& map_data.at(i).at(j) != 76	//Ž_«‰J‚Ì…‚½‚Ü‚è
+					&& map_data.at(i).at(j) != 77	//Ž_«‰J‚Ì…‚½‚Ü‚è
+					&& map_data.at(i).at(j) != 78	//Ž_«‰J‚Ì…‚½‚Ü‚è
+					&& map_data.at(i).at(j) != 79	//Ž_«‰J‚Ì…‚½‚Ü‚è
 					&& map_data.at(i).at(j) != 101		//–ß‚éŠÅ”Â‰º‚Å•Ê“r•`‰æ‚µ‚Ä‚¢‚éˆ×
-					&& map_data.at(i).at(j) != 102
-					&& map_data.at(i).at(j) != 103
-					&& map_data.at(i).at(j) != 104
-					&& map_data.at(i).at(j) != 105
-					&& map_data.at(i).at(j) != 106
-					&& map_data.at(i).at(j) != 107
-					&& map_data.at(i).at(j) != 51	//“®‚­°3‚Â
-					&& map_data.at(i).at(j) != 52
-					&& map_data.at(i).at(j) != 53
-					&& map_data.at(i).at(j) != 54
-					&& (map_data.at(i).at(j) <= 88
+					&& map_data.at(i).at(j) != 102	//ƒXƒe[ƒW1ƒQ[ƒg(ã)
+					&& map_data.at(i).at(j) != 103	//ƒXƒe[ƒW1ƒQ[ƒg(‰º)
+					&& map_data.at(i).at(j) != 104	//ƒXƒe[ƒW2ƒQ[ƒg(ã)
+					&& map_data.at(i).at(j) != 105	//ƒXƒe[ƒW2ƒQ[ƒg(‰º)
+					&& map_data.at(i).at(j) != 106	//ƒXƒe[ƒW3ƒQ[ƒg(ã)
+					&& map_data.at(i).at(j) != 107	//ƒXƒe[ƒW3ƒQ[ƒg(‰º)
+					&& map_data.at(i).at(j) != 51	//“®‚­°
+					&& map_data.at(i).at(j) != 52	//“®‚­°
+					&& map_data.at(i).at(j) != 53	//“®‚­°
+					&& map_data.at(i).at(j) != 54	//“®‚­°
+					&& (map_data.at(i).at(j) <= 88		//ƒNƒŠƒA–å“™
 						////89`90”Ô‘ä‚ð•`‰æ‚µ‚È‚¢
 						|| map_data.at(i).at(j) >= 100 && map_data.at(i).at(j) != 777)
 					) {

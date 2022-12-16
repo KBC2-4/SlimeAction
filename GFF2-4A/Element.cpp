@@ -251,6 +251,9 @@ void ELEMENT::Draw(STAGE* stage) {
 	//DrawFormatString(200, 100, 0xFFFFFF, "acidrain_puddles.x%f\acidrain_puddles.y%f", acidrain_puddles[1].x, acidrain_puddles[1].y);
 	//DrawFormatString(200, 200, 0xFFFFFF, "x%f\ny%f", player_map_x, player_map_y);
 	//デバッグ用
+
+
+
 	//フックのガイド表示
 	for (int i = 0; i < hook.size(); i++) {
 		if (hook[i].flg == true) {
@@ -269,9 +272,19 @@ void ELEMENT::Draw(STAGE* stage) {
 
 	//ボタン
 	for (int i = 0; i < button.size(); i++) {
-		if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + stage->GetScrollX(), button[i].y + stage->GetScrollY() + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
-		if (button[i].type == 2 && button[i].flg == true) {
-			DrawOvalAA(button[i].x + stage->GetScrollX(), button[i].y + stage->GetScrollY() + 30 + button[i].animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
+
+		if (button[i].type == 2) {
+
+			if (button[i].flg == false) {
+				DrawOvalAA(button[i].x + stage->GetScrollX(), button[i].y + stage->GetScrollY() + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
+			}
+			if (button[i].flg == true && button[i].animtimer < 30) {
+				SetDrawArea(button[i].x + stage->GetScrollX() - MAP_CEllSIZE / 2, button[i].y + stage->GetScrollY() - MAP_CEllSIZE / 2, button[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, button[i].y + stage->GetScrollY() + MAP_CEllSIZE / 2);
+				DrawOvalAA(button[i].x + stage->GetScrollX(), button[i].y + stage->GetScrollY() + 30 + button[i].animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
+				SetDrawAreaFull();
+			}
+
+			DrawGraph(button[i].x + stage->GetScrollX() - MAP_CEllSIZE / 2, button[i].y + stage->GetScrollY() - MAP_CEllSIZE / 2, block_image1[61], TRUE);
 		}
 	}
 
