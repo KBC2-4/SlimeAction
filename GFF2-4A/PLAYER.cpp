@@ -27,7 +27,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	throw_preparation = false;
 	throw_interval = 0.0f;
 	player_state = PLAYER_MOVE_STATE::IDLE;
-	hook_flag.clear();
+	grabbed_hook_array.clear();
 	// 初期位置は軸の真下から左方向に45度傾いた位置
 	x = CLENGTH / b;
 	// 初期速度は０
@@ -63,9 +63,6 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((throw_ball_image = LoadGraph("Resource/Images/Player/Slime_Bullet.png")) == -1) {
 		throw "Resource/Images/Player/Slime_Bullet.png";
 	}
-	if ((hp_img = LoadGraph("Resource/Images/Player/hp.png")) == -1) {
-		throw "Resource/Images/Player/hp.png";
-	}
 	if ((idle_nobi_img = LoadGraph("Resource/Images/Player/FuckAnim2.png")) == -1) {
 		throw "Resource/Images/Player/FuckAnim2.png";
 	}
@@ -82,7 +79,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((hook_moveSE = LoadSoundMem("Resource/Sounds/SE/Player/hook_move.wav")) == -1) {
 		throw "Resource/Sounds/SE/Player/hook_move.wav";
 	}
-	if ((hook_pendulumSE = LoadSoundMem("Resource/Sounds/SE/Player/hook_pendulum.wav")) == -1) {
+	if ((hook_pendulumSE = LoadSoundMem("Resource/Sounds/SE/Player/hook.wav")) == -1) {
 		throw "Resource/Sounds/SE/Player/hook_pendulum.wav";
 	}
 
@@ -109,7 +106,6 @@ PLAYER::PLAYER(STAGE* stage) {
 
 PLAYER::~PLAYER() {
 	DeleteGraph(throw_ball_image);
-	DeleteGraph(hp_img);
 	DeleteGraph(idle_nobi_img);
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
 		for (int j = 0; j < 10; j++) {
@@ -169,10 +165,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	}
 
 	//死判定
-	if (stage->GetMapData(map_y, map_x) == -1 || life <= 0) {
-		is_death = true;
-	}
-	if (player_y + stage->GetScrollY() > 720 && player_state != PLAYER_MOVE_STATE::HOOK){
+	if (player_y + stage->GetScrollY() > 720 && player_state != PLAYER_MOVE_STATE::HOOK || life <= 0){
 		is_death = true;
 	}
 
@@ -262,11 +255,6 @@ void PLAYER::Draw(STAGE *stage)const {
 	//ボールの軌道の描画
 	for (int i = 0; i < throw_x.size(); i += 5) {
 		DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
-	}
-
-	//ライフの描画
-	for (int i = 0; i < life - 1; i++) {
-		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
 	}
 }
 
@@ -371,7 +359,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 			//フックの位置
 			std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
 			for (int i = 0; i < hook_pos.size(); i++) {
-				if (std::find(hook_flag.begin(), hook_flag.end(), i) != hook_flag.end()) continue;
+				if (std::find(grabbed_hook_array.begin(), grabbed_hook_array.end(), i) != grabbed_hook_array.end()) continue;
 				ELEMENT::ELEMENT_DATA pos = hook_pos[i];
 				//距離計算
 				float diff_x = pos.x - (player_x);
@@ -447,7 +435,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				//フックについたら移動処理の終了
 				else {
 					//StopSoundMem(hook_moveSE);
-					//PlaySoundMem(hook_pendulumSE, DX_PLAYTYPE_LOOP);
+					PlaySoundMem(hook_pendulumSE, DX_PLAYTYPE_LOOP);
 					end_move = true;
 					//振り子の開始角度の設定
 					double angle = (double)hook_angle * (180.0 / M_PI) - 90.0;
@@ -510,9 +498,9 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 		end_move = false;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			//フック後のジャンプ方向の修正
-			//StopSoundMem(hook_pendulumSE);
+			StopSoundMem(hook_pendulumSE);
 			hook_interval = HOOK_INTERVAL;
-			hook_flag.push_back(hook_index);
+			grabbed_hook_array.push_back(hook_index);
 			//printfDx("%d\n", hook_index);
 			if (input_lx < -DEVIATION) {
 				jump_move_x = -1;
@@ -521,7 +509,12 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				jump_move_x = 1;
 			}
 			else {
-				player_state = PLAYER_MOVE_STATE::FALL;
+				if (nx < 0) {
+					jump_move_x = -1;
+				}
+				else {
+					jump_move_x = 1;
+				}
 			}
 			if (player_state == PLAYER_MOVE_STATE::HOOK) {
 				player_x = hook_x + nx;
@@ -598,7 +591,7 @@ void PLAYER::JumpMove() {
 					player_y = new_y;
 				}
 				jump_velocity = 0;
-				hook_flag.clear();
+				grabbed_hook_array.clear();
 				player_state = PLAYER_MOVE_STATE::IDLE;
 				ChangeAnimation(PLAYER_ANIM_STATE::LANDING);
 				PlaySoundMem(landingSE, DX_PLAYTYPE_BACK);
@@ -753,7 +746,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 	for (int i = 0; i < stage->GetMapSize().x; i++) {
 		for (int j = screen_left; j < screen_left + 20; j++) {
 			if (j >= stage->GetMapSize().y) break;
-			if (!stage->HitMapDat(i, j)) continue;
+			if (!stage->HitMapDat(i, j) && stage->GetMapData(i, j) != -1) continue;
 			
 			float block_left = j * MAP_CEllSIZE;
 			float block_right = block_left + MAP_CEllSIZE;
@@ -764,6 +757,10 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 				if (player_bottom > block_top && player_top < block_bottom) {
 					int block_type = stage->GetMapData(i, j);
 					int y = static_cast<int>(player_top / MAP_CEllSIZE);
+					//死判定
+					if (block_type == -1) {
+						is_death = true;
+					}
 					if (hit_ceil && y == i) continue;
 					//ドアの判定
 					if ((block_type == 66 || block_type == 67) && move_x > 0) {
@@ -832,7 +829,8 @@ void PLAYER::MoveAnimation() {
 
 void PLAYER::SetLife(int a)
 {
-	if (life > a && !is_damage) {
+	if (life > a && is_damage) return;
+	if (life > a) {
 		//player_state = PLAYER_MOVE_STATE::DAMAGE;
 		alpha_time = 120;
 		is_damage = true;

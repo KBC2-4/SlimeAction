@@ -60,7 +60,6 @@ private:
 
 	int life;
 	int images[ANIMATION_TYPE][10];		//アニメーションの画像
-	int hp_img;
 	int move_type;			//左か右の移動(反転用)
 	float move_x;
 	int jump_mode;			//停止ジャンプ(1)か移動ジャンプ(2)か
@@ -76,7 +75,7 @@ private:
 	float hook_y, hook_x;
 	int hook_index;
 	int idle_nobi_img;
-	std::vector<int> hook_flag;
+	std::vector<int> grabbed_hook_array;
 	int hook_interval = 0;
 	
 	double x;     // 紐を伸ばして一周させた場合に出来る円の線上の座標、０は紐が軸の真下に伸びた位置
