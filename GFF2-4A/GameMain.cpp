@@ -2,7 +2,6 @@
 #include "Title.h"
 #include <vector>
 #include "Option.h"
-#include "Ranking.h"
 
 GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 {
@@ -333,20 +332,7 @@ AbstractScene* GAMEMAIN::Update()
 			//ステージクリア
 			if (stage->GetClearFlg())
 			{ 
-				if (stage_name == "Stage01")
-				{
-					RANKING::Insert(GetNowCount() - (time + halfway_time), 1);
-				}
-				else if (stage_name == "Stage02")
-				{
-					RANKING::Insert(GetNowCount() - (time + halfway_time), 2);
-				}
-				else if (stage_name == "Stage03")
-				{
-					RANKING::Insert(GetNowCount() - (time + halfway_time), 3);
-				}
-				else{}
-				return new RESULT(true, time + halfway_time); 
+				return new RESULT(true, time + halfway_time,stage_name); 
 			}
 		}
 	}

@@ -3,8 +3,9 @@
 #include "DxLib.h"
 #include "StageSelect.h"
 #include "Option.h"
+#include "Ranking.h"
 
-RESULT::RESULT(bool issue, int clear_time) 
+RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 {
 
 	if ((Result_Image = LoadGraph("Resource/Images/Result/GameClear.png")) == -1) {
@@ -19,13 +20,13 @@ RESULT::RESULT(bool issue, int clear_time)
 		throw "Resource/Sounds/SE/ok.wav";
 	}
 
-	
+
 	for (int i = 0; i < 4; i++) {
 		char dis_good_se[30];
 		sprintf_s(dis_good_se, sizeof(dis_good_se), "Resource/Sounds/SE/good%d.wav", i + 1);
 
 		if ((good_se[i] = LoadSoundMem(dis_good_se)) == -1) {
-		throw dis_good_se;
+			throw dis_good_se;
 		}
 	}
 
@@ -41,11 +42,11 @@ RESULT::RESULT(bool issue, int clear_time)
 	Result_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
 	if (issue == true) { timer = 10 * 60; }
-	else{ timer = 8 * 60; }
-	
+	else { timer = 8 * 60; }
+
 	win = issue;
 
-	this->clear_time =  GetNowCount() - clear_time;
+	this->clear_time = GetNowCount() - clear_time;
 	se_randnum = GetRand(3);
 
 	*effect_timer = 0;
@@ -54,9 +55,25 @@ RESULT::RESULT(bool issue, int clear_time)
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume(), count_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+
+
+	//ランキング登録
+	if (stage_name == "Stage01")
+	{
+		RANKING::Insert(this->clear_time, 1);
+	}
+	else if (stage_name == "Stage02")
+	{
+		RANKING::Insert(this->clear_time, 2);
+	}
+	else if (stage_name == "Stage03")
+	{
+		RANKING::Insert(this->clear_time, 3);
+	}
+	else {}
 }
 
-RESULT::~RESULT() 
+RESULT::~RESULT()
 {
 
 	DeleteGraph(Result_Image);
@@ -64,14 +81,14 @@ RESULT::~RESULT()
 	RemoveFontResourceEx(TEXT("./Resource/Fonts/TimeAttack.otf"), FR_PRIVATE, NULL);
 	DeleteSoundMem(count_se);
 	DeleteSoundMem(ok_se);
-	for(int i = 0; i < 4; i++)DeleteSoundMem(good_se[i]);
+	for (int i = 0; i < 4; i++)DeleteSoundMem(good_se[i]);
 	for (int i = 0; i < 4; i++)DeleteSoundMem(bad_se[i]);
 }
 
-AbstractScene* RESULT::Update() 
+AbstractScene* RESULT::Update()
 {
 
-	if (win == true && timer > 9 * 60) { if (!CheckSoundMem(good_se[se_randnum])) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); } }
+	if (win == true && timer > 10 * 60) { if (!CheckSoundMem(good_se[se_randnum])) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); } }
 	if (win == false && timer > 5 * 80) { if (!CheckSoundMem(bad_se[se_randnum])) { PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); } }
 	if (timer <= 5 * 60) { if (CheckSoundMem(count_se) == FALSE)PlaySoundMem(count_se, DX_PLAYTYPE_BACK, FALSE); }
 
@@ -79,17 +96,17 @@ AbstractScene* RESULT::Update()
 
 	//ガイド点滅表示
 	if (guide_timer < 100)
-	{ 
+	{
 
-		guide_timer++; 
+		guide_timer++;
 	}
-	else 
-	{ 
+	else
+	{
 
-		guide_timer = 0; 
+		guide_timer = 0;
 	}
 
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B && PAD_INPUT::GetPadState() == PAD_STATE::ON) 
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B && PAD_INPUT::GetPadState() == PAD_STATE::ON)
 	{
 
 		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); return new STAGE_SELECT();
@@ -107,7 +124,7 @@ const int GetDrawCenterX(int screenX, const char* string, int font_handle)
 
 void RESULT::Draw() const {
 
-	if (win == true) 
+	if (win == true)
 	{
 		DrawFillBox(0, 0, 1280, 720, 0x000000);
 		DrawExtendGraph(0, 0, 1280, 720, Result_Image, true);
@@ -115,17 +132,17 @@ void RESULT::Draw() const {
 		char dis_clear_time[20];	//文字列合成バッファー
 
 		//文字列合成
-		if (clear_time / 1000 >= 60) 
-		{ 
+		if (clear_time / 1000 >= 60)
+		{
 
-			sprintf_s(dis_clear_time, sizeof(dis_clear_time), "%4d:%2d.%.3d", 
+			sprintf_s(dis_clear_time, sizeof(dis_clear_time), "%4d:%2d.%.3d",
 				(clear_time / 1000) / 60, (clear_time / 1000) % 60, clear_time % 1000);
 		}
-		else 
-		{ 
+		else
+		{
 
 			sprintf_s(dis_clear_time, sizeof(dis_clear_time),
-				"%5d.%.3d", clear_time / 1000, clear_time % 1000); 
+				"%5d.%.3d", clear_time / 1000, clear_time % 1000);
 		}
 
 		//クリアタイム
@@ -134,7 +151,7 @@ void RESULT::Draw() const {
 
 		DrawFormatStringToHandle(30, 540, 0x56F590, Result_font, "%2d秒後にリスタートします", timer / 60);
 	}
-	
+
 	if (guide_timer < 50)
 	{
 
