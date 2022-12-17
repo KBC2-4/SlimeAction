@@ -1,7 +1,6 @@
 #include "Ranking.h"
 #include "DxLib.h"
 
-#define FILEPATH "BestTime.bin"
 
 int RANKING::best_time[3];
 void RANKING::Insert(int time, int stage)
@@ -18,13 +17,13 @@ void RANKING::SaveRanking(void) {
 	FILE* fp = NULL;
 
 	//ファイルオープン
-	if (fopen_s(&fp, FILEPATH, "wb") != 0)
+	if (fopen_s(&fp, "Resource/BestTime/BestTime.bin", "wb") != 0)
 	{
-		fopen_s(&fp, FILEPATH, "wb");
+		fopen_s(&fp, "Resource/BestTime/BestTime.bin", "wb");
 
 		if (fp == NULL)
 		{
-			throw FILEPATH;
+			throw "Resource/BestTime/BestTime.bin";
 		}
 
 	}
@@ -42,13 +41,13 @@ void RANKING::ReadRanking(void) {
 	FILE* fp = NULL;
 
 	//ファイルオープン
-	if (fopen_s(&fp, FILEPATH, "rb") != 0)
+	if (fopen_s(&fp, "Resource/BestTime/BestTime.bin", "rb") != 0)
 	{
-		fopen_s(&fp, FILEPATH, "wb");
+		fopen_s(&fp, "Resource/BestTime/BestTime.bin", "wb");
 
 		if (fp == NULL)
 		{
-			throw FILEPATH;
+			throw "Resource/BestTime/BestTime.bin";
 		}
 	}
 	//ベストタイムを読み込む
