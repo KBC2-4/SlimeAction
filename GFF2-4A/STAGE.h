@@ -59,28 +59,39 @@ public:
 	/// <summary>
 	/// マップ画像番号Geter
 	/// </summary>
+	/// <returns>int型：画像整理番号</returns>	
 	int GetMapImage(int num) { return block_image1[num]; }
 	/// <summary>
 	/// マップデータの読み込み
 	/// </summary>
+	/// <param name="stage_name">ステージのインスタンス</param>
 	void LoadMapData(const char* stage_name);
 	/// <summary>
 	/// マップサイズのGeter
 	/// </summary>
+	/// <returns>構造体型：マップサイズ</returns>	
 	POINT GetMapSize(void) { POINT mapsize{ map_data.size(),map_data.at(0).size(), };  return mapsize; }
 	/// <summary>
 	/// マップ配列のGetter
 	/// </summary>
+	/// <param name="y">マップデータの横要素数</param>
+	/// <param name="x">マップデータの縦要素数</param>
+	/// <returns>int型：マップ配列番号</returns>	
 	int GetMapData(int y, int x);
 	/// <summary>
 	/// マップ配列の値のSetter
 	/// </summary>
+	/// <param name="y">マップデータの横要素数</param>
+	/// <param name="x">マップデータの縦要素数</param>
+	/// <param name="mapchip_num">マップ配列番号</param>
 	void SetMapData(int y, int x, int mapchip_num) { map_data[y][x] = mapchip_num; }
 
 
 	/// <summary>
 	/// カメラワーク
 	/// </summary>
+	/// 	/// <param name="player">プレイヤーのインスタンス</param>
+	/// <param name="element">エレメントのインスタンス</param>
 	void CameraWork(PLAYER* player, ELEMENT* element);
 	/// <summary>
 	/// スクロールXのSetter
@@ -107,15 +118,20 @@ public:
 	/// <summary>
 	/// マップの当たり判定
 	/// </summary>
+	/// <param name="y">マップデータの横要素数</param>
+	/// <param name="x">マップデータの縦要素数</param>
 	bool HitMapDat(int y, int x);
 	/// <summary>
 	/// スライムのかけらの当たり判定
 	/// </summary>
+ 	/// <param name="y">マップデータの横要素数</param>
+	/// <param name="x">マップデータの縦要素数</param>
 	bool HitThrowSlime(int y, int x);
 
 	/// <summary>
 	/// スポーン地点座標のGetter
 	/// </summary>
+	/// <returns>構造体型：スポーン地点座標</returns>	
 	POINT GetSpawnPoint(void) { return spawn_point; }
 	/// <summary>
 	/// ステージクリア判定処理
@@ -132,6 +148,7 @@ public:
 	/// <summary>
 	/// 中間地点座標のGetter
 	/// </summary>
+	/// <returns>構造体型：中間地点座標</returns>	
 	POINT GetHalfwayPoint(void) {return POINT(halfwaypointbox); }
 	/// <summary>
 	/// 中間地点通過したか判定フラグのGetter
@@ -140,6 +157,7 @@ public:
 	/// <summary>
 	/// 一時的な当たり判定のSetter
 	/// </summary>
+	/// <param name="mapdata">マップ配列番号</param>
 	void SetTemporary_Hit(int mapdata) { temporary_hit = mapdata; }
 };
 

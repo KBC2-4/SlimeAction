@@ -254,10 +254,8 @@ void STAGE::LoadMapData(const char* stage_name) {
 /// マップ配列のGetter
 /// </summary>
 int STAGE::GetMapData(int y, int x) {
-	if (y < 0 || y >= map_data.size())
-		return 0;
-	if (x < 0 || x >= map_data[y].size())
-		return 0;
+	if (y < 0 || y >= map_data.size()) { return -999; }
+	if (x < 0 || x >= map_data[y].size()) { return -999; }
 	return map_data.at(y).at(x);
 }
 
