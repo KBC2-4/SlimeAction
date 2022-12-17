@@ -1,7 +1,7 @@
 #include "Ranking.h"
 #include "DxLib.h"
 
-#define FILEPATH "BestTime.bin"
+#define FILEPATH "Resource/BestTime/BestTime.bin"
 
 int RANKING::best_time[3];
 void RANKING::Insert(int time, int stage)
