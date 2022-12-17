@@ -397,6 +397,11 @@ void ELEMENT::Draw(STAGE* stage) {
 
 	//_«‰J‚Ì…‚½‚Ü‚è
 	for (int i = 0; i < acidrain_puddles.size(); i++) {
+
+		if (stage_name == "Stage02") { DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[7], TRUE); }
+		else if (stage_name == "Stage03") { DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[11], TRUE); }
+		else{ DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[3], TRUE); }
+
 		switch (acidrain_puddles[i].type)
 		{
 		case 1:		//¶’[

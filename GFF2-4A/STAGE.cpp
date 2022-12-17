@@ -51,6 +51,7 @@ STAGE::STAGE(const char* stage_name) {
 	halfwaypoint = false;
 	halfway_timer = 0;
 	spawn_point = { 0,0 };
+	this->stage_name = stage_name;
 
 
 	for (int i = 0; i < map_data.size(); i++) {

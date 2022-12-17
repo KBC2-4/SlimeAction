@@ -38,6 +38,7 @@ protected:
 	std::vector<std::vector<int>> button_info;
 	float scroll_x, scroll_y;	//マップスクロール量
 	int temporary_hit;		//一時的な当たり判定
+	const char* stage_name;		//ステージ名
 public:
 	STAGE(const char* stage_name = "StageSelect");
 	~STAGE();
