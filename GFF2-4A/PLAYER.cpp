@@ -33,6 +33,8 @@ PLAYER::PLAYER(STAGE* stage) {
 	// 初期速度は０
 	speed = 0;
 
+	is_heal = false;
+
 	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
 		throw "Resource/Images/Player/IdorSlime.png";
 	}
@@ -681,10 +683,10 @@ void PLAYER::Throw(STAGE* stage) {
 /// </summary>
 void PLAYER::HitBlock(ELEMENT* element, STAGE* stage) {
 	//マップチップの座標のセット
-	map_x = (int)roundf((player_x) / MAP_CEllSIZE);
+	map_x = (int)roundf(player_x / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
-	float player_left = (player_x - 30 * player_scale);
-	float player_right = (player_x + 30 * player_scale);
+	float player_left = player_x - 30 * player_scale;
+	float player_right = player_x + 30 * player_scale;
 	float player_top = (player_y - (player_scale - 0.6f) * MAP_CEllSIZE / 2);
 	float player_bottom = (player_y + MAP_CEllSIZE / 2);
 
@@ -766,11 +768,16 @@ void PLAYER::HitBlock(ELEMENT* element, STAGE* stage) {
 						}
 					}
 					player_x = old_player_x;
+					if (is_heal) {
+						player_x -= move_x * player_speed * 2.0f;
+					}
 					break;
 				}
 			}
 		}
 	}
+
+	is_heal = false;
 }
 
 void PLAYER::ChangeAnimation(PLAYER_ANIM_STATE anim, bool compelChange) {
@@ -833,6 +840,9 @@ void PLAYER::SetLife(int a)
 		is_damage = true;
 		StartJoypadVibration(DX_INPUT_PAD1, 360, 320, -1);
 		PlaySoundMem(damageSE, DX_PLAYTYPE_BACK);
+	}
+	else {
+		is_heal = true;
 	}
 	life = a;
 }

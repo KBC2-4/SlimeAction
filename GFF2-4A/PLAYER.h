@@ -101,6 +101,8 @@ private:
 	int alpha_param;	//パラーメーター
 	int alpha_time;		//点滅時間
 
+	bool is_heal;
+
 	//プレイヤーのサイズ(倍率)
 	float player_scale;
 
