@@ -304,11 +304,11 @@ void ELEMENT::Draw(STAGE* stage) {
 			if (player_state != static_cast<int>(PLAYER_MOVE_STATE::HOOK)) {
 				if (guid_timer < 50) {
 					DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, "B", B_COLOR, guid_font, 0xFFFFFF);
+					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 				else {
 					DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 			}
 		}
@@ -373,11 +373,11 @@ void ELEMENT::Draw(STAGE* stage) {
 				//マンホールのガイド表示
 				if (guid_timer < 50) {
 					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", B_COLOR, guid_font, 0xFFFFFF);
+					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 				else {
 					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 			}
 		}
@@ -396,11 +396,11 @@ void ELEMENT::Draw(STAGE* stage) {
 
 			if (guid_timer < 50) {
 				DrawCircleAA(x + stage->GetScrollX(), y - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-				DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, "B", B_COLOR, guid_font, 0xFFFFFF);
+				DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 			}
 			else {
 				DrawCircleAA(x + stage->GetScrollX(), y - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-				DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+				DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 			}
 		}
 	}
@@ -666,7 +666,7 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 		}
 		if (manhole[i].type == 1) {
 			if ((player_map_x >= manhole[i].x) && (player_map_x <= manhole[i].x + MAP_CEllSIZE) && (player_map_y <= manhole[i].y + MAP_CEllSIZE) && (player_map_y >= manhole[i].y)) {
-				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
+				if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) {
 					stage->SetTemporary_Hit(999);
 					manhole[i].flg = true;
 				}
@@ -710,7 +710,7 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 
 			//マンホールの出口の左端から右端までのx座標かつマンホールの出口よりも下にいる場合
 			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE / 2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE / 2) && (player_map_y > manhole[i].y)) {
-				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
+				if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { manhole[i].flg = true; }
 
 
 				//Bボタンを押してflgがtrueになった時

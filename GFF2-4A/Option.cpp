@@ -5,6 +5,7 @@
 
 int Option::bgm_vol = 255 * 50 / 100;
 int Option::se_vol = 255 * 50 / 100;
+bool Option::input_mode = true;
 
 Option::Option() {
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
@@ -77,7 +78,7 @@ void Option::Update() {
 
 
 	//Aボタンでミュートまたは50%に設定する
-	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+	if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
 		if (static_cast<MENU>(selectmenu) == MENU::BGM) {
 			PlaySoundMem(mute_se, DX_PLAYTYPE_BACK, TRUE);
 			StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
@@ -92,8 +93,14 @@ void Option::Update() {
 		}
 	}
 
-	//戻る
-	if ((selectmenu == 2) && (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+
+	//入力方式の切り替え
+	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_BACK) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+		input_mode = !input_mode;
+	}
+
+	//戻る(戻るメニューにカーソルを合わせなくても)
+	if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_A : XINPUT_BUTTON_B)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
 		ChangeOptionFlg();
 	}
 
@@ -131,9 +138,33 @@ void Option::Draw() {
 
 	DrawStringToHandle(548, 540, "戻る", selectmenu == 2 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 
+	//入力方式の切り替え
+
+	//BACKボタン
+	const int start_x = 220;
+	const int start_y = 300;
+
+	DrawBoxAA(start_x, start_y, start_x + 70, start_y + 30, 0xFFFFFF, TRUE, 1.0F);
+	DrawCircleAA(start_x + 5, start_y + 14.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//左端
+	DrawCircleAA(start_x + 65, start_y + 14.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//右端
+	DrawStringToHandle(start_x + 2, start_y + 3, "BACK", BACK_COLOR, buttonguid_font, 0xFFFFFF);
+
+	DrawStringToHandle(100, 300, "入力方式", 0xEB8F63, buttonguid_font, 0xFFFFFF);
+	DrawCircleAA(107, 362, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(100, 350, "A", A_COLOR, buttonguid_font, 0xFFFFFF);
+	DrawStringToHandle(130, 350, Option::GetInputMode() ? "戻る" : "決定", B_COLOR, buttonguid_font, 0xFFFFFF);
+	DrawCircleAA(107, 402, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(100, 390, "B", B_COLOR, buttonguid_font, 0xFFFFFF);
+	DrawStringToHandle(130, 390, Option::GetInputMode() ? "決定" : "戻る", B_COLOR, buttonguid_font, 0xFFFFFF);
+
+
 
 	//ガイド表示
-	DrawStringToHandle(500, 668, "ミュート／ミュート解除", 0xFFA15C, buttonguid_font, 0x000000);
-	DrawCircleAA(480, 680, 15, 20, 0xFFFFFF, 1);
-	DrawStringToHandle(473, 668, "A", 0xEB7415, buttonguid_font, 0xFFFFFF);
+	DrawStringToHandle(400, 668, "ミュート／ミュート解除", 0xFFA15C, buttonguid_font, 0x000000);
+	DrawCircleAA(380, 680, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(373, 668, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
+	
+	DrawStringToHandle(780, 668, "戻る", 0xFFA15C, buttonguid_font, 0x000000);
+	DrawCircleAA(760, 680, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(753, 668, Option::GetInputMode() ? "A" : "B", Option::GetInputMode() ? A_COLOR : B_COLOR, buttonguid_font, 0xFFFFFF);
 }

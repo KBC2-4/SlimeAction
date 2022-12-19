@@ -12,10 +12,21 @@ DRAW_RANKING::DRAW_RANKING()
 		best_time[i] = RANKING::GetBestTime(i);
 	}
 
+	title_font = CreateFontToHandle("メイリオ", 60, 1, DX_FONTTYPE_ANTIALIASING_8X8);
+	time_font = LoadFontDataToHandle("Resource/Fonts/TimeAttack_BestTime.dft", 0);
+
 	if ((image = (LoadGraph("Resource/Images/Result/Best_time_Image.png"))) == -1)
 	{
 		throw "Resource/Images/Result/Best_time_Image.png";
 	}
+}
+
+DRAW_RANKING::~DRAW_RANKING() {
+
+	DeleteFontToHandle(title_font);
+	DeleteFontToHandle(time_font);
+	DeleteGraph(image);
+
 }
 
 AbstractScene* DRAW_RANKING::Update()
@@ -23,7 +34,7 @@ AbstractScene* DRAW_RANKING::Update()
 
 	++wait_time;
 
-	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
+	if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
 	{
 		return new Title();
 	}
@@ -34,29 +45,30 @@ AbstractScene* DRAW_RANKING::Update()
 void DRAW_RANKING::Draw() const
 {
 	DrawBox(0, 0, 1280, 720, 0xffffff, TRUE);
-	SetFontSize(140);
 	DrawRotaGraph(640, 300, 1, 0, image, TRUE);
 
-	SetFontSize(64);
+
 	for (int i = 0; i < 3; i++)
 	{
-		DrawFormatString(300, 300 + (75 * i), 0x000000, "%dステージ :", i+1);
+		DrawFormatStringToHandle(300, 300 + (75 * i), 0xEB7415, title_font,  "%dステージ :", i+1);
 		if (best_time[i] != -1)
 		{
 			if (best_time[i] / 1000 >= 60)
 			{
-				DrawFormatString(600, 300 + (75 * i), 0x000000, "%4d分%2d.%.3d秒", (best_time[i] / 1000) / 60, (best_time[i] / 1000) % 60, best_time[i] % 1000);
+				DrawFormatStringToHandle(600, 305 + (75 * i), 0xEB7415, time_font, "%4d分%2d.%.3d", (best_time[i] / 1000) / 60, (best_time[i] / 1000) % 60, best_time[i] % 1000);
 			}
 			else 
 			{
-				DrawFormatString(695, 300 + (75 * i), 0x000000, "%5d.%.3d秒", best_time[i] / 1000, best_time[i] % 1000);
+				DrawFormatStringToHandle(695, 305 + (75 * i), 0xEB7415, time_font, "%5d.%.3d", best_time[i] / 1000, best_time[i] % 1000);
 			}
 		}
 		
 	}
 	if (wait_time % 120 < 60)
 	{
-		DrawString(300, 600, "Bボタンでタイトルに戻る", 0x000000);
+		DrawCircleAA(413.0f, 630.0f, 30, 28, 0x000000, 1);
+		DrawStringToHandle(395, 602, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, title_font);
+		DrawStringToHandle(450, 600, "でタイトルに戻る", 0x000000,title_font);
 	}
 	SetFontSize(-1);
 }

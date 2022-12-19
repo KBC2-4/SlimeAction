@@ -38,6 +38,9 @@ PAUSE::~PAUSE() {
 
 int PAUSE::Update(void) {
 
+	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+
 	if (option->GetOptionFlg() == true) {
 		option->Update();
 	}
@@ -47,7 +50,7 @@ int PAUSE::Update(void) {
 		if (PAD_INPUT::GetPadThumbLY() > 20000 && input_margin > 20) { selectmenu = (selectmenu + 3) % 4;  input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
 		if (PAD_INPUT::GetPadThumbLY() < -20000 && input_margin > 20) { selectmenu = (selectmenu + 1) % 4; input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE); StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1); }
 
-		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+		if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
 			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
 			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
 			if (selectmenu == 0 || selectmenu == 1) { pause_flg = !pause_flg; }
@@ -56,7 +59,7 @@ int PAUSE::Update(void) {
 		}
 
 		//Aボタンでもポーズを戻す
-		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+		if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_A : XINPUT_BUTTON_B)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
 			pause_flg = !pause_flg;
 		}
 	}
