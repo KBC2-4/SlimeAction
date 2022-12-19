@@ -151,7 +151,7 @@ void STAGE_SELECT::Draw() const
 
 
 	//ステージの描画
-	element->Draw(stage);
+	element->Draw(stage,player);
 	stage->Draw(element);
 
 	//if (effect_timer[0] < 100) {
