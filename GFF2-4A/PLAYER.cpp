@@ -709,7 +709,6 @@ void PLAYER::HitBlock(ELEMENT* element, STAGE* stage) {
 	}
 	float diff_y = fabsf(player_y - old_player_y);
 	if (fmodf(player_y, MAP_CEllSIZE / 2) <= diff_y) {
-		bool is_manhole = false;
 		if (stage->HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
 			!stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
 			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
@@ -717,23 +716,41 @@ void PLAYER::HitBlock(ELEMENT* element, STAGE* stage) {
 		}
 		if (stage->HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
 			!stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
-			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) && !is_manhole) {
+			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE))) {
 			is_ground = true;
-		}
-		int block_type_center = stage->GetMapData((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		int block_type_top = stage->GetMapData((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		int block_type_bottom = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		if (block_type_center == 98 || block_type_top == 98 || block_type_bottom == 98) {
-			float diff = fabsf((float)((int)(player_x / MAP_CEllSIZE) * MAP_CEllSIZE) - player_left);
-			if (diff < player_speed) {
-				is_manhole = true;
-				is_ground = false;
-			}
 		}
 	}
 
-	if (!is_ground && !hit_ceil && element->HitLift(this)) {
-		is_ground = true;
+	//マンホールの判定
+	int block_type_center = stage->GetMapData((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+	int block_type_top = stage->GetMapData((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+	int block_type_bottom = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+	if (block_type_center == 98 || block_type_top == 98 || block_type_bottom == 98) {
+		float diff = fabsf((float)((int)(player_x / MAP_CEllSIZE) * MAP_CEllSIZE) - player_left);
+		if (diff < player_speed) {
+			is_ground = false;
+		}
+	}
+
+	//動く床の当たり判定
+	if (!hit_ceil) {
+		std::vector<ELEMENT::ELEMENT_DATA> lift = element->GetLift();
+		int hit_lift_num = -1;
+		for (int i = 0; i < lift.size(); i++) {
+			if (player_right >= lift[i].x && player_left <= lift[i].x + LIFT_SIZE
+				&& player_y >= lift[i].y - MAP_CEllSIZE / 2 && player_y <= lift[i].y && player_state != PLAYER_MOVE_STATE::JUMP) {
+
+				if (((lift[i].type == 1 && !(lift[i].lift_vector_y > 0 && is_ground)) || (lift[i].type == 2 && !is_ground)) &&
+					(hit_lift_num == -1 || lift[hit_lift_num].y > lift[i].y)) {
+					hit_lift_num = i;
+				}
+			}
+		}
+		if (hit_lift_num >= 0) {
+			player_y = (lift[hit_lift_num].y - MAP_CEllSIZE / 2 + lift[hit_lift_num].lift_vector_y * 4);
+			player_x += lift[hit_lift_num].lift_vector_x * 4;
+			is_ground = true;
+		}
 	}
 
 	if (is_ground) {
