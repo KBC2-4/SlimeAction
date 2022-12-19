@@ -47,7 +47,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 				data.type = 1;
 				data.flg = false;
 				data.animtimer = 0;
-				
+
 				//ボタンとドアの連携番号を格納
 				while (button_num_1 < button_info.size()) {
 					if (button_info.at(button_num_1).at(0) == i && button_info.at(button_num_1).at(1) == j) {
@@ -77,7 +77,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 					button_num_2++;
 
 				}
-				
+
 				button.push_back(data);
 				break;
 
@@ -108,7 +108,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 					}
 					door_num++;
 				}
-				
+
 				door.push_back(data);
 				break;
 
@@ -119,6 +119,7 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 				data.type = 1;
 				data.flg = false;
 				data.animtimer = 0;
+				data.lift_wait_time = 0;	//暗闇エフェクト
 				manhole.push_back(data);
 				break;
 
@@ -282,12 +283,13 @@ ELEMENT::~ELEMENT() {
 	DeleteSoundMem(manhole_opened_se);
 	hook.clear();
 	hook.shrink_to_fit();
+	underground_effects = 0;
 }
 
 /// <summary>
 /// 描画
 /// </summary>
-void ELEMENT::Draw(STAGE* stage) {
+void ELEMENT::Draw(STAGE* stage, PLAYER* player) {
 	//DrawFormatString(100, 50, 0xffffff, "%2f %2f", scroll_x, scroll_y);
 	//DrawFormatString(100,50,0xffffff,"map_data:%d",map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE]);
 	//static int animtimer = 0;
@@ -411,7 +413,7 @@ void ELEMENT::Draw(STAGE* stage) {
 
 		if (stage_name == "Stage02") { DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[7], TRUE); }
 		else if (stage_name == "Stage03") { DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[11], TRUE); }
-		else{ DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[3], TRUE); }
+		else { DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[3], TRUE); }
 
 		switch (acidrain_puddles[i].type)
 		{
@@ -445,6 +447,14 @@ void ELEMENT::Draw(STAGE* stage) {
 			break;
 		}
 	}
+
+
+	//地下エフェクト
+	if (underground_effects != 0) {
+		DrawCircleAA(player->GetPlayerX(), player->GetPlayerY(), 1200.0F - underground_effects * 5, 32, 0x000000, FALSE, 1200.0F - underground_effects * 4);
+
+	}
+
 }
 
 /// <summary>
@@ -683,6 +693,13 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 					stage->SetMapData(y, x, 98);
 				}
 			}
+
+			else if ((manhole[i].flg == true) && (player_map_x >= manhole[i].x) && (player_map_x <= manhole[i].x + MAP_CEllSIZE) && (player_map_y > manhole[i].y + MAP_CEllSIZE)) {
+				if (underground_effects < 120) {
+					underground_effects += 2;
+				}
+			}
+
 		}
 
 		//中間地点
@@ -722,10 +739,15 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 						player->SetPlayerY((player->GetPlayerY() - stage->GetScrollY()) - speed);
 					}
 
+					if (underground_effects > 0) {
+						underground_effects -= 5;
+					}
+
 					if (player->GetPlayerY() + -stage->GetScrollY() < manhole[i].y) {
 						if (!CheckSoundMem(manhole_opened_se)) { PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE); }
 						//一時的な当たり判定をつける。
 						stage->SetTemporary_Hit(69);
+
 						manhole[i].flg = false;
 					}
 				}

@@ -406,7 +406,7 @@ void GAMEMAIN::Draw() const
 
 	//ステージの描画
 	stage->Draw(element);
-	element->Draw(stage);
+	element->Draw(stage,player);
 
 
 

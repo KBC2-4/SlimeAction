@@ -91,6 +91,6 @@ void PAUSE::Draw(int pause_graph) {
 		//ÉKÉCÉhï\é¶
 		DrawStringToHandle(580, 668, "ÉQÅ[ÉÄÇ÷ñﬂÇÈ", 0xFFA15C, buttonguid_font, 0x000000);
 		DrawCircleAA(560, 680, 15, 20, 0xFFFFFF, 1);
-		DrawStringToHandle(553, 668, "A", 0xEB7415, buttonguid_font, 0xFFFFFF);
+		DrawStringToHandle(553, 668, Option::GetInputMode() ? "A" : "B", Option::GetInputMode() ? A_COLOR : B_COLOR, buttonguid_font, 0xFFFFFF);
 	}
 }

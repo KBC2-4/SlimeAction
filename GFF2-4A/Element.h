@@ -43,6 +43,7 @@ private:
 	bool hook_flg; //近くにあるフックにガイド表示させる為のフラグ。
 	int door_close_se, press_the_button_se, switch_se, walk_puddle_se, manhole_opened_se;
 	int acidrain_puddles_anitimer;		//酸性雨の水たまりの切り替えアニメーション用タイマー
+	int underground_effects;			//地下エフェクト用タイマー
 
 public:
 	/// <summary>
@@ -56,7 +57,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(STAGE* stage);
+	void Draw(STAGE* stage, PLAYER* player);
 	/// <summary>
 	/// 更新
 	/// </summary>
