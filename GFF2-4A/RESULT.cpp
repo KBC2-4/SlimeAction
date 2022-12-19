@@ -8,6 +8,9 @@
 RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 {
 
+
+	time_font = LoadFontDataToHandle("Resource/Fonts/TimeAttack.dft",2);
+
 	if ((Result_Image = LoadGraph("Resource/Images/Result/GameClear.png")) == -1) {
 		throw "Resource/Images/Enemy/mi_hasya_kao.png";
 	}
@@ -77,8 +80,8 @@ RESULT::~RESULT()
 {
 
 	DeleteGraph(Result_Image);
+	DeleteFontToHandle(time_font);
 	DeleteFontToHandle(Result_font);
-	RemoveFontResourceEx(TEXT("./Resource/Fonts/TimeAttack.otf"), FR_PRIVATE, NULL);
 	DeleteSoundMem(count_se);
 	DeleteSoundMem(ok_se);
 	for (int i = 0; i < 4; i++)DeleteSoundMem(good_se[i]);
@@ -106,7 +109,7 @@ AbstractScene* RESULT::Update()
 		guide_timer = 0;
 	}
 
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B && PAD_INPUT::GetPadState() == PAD_STATE::ON)
+	if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A) && PAD_INPUT::GetPadState() == PAD_STATE::ON)
 	{
 
 		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE); return new STAGE_SELECT();
@@ -115,7 +118,7 @@ AbstractScene* RESULT::Update()
 	return this;
 }
 
-const int GetDrawCenterX(int screenX, const char* string, int font_handle)
+ int RESULT::GetDrawCenterX(int screenX, const char* string, int font_handle)const
 {
 
 	const int w = screenX / 2 - GetDrawStringWidthToHandle(string, strlen(string), font_handle) / 2;
@@ -147,7 +150,7 @@ void RESULT::Draw() const {
 
 		//クリアタイム
 		DrawStringToHandle(330, 300, "クリアタイム", 0x1aff00, Result_font, 0x000000);
-		DrawStringToHandle(340, 400, dis_clear_time, 0x1aff00, Result_font, 0x000000);
+		DrawStringToHandle(GetDrawCenterX(1280,dis_clear_time,time_font), 400, dis_clear_time, 0x1aff00, time_font, 0xFFFFFF);
 
 		DrawFormatStringToHandle(30, 540, 0x56F590, Result_font, "%2d秒後にリスタートします", timer / 60);
 	}
@@ -156,7 +159,7 @@ void RESULT::Draw() const {
 	{
 
 		DrawCircleAA(530.0f, 668.0f, 22, 20, 0xFFFFFF, 1);
-		DrawExtendStringToHandle(518, 650, 0.4f, 0.4f, "B", 0xEB7415, Result_font, 0xFFFFFF);
+		DrawExtendStringToHandle(518, 650, 0.4f, 0.4f, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, Result_font, 0xFFFFFF);
 		DrawExtendStringToHandle(560, 650, 0.4f, 0.4f, "でスキップ", 0x76F567, Result_font, 0xFFFFFF);
 	}
 }

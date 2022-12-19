@@ -91,7 +91,7 @@ AbstractScene* Title::Update()
 			StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
 		}
 
-		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
+		if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
 		{
 			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
 			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
@@ -157,7 +157,8 @@ void Title::Draw()const
 		if (timer % 120 < 60)
 		{
 			DrawCircleAA(579.0f, 324.0f, 15, 20, 0xFFFFFF, 1);
-			DrawExtendStringToHandle(572, 310, 0.4f, 0.4f, "B", 0xEB7415, menu_font, 0xFFFFFF);
+
+			DrawExtendStringToHandle(572, 310, 0.4f, 0.4f, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, menu_font, 0xFFFFFF);
 			DrawExtendStringToHandle(600, 310, 0.4f, 0.4f, "‚ÅŒˆ’è", 0xEBA05E, menu_font, 0xFFFFFF);
 		}
 	}

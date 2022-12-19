@@ -64,7 +64,7 @@ AbstractScene* GameOver::Update()
 
 	/*Bボタンを入力かつPadStateがONのとき、
 	SelectCountが指定されたcaseの値ならそのコンストラクタをnewする。*/
-	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
+	if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
 	{
 
 		switch (static_cast<GAMEOVER_MENU>(SelectCount))
@@ -107,7 +107,7 @@ void GameOver::Draw() const
 
 		//Bボタンを押すことを促す(表示非表示を切り替え)
 		DrawCircleAA(580.5f, 627.5f, 20, 20, 0x000000, 1);
-		DrawExtendStringToHandle(572, 610, 0.4f, 0.4f, "B", 0x20ff07, Button_font, 0x000000);
+		DrawExtendStringToHandle(572, 610, 0.4f, 0.4f, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, Button_font, 0x000000);
 		DrawExtendStringToHandle(600, 610, 0.4f, 0.4f, "で決定", 0x95ff89, Button_font, 0x000000);
 	}
 }

@@ -14,6 +14,9 @@
 
 #define _DEBUG
 
+/// <summary>
+/// コンストラクタ
+/// </summary>
 STAGE::STAGE(const char* stage_name) {
 	//**map_data = 0;
 	*block_image1 = 0;
@@ -51,6 +54,7 @@ STAGE::STAGE(const char* stage_name) {
 	halfwaypoint = false;
 	halfway_timer = 0;
 	spawn_point = { 0,0 };
+	this->stage_name = stage_name;
 
 
 	for (int i = 0; i < map_data.size(); i++) {
@@ -73,13 +77,17 @@ STAGE::STAGE(const char* stage_name) {
 
 	ChangeVolumeSoundMem(Option::GetSEVolume(), halfwaypoint_se);
 }
-
+/// <summary>
+/// デストラクタ
+/// </summary>
 STAGE::~STAGE() {
 	DeleteGraph(*block_image1);
 	DeleteSoundMem(halfwaypoint_se);
 }
 
-
+/// <summary>
+/// ステージの更新
+/// </summary>
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
 
 	//デバッグ
@@ -90,7 +98,9 @@ void STAGE::Update(PLAYER* player, ELEMENT* element) {
 	HalfwayPoint(player);
 	CameraWork(player, element);
 }
-
+/// <summary>
+/// ステージの描画
+/// </summary>
 void STAGE::Draw(ELEMENT* element)const {
 	//デバッグ
 	//DrawFormatString(200, 100, 0xffffff, "oldx:%f", player_x_old);
@@ -150,6 +160,103 @@ void STAGE::Draw(ELEMENT* element)const {
 		else { DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
 	}
 
+}
+
+/// <summary>
+/// マップデータの読み込み
+/// </summary>
+void STAGE::LoadMapData(const char* stage_name) {
+
+	char buf[37];
+	sprintf_s(buf, sizeof(buf), "Resource/Map_Data/%s.csv", stage_name);
+	//std::ifstream ifs(buf);
+
+	//map_data.clear();
+	//map_data.shrink_to_fit();
+	////std::string str = "";
+
+	//int i = 0, j = 0;
+
+	//while (std::getline(ifs, str))
+	//{
+	//	std::string tmp = "";
+	//	std::istringstream stream(str);
+	//	map_data.push_back(std::vector<int>());
+
+	//	while (std::getline(stream,tmp,','))
+	//	{
+	//		//map_data.at(i).at(j) = std::stoi(tmp);
+	//		map_data[i].push_back(std::stoi(tmp));
+	//		j++;
+	//	}
+	//	j = 0;
+	//	i++;
+	//}
+
+
+
+	//アーカイブ対応版
+
+
+	int FileHandle;
+	if ((FileHandle = FileRead_open(buf)) == 0) {
+		exit(1);
+	}
+
+	char str[642];		//一行の長さ
+	char* context;
+	int i = 0, j = 0;
+
+	while (FileRead_gets(str, sizeof(str), FileHandle) != -1) {
+
+		char* tmp = strtok_s(str, ",", &context);
+
+		map_data.push_back(std::vector<int>());
+		while (tmp != NULL) {
+			//map_data[i][j] = atoi(tmp);
+
+			std::string info[2];
+			std::istringstream streamtmp(tmp);
+			int k = 0;
+			while (std::getline(streamtmp, info[k], ':')) {
+				k++;
+			}
+
+			map_data[i].push_back(std::stoi(tmp));
+
+			//ボタンとドアの連携番号を格納
+			if ((map_data[i][j] == 61 || map_data[i][j] == 62) && info[1] != "") {
+				button_info.push_back(std::vector<int>());
+				button_info.at(button_info.size() - 1).push_back(i);
+				button_info.at(button_info.size() - 1).push_back(j);
+				button_info.at(button_info.size() - 1).push_back(std::stoi(info[1]));
+			}
+			if (map_data[i][j] == 66 && info[1] != "") {
+				door_info.push_back(std::vector<int>());
+				door_info.at(door_info.size() - 1).push_back(i);
+				door_info.at(door_info.size() - 1).push_back(j);
+				door_info.at(door_info.size() - 1).push_back(std::stoi(info[1]));
+
+			}
+
+			tmp = strtok_s(NULL, ",", &context);
+			j++;
+		}
+		j = 0;
+		i++;
+	}
+
+	FileRead_close(FileHandle);
+
+}
+
+/// <summary>
+/// マップ配列のGetter
+/// </summary>
+int STAGE::GetMapData(int y, int x) {
+	if (y < 0 || y >= map_data.size()) { return -999; }
+	if (x < 0 || x >= map_data[y].size()) { return -999; }
+	return map_data.at(y).at(x);
 }
 
 /// <summary>
@@ -245,18 +352,8 @@ else if (player->GetPlayerY() < 640) {
 	else player_vector_y = 0;
 }
 
-
-
-void STAGE::HookProcess() {
-
-}
-
-void STAGE::PuddleProcess() {
-
-}
-
 /// <summary>
-/// ステージのスクロール
+/// 画面スクロール座標XのSetter
 /// </summary>
 bool STAGE::SetScrollPos(int move_x) {
 	scroll_x -= 5 * move_x;
@@ -267,18 +364,9 @@ bool STAGE::SetScrollPos(int move_x) {
 	return false;
 }
 
-int STAGE::GetMapData(int y, int x) {
-	if (y < 0 || y >= map_data.size())
-		return 0;
-	if (x < 0 || x >= map_data[y].size())
-		return 0;
-	return map_data.at(y).at(x);
-}
-
 /// <summary>
 /// プレイヤーとブロックの当たり判定
 /// </summary>
-
 bool STAGE::HitMapDat(int y, int x) {
 #ifdef _DEBUG
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_Z))return false;		//デバッグ用
@@ -362,97 +450,9 @@ bool STAGE::HitThrowSlime(int y, int x) {
 	return true;
 }
 
-/// <summary>
-/// マップデータの読み込み
-/// </summary>
-void STAGE::LoadMapData(const char* stage_name) {
-
-	char buf[37];
-	sprintf_s(buf, sizeof(buf), "Resource/Map_Data/%s.csv", stage_name);
-	//std::ifstream ifs(buf);
-
-	//map_data.clear();
-	//map_data.shrink_to_fit();
-	////std::string str = "";
-
-	//int i = 0, j = 0;
-
-	//while (std::getline(ifs, str))
-	//{
-	//	std::string tmp = "";
-	//	std::istringstream stream(str);
-	//	map_data.push_back(std::vector<int>());
-
-	//	while (std::getline(stream,tmp,','))
-	//	{
-	//		//map_data.at(i).at(j) = std::stoi(tmp);
-	//		map_data[i].push_back(std::stoi(tmp));
-	//		j++;
-	//	}
-	//	j = 0;
-	//	i++;
-	//}
-
-
-
-	//アーカイブ対応版
-
-
-	int FileHandle;
-	if ((FileHandle = FileRead_open(buf)) == 0) {
-		exit(1);
-	}
-
-	char str[642];		//一行の長さ
-	char* context;
-	int i = 0, j = 0;
-
-	while (FileRead_gets(str, sizeof(str), FileHandle) != -1) {
-
-		char* tmp = strtok_s(str, ",", &context);
-		
-		map_data.push_back(std::vector<int>());
-		while (tmp != NULL) {
-			//map_data[i][j] = atoi(tmp);
-
-			std::string info[2];
-			std::istringstream streamtmp(tmp);
-			int k = 0;
-			while (std::getline(streamtmp, info[k], ':')) {
-				k++;
-			}
-
-			map_data[i].push_back(std::stoi(tmp));
-
-			//ボタンとドアの連携番号を格納
-			if ((map_data[i][j] == 61 || map_data[i][j] == 62) && info[1] != "") {
-				button_info.push_back(std::vector<int>());
-				button_info.at(button_info.size() - 1).push_back(i);
-				button_info.at(button_info.size() - 1).push_back(j);
-				button_info.at(button_info.size() - 1).push_back(std::stoi(info[1]));
-			}
-			if (map_data[i][j] == 66 && info[1] != "") {
-				door_info.push_back(std::vector<int>());
-				door_info.at(door_info.size() - 1).push_back(i);
-				door_info.at(door_info.size() - 1).push_back(j);
-				door_info.at(door_info.size() - 1).push_back(std::stoi(info[1]));
-
-			}
-
-			tmp = strtok_s(NULL, ",", &context);
-			j++;
-		}
-		j = 0;
-		i++;
-	}
-
-	FileRead_close(FileHandle);
-
-}
-
 
 /// <summary>
-/// ステージクリア時
+/// ステージクリア判定処理
 /// </summary>
 void STAGE::StageClear(PLAYER* player) {
 
@@ -475,13 +475,14 @@ void STAGE::StageClear(PLAYER* player) {
 	}
 
 }
-
+/// <summary>
+/// 中間地点判定処理
+/// </summary>
 void STAGE::HalfwayPoint(PLAYER* player) {
 	int player_map_x = roundf(player->GetPlayerX() - STAGE::GetScrollX());
 	int player_map_y = floorf(player->GetPlayerY());
 	if ((player_map_x >= halfwaypointbox.x - MAP_CEllSIZE / 2) && (player_map_x <= halfwaypointbox.x + MAP_CEllSIZE / 2)/* && (player_map_y >= halfwaypointbox.y - MAP_CEllSIZE) && (player_map_y <= halfwaypointbox.y + MAP_CEllSIZE)*/) {
-		//デバッグ
-		//printfDx("aaa");
+
 		if (halfwaypoint == false) {
 			PlaySoundMem(halfwaypoint_se, DX_PLAYTYPE_BACK, TRUE);
 

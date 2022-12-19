@@ -38,64 +38,126 @@ protected:
 	std::vector<std::vector<int>> button_info;
 	float scroll_x, scroll_y;	//マップスクロール量
 	int temporary_hit;		//一時的な当たり判定
+	const char* stage_name;		//ステージ名
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	STAGE(const char* stage_name = "StageSelect");
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~STAGE();
-	//マップ情報の更新
+	/// <summary>
+	/// ステージの更新
+	/// </summary>
 	void Update(PLAYER* player, ELEMENT* element);
-	//ステージの描画
+	/// <summary>
+	/// ステージの描画
+	/// </summary>
 	virtual void Draw(ELEMENT* element) const;
-	//ステージの初期化
-	//void InitStage();
-
-	//マップサイズのGeter
-	POINT GetMapSize(void) { POINT mapsize{ map_data.size(),map_data.at(0).size(), };  return mapsize; }
-
-	//マップ画像番号Geter
+	/// <summary>
+	/// マップ画像番号Geter
+	/// </summary>
+	/// <returns>int型：画像整理番号</returns>	
 	int GetMapImage(int num) { return block_image1[num]; }
-
-	//カメラワーク
-	void CameraWork(PLAYER* player, ELEMENT* element);
-	
-	//水たまりの処理
-	void PuddleProcess();
-	//フックの処理
-	void HookProcess();
-	//////マップ配列の値を取得
-	int GetMapData(int y, int x);
-	//マップ配列の値を設定
-	void SetMapData(int y, int x, int mapchip_num) { map_data[y][x] = mapchip_num; }
-	//マップの当たり判定 
-	bool HitMapDat(int y, int x); 
-	//スライムのかけらの当たり判定
-	bool HitThrowSlime(int y, int x);
-	//画面スクロール座標Xをセット
-	bool SetScrollPos(int move_x);
-	//画面スクロール座標Xの取得
-	float GetScrollX() { return scroll_x; };	
-	//画面スクロール座標Yの取得
-	float GetScrollY() { return scroll_y; }
-	//マップデータの読み込み
+	/// <summary>
+	/// マップデータの読み込み
+	/// </summary>
+	/// <param name="stage_name">ステージのインスタンス</param>
 	void LoadMapData(const char* stage_name);
+	/// <summary>
+	/// マップサイズのGeter
+	/// </summary>
+	/// <returns>構造体型：マップサイズ</returns>	
+	POINT GetMapSize(void) { POINT mapsize{ map_data.size(),map_data.at(0).size(), };  return mapsize; }
+	/// <summary>
+	/// マップ配列のGetter
+	/// </summary>
+	/// <param name="y">マップデータの横要素数</param>
+	/// <param name="x">マップデータの縦要素数</param>
+	/// <returns>int型：マップ配列番号</returns>	
+	int GetMapData(int y, int x);
+	/// <summary>
+	/// マップ配列の値のSetter
+	/// </summary>
+	/// <param name="y">マップデータの横要素数</param>
+	/// <param name="x">マップデータの縦要素数</param>
+	/// <param name="mapchip_num">マップ配列番号</param>
+	void SetMapData(int y, int x, int mapchip_num) { map_data[y][x] = mapchip_num; }
 
-	void StageClear(PLAYER* player);
 
-	bool GetClearFlg(void) { return clearflg; };
-
+	/// <summary>
+	/// カメラワーク
+	/// </summary>
+	/// 	/// <param name="player">プレイヤーのインスタンス</param>
+	/// <param name="element">エレメントのインスタンス</param>
+	void CameraWork(PLAYER* player, ELEMENT* element);
+	/// <summary>
+	/// スクロールXのSetter
+	/// </summary>
 	void SetScrollX(float scroll_x) { if (scroll_x < 0) { this->scroll_x = scroll_x; } }
+	/// <summary>
+	/// スクロールYのSetter
+	/// </summary>
 	void SetScrollY(float scroll_y) { if (scroll_y < 0) { this->scroll_y = scroll_y; } }
+	/// <summary>
+	/// 画面スクロール座標XのSetter
+	/// </summary>
+	bool SetScrollPos(int move_x);
+	/// <summary>
+	/// 画面スクロール座標XのGetter
+	/// </summary>
+	float GetScrollX() { return scroll_x; };
+	/// <summary>
+	/// 画面スクロール座標YのGetter
+	/// </summary>
+	float GetScrollY() { return scroll_y; }
 
-	void HalfwayPoint(PLAYER* player);
-	//中間地点座標のGeter
-	POINT GetHalfwayPoint(void) {return POINT(halfwaypointbox); }
 
-	//中間地点通過したか判定フラグのGeter
-	bool GetHalfwayPointFlg(void) { return halfwaypoint; }
+	/// <summary>
+	/// マップの当たり判定
+	/// </summary>
+	/// <param name="y">マップデータの横要素数</param>
+	/// <param name="x">マップデータの縦要素数</param>
+	bool HitMapDat(int y, int x);
+	/// <summary>
+	/// スライムのかけらの当たり判定
+	/// </summary>
+ 	/// <param name="y">マップデータの横要素数</param>
+	/// <param name="x">マップデータの縦要素数</param>
+	bool HitThrowSlime(int y, int x);
 
-	//スポーン地点のGeter
+	/// <summary>
+	/// スポーン地点座標のGetter
+	/// </summary>
+	/// <returns>構造体型：スポーン地点座標</returns>	
 	POINT GetSpawnPoint(void) { return spawn_point; }
-
-	//一時的な当たり判定のSetter
+	/// <summary>
+	/// ステージクリア判定処理
+	/// </summary>
+	void StageClear(PLAYER* player);
+	/// <summary>
+	/// クリアしたかのフラグのGetter
+	/// </summary>
+	bool GetClearFlg(void) { return clearflg; };
+	/// <summary>
+	/// 中間地点判定処理
+	/// </summary>
+	void HalfwayPoint(PLAYER* player);
+	/// <summary>
+	/// 中間地点座標のGetter
+	/// </summary>
+	/// <returns>構造体型：中間地点座標</returns>	
+	POINT GetHalfwayPoint(void) {return POINT(halfwaypointbox); }
+	/// <summary>
+	/// 中間地点通過したか判定フラグのGetter
+	/// </summary>
+	bool GetHalfwayPointFlg(void) { return halfwaypoint; }
+	/// <summary>
+	/// 一時的な当たり判定のSetter
+	/// </summary>
+	/// <param name="mapdata">マップ配列番号</param>
 	void SetTemporary_Hit(int mapdata) { temporary_hit = mapdata; }
 };
 

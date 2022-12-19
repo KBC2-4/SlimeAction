@@ -45,24 +45,75 @@ private:
 	int acidrain_puddles_anitimer;		//酸性雨の水たまりの切り替えアニメーション用タイマー
 
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	ELEMENT(const char* stage_name = "StageSelect");
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~ELEMENT();
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw(STAGE* stage);
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update(PLAYER* player,STAGE*stage);
-	void Button(PLAYER* player);		//3種類のボタン
-	void Door(STAGE*stage);						//ドアの処理
-	void Lift(PLAYER* player, STAGE* stage);			//動く床の処理
-	bool HitLift(PLAYER* player);						//動く床の当たり判定
-	void Manhole(PLAYER* player, STAGE* stage);		//マンホールの処理
-	void Acidrain_puddles(PLAYER* player);		//酸性雨の水たまりの処理
-	void Hook_Distance(PLAYER* player, STAGE* stage);	//フックのガイド表示用距離計算
+	/// <summary>
+	/// 3種類のボタンの処理
+	/// </summary>
+	void Button(PLAYER* player);
+	/// <summary>
+	/// ドアの処理
+	/// </summary>
+	void Door(STAGE*stage);
+	/// <summary>
+	/// 動く床の処理
+	/// </summary>
+	void Lift(PLAYER* player, STAGE* stage);
+	/// <summary>
+	/// 動く床の当たり判定
+	/// </summary>
+	bool HitLift(PLAYER* player);
+	/// <summary>
+	/// マンホールの処理
+	/// </summary>
+	void Manhole(PLAYER* player, STAGE* stage);
+	/// <summary>
+	/// 酸性雨の水たまりの処理
+	/// </summary>
+	void Acidrain_puddles(PLAYER* player);
+	/// <summary>
+	/// フックのガイド表示用距離計算
+	/// </summary>
+	void Hook_Distance(PLAYER* player, STAGE* stage);
+
+
+	/// <summary>
+	/// フック構造体のGetter
+	/// </summary>
 	std::vector<ELEMENT_DATA> GetHook() { return hook; }
+	/// <summary>
+	/// ボタン構造体のGetter
+	/// </summary>
 	std::vector<ELEMENT_DATA>GetButton() { return button; }
+	/// <summary>
+	/// ドア構造体のGetter
+	/// </summary>
 	std::vector<ELEMENT_DATA>GetDoor() { return door; }
+	/// <summary>
+	/// 動く床構造体のGetter
+	/// </summary>
 	std::vector<ELEMENT_DATA>GetLift() { return lift; }
+	/// <summary>
+	/// マンホール構造体のGetter
+	/// </summary>
 	std::vector<ELEMENT_DATA>GetManhole() { return manhole; }
+	/// <summary>
+	/// 酸性雨の水たまり構造体のGetter
+	/// </summary>
 	std::vector<ELEMENT_DATA>GetAcidrain_puddles() { return acidrain_puddles; }
-	//float GetLift_SpeedX() { return lift_speedX; }
-	//float GetLift_SpeedY() { return lift_speedY; }
 };
 

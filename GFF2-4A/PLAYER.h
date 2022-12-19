@@ -177,13 +177,37 @@ public:
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
 	bool IsDeath() { return is_death; }
+	/// <summary>
+	/// プレイヤーのマップ内X座標のGetter
+	/// </summary>
+	/// <returns>float型：プレイヤーのマップ内X座標</returns>	
 	float GetPlayerX() { return player_x + stage->GetScrollX(); }
+	/// <summary>
+	/// プレイヤーのマップ内Y座標のGetter
+	/// </summary>
+	/// <returns>float型：プレイヤーのマップ内Y座標</returns>	
 	float GetPlayerY() { return player_y + stage->GetScrollY(); }
+	/// <summary>
+	/// プレイヤーのマップ内旧X座標のGetter
+	/// </summary>
+	/// <returns>float型：プレイヤーのマップ内旧X座標</returns>	
 	float GetOldPlayerX() { return old_player_x + stage->GetScrollX(); }
+	/// <summary>
+	/// プレイヤーのマップ内旧Y座標のGetter
+	/// </summary>
+	/// <returns>float型：プレイヤーのマップ内旧Y座標</returns>	
 	float GetOldPlayerY() { return old_player_y + stage->GetScrollY(); }
-
+	/// <summary>
+	/// プレイヤーのマップ内X座標のSetter
+	/// </summary>
 	void SetPlayerX(float x) { player_x = x - stage->GetScrollX(); }
+	/// <summary>
+	/// プレイヤーの画面内Y座標のSetter
+	/// </summary>
 	void SetPlayerY(float y) { player_y = y; }
+	/// <summary>
+	/// プレイヤーの画面内座標のSetter
+	/// </summary>
 	void SetPlayer_Screen(POINT screen) { player_x = screen.y; player_y = screen.x; }
 
 	int GetThrowCnt() { return static_cast<int>(throw_slime.size()); }
@@ -193,15 +217,23 @@ public:
 	float GetMoveX() { return move_x; }
 
 	float GetPlayerScale() { return player_scale; }
-
+	/// <summary>
+	/// プレイヤーのジャンプ・落下速度のSetter
+	/// </summary>
+	/// <returns>-10 ～ 10</returns>
 	float GetJumpVelocity() { return jump_velocity; }
 
 	float GetPlayerSpeed() { return player_speed; }
 	float GetPlayerHookSpeed() { return static_cast<float>(speed); }
 
 	int GetMapY() { return map_y; }
-
+	/// <summary>
+	/// プレイヤーのライフのSetter
+	/// </summary>
 	void SetLife(int a);
-
+	/// <summary>
+	/// プレイヤーの動作状態のSetter
+	/// </summary>
+	/// <returns>enum class型</returns>
 	PLAYER_MOVE_STATE GetPlayerMoveState() { return player_state; }
 };

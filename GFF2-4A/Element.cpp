@@ -2,6 +2,9 @@
 #include "PLAYER.h"
 #include "Option.h"
 
+/// <summary>
+/// コンストラクタ
+/// </summary>
 ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 
 	guid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
@@ -256,6 +259,8 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 	guid_timer = 0;
 	acidrain_puddles_anitimer = 0;
 
+	hook_flg = false;
+
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume(), door_close_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), press_the_button_se);
@@ -265,6 +270,9 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 
 }
 
+/// <summary>
+/// デストラクタ
+/// </summary>
 ELEMENT::~ELEMENT() {
 	DeleteFontToHandle(guid_font);
 	DeleteSoundMem(door_close_se);
@@ -276,6 +284,9 @@ ELEMENT::~ELEMENT() {
 	hook.shrink_to_fit();
 }
 
+/// <summary>
+/// 描画
+/// </summary>
 void ELEMENT::Draw(STAGE* stage) {
 	//DrawFormatString(100, 50, 0xffffff, "%2f %2f", scroll_x, scroll_y);
 	//DrawFormatString(100,50,0xffffff,"map_data:%d",map_data[int(player_map_y) / MAP_CEllSIZE + 1][int(player_map_x) / MAP_CEllSIZE]);
@@ -293,11 +304,11 @@ void ELEMENT::Draw(STAGE* stage) {
 			if (player_state != static_cast<int>(PLAYER_MOVE_STATE::HOOK)) {
 				if (guid_timer < 50) {
 					DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 				else {
 					DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 			}
 		}
@@ -362,11 +373,11 @@ void ELEMENT::Draw(STAGE* stage) {
 				//マンホールのガイド表示
 				if (guid_timer < 50) {
 					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 				else {
 					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 			}
 		}
@@ -385,11 +396,11 @@ void ELEMENT::Draw(STAGE* stage) {
 
 			if (guid_timer < 50) {
 				DrawCircleAA(x + stage->GetScrollX(), y - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-				DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, "B", 0xEB7415, guid_font, 0xFFFFFF);
+				DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 			}
 			else {
 				DrawCircleAA(x + stage->GetScrollX(), y - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-				DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, "B", 0xFF6638, guid_font, 0xFFFFFF);
+				DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 			}
 		}
 	}
@@ -397,6 +408,11 @@ void ELEMENT::Draw(STAGE* stage) {
 
 	//酸性雨の水たまり
 	for (int i = 0; i < acidrain_puddles.size(); i++) {
+
+		if (stage_name == "Stage02") { DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[7], TRUE); }
+		else if (stage_name == "Stage03") { DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[11], TRUE); }
+		else{ DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[3], TRUE); }
+
 		switch (acidrain_puddles[i].type)
 		{
 		case 1:		//左端
@@ -431,6 +447,9 @@ void ELEMENT::Draw(STAGE* stage) {
 	}
 }
 
+/// <summary>
+/// 更新
+/// </summary>
 void ELEMENT::Update(PLAYER* player, STAGE* stage) {
 
 	ChangeVolumeSoundMem(Option::GetSEVolume(), door_close_se);
@@ -457,7 +476,7 @@ void ELEMENT::Update(PLAYER* player, STAGE* stage) {
 }
 
 /// <summary>
-/// ボタンの処理
+/// 3種類のボタンの処理
 /// </summary>
 void ELEMENT::Button(PLAYER* player) {
 
@@ -616,7 +635,7 @@ void ELEMENT::Lift(PLAYER* player, STAGE* stage) {
 }
 
 /// <summary>
-/// プレイヤーと動く床の当たり判定
+/// 動く床の当たり判定
 /// </summary>
 bool ELEMENT::HitLift(PLAYER* player) {
 	for (int i = 0; i < lift.size(); i++) {
@@ -647,7 +666,7 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 		}
 		if (manhole[i].type == 1) {
 			if ((player_map_x >= manhole[i].x) && (player_map_x <= manhole[i].x + MAP_CEllSIZE) && (player_map_y <= manhole[i].y + MAP_CEllSIZE) && (player_map_y >= manhole[i].y)) {
-				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
+				if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) {
 					stage->SetTemporary_Hit(999);
 					manhole[i].flg = true;
 				}
@@ -691,7 +710,7 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 
 			//マンホールの出口の左端から右端までのx座標かつマンホールの出口よりも下にいる場合
 			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE / 2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE / 2) && (player_map_y > manhole[i].y)) {
-				if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { manhole[i].flg = true; }
+				if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { manhole[i].flg = true; }
 
 
 				//Bボタンを押してflgがtrueになった時
@@ -716,7 +735,7 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 }
 
 /// <summary>
-/// 酸性雨の水たまり
+/// 酸性雨の水たまりの処理
 /// </summary>
 void ELEMENT::Acidrain_puddles(PLAYER* player) {
 	if (acidrain_puddles_anitimer < 10) { acidrain_puddles_anitimer++; }
@@ -739,6 +758,9 @@ void ELEMENT::Acidrain_puddles(PLAYER* player) {
 	}
 }
 
+/// <summary>
+/// フックのガイド表示用距離計算
+/// </summary>
 void ELEMENT::Hook_Distance(PLAYER* player, STAGE* stage) {
 	float min_distance = HOOK_MAX_DISTANCE + 80;
 	//フックのガイド表示用

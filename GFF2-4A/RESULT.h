@@ -4,6 +4,7 @@
 class RESULT : public AbstractScene
 {
 private:
+	int time_font;
 	int Result_Image;
 	int count_se, ok_se, good_se[4], bad_se[4];
 	int Result_font;
@@ -18,5 +19,6 @@ public:
 	~RESULT();
 	AbstractScene* Update() override;
 	void Draw() const override;
+	int GetDrawCenterX(int screenX, const char* string, int font_handle) const;
 };
 

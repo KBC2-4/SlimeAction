@@ -63,7 +63,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		//BackÉ{É^ÉìÇâüÇµÇΩÇÁã≠êßèIóπ
-		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_BACK) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
+		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_DPAD_DOWN) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
 		{
 			break;
 		}

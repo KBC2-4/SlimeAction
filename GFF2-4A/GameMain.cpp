@@ -34,11 +34,11 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	if ((ok_se = LoadSoundMem("Resource/Sounds/SE/ok.wav")) == -1) {
 		throw "Resource/Sounds/SE/ok.wav";
 	}
-	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
-	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
+	time_font = LoadFontDataToHandle("Resource/Fonts/TimeAttack_HUD.dft", 2);
 	time = GetNowCount();
 	this->halfway_time = halfway_time;
 	this->stage_name = stage_name;
+	elapsed_time = halfway_time;
 	lemoner_count = 0;
 	tomaton_count = 0;
 	item_count = 0;
@@ -46,8 +46,8 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	item_rand = 0;
 
 
-	
-	
+
+
 	stage = new STAGE(stage_name);
 	player = new PLAYER(stage);
 	pause = new PAUSE;
@@ -153,12 +153,12 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	this->restart = restert;
 
 	if (restart == true) {
-			int scrollx = -(stage->GetHalfwayPoint().x - 500);
-			stage->SetScrollX(scrollx);	//スポーン地点をセット
-			stage->SetScrollY(-(stage->GetHalfwayPoint().y - MAP_CEllSIZE - 400));
-			POINT buf = { stage->GetHalfwayPoint().y, stage->GetHalfwayPoint().x };
-			player->SetPlayer_Screen(buf);
-			
+		int scrollx = -(stage->GetHalfwayPoint().x - 500);
+		stage->SetScrollX(scrollx);	//スポーン地点をセット
+		stage->SetScrollY(-(stage->GetHalfwayPoint().y - MAP_CEllSIZE - 400));
+		POINT buf = { stage->GetHalfwayPoint().y, stage->GetHalfwayPoint().x };
+		player->SetPlayer_Screen(buf);
+
 	}
 	else {
 		//スポーン地点をセット
@@ -207,8 +207,7 @@ GAMEMAIN::~GAMEMAIN()
 		DeleteSoundMem(background_music[i]);
 	}
 
-	DeleteFontToHandle(title_font);
-	DeleteFontToHandle(menu_font);
+	DeleteFontToHandle(time_font);
 	DeleteSoundMem(cursor_move_se);
 	DeleteSoundMem(ok_se);
 	delete player;
@@ -217,7 +216,7 @@ GAMEMAIN::~GAMEMAIN()
 	delete element;
 
 	//レモナーの削除
-	for (int i = 0; i < lemoner_count; i++) 
+	for (int i = 0; i < lemoner_count; i++)
 	{
 		delete lemoner[i];
 	}
@@ -253,9 +252,13 @@ AbstractScene* GAMEMAIN::Update()
 	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_START) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) { pause->SetPause(); }
 
 	if (pause->IsPause() == false) {
+
+		//経過時間の加算
+		elapsed_time += 1000 / 60;
+
 		player->Update(element, stage);
 		stage->Update(player, element);	//ステージクリア用
-		element->Update(player,stage);
+		element->Update(player, stage);
 		for (int i = 0; i < lemoner_count; i++)
 		{
 			if (lemoner[i] != nullptr)
@@ -267,7 +270,7 @@ AbstractScene* GAMEMAIN::Update()
 					//アイテムを生成
 					if (item_rand == 0)
 					{
-						item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX(),stage->GetScrollY());
+						item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX(), stage->GetScrollY());
 					}
 					delete lemoner[i];
 					lemoner[i] = nullptr;
@@ -286,7 +289,7 @@ AbstractScene* GAMEMAIN::Update()
 				//アイテムを生成
 				if (item_rand == 0)
 				{
-					item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX(),stage->GetScrollY());
+					item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX(), stage->GetScrollY());
 				}
 				delete gurepon[i];
 				gurepon[i] = nullptr;
@@ -304,12 +307,12 @@ AbstractScene* GAMEMAIN::Update()
 		{
 			if (item[i] != nullptr)
 			{
-				if (item[i]->GetDeleteFlag()) 
+				if (item[i]->GetDeleteFlag())
 				{
 					delete item[i];
 					item[i] = nullptr;
 				}
-				else 
+				else
 				{
 					if ((item[i]->GetItemX() + stage->GetScrollX()) > 0 && (item[i]->GetItemX() + stage->GetScrollX()) < 1280)
 					{
@@ -318,30 +321,30 @@ AbstractScene* GAMEMAIN::Update()
 				}
 			}
 
-			
+
 
 			//ゲームオーバー
 			if (player->IsDeath()) {
-				if (!restart && stage->GetHalfwayPointFlg()) { 
-					halfway_time =  time - GetNowCount();
-					return new GAMEMAIN(true,halfway_time,stage_name); 
+				if (!restart && stage->GetHalfwayPointFlg()) {
+					halfway_time = time - GetNowCount();
+					return new GAMEMAIN(true, halfway_time, stage_name);
 				}
 				return new GameOver(stage_name);
 			}
 
 			//ステージクリア
 			if (stage->GetClearFlg())
-			{ 
-				return new RESULT(true, time + halfway_time,stage_name); 
+			{
+				return new RESULT(true, time + halfway_time, stage_name);
 			}
 		}
 	}
 	else {	//ポーズ画面のセレクター
 		pause->Update();
 		if (pause->GetSelectMenu() == 3) { return new Title(); }
-		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(false,0,stage_name); }
+		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(false, 0, stage_name); }
 		else if (pause->GetSelectMenu() == 4) { pause->SetPause(); }
-		else if (pause->GetSelectMenu() == 2) { 
+		else if (pause->GetSelectMenu() == 2) {
 			//BGM
 			if (stage_name == "Stage01") {
 				ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
@@ -443,10 +446,33 @@ void GAMEMAIN::Draw() const
 			}
 		}
 	}
+
+	//HUD
+
 	//プレイヤーのライフの描画
 	for (int i = 0; i < player->GetLife(); i++) {
 		DrawRotaGraph(30 + 50 * i, 20, 1, 0, hp_img, TRUE);
 	}
+
+	//経過時間の描画
+	char dis_clear_time[20];	//文字列合成バッファー
+
+	//文字列合成
+	if (elapsed_time / 1000 >= 60)
+	{
+
+		sprintf_s(dis_clear_time, sizeof(dis_clear_time), "%4d:%2d.%.3d",
+			(elapsed_time / 1000) / 60, (elapsed_time / 1000) % 60, elapsed_time % 1000);
+	}
+	else
+	{
+
+		sprintf_s(dis_clear_time, sizeof(dis_clear_time),
+			"%5d.%.3d", elapsed_time / 1000, elapsed_time % 1000);
+	}
+
+	DrawStringToHandle(1110, 10, dis_clear_time, 0x1aff00, time_font, 0xFFFFFF);
+
 
 	if (pause->IsPause() == true) { //ポーズ画面へ
 		int pause_graph = MakeGraph(1280, 720);
@@ -459,7 +485,7 @@ void GAMEMAIN::Draw() const
 	if (CheckHitKey(KEY_INPUT_A)) {
 		DrawFormatString(100, 150, 0xF77D0A, "ScrollX:%f", stage->GetScrollX());
 		DrawFormatString(100, 200, 0xF77D0A, "ScrollY:%f", stage->GetScrollY());
-		DrawFormatString(100, 250, 0xE04D02, "MapData:%d", stage->GetMapData((player->GetPlayerY() / MAP_CEllSIZE) +1, player->GetPlayerX()/ MAP_CEllSIZE));
+		DrawFormatString(100, 250, 0xE04D02, "MapData:%d", stage->GetMapData((player->GetPlayerY() / MAP_CEllSIZE) + 1, player->GetPlayerX() / MAP_CEllSIZE));
 		DrawFormatString(100, 300, 0x02F896, "PlayerX%f", player->GetPlayerX());
 		DrawFormatString(100, 350, 0x02F896, "PlayerY%f", player->GetPlayerY());
 		DrawFormatString(100, 400, 0x02F896, "SpawnPointY:%d", stage->GetSpawnPoint().y);

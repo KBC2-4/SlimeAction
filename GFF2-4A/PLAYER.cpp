@@ -353,7 +353,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 
 
 	//Bボタン押したとき
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) {
+	if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) {
 		if (player_state != PLAYER_MOVE_STATE::HOOK) {
 			//if (--hook_interval > 0) return;
 			//フックまでの距離
@@ -542,7 +542,7 @@ void PLAYER::JumpMove() {
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
 #endif
 	//Aボタンを押したとき
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_A || jump_request) {
+	if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_A : XINPUT_BUTTON_B) || jump_request) {
 		//ジャンプ中じゃないとき
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && player_state != PLAYER_MOVE_STATE::HOOK && is_ground
 			|| jump_request) {

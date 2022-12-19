@@ -13,7 +13,7 @@ STAGE_SELECT::STAGE_SELECT()
 	}
 	guid_font = CreateFontToHandle("メイリオ", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
-	stagename_font = CreateFontToHandle("メイリオ", 36, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	stagename_font = CreateFontToHandle("メイリオ", 31, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 4);
 	stage = new STAGE("StageSelect");
 	player = new PLAYER(stage);
 	element = new ELEMENT();
@@ -26,9 +26,10 @@ STAGE_SELECT::STAGE_SELECT()
 	player_map_x = 0;
 	player_map_y = 0;
 
-	effect_timer = 0;
+	*effect_timer = 0;
 	stage_return = { 0,0 };
 	*stage_move = { 0,0 };
+	effect_delta = false;
 
 	for (int i = 0; i < stage->GetMapSize().x; i++)
 	{
@@ -93,34 +94,51 @@ AbstractScene* STAGE_SELECT::Update()
 		return new STAGE_SELECT();
 	}
 
-
+	//戻る
 	if ((player_map_x >= stage_return.x - (MAP_CEllSIZE * 3) / 2) && (player_map_x <= stage_return.x + (MAP_CEllSIZE * 3) / 2)) {
-		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { return new Title(); }
+		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new Title(); }
 	}
 
+	//ステージ1
 	if ((player_map_x >= stage_move[1].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[1].x + (MAP_CEllSIZE * 3) / 2)) {
-		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { return new GAMEMAIN(false, 0, "Stage01"); }
+		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new GAMEMAIN(false, 0, "Stage01"); }
 	}
 
+
+	//ステージ2
 	if ((player_map_x >= stage_move[2].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[2].x + (MAP_CEllSIZE * 3) / 2)) {
-		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { return new GAMEMAIN(false, 0, "Stage02"); }
+		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new GAMEMAIN(false, 0, "Stage02"); }
 	}
 
+
+	//ステージ3
 	if ((player_map_x >= stage_move[3].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[3].x + (MAP_CEllSIZE * 3) / 2)) {
-		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { return new GAMEMAIN(false, 0, "Stage03"); }
+		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new GAMEMAIN(false, 0, "Stage03"); }
 	}
 
+
+	//サンプルステージ
 	if ((player_map_x >= 11 * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= 11 * MAP_CEllSIZE + (MAP_CEllSIZE * 3) / 2)) {
-		if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_B) { return new GAMEMAIN(false, 0, "MapData1"); }
+		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new GAMEMAIN(false, 0, "MapData1"); }
 	}
 
-	if (effect_timer < 255) { effect_timer++; }
-	else { effect_timer = 0; }
+
+	if (effect_timer[1] >= 255) { effect_delta = true; }
+	if (effect_timer[1] <= 0) { effect_delta = false; }
+
+	if (effect_delta) { effect_timer[1]--; }
+	else if(!effect_delta){ effect_timer[1]++; }
+
 
 	//デバッグ
-	/*if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_X) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
-		return new GAMEMAIN(false, 0, "DebugStage");
-	}*/
+	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_X) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+		//return new GAMEMAIN(false, 0, "DebugStage");
+	}
+
+	//if (effect_timer[0] < 100) {
+	//	effect_timer[0]++;
+	//}
+	//else { SetDrawAreaFull(); }
 
 	return this;
 }
@@ -136,92 +154,64 @@ void STAGE_SELECT::Draw() const
 	element->Draw(stage);
 	stage->Draw(element);
 
+	//if (effect_timer[0] < 100) {
+	//	DrawCircleAA(player->GetPlayerX(), player->GetPlayerY(), 60 + effect_timer[0] * 20, 28, 0x000000, FALSE, 80.0F + effect_timer[0] * 20);
+	//	SetDrawArea(player->GetPlayerX() - MAP_CEllSIZE / 2 - effect_timer[0] * 10, player->GetPlayerY() - MAP_CEllSIZE / 2 - effect_timer[0] * 10,
+	//		player->GetPlayerX() + MAP_CEllSIZE / 2 + effect_timer[0] * 10, player->GetPlayerY() + MAP_CEllSIZE / 2 + effect_timer[0] * 10);
+	//	
+	//}
+
 	//ガイド表示
 	DrawStringToHandle(880, 668, "[ゲーム中]ポーズ", 0x91EB52, buttonguid_font, 0x000000);
 	DrawBoxAA(790, 665, 860, 695, 0xFFFFFF, TRUE, 1.0F);
 	DrawCircleAA(795, 679.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//左端
 	DrawCircleAA(855, 679.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//右端
-	DrawStringToHandle(785, 668, "START", 0xFFD64A, buttonguid_font, 0xFFFFFF);
+	DrawStringToHandle(785, 668, "START", START_COLOR, buttonguid_font, 0xFFFFFF);
 
 	DrawStringToHandle(630, 668, "アクション", 0x91EB52, buttonguid_font, 0x000000);
 	DrawCircleAA(610, 680, 15, 20, 0xFFFFFF, 1);
-	DrawStringToHandle(603, 668, "B", 0xEB7415, buttonguid_font, 0xFFFFFF);
+	DrawStringToHandle(603, 668, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
 
 	DrawStringToHandle(450, 668, "ジャンプ", 0x91EB52, buttonguid_font, 0x000000);
 	DrawCircleAA(430, 680, 15, 20, 0xFFFFFF, 1);
-	DrawStringToHandle(423, 668, "A", 0x89FE17, buttonguid_font, 0xFFFFFF);
+	DrawStringToHandle(423, 668, Option::GetInputMode() ? "A" : "B", Option::GetInputMode() ? A_COLOR : B_COLOR, buttonguid_font, 0xFFFFFF);
 
 	//戻る
 	if ((player_map_x >= (stage_return.x) - (MAP_CEllSIZE * 3) / 2) && (player_map_x <= stage_return.x + (MAP_CEllSIZE * 3) / 2)) {
-		const int x = 40;
-
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
-		DrawOvalAA(stage_return.x + MAP_CEllSIZE / 2 + stage->GetScrollX() - x, stage_return.y - MAP_CEllSIZE + stage->GetScrollY() - 30, 100, 80, 30, 0x000000, FALSE, 1.0F);
-		DrawOvalAA(stage_return.x + MAP_CEllSIZE / 2 + stage->GetScrollX() - x, stage_return.y - MAP_CEllSIZE + stage->GetScrollY() - 30, 99, 79, 30, 0xFFFFFF, TRUE, 0.0F);
-		//DrawString(stage_return.x + MAP_CEllSIZE / 2, stage_return.y + MAP_CEllSIZE, "STAGE 1" , 0x6AF6C5, 0x000000);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		DrawStringToHandle(stage_return.x + stage->GetScrollX() - 52 - x, stage_return.y - MAP_CEllSIZE + stage->GetScrollY() - 50, "タイトルへ", 0x6AF6C5, stagename_font, 0x000000);
-		DrawStringToHandle(stage_return.x + stage->GetScrollX() - 2 - x, stage_return.y - MAP_CEllSIZE + stage->GetScrollY() - 10, "戻る", 0x6AF6C5, stagename_font, 0x000000);
-
-		DrawCircleAA(stage_return.x + stage->GetScrollX() - x, stage_return.y + stage->GetScrollY() - 30, 15, 20, 0xFFFFFF, 1);
-		DrawStringToHandle(stage_return.x + stage->GetScrollX() - 7 - x, stage_return.y + stage->GetScrollY() - 42, "B", 0xEB7415, buttonguid_font, 0xFFFFFF);
+		DrawStageGuid("タイトルへ", stage_return.x - MAP_CEllSIZE / 2, stage_return.y - 30, stagename_font, 0x6AF6C5, 0xFFFFFF, 0, -10, -1, "戻る", 55, 30);
 	}
 
 	//ステージ1 ポータル描画
-	SetDrawBright(0, 255, 255 - effect_timer);
+	SetDrawBright(0, 255, 255 - effect_timer[1]);
 	DrawGraph(stage_move[1].x + stage->GetScrollX(), stage_move[1].y + -MAP_CEllSIZE + stage->GetScrollY(), stage->GetMapImage(101), TRUE);
 	DrawGraph(stage_move[1].x + stage->GetScrollX(), stage_move[1].y + stage->GetScrollY(), stage->GetMapImage(102), TRUE);
 	SetDrawBright(255, 255, 255);
 
 	//ステージ2 ポータル描画
-	SetDrawBright(0, 255, 420 - effect_timer);
+	SetDrawBright(85 + (155 - 85) * effect_timer[1] / 255, 177 + (153 - 177) * effect_timer[1] / 255, 82 + (148 - 82) * effect_timer[1] / 255);
 	DrawGraph(stage_move[2].x + stage->GetScrollX(), stage_move[2].y + -MAP_CEllSIZE + stage->GetScrollY(), stage->GetMapImage(103), TRUE);
 	DrawGraph(stage_move[2].x + stage->GetScrollX(), stage_move[2].y + stage->GetScrollY(), stage->GetMapImage(104), TRUE);
 	SetDrawBright(255, 255, 255);
 
 	//ステージ3 ポータル描画
-	SetDrawBright(255 - effect_timer, 255, 255);
+	SetDrawBright(255 - effect_timer[1], 255, 255);
 	DrawGraph(stage_move[3].x + stage->GetScrollX(), stage_move[3].y + -MAP_CEllSIZE + stage->GetScrollY(), stage->GetMapImage(105), TRUE);
 	DrawGraph(stage_move[3].x + stage->GetScrollX(), stage_move[3].y + stage->GetScrollY(), stage->GetMapImage(106), TRUE);
 	SetDrawBright(255, 255, 255);
 
 	//ステージ1
 	if ((player_map_x >= stage_move[1].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[1].x + (MAP_CEllSIZE * 3) / 2)) {
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
-		DrawOvalAA(stage_move[1].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY(), 100, 80, 30, 0x000000, FALSE, 1.0F);
-		DrawOvalAA(stage_move[1].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 30, 0xFFFFFF, TRUE, 0.0F);
-		//DrawString(stage_move[1].x + MAP_CEllSIZE / 2, stage_move[1].y + MAP_CEllSIZE, "STAGE 1" , 0x6AF6C5, 0x000000);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		DrawStringToHandle(stage_move[1].x + stage->GetScrollX() - 55, stage_move[1].y - MAP_CEllSIZE - 10 + stage->GetScrollY(), "１ステージ", 0xD65701, stagename_font, 0x000000);
-
-		DrawCircleAA(stage_move[1].x + stage->GetScrollX(), stage_move[1].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-		DrawStringToHandle(stage_move[1].x + stage->GetScrollX() - 7, stage_move[1].y + stage->GetScrollY() - 12, "B", 0xEB7415, buttonguid_font, 0xFFFFFF);
+		DrawStageGuid("１ステージ", stage_move[1].x, stage_move[1].y, stagename_font, 0xFA5A47);
 	}
 
 	//ステージ2
 	if ((player_map_x >= stage_move[2].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[2].x + (MAP_CEllSIZE * 3) / 2)) {
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
-		DrawOvalAA(stage_move[2].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[2].y - MAP_CEllSIZE + stage->GetScrollY(), 100, 80, 30, 0x000000, FALSE, 1.0F);
-		DrawOvalAA(stage_move[2].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[2].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 30, 0xFFFFFF, TRUE, 0.0F);
-		//DrawString(stage_move[2].x + MAP_CEllSIZE / 2, stage_move[2].y + MAP_CEllSIZE, "STAGE 1" , 0x6AF6C5, 0x000000);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		DrawStringToHandle(stage_move[2].x + stage->GetScrollX() - 55, stage_move[2].y - MAP_CEllSIZE - 10 + stage->GetScrollY(), "２ステージ", 0xFA5A47, stagename_font, 0x000000);
-
-		DrawCircleAA(stage_move[2].x + stage->GetScrollX(), stage_move[2].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-		DrawStringToHandle(stage_move[2].x + stage->GetScrollX() - 7, stage_move[2].y + stage->GetScrollY() - 12, "B", 0xEB7415, buttonguid_font, 0xFFFFFF);
+		DrawStageGuid("２ステージ", stage_move[2].x, stage_move[2].y, stagename_font, 0xBF700F);
 	}
 
 	//ステージ3
 	if ((player_map_x >= stage_move[3].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[3].x + (MAP_CEllSIZE * 3) / 2)) {
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
-		DrawOvalAA(stage_move[3].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[3].y - MAP_CEllSIZE + stage->GetScrollY(), 100, 80, 30, 0x000000, FALSE, 1.0F);
-		DrawOvalAA(stage_move[3].x + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[3].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 30, 0xFFFFFF, TRUE, 0.0F);
-		//DrawString(stage_move[3].x + MAP_CEllSIZE / 2, stage_move[3].y + MAP_CEllSIZE, "STAGE 1" , 0x6AF6C5, 0x000000);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		DrawStringToHandle(stage_move[3].x + stage->GetScrollX() - 55, stage_move[3].y - MAP_CEllSIZE - 10 + stage->GetScrollY(), "３ステージ", 0x9511D9, stagename_font, 0x000000);
-
-		DrawCircleAA(stage_move[3].x + stage->GetScrollX(), stage_move[3].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-		DrawStringToHandle(stage_move[3].x + stage->GetScrollX() - 7, stage_move[3].y + stage->GetScrollY() - 12, "B", 0xEB7415, buttonguid_font, 0xFFFFFF);
+		DrawStageGuid("３ステージ", stage_move[3].x, stage_move[3].y, stagename_font, 0x9511D9);
 	}
 
 	//サンプルステージ
@@ -234,11 +224,29 @@ void STAGE_SELECT::Draw() const
 		DrawExtendStringToHandle(11 * MAP_CEllSIZE + stage->GetScrollX() - 55, stage_move[1].y - MAP_CEllSIZE - 10 + stage->GetScrollY(), 0.4f, 0.4f, "Sampleステージ", 0x856AF6, guid_font, 0x000000);
 
 		DrawCircleAA(11 * MAP_CEllSIZE + stage->GetScrollX(), stage_move[1].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-		DrawStringToHandle(11 * MAP_CEllSIZE + stage->GetScrollX() - 7, stage_move[1].y + stage->GetScrollY() - 12, "B", 0xEB7415, buttonguid_font, 0xFFFFFF);
+		DrawStringToHandle(11 * MAP_CEllSIZE + stage->GetScrollX() - 7, stage_move[1].y + stage->GetScrollY() - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
 	}
 
 
 
 	//プレイヤーの描画
 	player->Draw(stage);
+}
+
+
+void STAGE_SELECT::DrawStageGuid(const char* stage_name, const float x, const float y, const int stagename_font, const int text_color, const int textback_color,
+	const int text_margin_x, const int text_margin_y, const int backcolor, const char* second_title, const int secont_margin_x, const int secont_margin_y) const {
+
+	if (textback_color == -1) { const int textback_color = 0xFFFFFF; }
+	if (backcolor == -1) { const int backcolor = 0xFFFFFF; }
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
+	DrawOvalAA(x + MAP_CEllSIZE / 2 + stage->GetScrollX(), y - MAP_CEllSIZE + stage->GetScrollY(), 100, 80, 30, 0x000000, FALSE, 1.0F);
+	DrawOvalAA(x + MAP_CEllSIZE / 2 + stage->GetScrollX(), y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 30, backcolor, TRUE, 0.0F);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	DrawStringToHandle(x + stage->GetScrollX() - 55 + text_margin_x, y - MAP_CEllSIZE - 10 + stage->GetScrollY() + text_margin_y, stage_name, text_color, stagename_font, textback_color);
+	if (second_title != "") { DrawStringToHandle(x + stage->GetScrollX() - 55 + secont_margin_x, y - MAP_CEllSIZE - 10 + stage->GetScrollY() + secont_margin_y, second_title, text_color, stagename_font, textback_color); }
+
+	DrawCircleAA(x + stage->GetScrollX(), y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
 }
