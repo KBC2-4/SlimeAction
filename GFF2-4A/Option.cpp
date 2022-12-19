@@ -150,12 +150,12 @@ void Option::Draw() {
 	DrawStringToHandle(start_x + 2, start_y + 3, "BACK", BACK_COLOR, buttonguid_font, 0xFFFFFF);
 
 	DrawStringToHandle(100, 300, "ì¸óÕï˚éÆ", 0xEB8F63, buttonguid_font, 0xFFFFFF);
-	DrawCircleAA(107, 362, 15, 20, 0xFFFFFF, 1);
-	DrawStringToHandle(100, 350, "A", A_COLOR, buttonguid_font, 0xFFFFFF);
-	DrawStringToHandle(130, 350, Option::GetInputMode() ? "ñﬂÇÈ" : "åàíË", B_COLOR, buttonguid_font, 0xFFFFFF);
-	DrawCircleAA(107, 402, 15, 20, 0xFFFFFF, 1);
-	DrawStringToHandle(100, 390, "B", B_COLOR, buttonguid_font, 0xFFFFFF);
-	DrawStringToHandle(130, 390, Option::GetInputMode() ? "åàíË" : "ñﬂÇÈ", B_COLOR, buttonguid_font, 0xFFFFFF);
+	DrawCircleAA(167, 362, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(160, 350, "A", A_COLOR, buttonguid_font, 0xFFFFFF);
+	DrawStringToHandle(190, 350, Option::GetInputMode() ? "ñﬂÇÈ" : "åàíËÅ^ÉAÉNÉVÉáÉì", B_COLOR, buttonguid_font, 0xFFFFFF);
+	DrawCircleAA(167, 402, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(160, 390, "B", B_COLOR, buttonguid_font, 0xFFFFFF);
+	DrawStringToHandle(190, 390, Option::GetInputMode() ? "åàíË" : "ñﬂÇÈ", B_COLOR, buttonguid_font, 0xFFFFFF);
 
 
 
