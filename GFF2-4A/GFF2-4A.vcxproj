@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AbstractScene.cpp" />
     <ClCompile Include="DrawRanking.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="Enemy.cpp" />

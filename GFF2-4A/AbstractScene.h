@@ -6,7 +6,9 @@ public:
 	//デストラクタ
 	virtual ~AbstractScene() {};
 	//描画以外の更新を実行
-	virtual AbstractScene* Update()=0;
+	virtual AbstractScene* Update() = 0;
 	//描画に関することを実装
 	virtual void Draw() const = 0;
+
+	int GetDrawCenterX(int screenX, const char* string, int font_handle)const;
 };
