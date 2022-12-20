@@ -82,7 +82,7 @@ STAGE_SELECT::~STAGE_SELECT()
 AbstractScene* STAGE_SELECT::Update()
 {
 
-	player->Update(element, stage);
+	player->Update(element, stage, nullptr, 0);
 	stage->Update(player, element);
 	element->Update(player, stage);
 

@@ -125,7 +125,7 @@ PLAYER::~PLAYER() {
 /// <summary>
 /// プレイヤーの更新
 /// </summary>
-void PLAYER::Update(ELEMENT* element, STAGE* stage) {
+void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomaton_count) {
 
 	ChangeVolumeSoundMem(Option::GetSEVolume(), damageSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), jumpSE);
@@ -163,7 +163,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	//球の更新
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
-		throw_slime[i].Update(stage, element);
+		throw_slime[i].Update(stage, element, tomaton, tomaton_count);
 	}
 
 	//死判定
