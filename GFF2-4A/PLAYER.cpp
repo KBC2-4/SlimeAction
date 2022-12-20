@@ -22,7 +22,6 @@ PLAYER::PLAYER(STAGE* stage) {
 	jump_request = false;
 	is_jump = false;
 	is_hook_move = false;
-	is_death = false;
 	is_damage = false;
 	throw_preparation = false;
 	throw_interval = 0.0f;
@@ -168,7 +167,8 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomato
 
 	//死判定
 	if (player_y + stage->GetScrollY() > 720 && player_state != PLAYER_MOVE_STATE::HOOK || life <= 0) {
-		is_death = true;
+		player_state = PLAYER_MOVE_STATE::DEAD;
+		return;
 	}
 
 	//画面端の判定
@@ -775,7 +775,8 @@ void PLAYER::HitBlock(ELEMENT* element, STAGE* stage) {
 					int y = static_cast<int>(player_top / MAP_CEllSIZE);
 					//死判定
 					if (block_type == -1) {
-						is_death = true;
+						player_state = PLAYER_MOVE_STATE::DEAD;
+						return;
 					}
 					if (hit_ceil && !is_ground && y == i) continue;
 					//ドアの判定

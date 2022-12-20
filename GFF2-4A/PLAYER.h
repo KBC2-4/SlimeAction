@@ -51,7 +51,6 @@ class PLAYER
 {
 
 private:
-	bool is_death;
 	float player_x, player_y;
 	float old_player_x, old_player_y;
 	int map_x, map_y;
@@ -178,7 +177,7 @@ public:
 
 	/*変数のセットとゲット*/
 	int GetLife() { return life; };
-	bool IsDeath() { return is_death; }
+	bool IsDeath() { return player_state == PLAYER_MOVE_STATE::DEAD; }
 	/// <summary>
 	/// プレイヤーのマップ内X座標のGetter
 	/// </summary>
