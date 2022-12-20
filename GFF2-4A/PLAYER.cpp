@@ -777,7 +777,7 @@ void PLAYER::HitBlock(ELEMENT* element, STAGE* stage) {
 					if (block_type == -1) {
 						is_death = true;
 					}
-					if (hit_ceil && y == i) continue;
+					if (hit_ceil && !is_ground && y == i) continue;
 					//ドアの判定
 					if ((block_type == 66 || block_type == 67) && move_x > 0) {
 						if (fabsf(player_left - block_right) < player_speed) {
