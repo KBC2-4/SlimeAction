@@ -148,10 +148,6 @@ void STAGE::Draw(ELEMENT* element)const {
 			if (map_data.at(i).at(j) == 101) { DrawExtendGraph((j - 1) * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, (j + 1) * MAP_CEllSIZE + scroll_x, (i + 1) * MAP_CEllSIZE + scroll_y, block_image1[100], TRUE); }
 		}
 	}
-	std::vector<ELEMENT::ELEMENT_DATA> lift_pos = element->GetLift();
-	for (int i = 0; i < lift_pos.size(); i++) {
-		DrawExtendGraph(lift_pos[i].x + scroll_x, lift_pos[i].y - 31 + scroll_y, lift_pos[i].x + LIFT_SIZE + scroll_x, lift_pos[i].y + 70 + scroll_y, block_image1[51], TRUE);
-	}
 
 	//中間地点　描画
 	//中間地点がない場合は描画しない。
