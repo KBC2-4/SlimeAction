@@ -5,6 +5,8 @@
 #include "ThrowSlime.h"
 #include "STAGE.h"
 
+class TOMATO;
+
 #define MAX_LIFE				5		//プレイヤーの最大ライフ
 #define SPEED					4.2f	//プレイヤーのスピード
 #define DEVIATION				10000	//スティック入力の誤入力の範囲
@@ -101,6 +103,8 @@ private:
 	int alpha_param;	//パラーメーター
 	int alpha_time;		//点滅時間
 
+	bool is_heal;
+
 	//プレイヤーのサイズ(倍率)
 	float player_scale;
 
@@ -168,7 +172,7 @@ public:
 	void JumpMove();
 	void Throw(STAGE* stage);
 	void MoveAnimation();
-	void Update(ELEMENT*element, STAGE* stage);
+	void Update(ELEMENT*element, STAGE* stage, TOMATO** tomaton, int tomaton_count);
 	void HitBlock(ELEMENT* element, STAGE* stage);
 	void ChangeAnimation(PLAYER_ANIM_STATE anim, bool compelChange = false);
 

@@ -256,7 +256,7 @@ AbstractScene* GAMEMAIN::Update()
 		//経過時間の加算
 		elapsed_time += 1000 / 60;
 
-		player->Update(element, stage);
+		player->Update(element, stage, tomaton, tomaton_count);
 		stage->Update(player, element);	//ステージクリア用
 		element->Update(player, stage);
 		for (int i = 0; i < lemoner_count; i++)

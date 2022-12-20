@@ -33,6 +33,8 @@ PLAYER::PLAYER(STAGE* stage) {
 	// 初期速度は０
 	speed = 0;
 
+	is_heal = false;
+
 	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
 		throw "Resource/Images/Player/IdorSlime.png";
 	}
@@ -90,7 +92,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	ChangeVolumeSoundMem(Option::GetSEVolume(), landingSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), hook_moveSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), hook_pendulumSE);
-	
+
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
 		animation[i].frame = 0;
@@ -123,13 +125,13 @@ PLAYER::~PLAYER() {
 /// <summary>
 /// プレイヤーの更新
 /// </summary>
-void PLAYER::Update(ELEMENT* element, STAGE* stage) {
+void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomaton_count) {
 
-		ChangeVolumeSoundMem(Option::GetSEVolume(), damageSE);
-		ChangeVolumeSoundMem(Option::GetSEVolume(), jumpSE);
-		ChangeVolumeSoundMem(Option::GetSEVolume(), landingSE);
-		ChangeVolumeSoundMem(Option::GetSEVolume(), hook_moveSE);
-		ChangeVolumeSoundMem(Option::GetSEVolume(), hook_pendulumSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), damageSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), jumpSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), landingSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), hook_moveSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), hook_pendulumSE);
 
 
 	//移動処理
@@ -161,11 +163,11 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	//球の更新
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
-		throw_slime[i].Update(stage);
+		throw_slime[i].Update(stage, element, tomaton, tomaton_count);
 	}
 
 	//死判定
-	if (player_y + stage->GetScrollY() > 720 && player_state != PLAYER_MOVE_STATE::HOOK || life <= 0){
+	if (player_y + stage->GetScrollY() > 720 && player_state != PLAYER_MOVE_STATE::HOOK || life <= 0) {
 		is_death = true;
 	}
 
@@ -200,7 +202,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 /// <summary>
 /// プレイヤーの表示
 /// </summary>
-void PLAYER::Draw(STAGE *stage)const {
+void PLAYER::Draw(STAGE* stage)const {
 	static float dis = 0.0f;
 
 	if (is_damage) {
@@ -261,20 +263,20 @@ void PLAYER::Draw(STAGE *stage)const {
 /// <summary>
 /// プレイヤーの移動
 /// </summary>
-void PLAYER::Move() 
+void PLAYER::Move()
 {
 	player_speed = SPEED + (MAX_LIFE - life) * 0.4f;
 	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
-	
+
 	//スティック入力の取得
 	old_player_x = player_x;
 	old_player_y = player_y;
 	int input_lx = PAD_INPUT::GetPadThumbLX();
 	//移動するとき
 	move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
-	if (input_lx < -DEVIATION || input_lx > DEVIATION) 
+	if (input_lx < -DEVIATION || input_lx > DEVIATION)
 	{
-		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL) 
+		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL)
 		{
 			move_type = (move_x > 0) ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
 			player_x += move_x * player_speed;
@@ -282,7 +284,7 @@ void PLAYER::Move()
 			player_state = PLAYER_MOVE_STATE::MOVE;	//ステートをMoveに切り替え
 			ChangeAnimation(PLAYER_ANIM_STATE::MOVE); //アニメーションの切り替え
 		}
-		else 
+		else
 		{
 			if (jump_move_x == 0) jump_move_x = move_x;
 			move_type = (jump_move_x > 0) ? 0 : 1;
@@ -295,11 +297,11 @@ void PLAYER::Move()
 				move_type = (jump_move_x > 0) ? 0 : 1;
 
 				//ジャンプ中に反対方向に移動するとき
-				if (jump_move_x != move_x) 
+				if (jump_move_x != move_x)
 				{
 					player_x += jump_move_x * player_speed / 2.0f;
 				}
-				else 
+				else
 				{
 					player_x += jump_move_x * player_speed;
 				}
@@ -348,7 +350,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 
 	//スティック入力の取得
 	int input_lx = PAD_INPUT::GetPadThumbLX();
-	
+
 
 	//Bボタン押したとき
 	if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) {
@@ -537,7 +539,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 /// </summary>
 void PLAYER::JumpMove() {
 #ifndef _NDEBUG
-	if (PAD_INPUT::GetNowKey()== XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
 #endif
 	//Aボタンを押したとき
 	if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_A : XINPUT_BUTTON_B) || jump_request) {
@@ -667,7 +669,7 @@ void PLAYER::Throw(STAGE* stage) {
 			push_button = true;
 			//投げる処理
 			throw_interval = THROW_INTERVAL;
-			throw_slime.push_back(ThrowSlime(throw_x, throw_y, stage));
+			throw_slime.push_back(ThrowSlime(player_x, player_y, throw_rad, stage));
 			ChangeAnimation(PLAYER_ANIM_STATE::THROW, true);
 		}
 	}
@@ -679,12 +681,12 @@ void PLAYER::Throw(STAGE* stage) {
 /// <summary>
 /// 横移動の当たり判定
 /// </summary>
-void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
+void PLAYER::HitBlock(ELEMENT* element, STAGE* stage) {
 	//マップチップの座標のセット
-	map_x = (int)roundf((player_x) / MAP_CEllSIZE);
+	map_x = (int)roundf(player_x / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
-	float player_left = (player_x - 30 * player_scale);
-	float player_right = (player_x + 30 * player_scale);
+	float player_left = player_x - 30 * player_scale;
+	float player_right = player_x + 30 * player_scale;
 	float player_top = (player_y - (player_scale - 0.6f) * MAP_CEllSIZE / 2);
 	float player_bottom = (player_y + MAP_CEllSIZE / 2);
 
@@ -693,7 +695,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 	bool hit_ceil_left = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_left + player_speed) / MAP_CEllSIZE));
 	bool hit_ceil_right = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_right - player_speed) / MAP_CEllSIZE));
 	hit_ceil = hit_ceil_center || hit_ceil_left || hit_ceil_right;
-	
+
 	//地面の判定
 	is_ground = false;
 	if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
@@ -707,7 +709,6 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 	}
 	float diff_y = fabsf(player_y - old_player_y);
 	if (fmodf(player_y, MAP_CEllSIZE / 2) <= diff_y) {
-		bool is_manhole = false;
 		if (stage->HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
 			!stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE)) &&
 			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_left / MAP_CEllSIZE))) {
@@ -715,26 +716,41 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		}
 		if (stage->HitMapDat((int)(player_bottom / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
 			!stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) &&
-			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE)) && !is_manhole) {
+			!stage->HitMapDat((int)(player_y / MAP_CEllSIZE), (int)(player_right / MAP_CEllSIZE))) {
 			is_ground = true;
-		}
-		int block_type_center = stage->GetMapData((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		int block_type_top = stage->GetMapData((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		int block_type_bottom = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-		if (block_type_center == 98 || block_type_top == 98 || block_type_bottom == 98) {
-			float diff = fabsf((float)((int)(player_x / MAP_CEllSIZE) * MAP_CEllSIZE) - player_left);
-			if (diff < player_speed) {
-				is_manhole = true;
-				is_ground = false;
-			}
 		}
 	}
 
-	if (!is_ground && element->HitLift(this)) {
-		if (animation_state != PLAYER_ANIM_STATE::THROW) {
-			//ChangeAnimation(PLAYER_ANIM_STATE::IDLE, true);
+	//マンホールの判定
+	int block_type_center = stage->GetMapData((int)(player_y / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+	int block_type_top = stage->GetMapData((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+	int block_type_bottom = stage->GetMapData((int)(player_bottom / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
+	if (block_type_center == 98 || block_type_top == 98 || block_type_bottom == 98) {
+		float diff = fabsf((float)((int)(player_x / MAP_CEllSIZE) * MAP_CEllSIZE) - player_left);
+		if (diff < player_speed) {
+			is_ground = false;
 		}
-		is_ground = true;
+	}
+
+	//動く床の当たり判定
+	if (!hit_ceil) {
+		std::vector<ELEMENT::ELEMENT_DATA> lift = element->GetLift();
+		int hit_lift_num = -1;
+		for (int i = 0; i < lift.size(); i++) {
+			if (player_right >= lift[i].x && player_left <= lift[i].x + LIFT_SIZE
+				&& player_y >= lift[i].y - MAP_CEllSIZE / 2 && player_y <= lift[i].y && player_state != PLAYER_MOVE_STATE::JUMP) {
+
+				if (((lift[i].type == 1 && !(lift[i].lift_vector_y > 0 && is_ground)) || (lift[i].type == 2 && !is_ground)) &&
+					(hit_lift_num == -1 || lift[hit_lift_num].y > lift[i].y)) {
+					hit_lift_num = i;
+				}
+			}
+		}
+		if (hit_lift_num >= 0) {
+			player_y = (lift[hit_lift_num].y - MAP_CEllSIZE / 2 + lift[hit_lift_num].lift_vector_y * 4);
+			player_x += lift[hit_lift_num].lift_vector_x * 4;
+			is_ground = true;
+		}
 	}
 
 	if (is_ground) {
@@ -747,7 +763,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 		for (int j = screen_left; j < screen_left + 20; j++) {
 			if (j >= stage->GetMapSize().y) break;
 			if (!stage->HitMapDat(i, j) && stage->GetMapData(i, j) != -1) continue;
-			
+
 			float block_left = j * MAP_CEllSIZE;
 			float block_right = block_left + MAP_CEllSIZE;
 			float block_top = i * MAP_CEllSIZE;
@@ -761,7 +777,7 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 					if (block_type == -1) {
 						is_death = true;
 					}
-					if (hit_ceil && y == i) continue;
+					if (hit_ceil && !is_ground && y == i) continue;
 					//ドアの判定
 					if ((block_type == 66 || block_type == 67) && move_x > 0) {
 						if (fabsf(player_left - block_right) < player_speed) {
@@ -769,11 +785,16 @@ void PLAYER::HitBlock(ELEMENT* element,STAGE* stage) {
 						}
 					}
 					player_x = old_player_x;
+					if (is_heal) {
+						player_x -= move_x * player_speed * 2.0f;
+					}
 					break;
 				}
 			}
 		}
 	}
+
+	is_heal = false;
 }
 
 void PLAYER::ChangeAnimation(PLAYER_ANIM_STATE anim, bool compelChange) {
@@ -836,6 +857,9 @@ void PLAYER::SetLife(int a)
 		is_damage = true;
 		StartJoypadVibration(DX_INPUT_PAD1, 360, 320, -1);
 		PlaySoundMem(damageSE, DX_PLAYTYPE_BACK);
+	}
+	else {
+		is_heal = true;
 	}
 	life = a;
 }
