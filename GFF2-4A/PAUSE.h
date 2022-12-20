@@ -20,5 +20,7 @@ public:
 	bool IsPause(void) { return pause_flg; }
 	void SetPause(void) { pause_flg = !pause_flg; if (pause_flg == false) { selectmenu = 0; } }
 	int GetSelectMenu(void) { return nextmenu; }
+
+	int GetDrawCenterX(const char* string, int font_handle)const;
 };
 

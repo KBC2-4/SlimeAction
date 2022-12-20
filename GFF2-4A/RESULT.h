@@ -19,6 +19,5 @@ public:
 	~RESULT();
 	AbstractScene* Update() override;
 	void Draw() const override;
-	int GetDrawCenterX(int screenX, const char* string, int font_handle) const;
 };
 

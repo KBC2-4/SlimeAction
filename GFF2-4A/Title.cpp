@@ -136,7 +136,7 @@ void Title::Draw()const
 	}
 	else {
 
-		DrawStringToHandle(30, 100, "スライムアクション", 0x56F590, title_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("スライムアクション",title_font), 100, "スライムアクション", 0x56F590, title_font, 0xFFFFFF);
 
 		//ボックス
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA,100);
@@ -147,10 +147,10 @@ void Title::Draw()const
 		//DrawCircleAA(475.0f, 398.0f + selectmenu * 90, 20, 3, 0xffffff, TRUE, 3.0f);
 
 		//選択メニュー
-		DrawStringToHandle(510, 360, "プレイ", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(432, 450, "ランキング", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(432, 540, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(560, 630, "終了", selectmenu == 3 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("プレイ",menu_font), 360, "プレイ", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("ランキング",menu_font), 450, "ランキング", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("オプション",menu_font), 540, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("終了",menu_font), 630, "終了", selectmenu == 3 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 
 
 		//操作案内

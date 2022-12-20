@@ -99,8 +99,8 @@ void GameOver::Draw() const
 	DrawLine(0, 460, 1280, 460, 0x000000);
 
 	//Select—pString
-	DrawStringToHandle(330, 460, "GameSelect", SelectCount == 0 ? 0x0a6500 : 0x1aff00, Select_font, 0x000000);
-	DrawStringToHandle(445, 360, "Restart", SelectCount == 1 ? 0x0a6500 : 0x1aff00, Select_font, 0x000000);
+	DrawStringToHandle(GetDrawCenterX("GameSelect",Select_font), 460, "GameSelect", SelectCount == 0 ? 0x0a6500 : 0x1aff00, Select_font, 0x000000);
+	DrawStringToHandle(GetDrawCenterX("Restart",Select_font), 360, "Restart", SelectCount == 1 ? 0x0a6500 : 0x1aff00, Select_font, 0x000000);
 
 	if (timer % 120 < 60)
 	{

@@ -50,5 +50,8 @@ public:
 	bool GetOptionFlg(void) { return option_flg; }
 	void ChangeOptionFlg(void) { option_flg = !option_flg; }
 	static bool GetInputMode(void) { return input_mode; }
+
+
+	int GetDrawCenterX(const char* string, int font_handle)const;
 };
 

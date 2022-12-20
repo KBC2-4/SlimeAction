@@ -10,5 +10,5 @@ public:
 	//•`‰æ‚ÉŠÖ‚·‚é‚±‚Æ‚ðŽÀ‘•
 	virtual void Draw() const = 0;
 
-	int GetDrawCenterX(int screenX, const char* string, int font_handle)const;
+	int GetDrawCenterX(const char* string, int font_handle)const;
 };

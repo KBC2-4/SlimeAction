@@ -154,6 +154,8 @@ void STAGE_SELECT::Draw() const
 	element->Draw(stage,player);
 	stage->Draw(element);
 
+	//DrawCircleAA(player->GetPlayerX(), player->GetPlayerY(), 900.0F, 32, 0x000000, FALSE, 1200.0F);
+
 	//if (effect_timer[0] < 100) {
 	//	DrawCircleAA(player->GetPlayerX(), player->GetPlayerY(), 60 + effect_timer[0] * 20, 28, 0x000000, FALSE, 80.0F + effect_timer[0] * 20);
 	//	SetDrawArea(player->GetPlayerX() - MAP_CEllSIZE / 2 - effect_timer[0] * 10, player->GetPlayerY() - MAP_CEllSIZE / 2 - effect_timer[0] * 10,

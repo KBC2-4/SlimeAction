@@ -81,16 +81,25 @@ void PAUSE::Draw(int pause_graph) {
 	}
 	else {
 
-		DrawStringToHandle(380, 100, "ポーズ", 0x56F590, title_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("ポーズ",title_font), 100, "ポーズ", 0x56F590, title_font, 0xFFFFFF);
 		//選択メニュー
-		DrawStringToHandle(400, 270, "ゲームへ戻る", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(440, 360, "リスタート", selectmenu == 1 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(440, 450, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(362, 540, "タイトルへ戻る", selectmenu == 3 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("ゲームへ戻る",menu_font), 270, "ゲームへ戻る", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("リスタート", menu_font), 360, "リスタート", selectmenu == 1 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("オプション", menu_font), 450, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("タイトルへ戻る", menu_font), 540, "タイトルへ戻る", selectmenu == 3 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
 
 		//ガイド表示
 		DrawStringToHandle(580, 668, "ゲームへ戻る", 0xFFA15C, buttonguid_font, 0x000000);
 		DrawCircleAA(560, 680, 15, 20, 0xFFFFFF, 1);
 		DrawStringToHandle(553, 668, Option::GetInputMode() ? "A" : "B", Option::GetInputMode() ? A_COLOR : B_COLOR, buttonguid_font, 0xFFFFFF);
 	}
+}
+
+int PAUSE::GetDrawCenterX(const char* string, int font_handle)const {
+
+	//画面幅
+	const int screenX = 1280;
+
+	const int w = screenX / 2 - GetDrawFormatStringWidthToHandle(font_handle, string) / 2;
+	return w;
 }

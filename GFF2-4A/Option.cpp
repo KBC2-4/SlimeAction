@@ -91,6 +91,9 @@ void Option::Update() {
 			if (se_vol > 2) { se_vol = 2; }
 			else { se_vol = 255 * 50 / 100; }
 		}
+		else if (static_cast<MENU>(selectmenu) == MENU::RETURN) {
+			ChangeOptionFlg();
+		}
 	}
 
 
@@ -114,29 +117,35 @@ void Option::Draw() {
 	//選択メニュー
 
 	//BGM
-	DrawStringToHandle(555, 250, "BGM", selectmenu == 0 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(GetDrawCenterX("BGM",menu_font), 250, "BGM", selectmenu == 0 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
 
-	DrawOvalAA(620, 350, 180, 10, 30, 0x000000, FALSE, 2.0F);
+	const int bgm_x = 640;
+	const int bgm_y = 350;
+
+	DrawOvalAA(bgm_x, bgm_y, 180, 10, 30, 0x000000, FALSE, 2.0F);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 60);
-	DrawOvalAA(620, 350, 180, 10, 30, 0xFFFFFF, TRUE, 0.0F);
+	DrawOvalAA(bgm_x, bgm_y, 180, 10, 30, 0xFFFFFF, TRUE, 0.0F);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	DrawOvalAA(620, 350, 180 * bgm_vol / 255, 10 * bgm_vol / 255, 30, 0xFFEB91, TRUE, 0.0F);
+	DrawOvalAA(bgm_x, bgm_y, 180 * bgm_vol / 255, 10 * bgm_vol / 255, 30, 0xFFEB91, TRUE, 0.0F);
 
-	DrawFormatString(620, 344, 0x000000, "%d", ((110 * bgm_vol / 255) - 1) / 10);
+	DrawFormatString(bgm_x, bgm_y - 6, 0x000000, "%d", ((110 * bgm_vol / 255) - 1) / 10);
 
 
 	//SE
-	DrawStringToHandle(580, 380, "SE", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(GetDrawCenterX("SE", menu_font), 380, "SE", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
 
-	DrawOvalAA(620, 480, 180, 10, 30, 0x000000, FALSE, 2.0F);
+	const int se_x = 640;
+	const int se_y = 480;
+
+	DrawOvalAA(se_x, se_y, 180, 10, 30, 0x000000, FALSE, 2.0F);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 60);
-	DrawOvalAA(620, 480, 180, 10, 30, 0xFFFFFF, TRUE, 0.0F);
+	DrawOvalAA(se_x, se_y, 180, 10, 30, 0xFFFFFF, TRUE, 0.0F);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	DrawOvalAA(620, 480, 180 * se_vol / 255, 10 * se_vol / 255, 30, 0x11A7ED, TRUE, 0.0F);
+	DrawOvalAA(se_x, se_y, 180 * se_vol / 255, 10 * se_vol / 255, 30, 0x11A7ED, TRUE, 0.0F);
 
-	DrawFormatString(620, 474, 0x000000, "%d", ((110 * se_vol / 255) - 1) / 10);
+	DrawFormatString(se_x, se_y - 6, 0x000000, "%d", ((110 * se_vol / 255) - 1) / 10);
 
-	DrawStringToHandle(548, 540, "戻る", selectmenu == 2 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(GetDrawCenterX("戻る",menu_font), 540, "戻る", selectmenu == 2 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 
 	//入力方式の切り替え
 
@@ -159,12 +168,37 @@ void Option::Draw() {
 
 
 
+	const int guid_center_x = 640;
+
 	//ガイド表示
-	DrawStringToHandle(400, 668, "ミュート／ミュート解除", 0xFFA15C, buttonguid_font, 0x000000);
-	DrawCircleAA(380, 680, 15, 20, 0xFFFFFF, 1);
-	DrawStringToHandle(373, 668, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
+
+	const int back_guid_x = 220;
+	const int back_guid_y = 665;
+
+	DrawBoxAA(back_guid_x, back_guid_y, back_guid_x + 70, back_guid_y + 30, 0xFFFFFF, TRUE, 1.0F);
+	DrawCircleAA(back_guid_x + 5, back_guid_y + 14.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//左端
+	DrawCircleAA(back_guid_x + 65, back_guid_y + 14.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//右端
+	DrawStringToHandle(back_guid_x + 2, back_guid_y + 3, "BACK", BACK_COLOR, buttonguid_font, 0xFFFFFF);
+	DrawStringToHandle(back_guid_x + 85, 668, "入力方式切替", 0xFFA15C, buttonguid_font, 0x000000);
+
+	const int mute_guid_x = 560;
+	DrawStringToHandle(mute_guid_x, 668, "ミュート／ミュート解除", 0xFFA15C, buttonguid_font, 0x000000);
+	DrawCircleAA(mute_guid_x - 20, 680, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(mute_guid_x - 27, 668, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
 	
-	DrawStringToHandle(780, 668, "戻る", 0xFFA15C, buttonguid_font, 0x000000);
-	DrawCircleAA(760, 680, 15, 20, 0xFFFFFF, 1);
-	DrawStringToHandle(753, 668, Option::GetInputMode() ? "A" : "B", Option::GetInputMode() ? A_COLOR : B_COLOR, buttonguid_font, 0xFFFFFF);
+	const int return_center_x = 940;
+	DrawStringToHandle(return_center_x, 668, "戻る", 0xFFA15C, buttonguid_font, 0x000000);
+	DrawCircleAA(return_center_x - 20, 680, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(return_center_x - 27, 668, Option::GetInputMode() ? "A" : "B", Option::GetInputMode() ? A_COLOR : B_COLOR, buttonguid_font, 0xFFFFFF);
+}
+
+
+
+int Option::GetDrawCenterX(const char* string, int font_handle)const {
+
+	//画面幅
+	const int screenX = 1280;
+
+	const int w = screenX / 2 - GetDrawFormatStringWidthToHandle(font_handle, string) / 2;
+	return w;
 }
