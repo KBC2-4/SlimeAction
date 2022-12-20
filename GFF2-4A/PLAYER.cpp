@@ -738,7 +738,7 @@ void PLAYER::HitBlock(ELEMENT* element, STAGE* stage) {
 		int hit_lift_num = -1;
 		for (int i = 0; i < lift.size(); i++) {
 			if (player_right >= lift[i].x && player_left <= lift[i].x + LIFT_SIZE
-				&& player_y >= lift[i].y - MAP_CEllSIZE / 2 && player_y <= lift[i].y && player_state != PLAYER_MOVE_STATE::JUMP) {
+				&& player_y >= lift[i].y - 45  && player_y <= lift[i].y && player_state != PLAYER_MOVE_STATE::JUMP) {
 
 				if (((lift[i].type == 1 && !(lift[i].lift_vector_y > 0 && is_ground)) || (lift[i].type == 2 && !is_ground)) &&
 					(hit_lift_num == -1 || lift[hit_lift_num].y > lift[i].y)) {
