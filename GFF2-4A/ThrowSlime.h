@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #define BULLETRADIUS 5
 
 #include "STAGE.h"
@@ -11,34 +9,36 @@ class ThrowSlime
 {
 private:
 	int image;
-	int throw_index;
-	int throw_cnt;
-	bool throw_end;
-	std::vector<float>throw_x;
-	std::vector<float>throw_y;
-	/*bool throw_fall;*/
 	bool throw_del;
-	float throw_bottom;
 
-	int move_type;
-	float move_x, move_y;
+	float ve = 110.0f;
+	float dt = 0.15f;
+	float g = 9.8f;
 
+	float vx0;
+	float vy0;
+
+	float x0;
+	float y0;
+
+	float vx;
+	float vy;
+
+	float time;
+
+	float maxY;
 public:
 	ThrowSlime() {}
-	ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y, STAGE* stage);
+	ThrowSlime(float player_x, float player_y, float throw_rad, STAGE* stage);
 	void Finalize();
-	void Update(STAGE* stage);
+	void Update(STAGE* stage, ELEMENT* element);
 	void Draw(STAGE* stage) const;
 
 
 	bool checkdel() { return throw_del; }
-	bool Get_throwend() { return throw_end; }
-	/*bool Get_throwfall() { return throw_fall; }*/
-	int HitBlock(STAGE* stage);
+	void Hit(STAGE* stage, ELEMENT* element);
 
-	/*int HitBlock(STAGE* stage);
-master*/
-	float GetThrowX() { return throw_x[0]; }
-	float GetThrowY() { return throw_y[0]; }
+	float GetThrowX() { return x0; }
+	float GetThrowY() { return y0; }
 };
 

@@ -163,7 +163,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage) {
 	//球の更新
 	int throw_cnt = throw_slime.size();
 	for (int i = 0; i < throw_cnt; i++) {
-		throw_slime[i].Update(stage);
+		throw_slime[i].Update(stage, element);
 	}
 
 	//死判定
@@ -669,7 +669,7 @@ void PLAYER::Throw(STAGE* stage) {
 			push_button = true;
 			//投げる処理
 			throw_interval = THROW_INTERVAL;
-			throw_slime.push_back(ThrowSlime(throw_x, throw_y, stage));
+			throw_slime.push_back(ThrowSlime(player_x, player_y, throw_rad, stage));
 			ChangeAnimation(PLAYER_ANIM_STATE::THROW, true);
 		}
 	}

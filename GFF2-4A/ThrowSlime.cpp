@@ -3,92 +3,76 @@
 #include"PLAYER.h"
 #include<math.h>
 
-ThrowSlime::ThrowSlime(std::vector<float>_throw_x, std::vector<float>_throw_y, STAGE* stage) {
+ThrowSlime::ThrowSlime(float player_x, float player_y, float throw_rad, STAGE* stage) : ve(110.0f) {
 	if ((image = LoadGraph("Resource/Images/Player/Slime_Bullet.png")) == -1) {
 		throw "Resource/Images/Player/Slime_Bullet.png";
 	}
 
-	throw_x = _throw_x;
-	throw_y = _throw_y;
-	throw_cnt = _throw_x.size();
-	for (int i = 0; i < throw_cnt; i++) {
-		throw_x[i] -= stage->GetScrollX();
-		throw_y[i] -= stage->GetScrollY();
-	}
-	move_type = 0;
-	move_x = 0;
-	move_y = 0;
-	throw_index = 0;
-	throw_end = false;
 	throw_del = false;
-	/*throw_fall = false;*/
+
+	vx0 = ve * cosf(throw_rad);
+	vy0 = ve * sinf(throw_rad);
+
+	x0 = player_x;
+	y0 = player_y;
+
+	vx = vx0;
+	vy = vy0;
+
+	time = 0.0f;
+	maxY = stage->GetMapSize().y * MAP_CEllSIZE;
 }
 
 void ThrowSlime::Finalize() {
 	DeleteGraph(image);
 }
 
-void ThrowSlime::Update(STAGE* stage) {
-	if (!throw_end) {
-		if (move_type == 0) {
-			throw_x[0] = throw_x[throw_index];
-		}
-		//else {
-		throw_y[0] = throw_y[throw_index];
-
-		/*if (throw_index >= throw_cnt)throw_end = true;*/
-
-
-		if (++throw_index >= throw_cnt) {
-			throw_del = true;
-			throw_end = true;
-			return;
-		}
-		//if (throw_y[0] < throw_y[throw_index])throw_del = true;
-		//throw_x[0] += move_x;
-		//throw_y[0] += move_y;
-		//move_y += 4.8f;
-	//}
-
-		if (HitBlock(stage)) {
-			//Drop = true;
-			throw_end = true;
-		}
+void ThrowSlime::Update(STAGE* stage, ELEMENT* element) {
+	x0 = x0 + vx * dt;
+	y0 = y0 - vy * dt;
+	vy = vy - g * dt;
+	if (vy < 0) {
+		g += 0.2f;
 	}
+	time += dt;
 
+	if (maxY < y0) {
+		throw_del = true;
+	}
+	else {
+		Hit(stage, element);
+	}
 }
 
 void ThrowSlime::Draw(STAGE *stage) const {
-	//DrawGraph(throw_x[0] + stage->GetScrollX(), throw_y[0], image, TRUE);
-	DrawRotaGraph(throw_x[0] + stage->GetScrollX(), throw_y[0] + stage->GetScrollY(), 1, 1, image, TRUE);
-	//printfDx("throw_y[0] = %f",throw_y[0]);
-	//printfDx("throw_bottom = %f", throw_bottom);
-
+	DrawRotaGraph(x0 + stage->GetScrollX(), y0 + stage->GetScrollY(), 1.0, 0.0, image, TRUE);
 }
 
-int ThrowSlime::HitBlock(STAGE* stage) {
-	if (throw_y[0] <= 0) {
-		return false;
+void ThrowSlime::Hit(STAGE* stage, ELEMENT* element) {
+	//マップの上部を越えたら当たり判定を無視
+	if (y0 <= 0) {
+		return;
 	}
-	//if (throw_y[0] >= throw_y[throw_index + 1])throw_fall = true;
-	int object = stage->GetMapData(static_cast<int>(floor((throw_y[0] / MAP_CEllSIZE))), static_cast<int>(throw_x[0] / MAP_CEllSIZE));
+
+	//リフトの当たり判定
+	std::vector<ELEMENT::ELEMENT_DATA> lift = element->GetLift();
+	for (int i = 0; i < lift.size(); i++) {
+		if (x0 - BULLETRADIUS <= lift[i].x + LIFT_SIZE && x0 + BULLETRADIUS >= lift[i].x
+			&& y0 - BULLETRADIUS <= lift[i].y + MAP_CEllSIZE / 2 && y0 + BULLETRADIUS >= lift[i].y) {
+			throw_del = true;
+			return;
+		}
+	}
 	
-	if (stage->HitThrowSlime(static_cast<int>(floor(throw_y[0] / MAP_CEllSIZE)), static_cast<int>(throw_x[0] / MAP_CEllSIZE)) == true) {
-		if (object == 91 || object == 92) { return false; }
-		if (object == 24 || object == 23|| object == 21) { return false; }
+	int object = stage->GetMapData(static_cast<int>(floor((y0 / MAP_CEllSIZE))), static_cast<int>(x0 / MAP_CEllSIZE));
+	if (stage->HitThrowSlime(static_cast<int>(floor(y0 / MAP_CEllSIZE)), static_cast<int>(x0 / MAP_CEllSIZE)) == true) {
+		if (object == 91 || object == 92) { return; } //敵
+		if (object == 51 || object == 52 || object == 53 || object == 54) return; //リフト
+		if (object == 21 || object == 22 || object == 23 || object == 24) { return; } //木
+		if (object == 64 || object == 65) { return; } //開いたドア
+
 		throw_del = true;
 	}
-	//else *///if (throw_fall == true && stage->HitThrowSlime(static_cast<int>(floor(throw_y[0] / MAP_CEllSIZE)), static_cast<int>(throw_x[0] / MAP_CEllSIZE))) {
-	//	if (object == 91 || object == 92 || object == 13 || object == 23) {
-	//		return false;
-	//	}
-	//	//printfDx("%d\n", stage->GetMapDat(static_cast<int>(floor((throw_y[0] / MAP_CEllSIZE))), static_cast<int>(throw_x[0] / MAP_CEllSIZE)));
-	//	throw_bottom = (static_cast<int>(throw_y[0])/* - MAP_CEllSIZE*/) % MAP_CEllSIZE;//throw_y[0] - ((throw_y[0]- MAP_CEllSIZE) / MAP_CEllSIZE)* MAP_CEllSIZE;
-	//	if (throw_bottom <= 0) {
-	//		return false;
-	//	}
-	//	throw_y[0] -= throw_bottom + 10;
-	//	return true;
-	//}
-	return false;
+
+	return;
 }
