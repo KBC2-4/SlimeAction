@@ -55,7 +55,7 @@ void DRAW_RANKING::Draw() const
 		{
 			if (best_time[i] / 1000 >= 60)
 			{
-				DrawFormatStringToHandle(600, 305 + (75 * i), 0xEB7415, time_font, "%4d•ª%2d.%.3d", (best_time[i] / 1000) / 60, (best_time[i] / 1000) % 60, best_time[i] % 1000);
+				DrawFormatStringToHandle(630, 305 + (75 * i), 0xEB7415, time_font, "%4d:%02d.%.3d", (best_time[i] / 1000) / 60, (best_time[i] / 1000) % 60, best_time[i] % 1000);
 			}
 			else 
 			{

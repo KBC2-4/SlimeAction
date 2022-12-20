@@ -451,7 +451,7 @@ void ELEMENT::Draw(STAGE* stage, PLAYER* player) {
 
 	//地下エフェクト
 	if (underground_effects != 0) {
-		DrawCircleAA(player->GetPlayerX(), player->GetPlayerY(), 1200.0F - underground_effects * 5, 32, 0x000000, FALSE, 1200.0F - underground_effects * 4);
+		DrawCircleAA(player->GetPlayerX(), player->GetPlayerY(), 1200.0F - underground_effects * 3, 32, 0x000000, FALSE, 1200.0F);
 
 	}
 
@@ -740,7 +740,7 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 					}
 
 					if (underground_effects > 0) {
-						underground_effects -= 5;
+						underground_effects -= manhole[i].lift_wait_time + 1;
 					}
 
 					if (player->GetPlayerY() + -stage->GetScrollY() < manhole[i].y) {

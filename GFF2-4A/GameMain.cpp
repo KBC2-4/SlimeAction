@@ -327,7 +327,8 @@ AbstractScene* GAMEMAIN::Update()
 			if (player->IsDeath()) {
 				if (!restart && stage->GetHalfwayPointFlg()) {
 					halfway_time = time - GetNowCount();
-					return new GAMEMAIN(true, halfway_time, stage_name);
+					elapsed_time = GetNowCount() - time;
+					return new GAMEMAIN(true, elapsed_time, stage_name);
 				}
 				return new GameOver(stage_name);
 			}
@@ -335,7 +336,8 @@ AbstractScene* GAMEMAIN::Update()
 			//ステージクリア
 			if (stage->GetClearFlg())
 			{
-				return new RESULT(true, time + halfway_time, stage_name);
+				const int clear_time = GetNowCount() - time + halfway_time;
+				return new RESULT(true, clear_time, stage_name);
 			}
 		}
 	}
@@ -368,7 +370,6 @@ AbstractScene* GAMEMAIN::Update()
 		stage->SetScrollX(scrollx);	//スポーン地点をセット
 		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
 	}
-
 	return this;
 }
 
@@ -456,12 +457,12 @@ void GAMEMAIN::Draw() const
 
 	//経過時間の描画
 	char dis_clear_time[20];	//文字列合成バッファー
-
+	
 	//文字列合成
 	if (elapsed_time / 1000 >= 60)
 	{
 
-		sprintf_s(dis_clear_time, sizeof(dis_clear_time), "%4d:%2d.%.3d",
+		sprintf_s(dis_clear_time, sizeof(dis_clear_time), "%4d:%02d.%.3d",
 			(elapsed_time / 1000) / 60, (elapsed_time / 1000) % 60, elapsed_time % 1000);
 	}
 	else
@@ -471,7 +472,9 @@ void GAMEMAIN::Draw() const
 			"%5d.%.3d", elapsed_time / 1000, elapsed_time % 1000);
 	}
 
-	DrawStringToHandle(1110, 10, dis_clear_time, 0x1aff00, time_font, 0xFFFFFF);
+	int str_width = GetDrawFormatStringWidthToHandle(time_font, dis_clear_time);
+
+	DrawStringToHandle(1260 - str_width, 10, dis_clear_time, 0x1aff00, time_font, 0xFFFFFF);
 
 
 	if (pause->IsPause() == true) { //ポーズ画面へ

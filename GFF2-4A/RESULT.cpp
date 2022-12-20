@@ -49,7 +49,7 @@ RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 
 	win = issue;
 
-	this->clear_time = GetNowCount() - clear_time;
+	this->clear_time = clear_time;
 	se_randnum = GetRand(3);
 
 	*effect_timer = 0;
@@ -118,12 +118,6 @@ AbstractScene* RESULT::Update()
 	return this;
 }
 
- int RESULT::GetDrawCenterX(int screenX, const char* string, int font_handle)const
-{
-
-	const int w = screenX / 2 - GetDrawStringWidthToHandle(string, strlen(string), font_handle) / 2;
-	return w;
-}
 
 void RESULT::Draw() const {
 
@@ -138,7 +132,7 @@ void RESULT::Draw() const {
 		if (clear_time / 1000 >= 60)
 		{
 
-			sprintf_s(dis_clear_time, sizeof(dis_clear_time), "%4d:%2d.%.3d",
+			sprintf_s(dis_clear_time, sizeof(dis_clear_time), "%4d:%02d.%.3d",
 				(clear_time / 1000) / 60, (clear_time / 1000) % 60, clear_time % 1000);
 		}
 		else
@@ -150,7 +144,8 @@ void RESULT::Draw() const {
 
 		//クリアタイム
 		DrawStringToHandle(330, 300, "クリアタイム", 0x1aff00, Result_font, 0x000000);
-		DrawStringToHandle(GetDrawCenterX(1280,dis_clear_time,time_font), 400, dis_clear_time, 0x1aff00, time_font, 0xFFFFFF);
+
+		DrawStringToHandle(GetDrawCenterX(dis_clear_time,time_font), 400, dis_clear_time, 0x1aff00, time_font, 0xFFFFFF);
 
 		DrawFormatStringToHandle(30, 540, 0x56F590, Result_font, "%2d秒後にリスタートします", timer / 60);
 	}
