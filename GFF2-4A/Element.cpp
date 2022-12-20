@@ -694,7 +694,7 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 				}
 			}
 
-			else if ((manhole[i].flg == true) && (player_map_x >= manhole[i].x) && (player_map_x <= manhole[i].x + MAP_CEllSIZE) && (player_map_y > manhole[i].y + MAP_CEllSIZE)) {
+			else if ((manhole[i].flg == true) && (player_map_x >= manhole[i].x - MAP_CEllSIZE) && (player_map_x <= manhole[i].x + MAP_CEllSIZE * 2) && (player_map_y > manhole[i].y + MAP_CEllSIZE)) {
 				if (underground_effects < 120) {
 					underground_effects += 2;
 				}
@@ -736,6 +736,7 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 					const int speed = manhole[i].lift_wait_time * 4;
 
 					if (player->GetPlayerY() + -stage->GetScrollY() > manhole[i].y) {
+						stage->SetScrollY(stage->GetScrollY() + speed);
 						player->SetPlayerY((player->GetPlayerY() - stage->GetScrollY()) - speed);
 					}
 
