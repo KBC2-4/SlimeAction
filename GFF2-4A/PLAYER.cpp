@@ -525,6 +525,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				player_x = hook_x + nx;
 				player_y = hook_y + ny;
 				player_y += 1;
+				jump_mode = 2;
 				jumppower = fabs(static_cast<float>(nx) / LENGTH);
 				if (fabsf(nx) > LENGTH / 2) {
 					jump_request = true;
