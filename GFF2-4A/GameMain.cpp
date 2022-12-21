@@ -248,8 +248,7 @@ GAMEMAIN::~GAMEMAIN()
 AbstractScene* GAMEMAIN::Update()
 {
 
-	//STARTボタンでポーズ
-	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_START) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) { pause->SetPause(); }
+	pause->Update();
 
 	if (pause->IsPause() == false) {
 
@@ -342,11 +341,10 @@ AbstractScene* GAMEMAIN::Update()
 		}
 	}
 	else {	//ポーズ画面のセレクター
-		pause->Update();
-		if (pause->GetSelectMenu() == 3) { return new Title(); }
-		else if (pause->GetSelectMenu() == 1) { return new GAMEMAIN(false, 0, stage_name); }
-		else if (pause->GetSelectMenu() == 4) { pause->SetPause(); }
-		else if (pause->GetSelectMenu() == 2) {
+		
+		if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::TITLE) { return new Title(); }
+		else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::RESTART) { return new GAMEMAIN(false, 0, stage_name); }
+		else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::OPTION) {
 			//BGM
 			if (stage_name == "Stage01") {
 				ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
@@ -478,10 +476,8 @@ void GAMEMAIN::Draw() const
 
 
 	if (pause->IsPause() == true) { //ポーズ画面へ
-		int pause_graph = MakeGraph(1280, 720);
-		GetDrawScreenGraph(0, 0, 1280, 720, pause_graph);
 
-		pause->Draw(pause_graph);
+		pause->Draw();
 	}
 
 	//デバッグ
