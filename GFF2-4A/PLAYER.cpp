@@ -823,6 +823,7 @@ void PLAYER::MoveAnimation() {
 	//画像の切り替えタイミングのとき
 	int type = static_cast<int>(animation_state);
 	if (++animation[type].frame % animation[type].switch_frame == 0) {
+		animation[type].frame = 0;
 		//前半のアニメーション
 		if (animation[type].phase == 0 && animation[type].type < animation[type].image_num - 1) {
 			animation[type].type++;
