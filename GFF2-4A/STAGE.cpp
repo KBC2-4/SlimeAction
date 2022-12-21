@@ -309,16 +309,16 @@ void STAGE::CameraWork(PLAYER* player, ELEMENT* element) {
 	if (++count_timer % 60 == 0)player_longold = player->GetPlayerY();
 
 	//スポーン地点を基準に上げる位置を決める
-	if (scroll_y + player->GetPlayerY() < 0 && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) { scroll_y += scroll_speed_y; }
-	else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
-		if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().y + 400)) {
-			//プレイヤーの落下速度に応じてスクロールYを下げる
-			if (player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
-		}
-		if ((player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK || player->GetPlayerMoveState() == PLAYER_MOVE_STATE::GROW_HOOK) && player->GetPlayerY() > 500.0f) {
-			scroll_y -= 5;
-		}
-	}
+	//if (scroll_y + player->GetPlayerY() < 0 && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) { scroll_y += scroll_speed_y; }
+	//else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
+	//	if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().y + 400)) {
+	//		//プレイヤーの落下速度に応じてスクロールYを下げる
+	//		if (player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
+	//	}
+	//	if ((player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK || player->GetPlayerMoveState() == PLAYER_MOVE_STATE::GROW_HOOK) && player->GetPlayerY() > 500.0f) {
+	//		scroll_y -= 5;
+	//	}
+	//}
 
 
 	//マンホールの下にいった時	
@@ -327,14 +327,20 @@ void STAGE::CameraWork(PLAYER* player, ELEMENT* element) {
 
 	//スクロールY-720とプレイヤーY520の誤差が200になるまで
 
-
-
-/*if (player->GetPlayerY()>=720) {
-	scroll_y = -320;
+	
+	
+if (player->GetPlayerY()>=560&&GetMapData((player->GetPlayerY()-scroll_y)/MAP_CEllSIZE+3,(player->GetPlayerX()-scroll_x)/MAP_CEllSIZE)!=-1) {
+	if (player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL) {
+		//プレイヤーの落下速度に応じてスクロールYを下げる
+		if (player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
+	}
+	else {
+		scroll_y -= 5;
+	}
 }
-else if (player->GetPlayerY() < 640) {
-	scroll_y = 0;
-}*/
+else if (player->GetPlayerY() <= 320) {
+	scroll_y += 5;
+}
 
 	if (player_x_old != player->GetPlayerX()) {
 		player_x_old = player->GetPlayerX();
