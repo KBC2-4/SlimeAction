@@ -51,7 +51,6 @@ class PLAYER
 {
 
 private:
-	bool is_death;
 	float player_x, player_y;
 	float old_player_x, old_player_y;
 	int map_x, map_y;
@@ -64,11 +63,14 @@ private:
 	int images[ANIMATION_TYPE][10];		//アニメーションの画像
 	int move_type;			//左か右の移動(反転用)
 	float move_x;
+
+	//Jump
 	int jump_mode;			//停止ジャンプ(1)か移動ジャンプ(2)か
-	bool is_jump;
-	bool jump_request;
 	float jumppower;
 	float jump_velocity;
+	bool is_jump;
+	bool jump_request;
+	bool is_gravity;
 
 	//hook
 	bool is_hook_move;
@@ -173,69 +175,122 @@ public:
 	void Throw(STAGE* stage);
 	void MoveAnimation();
 	void Update(ELEMENT*element, STAGE* stage, TOMATO** tomaton, int tomaton_count);
-	void HitBlock(ELEMENT* element, STAGE* stage);
+	void Hit(ELEMENT* element, STAGE* stage);
 	void ChangeAnimation(PLAYER_ANIM_STATE anim, bool compelChange = false);
 
-	/*変数のセットとゲット*/
+	//変数のゲット
+
+	/// <summary>
+	/// 死亡判定のGetter
+	/// </summary>
+	bool IsDeath() { return player_state == PLAYER_MOVE_STATE::DEAD; }
+	
+	/// <summary>
+	/// プレイヤーのライフのGetter
+	/// </summary>
 	int GetLife() { return life; };
-	bool IsDeath() { return is_death; }
-	/// <summary>
-	/// プレイヤーのマップ内X座標のGetter
-	/// </summary>
-	/// <returns>float型：プレイヤーのマップ内X座標</returns>	
-	float GetPlayerX() { return player_x + stage->GetScrollX(); }
-	/// <summary>
-	/// プレイヤーのマップ内Y座標のGetter
-	/// </summary>
-	/// <returns>float型：プレイヤーのマップ内Y座標</returns>	
-	float GetPlayerY() { return player_y + stage->GetScrollY(); }
-	/// <summary>
-	/// プレイヤーのマップ内旧X座標のGetter
-	/// </summary>
-	/// <returns>float型：プレイヤーのマップ内旧X座標</returns>	
-	float GetOldPlayerX() { return old_player_x + stage->GetScrollX(); }
-	/// <summary>
-	/// プレイヤーのマップ内旧Y座標のGetter
-	/// </summary>
-	/// <returns>float型：プレイヤーのマップ内旧Y座標</returns>	
-	float GetOldPlayerY() { return old_player_y + stage->GetScrollY(); }
-	/// <summary>
-	/// プレイヤーのマップ内X座標のSetter
-	/// </summary>
-	void SetPlayerX(float x) { player_x = x - stage->GetScrollX(); }
-	/// <summary>
-	/// プレイヤーの画面内Y座標のSetter
-	/// </summary>
-	void SetPlayerY(float y) { player_y = y; }
-	/// <summary>
-	/// プレイヤーの画面内座標のSetter
-	/// </summary>
-	void SetPlayer_Screen(POINT screen) { player_x = screen.y; player_y = screen.x; }
 
+	/// <summary>
+	/// プレイヤーの弾の数のGetter
+	/// </summary>
 	int GetThrowCnt() { return static_cast<int>(throw_slime.size()); }
-	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
 
-	float GetSpeed() { return player_speed; }
+	/// <summary>
+	/// プレイヤーのマップ配列YのGetter
+	/// </summary>
+	/// <returns>int型：配列の添え字</returns>
+	int GetMapY() { return map_y; }
+
+	/// <summary>
+	/// プレイヤーの画面内X座標のGetter
+	/// </summary>
+	/// <returns>float型：プレイヤーの画面内X座標</returns>	
+	float GetPlayerX() { return player_x + stage->GetScrollX(); }
+
+	/// <summary>
+	/// プレイヤーの画面内Y座標のGetter
+	/// </summary>
+	/// <returns>float型：プレイヤーの画面内Y座標</returns>	
+	float GetPlayerY() { return player_y + stage->GetScrollY(); }
+
+	/// <summary>
+	/// プレイヤーの画面内旧X座標のGetter
+	/// </summary>
+	/// <returns>float型：プレイヤーの画面内旧X座標</returns>	
+	float GetOldPlayerX() { return old_player_x + stage->GetScrollX(); }
+
+	/// <summary>
+	/// プレイヤーの画面内旧Y座標のGetter
+	/// </summary>
+	/// <returns>float型：プレイヤーの画面内旧Y座標</returns>	
+	float GetOldPlayerY() { return old_player_y + stage->GetScrollY(); }
+
+	/// <summary>
+	/// プレイヤーの移動方向のGetter
+	/// </summary>
+	/// <returns>float型：-1.0 or 1.0</returns>
 	float GetMoveX() { return move_x; }
 
-	float GetPlayerScale() { return player_scale; }
 	/// <summary>
-	/// プレイヤーのジャンプ・落下速度のSetter
+	/// プレイヤーのサイズの倍率のGetter
+	/// </summary>
+	/// <returns>float型：倍率</returns>
+	float GetPlayerScale() { return player_scale; }
+
+	/// <summary>
+	/// プレイヤーのジャンプ・落下速度のGetter
 	/// </summary>
 	/// <returns>-10 ～ 10</returns>
 	float GetJumpVelocity() { return jump_velocity; }
 
+	/// <summary>
+	/// プレイヤーの移動速度のGetter
+	/// </summary>
+	/// <returns>float型：プレイヤーの移動速度</returns>
 	float GetPlayerSpeed() { return player_speed; }
+
+	/// <summary>
+	/// プレイヤーの振り子の速度のGetter
+	/// </summary>
+	/// <returns>float型：プレイヤーの振り子の速度</returns>
 	float GetPlayerHookSpeed() { return static_cast<float>(speed); }
 
-	int GetMapY() { return map_y; }
+	/// <summary>
+	/// プレイヤーの動作状態のGetter
+	/// </summary>
+	/// <returns>enum class型</returns>
+	PLAYER_MOVE_STATE GetPlayerMoveState() { return player_state; }
+
+	/// <summary>
+	/// プレイヤーの弾のクラスのGetter
+	/// </summary>
+	ThrowSlime GetThrowSlime(int index) { return throw_slime[index]; }
+
+	//変数のセット
+
 	/// <summary>
 	/// プレイヤーのライフのSetter
 	/// </summary>
 	void SetLife(int a);
+
 	/// <summary>
-	/// プレイヤーの動作状態のSetter
+	/// プレイヤーの画面内X座標のSetter
 	/// </summary>
-	/// <returns>enum class型</returns>
-	PLAYER_MOVE_STATE GetPlayerMoveState() { return player_state; }
+	void SetPlayerX(float x) { player_x = x - stage->GetScrollX(); }
+
+	/// <summary>
+	/// プレイヤーのマップ内Y座標のSetter
+	/// </summary>
+	void SetPlayerY(float y) { player_y = y; }
+
+	/// <summary>
+	/// プレイヤーのマップ内座標のSetter
+	/// </summary>
+	void SetPlayer_Screen(POINT screen) { player_x = screen.y; player_y = screen.x; }
+
+	/// <summary>
+	/// プレイヤーの重力のSetter
+	/// </summary>
+	/// <param name="gravity">true:有効 false:無効</param>
+	void SetGravity(bool gravity) { is_gravity = gravity; }
 };

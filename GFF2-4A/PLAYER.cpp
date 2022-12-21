@@ -21,8 +21,8 @@ PLAYER::PLAYER(STAGE* stage) {
 	jump_move_x = 0;
 	jump_request = false;
 	is_jump = false;
+	is_gravity = true;
 	is_hook_move = false;
-	is_death = false;
 	is_damage = false;
 	throw_preparation = false;
 	throw_interval = 0.0f;
@@ -150,7 +150,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomato
 	MoveAnimation();
 
 	//ブロックとの当たり判定
-	HitBlock(element, stage);
+	Hit(element, stage);
 
 	//球を消す処理
 	for (int i = 0; i < throw_slime.size(); i++) {
@@ -168,7 +168,8 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomato
 
 	//死判定
 	if (player_y + stage->GetScrollY() > 720 && player_state != PLAYER_MOVE_STATE::HOOK || life <= 0) {
-		is_death = true;
+		player_state = PLAYER_MOVE_STATE::DEAD;
+		return;
 	}
 
 	//画面端の判定
@@ -578,7 +579,7 @@ void PLAYER::JumpMove() {
 	//落下中
 	else {
 		//地面じゃない時は落下
-		if (!is_ground) {
+		if (!is_ground && is_gravity) {
 			jump_velocity += 0.2f;
 			player_y += jump_velocity;
 			player_state = PLAYER_MOVE_STATE::FALL;
@@ -681,7 +682,7 @@ void PLAYER::Throw(STAGE* stage) {
 /// <summary>
 /// 横移動の当たり判定
 /// </summary>
-void PLAYER::HitBlock(ELEMENT* element, STAGE* stage) {
+void PLAYER::Hit(ELEMENT* element, STAGE* stage) {
 	//マップチップの座標のセット
 	map_x = (int)roundf(player_x / MAP_CEllSIZE);
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
@@ -697,7 +698,7 @@ void PLAYER::HitBlock(ELEMENT* element, STAGE* stage) {
 	hit_ceil = hit_ceil_center || hit_ceil_left || hit_ceil_right;
 
 	//地面の判定
-	is_ground = false;
+	is_ground = !is_gravity;
 	if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 		is_ground = true;
 		return;
@@ -775,7 +776,8 @@ void PLAYER::HitBlock(ELEMENT* element, STAGE* stage) {
 					int y = static_cast<int>(player_top / MAP_CEllSIZE);
 					//死判定
 					if (block_type == -1) {
-						is_death = true;
+						player_state = PLAYER_MOVE_STATE::DEAD;
+						return;
 					}
 					if (hit_ceil && !is_ground && y == i) continue;
 					//ドアの判定

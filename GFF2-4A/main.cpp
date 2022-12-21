@@ -9,15 +9,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double dNextTime = GetNowCount();
 
 	SetMainWindowText("スライムアクション");
+	SetMainWindowClassName("SlimeAction");
 	SetWindowIconID(01);
 
 	SetOutApplicationLogValidFlag(FALSE);   //ログ出力を無効にする
 
 	ChangeWindowMode(TRUE);		// ウィンドウモードで起動
 	SetGraphMode(1280, 720, 32);
-	if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
+
+	SetWindowVisibleFlag(FALSE);// ウィンドウを表示させない
 
 	SetAlwaysRunFlag(true);		//常にアクティブにする
+
+	if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
 
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);		//フォントをアンチエイリアス対応にする。
 
@@ -55,6 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		sceneMng->Draw();
 
 		ScreenFlip();			// 裏画面の内容を表画面に反映
+		SetWindowVisibleFlag(TRUE);// ウィンドウを表示させる
 
 		//フレームレートの設定
 		dNextTime += 16.66;
