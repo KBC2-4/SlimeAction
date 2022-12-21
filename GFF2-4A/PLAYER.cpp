@@ -24,6 +24,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	is_gravity = true;
 	is_hook_move = false;
 	is_damage = false;
+	is_visible = true;
 	throw_preparation = false;
 	throw_interval = 0.0f;
 	player_state = PLAYER_MOVE_STATE::IDLE;
@@ -204,6 +205,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomato
 /// プレイヤーの表示
 /// </summary>
 void PLAYER::Draw(STAGE* stage)const {
+	if (!is_visible) return;
 	static float dis = 0.0f;
 
 	if (is_damage) {
