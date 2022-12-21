@@ -9,21 +9,36 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	std::vector<std::vector<int>> spawn_point;
 	hp_img = LoadGraph("Resource/Images/Player/hp.png");
 
-	for (int i = 0; i < 2; i++) {
-		char dis_background_image[38];
-		sprintf_s(dis_background_image, sizeof(dis_background_image), "Resource/Images/Stage/BackImage%d.png", i + 1);
-
-		if ((background_image[i] = LoadGraph(dis_background_image)) == -1) {
-			throw dis_background_image;
+	//仮の背景画像
+	if (stage_name != "Stage02") {
+		if ((background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1) {
+			throw "Resource/Images/Stage/BackImage1.png";
 		}
 	}
 
-	for (int i = 0; i < 3; i++) {
-		char dis_stage_bgm[36];
-		sprintf_s(dis_stage_bgm, sizeof(dis_stage_bgm), "Resource/Sounds/BGM/stage%d.wav", i + 1);
+	if (stage_name == "Stage01") {
 
-		if ((background_music[i] = LoadSoundMem(dis_stage_bgm)) == -1) {
-			throw dis_stage_bgm;
+		if ((background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1) {
+			throw "Resource/Images/Stage/BackImage1.png";
+		}
+
+		if ((background_music[0] = LoadSoundMem("Resource/Sounds/BGM/stage1.wav")) == -1) {
+			throw "Resource/Sounds/BGM/stage1.wav";
+		}
+	}
+	else if (stage_name == "Stage02") {
+
+		if ((background_image[1] = LoadGraph("Resource/Images/Stage/BackImage2.png")) == -1) {
+			throw "Resource/Images/Stage/BackImage2.png";
+		}
+
+		if ((background_music[1] = LoadSoundMem("Resource/Sounds/BGM/stage2.wav")) == -1) {
+			throw "Resource/Sounds/BGM/stage2.wav";
+		}
+	}
+	else if (stage_name == "Stage03") {
+		if ((background_music[2] = LoadSoundMem("Resource/Sounds/BGM/stage3.wav")) == -1) {
+			throw "Resource/Sounds/BGM/stage3.wav";
 		}
 	}
 
@@ -189,22 +204,27 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 
 GAMEMAIN::~GAMEMAIN()
 {
-	DeleteGraph(background_image[0]);
-	DeleteGraph(background_image[1]);
+
 	DeleteGraph(hp_img);
+
+	//仮の背景画像
+	if (stage_name != "Stage02") {
+		DeleteGraph(background_image[0]);
+	}
 
 	if (stage_name == "Stage01") {
 		StopSoundMem(background_music[0]);
+		DeleteSoundMem(background_music[0]);
+		DeleteGraph(background_image[0]);
 	}
 	else if (stage_name == "Stage02") {
 		StopSoundMem(background_music[1]);
+		DeleteSoundMem(background_music[1]);
+		DeleteGraph(background_image[1]);
 	}
 	else if (stage_name == "Stage03") {
 		StopSoundMem(background_music[2]);
-	}
-
-	for (int i = 0; i < 3; i++) {
-		DeleteSoundMem(background_music[i]);
+		DeleteSoundMem(background_music[2]);
 	}
 
 	DeleteFontToHandle(time_font);
@@ -341,7 +361,7 @@ AbstractScene* GAMEMAIN::Update()
 		}
 	}
 	else {	//ポーズ画面のセレクター
-		
+
 		if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::TITLE) { return new Title(); }
 		else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::RESTART) { return new GAMEMAIN(false, 0, stage_name); }
 		else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::OPTION) {
@@ -405,7 +425,7 @@ void GAMEMAIN::Draw() const
 
 	//ステージの描画
 	stage->Draw(element);
-	element->Draw(stage,player);
+	element->Draw(stage, player);
 
 
 
@@ -455,7 +475,7 @@ void GAMEMAIN::Draw() const
 
 	//経過時間の描画
 	char dis_clear_time[20];	//文字列合成バッファー
-	
+
 	//文字列合成
 	if (elapsed_time / 1000 >= 60)
 	{
