@@ -76,7 +76,9 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 void GRAPEFRUIT::Update()
 {
 	//アニメーションの時間を加算
-	++animation_timer;
+	if (animation_timer < 80) {
+		++animation_timer;
+	}
 
 	//動きのステート
 	switch (state)

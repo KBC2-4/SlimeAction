@@ -347,8 +347,7 @@ void ELEMENT::Draw(STAGE* stage, PLAYER* player) {
 	for (int i = 0; i < door.size(); i++) {
 		//if (button[i].type == 2 && button[i].flg == false)DrawOvalAA(button[i].x + scroll_x, button[i].y + scroll_y + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 		if (door[i].flg == true) {
-			//エフェクト
-			//DrawOvalAA(door[i].x + stage->GetScrollX(), door[i].y + stage->GetScrollY() + 30 + door[i].animtimer, 25, 10, 4, 0xbfcb4e, TRUE, 1.0f);
+
 		}
 	}
 
@@ -573,18 +572,13 @@ void ELEMENT::Button(PLAYER* player) {
 void ELEMENT::Door(STAGE* stage) {
 	for (int i = 0; i < door.size(); i++) {
 		if (door[i].flg == true) {
-			door[i].animtimer++;
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
 			stage->SetMapData(y, x, 64);
 			stage->SetMapData(y - 1, x, 65);
 		}
-		//if (door[i].animtimer > 180) {
-		//	door[i].animtimer = 0;
-		//	door[i].flg = false;
-		//}
+
 		if ((player_map_x >= door[i].x + MAP_CEllSIZE) && (player_map_x <= door[i].x + MAP_CEllSIZE + 5) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
-			door[i].animtimer = 0;
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
 			stage->SetMapData(y, x, 66);

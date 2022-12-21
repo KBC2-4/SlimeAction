@@ -73,22 +73,26 @@ AbstractScene* Title::Update()
 	}
 	else {
 
-		input_margin++;
-
-		if (PAD_INPUT::GetPadThumbLY() > 20000 && input_margin > 20)
-		{
-
-			selectmenu = (selectmenu + 3) % 4;
-			input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
-			StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+		if (input_margin < 20) {
+			input_margin++;
 		}
+		else {
 
-		if (PAD_INPUT::GetPadThumbLY() < -20000 && input_margin > 20)
-		{
+			if (PAD_INPUT::GetPadThumbLY() > 20000)
+			{
 
-			selectmenu = (selectmenu + 1) % 4; input_margin = 0;
-			PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
-			StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+				selectmenu = (selectmenu + 3) % 4;
+				input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+				StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+			}
+
+			if (PAD_INPUT::GetPadThumbLY() < -20000)
+			{
+
+				selectmenu = (selectmenu + 1) % 4; input_margin = 0;
+				PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+				StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+			}
 		}
 
 		if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
