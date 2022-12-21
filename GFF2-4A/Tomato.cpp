@@ -50,7 +50,9 @@ TOMATO::~TOMATO()
 }
 void TOMATO::Update()
 {
-	++animation_timer;
+	if (animation_timer < 80) {
+		++animation_timer;
+	}
 	switch (state)
 	{
 	case ENEMY_STATE::IDOL:

@@ -32,7 +32,10 @@ DRAW_RANKING::~DRAW_RANKING() {
 AbstractScene* DRAW_RANKING::Update()
 {
 
-	++wait_time;
+	if (wait_time < 120) {
+		++wait_time;
+	}
+	else { wait_time = 0; }
 
 	if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
 	{

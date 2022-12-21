@@ -42,24 +42,29 @@ AbstractScene* GameOver::Update()
 {
 
 	//WaitTimeを加算
-	Input_WaitTime++;
-
-	/*上入力かつWaitTimeが20より大きい時cursorを上に、
-	最上の場合は下へ*/
-	if (PAD_INPUT::GetPadThumbLY() > 20000 && Input_WaitTime > 20)
-	{
-
-		SelectCount = (SelectCount + 1) % 2;
-		Input_WaitTime = 0;
+	if (Input_WaitTime < 20) {
+		++Input_WaitTime;
 	}
+	else {
 
-	/*下入力かつWaitTimeが20より大きい時cursorを下に、
-	最上の場合は上へ*/
-	if (PAD_INPUT::GetPadThumbLY() < -20000 && Input_WaitTime > 20)
-	{
+		/*上入力かつWaitTimeが20より大きい時cursorを上に、
+		最上の場合は下へ*/
+		if (PAD_INPUT::GetPadThumbLY() > 20000)
+		{
 
-		SelectCount = (SelectCount + 1) % 2;
-		Input_WaitTime = 0;
+			SelectCount = (SelectCount + 1) % 2;
+			Input_WaitTime = 0;
+		}
+
+		/*下入力かつWaitTimeが20より大きい時cursorを下に、
+		最上の場合は上へ*/
+		if (PAD_INPUT::GetPadThumbLY() < -20000)
+		{
+
+			SelectCount = (SelectCount + 1) % 2;
+			Input_WaitTime = 0;
+		}
+
 	}
 
 	/*Bボタンを入力かつPadStateがONのとき、

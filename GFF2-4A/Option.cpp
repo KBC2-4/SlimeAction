@@ -46,8 +46,10 @@ Option::~Option() {
 
 void Option::Update() {
 
-	input_margin++;
-	if (input_margin > 20) {
+	if (input_margin < 20) {
+		input_margin++;
+	}
+	else {
 		if ((PAD_INPUT::GetPadThumbLY() > 20000) || (PAD_INPUT::GetPadThumbLY() < -20000) || (PAD_INPUT::GetPadThumbLX() > 20000) || (PAD_INPUT::GetPadThumbLX() < -20000)) {
 			input_margin = 0;
 			PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
@@ -117,7 +119,7 @@ void Option::Draw() {
 	//選択メニュー
 
 	//BGM
-	DrawStringToHandle(GetDrawCenterX("BGM",menu_font), 250, "BGM", selectmenu == 0 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(GetDrawCenterX("BGM", menu_font), 250, "BGM", selectmenu == 0 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
 
 	const int bgm_x = 640;
 	const int bgm_y = 350;
@@ -145,7 +147,7 @@ void Option::Draw() {
 
 	DrawFormatString(se_x, se_y - 6, 0x000000, "%d", ((110 * se_vol / 255) - 1) / 10);
 
-	DrawStringToHandle(GetDrawCenterX("戻る",menu_font), 540, "戻る", selectmenu == 2 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+	DrawStringToHandle(GetDrawCenterX("戻る", menu_font), 540, "戻る", selectmenu == 2 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 
 	//入力方式の切り替え
 
@@ -164,7 +166,7 @@ void Option::Draw() {
 	DrawStringToHandle(190, 350, Option::GetInputMode() ? "戻る" : "決定／アクション", B_COLOR, buttonguid_font, 0xFFFFFF);
 	DrawCircleAA(167, 402, 15, 20, 0xFFFFFF, 1);
 	DrawStringToHandle(160, 390, "B", B_COLOR, buttonguid_font, 0xFFFFFF);
-	DrawStringToHandle(190, 390, Option::GetInputMode() ? "決定" : "戻る", B_COLOR, buttonguid_font, 0xFFFFFF);
+	DrawStringToHandle(190, 390, Option::GetInputMode() ? "決定／アクション" : "戻る", B_COLOR, buttonguid_font, 0xFFFFFF);
 
 
 
@@ -185,7 +187,7 @@ void Option::Draw() {
 	DrawStringToHandle(mute_guid_x, 668, "ミュート／ミュート解除", 0xFFA15C, buttonguid_font, 0x000000);
 	DrawCircleAA(mute_guid_x - 20, 680, 15, 20, 0xFFFFFF, 1);
 	DrawStringToHandle(mute_guid_x - 27, 668, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
-	
+
 	const int return_center_x = 940;
 	DrawStringToHandle(return_center_x, 668, "戻る", 0xFFA15C, buttonguid_font, 0x000000);
 	DrawCircleAA(return_center_x - 20, 680, 15, 20, 0xFFFFFF, 1);
