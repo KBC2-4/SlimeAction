@@ -16,10 +16,10 @@ private:
 	//背景画像
 	int background_image[3];
 	int background_music[3];		//BGM
-	int time_font;	//フォント
+	int start_time_font, time_font;	//フォント
 	int cursor_move_se, ok_se;	//SE
-	int time;		//開始経過時間
-	int halfway_time; //中間地点経過時の時間
+	int start_time;		//開始までの遅延時間
+	int start_effect_timer;
 	int elapsed_time;	//経過時間
 	const char* stage_name;	//リスタート時のステージ選択用
 

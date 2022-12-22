@@ -49,9 +49,9 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	if ((ok_se = LoadSoundMem("Resource/Sounds/SE/ok.wav")) == -1) {
 		throw "Resource/Sounds/SE/ok.wav";
 	}
+
+	start_time_font = CreateFontToHandle("メイリオ", 120, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	time_font = LoadFontDataToHandle("Resource/Fonts/TimeAttack_HUD.dft", 2);
-	time = GetNowCount();
-	this->halfway_time = halfway_time;
 	this->stage_name = stage_name;
 	elapsed_time = halfway_time;
 	lemoner_count = 0;
@@ -60,7 +60,8 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	item_num = 0;
 	item_rand = 0;
 
-
+	start_time = 180;
+	start_effect_timer = 120;
 
 
 	stage = new STAGE(stage_name);
@@ -227,7 +228,9 @@ GAMEMAIN::~GAMEMAIN()
 		DeleteSoundMem(background_music[2]);
 	}
 
+	DeleteFontToHandle(start_time_font);
 	DeleteFontToHandle(time_font);
+	
 	DeleteSoundMem(cursor_move_se);
 	DeleteSoundMem(ok_se);
 	delete player;
@@ -268,125 +271,140 @@ GAMEMAIN::~GAMEMAIN()
 AbstractScene* GAMEMAIN::Update()
 {
 
-	pause->Update();
+	if (start_time > 0) {
+		start_time--;
 
-	if (pause->IsPause() == false) {
+		char dis_start_time[2];	//文字列合成バッファー
 
-		//経過時間の加算
-		elapsed_time += 1000 / 60;
+		sprintf_s(dis_start_time, sizeof(dis_start_time), "%d", start_time / 60);
 
 		player->Update(element, stage, tomaton, tomaton_count);
-		stage->Update(player, element);	//ステージクリア用
-		element->Update(player, stage);
-		for (int i = 0; i < lemoner_count; i++)
-		{
-			if (lemoner[i] != nullptr)
+
+	}
+	else if (start_effect_timer > 0) {
+		start_effect_timer--;
+	}
+
+
+	if (start_time <= 0) {
+
+		pause->Update();
+
+		if (pause->IsPause() == false) {
+
+			//経過時間の加算
+			elapsed_time += 1000 / 60;
+
+			player->Update(element, stage, tomaton, tomaton_count);
+			stage->Update(player, element);	//ステージクリア用
+			element->Update(player, stage);
+			for (int i = 0; i < lemoner_count; i++)
 			{
-				lemoner[i]->Update();
-				if (lemoner[i]->GetDeleteFlag())
+				if (lemoner[i] != nullptr)
+				{
+					lemoner[i]->Update();
+					if (lemoner[i]->GetDeleteFlag())
+					{
+						item_rand = GetRand(5);
+						//アイテムを生成
+						if (item_rand == 0)
+						{
+							item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX(), stage->GetScrollY());
+						}
+						delete lemoner[i];
+						lemoner[i] = nullptr;
+					}
+				}
+			}
+			for (int i = 0; i < tomaton_count; i++)
+			{
+				tomaton[i]->Update();
+			}
+			for (int i = 0; i < gurepon_count; i++)
+			{
+				if (gurepon[i] != nullptr && gurepon[i]->GetDeleteFlg())
 				{
 					item_rand = GetRand(5);
 					//アイテムを生成
 					if (item_rand == 0)
 					{
-						item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX(), stage->GetScrollY());
+						item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX(), stage->GetScrollY());
 					}
-					delete lemoner[i];
-					lemoner[i] = nullptr;
+					delete gurepon[i];
+					gurepon[i] = nullptr;
 				}
-			}
-		}
-		for (int i = 0; i < tomaton_count; i++)
-		{
-			tomaton[i]->Update();
-		}
-		for (int i = 0; i < gurepon_count; i++)
-		{
-			if (gurepon[i] != nullptr && gurepon[i]->GetDeleteFlg())
-			{
-				item_rand = GetRand(5);
-				//アイテムを生成
-				if (item_rand == 0)
+				else if (gurepon[i] != nullptr && !gurepon[i]->GetDeleteFlg())
 				{
-					item[item_num++] = new ITEMBALL(gurepon[i]->GetX(), gurepon[i]->GetY(), gurepon[i]->GetSpawnMapX(), gurepon[i]->GetSpawnMapY(), player, stage, stage->GetScrollX(), stage->GetScrollY());
-				}
-				delete gurepon[i];
-				gurepon[i] = nullptr;
-			}
-			else if (gurepon[i] != nullptr && !gurepon[i]->GetDeleteFlg())
-			{
-				gurepon[i]->Update();
-			}
-			else
-			{
-			}
-		}
-		//アイテムのアップデート
-		for (int i = 0; i < item_count; i++)
-		{
-			if (item[i] != nullptr)
-			{
-				if (item[i]->GetDeleteFlag())
-				{
-					delete item[i];
-					item[i] = nullptr;
+					gurepon[i]->Update();
 				}
 				else
 				{
-					if ((item[i]->GetItemX() + stage->GetScrollX()) > 0 && (item[i]->GetItemX() + stage->GetScrollX()) < 1280)
+				}
+			}
+			//アイテムのアップデート
+			for (int i = 0; i < item_count; i++)
+			{
+				if (item[i] != nullptr)
+				{
+					if (item[i]->GetDeleteFlag())
 					{
-						item[i]->Update();
+						delete item[i];
+						item[i] = nullptr;
+					}
+					else
+					{
+						if ((item[i]->GetItemX() + stage->GetScrollX()) > 0 && (item[i]->GetItemX() + stage->GetScrollX()) < 1280)
+						{
+							item[i]->Update();
+						}
 					}
 				}
-			}
 
 
 
-			//ゲームオーバー
-			if (player->IsDeath()) {
-				if (!restart && stage->GetHalfwayPointFlg()) {
-					halfway_time = time - GetNowCount();
-					elapsed_time = GetNowCount() - time;
-					return new GAMEMAIN(true, elapsed_time, stage_name);
+				//ゲームオーバー
+				if (player->IsDeath()) {
+					if (!restart && stage->GetHalfwayPointFlg()) {
+						return new GAMEMAIN(true, elapsed_time, stage_name);
+					}
+					return new GameOver(stage_name);
 				}
-				return new GameOver(stage_name);
-			}
 
-			//ステージクリア
-			if (stage->GetClearFlg())
-			{
-				const int clear_time = GetNowCount() - time + halfway_time;
-				return new RESULT(true, clear_time, stage_name);
+				//ステージクリア
+				if (stage->GetClearFlg())
+				{
+					return new RESULT(true, elapsed_time, stage_name);
+				}
 			}
 		}
-	}
-	else {	//ポーズ画面のセレクター
+		else {	//ポーズ画面のセレクター
 
-		if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::TITLE) { return new Title(); }
-		else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::RESTART) { return new GAMEMAIN(false, 0, stage_name); }
-		else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::OPTION) {
-			//BGM
-			if (stage_name == "Stage01") {
-				ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
-			}
-			else if (stage_name == "Stage02") {
-				ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[1]);
-			}
-			else if (stage_name == "Stage03") {
-				ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[2]);
-			}
+			if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::TITLE) { return new Title(); }
+			else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::RESTART) { return new GAMEMAIN(false, 0, stage_name); }
+			else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::OPTION) {
+				//BGM
+				if (stage_name == "Stage01") {
+					ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
+				}
+				else if (stage_name == "Stage02") {
+					ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[1]);
+				}
+				else if (stage_name == "Stage03") {
+					ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[2]);
+				}
 
-			//SE
-			ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
-			ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+				//SE
+				ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+				ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+			}
 		}
-	}
 
-	//デバッグ
-	if (CheckHitKey(KEY_INPUT_F)) {
-		int scrollx = -(7800 - 500);
-		stage->SetScrollX(scrollx);	//スポーン地点をセット
-		player->SetPlayerX(500); //プレイヤーの画面内座標をセット
+		//デバッグ
+		if (CheckHitKey(KEY_INPUT_F)) {
+			int scrollx = -(7800 - 500);
+			stage->SetScrollX(scrollx);	//スポーン地点をセット
+			player->SetPlayerX(500); //プレイヤーの画面内座標をセット
+		}
 	}
 	return this;
 }
@@ -509,5 +527,19 @@ void GAMEMAIN::Draw() const
 		DrawFormatString(100, 350, 0x02F896, "PlayerY%f", player->GetPlayerY());
 		DrawFormatString(100, 400, 0x02F896, "SpawnPointY:%d", stage->GetSpawnPoint().y);
 		DrawFormatString(100, 450, 0x02F896, "Jump:%f", player->GetJumpVelocity());
+	}
+
+	if (start_time > 0) {
+
+		char dis_start_time[2];	//文字列合成バッファー
+
+		sprintf_s(dis_start_time, sizeof(dis_start_time), "%d", start_time / 60 + 1);
+
+		DrawStringToHandle(GetDrawCenterX(dis_start_time, start_time_font), 300, dis_start_time, 0xEBA05E, start_time_font, 0xFFFFFF);
+	}
+	else if(start_effect_timer > 0){
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0 +  start_effect_timer * 3 - 5 % 255);
+		DrawStringToHandle(GetDrawCenterX("START", start_time_font), 300, "START", 0xF5E03D, start_time_font, 0xFFFFFF);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 }
