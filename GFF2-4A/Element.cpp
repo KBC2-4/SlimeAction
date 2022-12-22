@@ -730,7 +730,8 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 				//Bボタンを押してflgがtrueになった時
 				if (manhole[i].flg == true) {
 					//player->SetGravity(false);
-					const int speed = manhole[i].lift_wait_time * 2;
+					//player->SetVisible(true);
+					const int speed = manhole[i].lift_wait_time * 4;
 
 					if (player->GetPlayerY() + -stage->GetScrollY() > manhole[i].y) {
 						stage->SetScrollY(stage->GetScrollY() + speed);
@@ -742,8 +743,9 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 					}
 					//SetGravityを有効化するとGetterの値が変わらない
 					//printfDx("%f\n", player->GetPlayerY());
-					if ((player->GetPlayerY() + -stage->GetScrollY()) < manhole[i].y - MAP_CEllSIZE) {
+					if ((player->GetPlayerY() + -stage->GetScrollY()) < manhole[i].y) {
 						if (!CheckSoundMem(manhole_opened_se)) { PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE); }
+						//player->SetVisible(false);
 						//一時的な当たり判定をつける。
 						stage->SetTemporary_Hit(69);
 						//player->SetGravity(true);
