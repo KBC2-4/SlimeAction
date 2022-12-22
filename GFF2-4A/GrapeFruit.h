@@ -34,8 +34,10 @@ public:
 	/// </summary>
 	/// <param name="player">プレイヤーのアドレス</param>
 	GRAPEFRUIT(PLAYER* player,STAGE* stage,int,int);
-
-
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~GRAPEFRUIT();
 	/// <summary>
 	/// 更新
 	/// </summary>

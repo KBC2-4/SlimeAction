@@ -281,8 +281,11 @@ ELEMENT::~ELEMENT() {
 	DeleteSoundMem(switch_se);
 	DeleteSoundMem(walk_puddle_se);
 	DeleteSoundMem(manhole_opened_se);
-	hook.clear();
-	hook.shrink_to_fit();
+
+	//逆に1MB程メモリ喰うのでやらない事
+	/*hook.clear();
+	hook.shrink_to_fit();*/
+
 	underground_effects = 0;
 }
 
@@ -726,8 +729,8 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 
 				//Bボタンを押してflgがtrueになった時
 				if (manhole[i].flg == true) {
-
-					const int speed = manhole[i].lift_wait_time * 4;
+					//player->SetGravity(false);
+					const int speed = manhole[i].lift_wait_time * 2;
 
 					if (player->GetPlayerY() + -stage->GetScrollY() > manhole[i].y) {
 						stage->SetScrollY(stage->GetScrollY() + speed);
@@ -737,12 +740,13 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 					if (underground_effects > 0) {
 						underground_effects -= manhole[i].lift_wait_time + 1;
 					}
-
-					if (player->GetPlayerY() + -stage->GetScrollY() < manhole[i].y) {
+					//SetGravityを有効化するとGetterの値が変わらない
+					//printfDx("%f\n", player->GetPlayerY());
+					if ((player->GetPlayerY() + -stage->GetScrollY()) < manhole[i].y - MAP_CEllSIZE) {
 						if (!CheckSoundMem(manhole_opened_se)) { PlaySoundMem(manhole_opened_se, DX_PLAYTYPE_BACK, TRUE); }
 						//一時的な当たり判定をつける。
 						stage->SetTemporary_Hit(69);
-
+						//player->SetGravity(true);
 						manhole[i].flg = false;
 					}
 				}

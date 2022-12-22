@@ -81,7 +81,9 @@ STAGE::STAGE(const char* stage_name) {
 /// デストラクタ
 /// </summary>
 STAGE::~STAGE() {
-	DeleteGraph(*block_image1);
+	for (int i = 0; i < 110; i++) {
+		DeleteGraph(block_image1[i]);
+	}
 	DeleteSoundMem(halfwaypoint_se);
 }
 
@@ -327,20 +329,20 @@ void STAGE::CameraWork(PLAYER* player, ELEMENT* element) {
 
 	//スクロールY-720とプレイヤーY520の誤差が200になるまで
 
-	
-	
-if (player->GetPlayerY()>=560&&GetMapData((player->GetPlayerY()-scroll_y)/MAP_CEllSIZE+3,(player->GetPlayerX()-scroll_x)/MAP_CEllSIZE)!=-1) {
-	if (player->GetPlayerMoveState()==PLAYER_MOVE_STATE::FALL) {
-		//プレイヤーの落下速度に応じてスクロールYを下げる
-		if (player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
+
+
+	if (player->GetPlayerY() >= 560 && GetMapData((player->GetPlayerY() - scroll_y) / MAP_CEllSIZE + 3, (player->GetPlayerX() - scroll_x) / MAP_CEllSIZE) != -1) {
+		if (player->GetPlayerMoveState() == PLAYER_MOVE_STATE::FALL) {
+			//プレイヤーの落下速度に応じてスクロールYを下げる
+			if (player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
+		}
+		else {
+			scroll_y -= 5;
+		}
 	}
-	else {
-		scroll_y -= 5;
+	else if (player->GetPlayerY() <= 320) {
+		scroll_y += 5;
 	}
-}
-else if (player->GetPlayerY() <= 320) {
-	scroll_y += 5;
-}
 
 	if (player_x_old != player->GetPlayerX()) {
 		player_x_old = player->GetPlayerX();

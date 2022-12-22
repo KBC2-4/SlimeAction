@@ -47,7 +47,7 @@ private:
 public:
     ENEMY_BULLET();                   //最初のコンストラクタ
     ENEMY_BULLET(PLAYER* player, STAGE* aug_stage, int x, int y, double dis,double,int); //引数アリのコンストラクタ
-    ~ENEMY_BULLET() {};               //デストラクタ
+    ~ENEMY_BULLET();               //デストラクタ
 
     void Update();                    //弾のアップデート
     void Move();                      //弾の動き

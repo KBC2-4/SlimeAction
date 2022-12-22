@@ -46,6 +46,12 @@ TOMATO::TOMATO(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 
 TOMATO::~TOMATO()
 {
+
+	for (int i = 0; i < 9; i++)
+	{
+		DeleteGraph(image[i]);
+	}
+
 	delete[] image;
 }
 void TOMATO::Update()

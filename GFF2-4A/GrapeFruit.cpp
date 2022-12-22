@@ -72,6 +72,16 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 }
 
 
+GRAPEFRUIT::~GRAPEFRUIT() {
+	
+	for (int i = 0; i < 24; i++) {
+		DeleteGraph(image[i]);
+	}
+
+	delete[] image;
+}
+
+
 //アップデート
 void GRAPEFRUIT::Update()
 {

@@ -53,6 +53,13 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 
 LEMON::~LEMON()
 {
+
+	for (int i = 0; i < 15; i++)
+	{
+		DeleteGraph(image[i]);
+	}
+
+
 	delete[] image;
 	if (bullet != nullptr)
 	{

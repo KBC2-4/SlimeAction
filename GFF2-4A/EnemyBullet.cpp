@@ -47,7 +47,7 @@ ENEMY_BULLET::ENEMY_BULLET()
 }
 
 //引数付きコンストラクタ
-ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, double dis,double p_rad,int index)
+ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, double dis, double p_rad, int index)
 {
 	if (LoadDivGraph("Resource/images/Enemy/Enemy_Bullet.png", 4, 4, 1, 20, 20, bullet_images) == -1)
 	{
@@ -101,12 +101,25 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	animation_timer = 0;
 	animation_type = 0;
 	dis_x = (player_x + rad_x) - (my_x - static_cast<double>(scroll_x));
-	dis_y = player_y - (my_y-static_cast<double>(scroll_y) - stage->GetSpawnPoint().y);
+	dis_y = player_y - (my_y - static_cast<double>(scroll_y) - stage->GetSpawnPoint().y);
 
 	hypote = sqrt((dis_x * dis_x) + (dis_y * dis_y));
 
 	bullet_sx = dis_x / hypote * BULLET_SPEED;
 	bullet_sy = dis_y / hypote * BULLET_SPEED;
+}
+
+ENEMY_BULLET::~ENEMY_BULLET() {
+
+	for (int i = 0; i < 4; i++) {
+		DeleteGraph(bullet_images[i]);
+	}
+
+	for (int i = 0; i < 20; i++) {
+		DeleteGraph(bullet_end_images[i]);
+	}
+
+
 }
 
 //描画
@@ -130,8 +143,8 @@ void ENEMY_BULLET::Update()
 	}
 	else
 	{
-	Move();	//あにめーしょんのうごき
-	Hit();  //プレイヤーとの当たり判定
+		Move();	//あにめーしょんのうごき
+		Hit();  //プレイヤーとの当たり判定
 	}
 	//弾がプレイヤーに当たっていたら
 	if (hit_flg)
@@ -161,7 +174,7 @@ void ENEMY_BULLET::Move()
 
 	//マップ上の値を代入
 	mapd_x = bullet_x / MAP_CEllSIZE;
-	mapd_y = (bullet_y + IMAGE_Y_SIZE)  / MAP_CEllSIZE;
+	mapd_y = (bullet_y + IMAGE_Y_SIZE) / MAP_CEllSIZE;
 
 	//自分が前いたマップ座標
 	o_map_x = map_x;
@@ -201,7 +214,7 @@ void ENEMY_BULLET::MoveAnimation()
 
 void ENEMY_BULLET::Hit()
 {
-	
+
 	float px1, py1, px2, py2;
 	float bx1, by1, bx2, by2;
 
@@ -225,7 +238,7 @@ void ENEMY_BULLET::Hit()
 		end_flg = true;
 		animation_timer = 0;
 		animation_type = 0;
-		if (stage->GetMapData(o_map_y + 1, o_map_x) != stage->GetMapData(map_y,map_x))
+		if (stage->GetMapData(o_map_y + 1, o_map_x) != stage->GetMapData(map_y, map_x))
 		{
 			if (rad > 90 * (PI / 180))
 			{
@@ -253,7 +266,7 @@ float ENEMY_BULLET::GetDrawX() const
 float ENEMY_BULLET::GetDrawY() const
 {
 	float ret = (bullet_y - scroll_y) + (static_cast<double>(scroll_y) + stage->GetScrollY());
-	
+
 	return ret;
 }
 

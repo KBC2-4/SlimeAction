@@ -30,7 +30,9 @@ ITEMBALL::ITEMBALL(float enemy_x, float enemy_y, int e_mapy, int e_mapx, PLAYER*
 	item_y = enemy_y;
 }
 
-ITEMBALL::~ITEMBALL() {};
+ITEMBALL::~ITEMBALL() {
+	DeleteGraph(item);
+};
 
 void ITEMBALL::Draw() const
 {
