@@ -30,6 +30,7 @@ Title::Title()
 
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 120, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	guid_font = CreateFontToHandle("メイリオ", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 
 	selectmenu = 0;
 	input_margin = 0;
@@ -58,6 +59,7 @@ Title::~Title()
 	DeleteSoundMem(ok_se);
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
+	DeleteFontToHandle(guid_font);
 }
 
 AbstractScene* Title::Update()
@@ -157,13 +159,21 @@ void Title::Draw()const
 		DrawStringToHandle(GetDrawCenterX("終了",menu_font), 630, "終了", selectmenu == 3 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 
 
+
 		//操作案内
 		if (timer % 120 < 60)
 		{
-			DrawCircleAA(579.0f, 324.0f, 15, 20, 0xFFFFFF, 1);
 
-			DrawExtendStringToHandle(572, 310, 0.4f, 0.4f, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, menu_font, 0xFFFFFF);
-			DrawExtendStringToHandle(600, 310, 0.4f, 0.4f, "で決定", 0xEBA05E, menu_font, 0xFFFFFF);
+			if (GetJoypadNum() == 0) {
+				DrawStringToHandle(GetDrawCenterX("コントローラーを接続してください", guid_font), 280, "コントローラーを接続してください", 0xFF5446, guid_font, 0xF53E27);
+			}
+			else {
+
+				DrawCircleAA(530.0f, 311.0f, 30, 20, 0xFFFFFF, 1);
+
+				DrawStringToHandle(510, 283, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
+				DrawStringToHandle(570, 280, "で決定", 0xEBA05E, guid_font, 0xFFFFFF);
+			}
 		}
 	}
 }
