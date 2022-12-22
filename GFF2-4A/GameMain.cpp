@@ -50,7 +50,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 		throw "Resource/Sounds/SE/ok.wav";
 	}
 
-	start_time_font = CreateFontToHandle("メイリオ", 120, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	start_time_font = CreateFontToHandle("メイリオ", 160, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	time_font = LoadFontDataToHandle("Resource/Fonts/TimeAttack_HUD.dft", 2);
 	this->stage_name = stage_name;
 	elapsed_time = halfway_time;
