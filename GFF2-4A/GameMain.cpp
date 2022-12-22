@@ -278,7 +278,9 @@ AbstractScene* GAMEMAIN::Update()
 
 		sprintf_s(dis_start_time, sizeof(dis_start_time), "%d", start_time / 60);
 
-		player->Update(element, stage, tomaton, tomaton_count);
+		//仮
+		//プレイヤーのアニメーションだけ動かせたい
+		if(start_time == 179)player->Update(element, stage, tomaton, tomaton_count);
 
 	}
 	else if (start_effect_timer > 0) {
