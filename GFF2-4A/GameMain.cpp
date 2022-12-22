@@ -515,11 +515,6 @@ void GAMEMAIN::Draw() const
 	DrawStringToHandle(1260 - str_width, 10, dis_clear_time, 0x1aff00, time_font, 0xFFFFFF);
 
 
-	if (pause->IsPause() == true) { //ポーズ画面へ
-
-		pause->Draw();
-	}
-
 	//デバッグ
 	if (CheckHitKey(KEY_INPUT_A)) {
 		DrawFormatString(100, 150, 0xF77D0A, "ScrollX:%f", stage->GetScrollX());
@@ -543,5 +538,13 @@ void GAMEMAIN::Draw() const
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0 +  start_effect_timer * 3 - 5 % 255);
 		DrawStringToHandle(GetDrawCenterX("START", start_time_font), 300, "START", 0xF5E03D, start_time_font, 0xFFFFFF);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
+
+
+	//常に最前面
+	if (pause->IsPause() == true) { //ポーズ画面へ
+
+		pause->Draw();
 	}
 }
