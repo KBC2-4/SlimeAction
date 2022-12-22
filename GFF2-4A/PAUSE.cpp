@@ -82,9 +82,11 @@ int PAUSE::Update(void) {
 				StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
 
 				//ƒfƒŠ[ƒgˆ—
-				DeleteGraph(pause_graph);
-				pause_graph = 0;
-				pause_effect_timer = 0;
+				if (static_cast<MENU>(selectmenu) != MENU::OPTION) {
+					DeleteGraph(pause_graph);
+					pause_graph = 0;
+					pause_effect_timer = 0;
+				}
 				nextmenu = selectmenu;
 
 				if (static_cast<MENU>(selectmenu) == MENU::RETURN) {

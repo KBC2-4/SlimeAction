@@ -24,6 +24,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	is_gravity = true;
 	is_hook_move = false;
 	is_damage = false;
+	is_visible = true;
 	throw_preparation = false;
 	throw_interval = 0.0f;
 	player_state = PLAYER_MOVE_STATE::IDLE;
@@ -204,6 +205,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomato
 /// プレイヤーの表示
 /// </summary>
 void PLAYER::Draw(STAGE* stage)const {
+	if (!is_visible) return;
 	static float dis = 0.0f;
 
 	if (is_damage) {
@@ -523,6 +525,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				player_x = hook_x + nx;
 				player_y = hook_y + ny;
 				player_y += 1;
+				jump_mode = 2;
 				jumppower = fabs(static_cast<float>(nx) / LENGTH);
 				if (fabsf(nx) > LENGTH / 2) {
 					jump_request = true;
@@ -821,6 +824,7 @@ void PLAYER::MoveAnimation() {
 	//画像の切り替えタイミングのとき
 	int type = static_cast<int>(animation_state);
 	if (++animation[type].frame % animation[type].switch_frame == 0) {
+		animation[type].frame = 0;
 		//前半のアニメーション
 		if (animation[type].phase == 0 && animation[type].type < animation[type].image_num - 1) {
 			animation[type].type++;

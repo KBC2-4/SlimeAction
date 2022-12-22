@@ -51,6 +51,7 @@ class PLAYER
 {
 
 private:
+	bool is_visible;
 	float player_x, player_y;
 	float old_player_x, old_player_y;
 	int map_x, map_y;
@@ -293,4 +294,10 @@ public:
 	/// </summary>
 	/// <param name="gravity">true:有効 false:無効</param>
 	void SetGravity(bool gravity) { is_gravity = gravity; }
+
+	/// <summary>
+	/// プレイヤーの表示非表示
+	/// </summary>
+	/// <param name="visible">true:有効 false:無効</param>
+	void SetVisible(bool visible) { is_visible = visible; }
 };

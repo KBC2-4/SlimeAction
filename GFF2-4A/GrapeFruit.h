@@ -12,18 +12,21 @@ class GRAPEFRUIT :
 	public ENEMY
 {
 private:
-	bool flag[3];                      //弾が存在しているかどうかのフラグ
-	int shootcount;                    //弾を撃つ感覚
-	int animation_timer;               //アニメーションの時間
-	int animation_type;                //アニメーションの種類
-	int spawn_map_x;                   //マップ上のX
-	int spawn_map_y;                   //マップ上のY
-	int target_x;                      //グレポンのターゲット座標
-	int bullet_count;                  //弾を撃つタイミング
-	bool delete_flg;                   //消えるフラグ
-	int face_image[2];                 //顔の画像
-	int fruit_image[3];                //果実の画像
-	ENEMY_BULLET* bullet[3];           //弾のクラス
+	bool flag[3];                   //弾が存在しているかどうかのフラグ
+	int shootcount;                 //弾を撃つ感覚
+	int animation_timer;            //アニメーションの時間
+	int animation_type;             //アニメーションの種類
+	int spawn_map_x;                //マップ上のX
+	int spawn_map_y;                //マップ上のY
+	int target_x;                   //グレポンのターゲット座標
+	int bullet_count;               //弾を撃つタイミング
+	bool delete_flg;                //消えるフラグ
+	int face_image[2];				//顔の画像
+	int fruit_image[3];             //果実の画像
+	int damage_se;					//ダメージを受けた時のSE
+	int press_se;					//プレスアニメーション時のSE
+
+	ENEMY_BULLET* bullet[3];       //弾のクラス
 public:
 	/// <summary>
 	/// コンストラクタ

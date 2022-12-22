@@ -2,8 +2,8 @@
 #include "GrapeFruit.h"
 #include<math.h>
 #define _USE_MATH_DEFINES
-
 #include <vector>
+#include"Option.h"
 
 //コンストラクタ
 
@@ -33,6 +33,7 @@ GRAPEFRUIT::GRAPEFRUIT()
 	for (int i = 0; i < 3; i++) {
 		bullet[i] = nullptr;
 	}
+	damage_se = 0;
 	bullet_count = 3;
 }
 
@@ -54,6 +55,12 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	{
 		throw "Resource/Images/Enemy/gurepon.png";
 	}
+	if ((damage_se = LoadSoundMem("Resource/Sounds/SE/Enemy/damage.wav")) == -1) {
+		throw "Resource/Sounds/SE/Enemy/damage.wav";
+	}
+	if ((press_se = LoadSoundMem("Resource/Sounds/SE/Enemy/press.wav")) == -1) {
+		throw "Resource/Sounds/SE/Enemy/press.wav";
+	}
 	shootcount = 0;
 	target_x = 200;
 
@@ -69,22 +76,37 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	this->player = player;
 	this->stage = stage;
 	bullet_count = 3;
+
+	ChangeVolumeSoundMem(Option::GetSEVolume(), damage_se);
+	ChangeVolumeSoundMem(static_cast<int>(Option::GetSEVolume() * 0.9), press_se);
+
 }
 
+GRAPEFRUIT::~GRAPEFRUIT()
+{
 
-GRAPEFRUIT::~GRAPEFRUIT() {
-	
 	for (int i = 0; i < 24; i++) {
 		DeleteGraph(image[i]);
 	}
 
 	delete[] image;
+
+	for (int i = 0; i < 3; i++)
+	{
+		delete bullet[i];
+	}
+
+	DeleteSoundMem(damage_se);
+	DeleteSoundMem(press_se);
+
 }
-
-
 //アップデート
 void GRAPEFRUIT::Update()
 {
+
+	ChangeVolumeSoundMem(Option::GetSEVolume(), damage_se);
+	ChangeVolumeSoundMem(static_cast<int>(Option::GetSEVolume() * 0.9), press_se);
+
 	//アニメーションの時間を加算
 	if (animation_timer < 80) {
 		++animation_timer;
@@ -141,6 +163,7 @@ void GRAPEFRUIT::Update()
 			animation_timer = 0;
 			animation_type = 0;
 			state = ENEMY_STATE::RETURN;
+			PlaySoundMem(press_se, DX_PLAYTYPE_BACK);
 		}
 		break;
 
@@ -249,6 +272,8 @@ void GRAPEFRUIT::Hit()
 			{
 				rad = 90 * (PI / 180);
 				state = ENEMY_STATE::FALL;
+				PlaySoundMem(damage_se, DX_PLAYTYPE_BACK);
+
 			}
 		}
 	}

@@ -7,13 +7,17 @@ class LEMON :
     public ENEMY
 {
 private:
-	bool hitflg;
-	bool delete_flag;
-	int shootcount;
+	bool hitflg;		//ダメージ受けたかどうか
+	bool delete_flag;	//敵を削除するかどうか
+	int shootcount;		//弾を撃つ感覚
 	
 	int now_image;		//使用している画像
-	int spawn_map_x;
-	int spawn_map_y;
+
+	int damage_se;		//ダメージを受けた時のSE
+	int press_se;		//プレスアニメーション時のSE
+
+	int spawn_map_x;	//スポーン地点(x)
+	int spawn_map_y;	//スポーン地点(y)
 
 	ENEMY_BULLET* bullet;
 
