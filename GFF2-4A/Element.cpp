@@ -116,6 +116,10 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 			case 68:
 				data.x = static_cast<float>((j * MAP_CEllSIZE));
 				data.y = static_cast<float>((i * MAP_CEllSIZE));
+				data.lift_init_x = j;		//配列データ
+				data.lift_init_y = i;		//配列データ
+				data.pair_num = 0;			//演算完了フラグ
+				data.lift_wait_time = 0;	//中間地点の数カウント用
 				data.type = 1;
 				data.flg = false;
 				data.animtimer = 0;
@@ -125,8 +129,11 @@ ELEMENT::ELEMENT(const char* stage_name) : STAGE(stage_name) {
 
 				//マンホール(中間)
 			case 69:
-				data.x = static_cast<float>((j * MAP_CEllSIZE + MAP_CEllSIZE / 2));
-				data.y = static_cast<float>((i * MAP_CEllSIZE + MAP_CEllSIZE / 2));
+				data.x = static_cast<float>((j * MAP_CEllSIZE));
+				data.y = static_cast<float>((i * MAP_CEllSIZE));
+				data.lift_init_x = j;		//配列データ
+				data.lift_init_y = i;		//配列データ
+				data.pair_num = 0;			//演算完了フラグ
 				data.type = 2;
 				data.flg = false;
 				data.animtimer = 0;
@@ -343,7 +350,7 @@ void ELEMENT::Draw(STAGE* stage, PLAYER* player) {
 		//DrawFormatString(100 + i * 100, 400, 0xffffff, "%f", lift[i].x);
 		/*DrawFormatString(100+i*100, 400, 0xffffff, "%f", lift_goal_X[i].x);
 		DrawBox(lift_goal_X[i].x + stage->GetScrollX(), lift_goal_X[i].y + stage->GetScrollY(), lift_goal_X[i].x + MAP_CEllSIZE * 2 + stage->GetScrollX(), lift_goal_X[i].y + MAP_CEllSIZE / 2 + stage->GetScrollY(),0xff0000,FALSE);*/
-		DrawExtendGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 31 + stage->GetScrollY(), lift[i].x + LIFT_SIZE + stage->GetScrollX(), lift[i].y + 70 + stage->GetScrollY(), block_image1[51], TRUE);		
+		DrawExtendGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 31 + stage->GetScrollY(), lift[i].x + LIFT_SIZE + stage->GetScrollX(), lift[i].y + 70 + stage->GetScrollY(), block_image1[51], TRUE);
 	}
 
 	//ドア
@@ -672,6 +679,20 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 			//manhole[i].flg = false;
 		}
 		if (manhole[i].type == 1) {
+
+			int mapdata_down = stage->GetMapData(manhole[i].lift_init_y + 1, manhole[i].lift_init_x);
+
+			//中間地点を抜ける下の座標を取得する
+			//中間地点の時にループ
+			while (mapdata_down == 69 && manhole[i].pair_num == 0)
+			{
+				manhole[i].lift_init_y++;
+				mapdata_down = stage->GetMapData(manhole[i].lift_init_y, manhole[i].lift_init_y);
+			}
+
+			//演算完了フラグ
+			manhole[i].pair_num = 1;
+
 			if ((player_map_x >= manhole[i].x) && (player_map_x <= manhole[i].x + MAP_CEllSIZE) && (player_map_y <= manhole[i].y + MAP_CEllSIZE) && (player_map_y >= manhole[i].y)) {
 				if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) {
 					stage->SetTemporary_Hit(999);
@@ -695,15 +716,52 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 				if (underground_effects < 120) {
 					underground_effects += 2;
 				}
+
+				const int speed = manhole[i].lift_wait_time * 2;
+
+				if ((manhole[i].flg == true) && player->GetPlayerY() + -stage->GetScrollY() < manhole[i].y) {
+					player->SetGravity(false);
+					stage->SetScrollY(stage->GetScrollY() - speed);
+					player->SetPlayerY((player->GetPlayerY() - stage->GetScrollY()) + speed);
+					printfDx("遅くしています\n");
+				}
 			}
 
 		}
 
 		//中間地点
 		if (manhole[i].type == 2) {
-			if ((player_map_x >= manhole[i].x - MAP_CEllSIZE / 2) && (player_map_x <= manhole[i].x + MAP_CEllSIZE / 2) && (player_map_y >= manhole[i].y - MAP_CEllSIZE / 2) && (player_map_y <= manhole[i].y + MAP_CEllSIZE / 2)) {
+			if ((player_map_x >= manhole[i].x) && (player_map_x <= manhole[i].x + MAP_CEllSIZE) && (player_map_y <= manhole[i].y + MAP_CEllSIZE) && (player_map_y >= manhole[i].y)) {
 				//プレイヤーの落下速度を遅くする
 				//player->SetPlayerY(player->GetPlayerY() - 3.0f);
+				//player->SetGravity(true);
+				player->SetVisible(false);
+			}
+			else {
+				//player->SetGravity(true);
+			}
+
+
+			int mapdata_down = stage->GetMapData(manhole[i].lift_init_y, manhole[i].lift_init_x);
+
+			//中間地点を抜ける下の座標を取得する
+			//中間地点の時にループ
+			while (mapdata_down == 69 && manhole[i].pair_num == 0)
+			{
+				manhole[i].lift_init_y++;
+				mapdata_down = stage->GetMapData(manhole[i].lift_init_y, manhole[i].lift_init_y);
+			}
+
+			//演算完了フラグ
+			manhole[i].pair_num = 1;
+
+			int manhole_down_y;
+			manhole_down_y = manhole[i].lift_init_y * MAP_CEllSIZE + MAP_CEllSIZE;
+
+			//中間地点の一番下に行った時
+			if ((player_map_x >= manhole[i].x) && (player_map_x <= manhole[i].x + MAP_CEllSIZE) && (player_map_y <= manhole_down_y + MAP_CEllSIZE) && (player_map_y >= manhole_down_y)) {
+				player->SetVisible(true);
+				player->SetGravity(true);
 			}
 		}
 
@@ -749,6 +807,7 @@ void ELEMENT::Manhole(PLAYER* player, STAGE* stage) {
 						//一時的な当たり判定をつける。
 						stage->SetTemporary_Hit(69);
 						//player->SetGravity(true);
+						player->SetVisible(true);
 						manhole[i].flg = false;
 					}
 				}
