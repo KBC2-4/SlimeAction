@@ -680,13 +680,15 @@ void PLAYER::Hit(ELEMENT* element, STAGE* stage) {
 	map_y = (int)floorf((player_y + MAP_CEllSIZE / 2) / MAP_CEllSIZE);
 	float player_left = player_x - 30 * player_scale;
 	float player_right = player_x + 30 * player_scale;
+	float old_player_left = old_player_x - 30 * player_scale;
+	float old_player_right = old_player_x + 30 * player_scale;
 	float player_top = (player_y - (player_scale - 0.6f) * MAP_CEllSIZE / 2);
 	float player_bottom = (player_y + MAP_CEllSIZE / 2);
 
 	//“Vˆä‚Ì”»’è
-	bool hit_ceil_center = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(player_x / MAP_CEllSIZE));
-	bool hit_ceil_left = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_left + player_speed) / MAP_CEllSIZE));
-	bool hit_ceil_right = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((player_right - player_speed) / MAP_CEllSIZE));
+	bool hit_ceil_center = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)(old_player_x / MAP_CEllSIZE));
+	bool hit_ceil_left = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((old_player_left + player_speed) / MAP_CEllSIZE));
+	bool hit_ceil_right = stage->HitMapDat((int)(player_top / MAP_CEllSIZE), (int)((old_player_right - player_speed) / MAP_CEllSIZE));
 	hit_ceil = hit_ceil_center || hit_ceil_left || hit_ceil_right;
 
 	//’n–Ê‚Ì”»’è
