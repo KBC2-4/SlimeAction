@@ -50,6 +50,13 @@ private:
 	TOMATO** tomaton;	//とまトン
 	ITEMBALL** item;     //アイテム
 	ELEMENT* element;	//ステージ内要素
+
+
+	//PV制作用（完成次第即座に消去）
+	int input_margin;
+	int scroll_speed;
+	bool player_visible;
+
 public:
 	/// <summary>
 	/// コンストラクタ

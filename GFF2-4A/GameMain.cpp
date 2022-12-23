@@ -63,8 +63,10 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	start_time = 180;
 	start_effect_timer = 120;
 
+	this->restart = restert;
 
-	stage = new STAGE(stage_name);
+
+	stage = new STAGE(stage_name, this->restart);
 	player = new PLAYER(stage);
 	pause = new PAUSE;
 	lemoner = nullptr;
@@ -166,7 +168,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	}
 	element = new ELEMENT(stage_name);
 
-	this->restart = restert;
+
 
 	if (restart == true) {
 		int scrollx = -(stage->GetHalfwayPoint().x - 500);
@@ -199,8 +201,14 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	}
 
 	//SE
-	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
-	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, cursor_move_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, ok_se);
+
+
+	//PV制作用（完成次第即座に消去）
+	input_margin = 0;
+	scroll_speed = 4;
+	player_visible = true;
 }
 
 GAMEMAIN::~GAMEMAIN()
@@ -230,7 +238,7 @@ GAMEMAIN::~GAMEMAIN()
 
 	DeleteFontToHandle(start_time_font);
 	DeleteFontToHandle(time_font);
-	
+
 	DeleteSoundMem(cursor_move_se);
 	DeleteSoundMem(ok_se);
 	delete player;
@@ -272,18 +280,30 @@ AbstractScene* GAMEMAIN::Update()
 {
 
 	if (start_time > 0) {
+
+		//カウント音再生
+		if (start_time % 60 == 0) {
+			PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+		}
+
 		start_time--;
 
 		char dis_start_time[2];	//文字列合成バッファー
 
 		sprintf_s(dis_start_time, sizeof(dis_start_time), "%d", start_time / 60);
 
-		//仮
-		//プレイヤーのアニメーションだけ動かせたい
-		if(start_time == 179)player->Update(element, stage, tomaton, tomaton_count);
+		//プレイヤーのX座標の動きを止める
+		int player_x = player->GetPlayerX();
+		player->Update(element, stage, tomaton, tomaton_count);
+		player->SetPlayerX(player_x);
 
+		//START音再生
+		if (start_time == 0) {
+			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+		}
 	}
 	else if (start_effect_timer > 0) {
+
 		start_effect_timer--;
 	}
 
@@ -408,6 +428,54 @@ AbstractScene* GAMEMAIN::Update()
 			player->SetPlayerX(500); //プレイヤーの画面内座標をセット
 		}
 	}
+
+	if (input_margin < 10) {
+		input_margin++;
+	}
+	else {
+
+		if (player_visible) {
+			player->SetVisible(true);
+		}
+		else {
+			player->SetVisible(false);
+		}
+		//PV制作用（完成次第即座に消去）
+
+		//プレイヤー表示・非表示
+		if (CheckHitKey(KEY_INPUT_N)) {
+			player_visible = !player_visible;
+		}
+
+		//スクロールスピードダウン
+		else if (CheckHitKey(KEY_INPUT_M)) {
+			if (scroll_speed > 0) { scroll_speed--; }
+		}
+
+		//スクロールスピードアップ
+		else if (CheckHitKey(KEY_INPUT_L)) {
+			scroll_speed++;
+		}
+		input_margin = 0;
+	}
+
+	//スクロール移動
+	if (CheckHitKey(KEY_INPUT_UP)) {
+		stage->SetScrollY(stage->GetScrollY() + scroll_speed);
+	}
+	else if (CheckHitKey(KEY_INPUT_DOWN)) {
+		stage->SetScrollY(stage->GetScrollY() - scroll_speed);
+	}
+	else if (CheckHitKey(KEY_INPUT_LEFT)) {
+		stage->SetScrollX(stage->GetScrollX() + scroll_speed * 3);
+	}
+	else if (CheckHitKey(KEY_INPUT_RIGHT)) {
+		if (stage->GetScrollX() > 0 || stage->GetScrollX() <= -(80 * static_cast<int>(stage->GetMapSize().x - 1280))) {
+			stage->SetScrollX(stage->GetScrollX() - scroll_speed * 3);
+		}
+	}
+
+
 	return this;
 }
 
@@ -534,9 +602,15 @@ void GAMEMAIN::Draw() const
 
 		DrawStringToHandle(GetDrawCenterX(dis_start_time, start_time_font), 300, dis_start_time, 0xEBA05E, start_time_font, 0xFFFFFF);
 	}
-	else if(start_effect_timer > 0){
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0 +  start_effect_timer * 3 - 5 % 255);
-		DrawStringToHandle(GetDrawCenterX("START", start_time_font), 300, "START", 0xF5E03D, start_time_font, 0xFFFFFF);
+	else if (start_effect_timer > 0) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0 + start_effect_timer * 3 - 5 % 255);
+
+		if (restart == false) {
+			DrawStringToHandle(GetDrawCenterX("START", start_time_font), 300, "START", 0xF5E03D, start_time_font, 0xFFFFFF);
+		}
+		else {
+			DrawStringToHandle(GetDrawCenterX("RESTART", start_time_font), 300, "RESTART", 0xE66500, start_time_font, 0xFFFFFF);
+		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
