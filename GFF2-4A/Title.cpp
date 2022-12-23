@@ -36,6 +36,8 @@ Title::Title()
 	input_margin = 0;
 	timer = 0;
 
+	option = new Option();
+
 	PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
 
 	//BGM
@@ -44,8 +46,6 @@ Title::Title()
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
-
-	option = new Option();
 }
 
 Title::~Title() 

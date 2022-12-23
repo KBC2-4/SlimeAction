@@ -3,6 +3,10 @@
 #include "PadInput.h"
 #include "Title.h"
 
+#include <fstream>
+#include <string>
+#include <sstream>
+
 int Option::bgm_vol = 255 * 50 / 100;
 int Option::se_vol = 255 * 50 / 100;
 bool Option::input_mode = true;
@@ -21,8 +25,12 @@ Option::Option() {
 		throw "Resource/Sounds/SE/cursor_move.wav";
 	}
 
+	LoadData();
+
 	//PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
 
+	old_bgm_vol = 0;
+	old_se_vol = 0;
 	selectmenu = 0;
 	input_margin = 0;
 
@@ -35,6 +43,7 @@ Option::Option() {
 
 Option::~Option() {
 
+	SaveData();
 	DeleteFontToHandle(menu_font);
 	DeleteFontToHandle(buttonguid_font);
 	DeleteSoundMem(cursor_move_se);
@@ -84,14 +93,14 @@ void Option::Update() {
 		if (static_cast<MENU>(selectmenu) == MENU::BGM) {
 			PlaySoundMem(mute_se, DX_PLAYTYPE_BACK, TRUE);
 			StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
-			if (bgm_vol > 2) { bgm_vol = 2; }
-			else { bgm_vol = 255 * 50 / 100; }
+			if (bgm_vol > 2) { old_bgm_vol = bgm_vol; bgm_vol = 2; }
+			else { bgm_vol = old_bgm_vol; }
 		}
 		else if (static_cast<MENU>(selectmenu) == MENU::SE) {
 			PlaySoundMem(mute_se, DX_PLAYTYPE_BACK, TRUE);
 			StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
-			if (se_vol > 2) { se_vol = 2; }
-			else { se_vol = 255 * 50 / 100; }
+			if (se_vol > 2) { old_se_vol = se_vol; se_vol = 2; }
+			else { se_vol = old_se_vol; }
 		}
 		else if (static_cast<MENU>(selectmenu) == MENU::RETURN) {
 			ChangeOptionFlg();
@@ -203,4 +212,57 @@ int Option::GetDrawCenterX(const char* string, int font_handle)const {
 
 	const int w = screenX / 2 - GetDrawFormatStringWidthToHandle(font_handle, string) / 2;
 	return w;
+}
+
+
+void Option::LoadData(void) {
+
+	std::string line;
+	std::ifstream config_file("Resource/Option.config");
+	if (config_file.is_open()) {
+		while (getline(config_file, line)) {
+
+			std::istringstream line_stream(line);
+			std::string key;
+			if (std::getline(line_stream, key, '=')) {
+
+				int value;
+
+				if (key == "BGM") {
+					line_stream >> value;
+					if (value > 10 || value < 0) { continue; }
+					bgm_vol = value * 25 +2;
+				}
+				else if (key == "SE") {
+					line_stream >> value;
+					if (value > 10 || value < 0) { continue; }
+					se_vol = value * 25 + 2;
+				}
+				else if (key == "INPUT_MODE") {
+					line_stream >> value;
+					if (value != 0 && value != 1) { continue; }
+					input_mode = value;
+				}
+			}
+		}
+		config_file.close();
+	}
+}
+
+
+void Option::SaveData(void) {
+
+	std::ofstream config_file("Resource/Option.config");
+
+	int bgm_buf = ((110 * bgm_vol / 255) - 1) / 10;
+	int se_buf = ((110 * se_vol / 255) - 1) / 10;
+
+	if (config_file.is_open()) {
+		config_file << "‰¹—Ê’²®(0 ` 10)" << std::endl;
+		config_file << "BGM=" << bgm_buf << std::endl;
+		config_file << "SE=" << se_buf << std::endl;
+		config_file << "\n0[A:Œˆ’è B:–ß‚é], 1[A:–ß‚é B:Œˆ’è]" << std::endl;
+		config_file << "INPUT_MODE=" << input_mode << std::endl;
+		config_file.close();
+	}
 }
