@@ -228,6 +228,9 @@ void Option::LoadData(void) {
 
 				int value;
 
+				//‹ó”’‚ðœ‹Ž‚µ‚½•¶Žš—ñ‚É‘‚«Š·‚¦‚é
+				key.erase(std::remove_if(key.begin(), key.end(), isspace), key.end());
+
 				if (key == "BGM") {
 					line_stream >> value;
 					if (value > 10 || value < 0) { continue; }
@@ -259,10 +262,10 @@ void Option::SaveData(void) {
 
 	if (config_file.is_open()) {
 		config_file << "‰¹—Ê’²®(0 ` 10)" << std::endl;
-		config_file << "BGM=" << bgm_buf << std::endl;
-		config_file << "SE=" << se_buf << std::endl;
+		config_file << "BGM = " << bgm_buf << std::endl;
+		config_file << "SE = " << se_buf << std::endl;
 		config_file << "\n0[A:Œˆ’è B:–ß‚é], 1[A:–ß‚é B:Œˆ’è]" << std::endl;
-		config_file << "INPUT_MODE=" << input_mode << std::endl;
+		config_file << "INPUT_MODE = " << input_mode << std::endl;
 		config_file.close();
 	}
 }
