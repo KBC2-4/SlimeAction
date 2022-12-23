@@ -75,8 +75,11 @@ private:
 
 	//hook
 	bool is_hook_move;
+	bool is_hook_pendulum_move; //フックまでの移動終了判定
+	float hook_move_x, hook_move_y;
 	float hook_angle;
 	float hook_distance;
+	float hook_move_distance;
 	float hook_y, hook_x;
 	int hook_index;
 	int idle_nobi_img;

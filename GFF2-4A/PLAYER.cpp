@@ -206,7 +206,6 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomato
 /// </summary>
 void PLAYER::Draw(STAGE* stage)const {
 	if (!is_visible) return;
-	static float dis = 0.0f;
 
 	if (is_damage) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_param);
@@ -215,7 +214,6 @@ void PLAYER::Draw(STAGE* stage)const {
 	//プレイヤーの表示
 	//フック中じゃない時
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
-		dis = 0.0f;
 		//描画する画像のセット
 		int image_type = static_cast<int>(animation_state);
 		int now_image = images[image_type][animation[image_type].type];
@@ -242,9 +240,8 @@ void PLAYER::Draw(STAGE* stage)const {
 		}
 		//伸びる時
 		else {
-			dis += hook_distance / 10.0f;
 			DrawRotaGraph3F(player_x + stage->GetScrollX() + 20, (player_y + stage->GetScrollY()) + (1.6 - player_scale) * 40, 80, 40,
-				(dis / (MAP_CEllSIZE * 3.0)) * player_scale, 1 * player_scale, (double)hook_angle + M_PI,
+				(hook_move_distance / (MAP_CEllSIZE * 3.0)) * player_scale, 1 * player_scale, (double)hook_angle + M_PI,
 				idle_nobi_img, TRUE, move_type);
 		}
 	}
@@ -343,11 +340,6 @@ void PLAYER::Move()
 /// フックの移動処理
 /// </summary>
 void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
-	//フックの移動方向
-	static float move_x = 0;
-	static float move_y = 0;
-	//フックまでの移動終了判定
-	static bool end_move = false;
 	//近くにフックがあるかどうか
 	bool is_hook = false;
 
@@ -375,8 +367,8 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 					//フックの角度
 					float angle = atan2f(diff_y, diff_x);
 					//移動の計算
-					move_x = cosf(angle) * player_speed * 3;
-					move_y = sinf(angle) * player_speed * 3;
+					hook_move_x = cosf(angle) * player_speed * 3;
+					hook_move_y = sinf(angle) * player_speed * 3;
 					//プレイヤーの現在の位置
 					float x = player_x;
 					float y = player_y;
@@ -385,8 +377,8 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 						if (stage->GetMapData(y / MAP_CEllSIZE, x / MAP_CEllSIZE) == 72) {
 							break;
 						}
-						x += move_x;
-						y += move_y;
+						x += hook_move_x;
+						y += hook_move_y;
 					}
 					//配列に変換
 					int hook_map_x = x / MAP_CEllSIZE;
@@ -415,7 +407,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 			player_state = PLAYER_MOVE_STATE::GROW_HOOK;
 			ChangeAnimation(PLAYER_ANIM_STATE::IDLE, false);
 			//移動中の時
-			if (!end_move) {
+			if (!is_hook_pendulum_move) {
 				//フックまでの距離の計算
 				float y = hook_y - player_y;
 				float x = hook_x - (player_x);
@@ -425,23 +417,26 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 				//フック移動してない時
 				if (!is_hook_move) {
 					//移動方向の計算
-					move_x = cosf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
-					move_y = sinf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
+					hook_move_x = cosf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
+					hook_move_y = sinf(hook_angle - 90.0f * (DX_PI_F / 180.0f)) * SPEED * 3;
 					//慣性的な奴
-					jump_move_x = move_x > 0 ? 1 : -1;
+					jump_move_x = hook_move_x > 0 ? 1 : -1;
 					jump_mode == 2;
 					//PlaySoundMem(hook_moveSE, DX_PLAYTYPE_BACK);
 				}
+				else {
+					hook_move_distance += hook_distance / 10.0f;
+				}
 				//フックについてない時
 				if (hook_distance > 40) {
-					player_x += move_x;
-					player_y += move_y;
+					player_x += hook_move_x;
+					player_y += hook_move_y;
 				}
 				//フックについたら移動処理の終了
 				else {
 					//StopSoundMem(hook_moveSE);
 					PlaySoundMem(hook_pendulumSE, DX_PLAYTYPE_LOOP);
-					end_move = true;
+					is_hook_pendulum_move = true;
 					//振り子の開始角度の設定
 					double angle = (double)hook_angle * (180.0 / M_PI) - 90.0;
 					if (angle > 90 && angle < 180) angle = 90.0;
@@ -500,7 +495,8 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 	//フックが見つからなかったら
 	if (!is_hook) {
 		//初期化		
-		end_move = false;
+		is_hook_pendulum_move = false;
+		hook_move_distance = 0.0f;
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			//フック後のジャンプ方向の修正
 			StopSoundMem(hook_pendulumSE);
@@ -616,7 +612,6 @@ void PLAYER::JumpMove() {
 }
 
 void PLAYER::Throw(STAGE* stage) {
-	static bool push_button = false;
 	//軌道の計算
 	throw_index = 0;
 	throw_x.clear();
@@ -668,17 +663,11 @@ void PLAYER::Throw(STAGE* stage) {
 		throw_x.push_back(x0);
 		throw_y.push_back(y0);
 	}
-	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_SHOULDER) {
-		if (!push_button) {
-			push_button = true;
-			//投げる処理
-			throw_interval = THROW_INTERVAL;
-			throw_slime.push_back(ThrowSlime(player_x, player_y, throw_rad, stage));
-			ChangeAnimation(PLAYER_ANIM_STATE::THROW, true);
-		}
-	}
-	else {
-		push_button = false;
+	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_SHOULDER && PAD_INPUT::GetPadState() == PAD_STATE::ON) {
+		//投げる処理
+		throw_interval = THROW_INTERVAL;
+		throw_slime.push_back(ThrowSlime(player_x, player_y, throw_rad, stage));
+		ChangeAnimation(PLAYER_ANIM_STATE::THROW, true);
 	}
 }
 
