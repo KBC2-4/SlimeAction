@@ -17,7 +17,7 @@
 /// <summary>
 /// コンストラクタ
 /// </summary>
-STAGE::STAGE(const char* stage_name) {
+STAGE::STAGE(const char* stage_name, bool restert) {
 	//**map_data = 0;
 	*block_image1 = 0;
 	*stage_image = 0;
@@ -51,7 +51,7 @@ STAGE::STAGE(const char* stage_name) {
 	clearbox = { 0,0 };
 	clear_count = 3000;
 	halfwaypointbox = { 0,0 };
-	halfwaypoint = false;
+	halfwaypoint = restert;
 	halfway_timer = 0;
 	spawn_point = { 0,0 };
 	this->stage_name = stage_name;

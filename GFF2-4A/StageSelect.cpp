@@ -135,11 +135,6 @@ AbstractScene* STAGE_SELECT::Update()
 		//return new GAMEMAIN(false, 0, "DebugStage");
 	}
 
-	//if (effect_timer[0] < 100) {
-	//	effect_timer[0]++;
-	//}
-	//else { SetDrawAreaFull(); }
-
 	return this;
 }
 

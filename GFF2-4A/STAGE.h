@@ -43,7 +43,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	STAGE(const char* stage_name = "StageSelect");
+	STAGE(const char* stage_name = "StageSelect", bool restert = false);
 	/// <summary>
 	/// デストラクタ
 	/// </summary>

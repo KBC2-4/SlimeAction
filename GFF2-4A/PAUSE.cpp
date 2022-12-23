@@ -35,6 +35,8 @@ PAUSE::~PAUSE() {
 	DeleteFontToHandle(buttonguid_font);
 	DeleteSoundMem(cursor_move_se);
 	DeleteSoundMem(ok_se);
+
+	DeleteGraph(pause_graph);
 }
 
 int PAUSE::Update(void) {
