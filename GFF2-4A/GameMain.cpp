@@ -434,17 +434,19 @@ AbstractScene* GAMEMAIN::Update()
 	}
 	else {
 
-		if (player_visible) {
-			player->SetVisible(true);
-		}
-		else {
-			player->SetVisible(false);
-		}
+
 		//PV制作用（完成次第即座に消去）
 
 		//プレイヤー表示・非表示
 		if (CheckHitKey(KEY_INPUT_N)) {
 			player_visible = !player_visible;
+
+			if (player_visible) {
+				player->SetVisible(true);
+			}
+			else {
+				player->SetVisible(false);
+			}
 		}
 
 		//スクロールスピードダウン
