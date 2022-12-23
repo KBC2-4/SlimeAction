@@ -8,8 +8,8 @@
 RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 {
 
-
-	time_font = LoadFontDataToHandle("Resource/Fonts/TimeAttack.dft",2);
+	Result_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	time_font = LoadFontDataToHandle("Resource/Fonts/TimeAttack.dft", 2);
 
 	if ((Result_Image = LoadGraph("Resource/Images/Result/GameClear.png")) == -1) {
 		throw "Resource/Images/Enemy/mi_hasya_kao.png";
@@ -24,25 +24,24 @@ RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 	}
 
 
-	for (int i = 0; i < 4; i++) {
-		char dis_good_se[30];
-		sprintf_s(dis_good_se, sizeof(dis_good_se), "Resource/Sounds/SE/good%d.wav", i + 1);
+	se_randnum = GetRand(3);
 
-		if ((good_se[i] = LoadSoundMem(dis_good_se)) == -1) {
-			throw dis_good_se;
-		}
+	char dis_good_se[30];
+	sprintf_s(dis_good_se, sizeof(dis_good_se), "Resource/Sounds/SE/good%d.wav", se_randnum + 1);
+
+	if ((good_se[se_randnum] = LoadSoundMem(dis_good_se)) == -1) {
+		throw dis_good_se;
 	}
 
-	for (int i = 0; i < 4; i++) {
-		char dis_bad_se[30];
-		sprintf_s(dis_bad_se, sizeof(dis_bad_se), "Resource/Sounds/SE/bad%d.wav", i + 1);
 
-		if ((bad_se[i] = LoadSoundMem(dis_bad_se)) == -1) {
-			throw dis_bad_se;
-		}
+	char dis_bad_se[30];
+	sprintf_s(dis_bad_se, sizeof(dis_bad_se), "Resource/Sounds/SE/bad%d.wav", se_randnum + 1);
+
+	if ((bad_se[se_randnum] = LoadSoundMem(dis_bad_se)) == -1) {
+		throw dis_bad_se;
 	}
 
-	Result_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+
 
 	if (issue == true) { timer = 10 * 60; }
 	else { timer = 8 * 60; }
@@ -50,7 +49,6 @@ RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 	win = issue;
 
 	this->clear_time = clear_time;
-	se_randnum = GetRand(3);
 
 	*effect_timer = 0;
 	guide_timer = 0;
@@ -58,6 +56,8 @@ RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume(), count_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), good_se[se_randnum]);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), bad_se[se_randnum]);
 
 
 	//ランキング登録
@@ -79,23 +79,24 @@ RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 RESULT::~RESULT()
 {
 
-	DeleteGraph(Result_Image);
-	DeleteFontToHandle(time_font);
 	DeleteFontToHandle(Result_font);
+	DeleteFontToHandle(time_font);
+	DeleteGraph(Result_Image);
 	DeleteSoundMem(count_se);
 	DeleteSoundMem(ok_se);
-	for (int i = 0; i < 4; i++)DeleteSoundMem(good_se[i]);
-	for (int i = 0; i < 4; i++)DeleteSoundMem(bad_se[i]);
+	DeleteSoundMem(good_se[se_randnum]);
+	DeleteSoundMem(bad_se[se_randnum]);
 }
 
 AbstractScene* RESULT::Update()
 {
 
-	if (win == true && timer > 10 * 60) { if (!CheckSoundMem(good_se[se_randnum])) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); } }
-	if (win == false && timer > 5 * 80) { if (!CheckSoundMem(bad_se[se_randnum])) { PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); } }
+	if (win == true && timer == 10 * 60) { PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
+	if (win == false && timer == 8 * 80) { PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE); }
 	if (timer <= 5 * 60) { if (CheckSoundMem(count_se) == FALSE)PlaySoundMem(count_se, DX_PLAYTYPE_BACK, FALSE); }
 
-	if (--timer <= 60) { return new STAGE_SELECT(); }
+	if (timer <= 60) { return new STAGE_SELECT(); }
+	else { --timer; }
 
 	//ガイド点滅表示
 	if (guide_timer < 100)
@@ -145,7 +146,7 @@ void RESULT::Draw() const {
 		//クリアタイム
 		DrawStringToHandle(330, 300, "クリアタイム", 0x1aff00, Result_font, 0x000000);
 
-		DrawStringToHandle(GetDrawCenterX(dis_clear_time,time_font), 400, dis_clear_time, 0x1aff00, time_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX(dis_clear_time, time_font), 400, dis_clear_time, 0x1aff00, time_font, 0xFFFFFF);
 
 		DrawFormatStringToHandle(30, 540, 0x56F590, Result_font, "%2d秒後にリスタートします", timer / 60);
 	}
