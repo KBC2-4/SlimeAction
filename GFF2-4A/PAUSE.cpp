@@ -17,6 +17,7 @@ PAUSE::PAUSE() {
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	selectmenu = 0;
 	nextmenu = 0;
+	input_margin = 0;
 	pause_graph = 0;
 	pause_effect_timer = 0;
 	pause_flg = false;
@@ -95,6 +96,7 @@ int PAUSE::Update(void) {
 					pause_flg = !pause_flg;
 				}
 				else if (static_cast<MENU>(selectmenu) == MENU::OPTION) { option->ChangeOptionFlg(); }
+				else if (static_cast<MENU>(selectmenu) == MENU::TITLE) { option->~Option(); }
 			}
 
 			//Aボタンでもポーズを戻す

@@ -1,9 +1,10 @@
 #include "GameMain.h"
+#include "GAMEMAIN_Restart.h"
 #include "Title.h"
 #include <vector>
 #include "Option.h"
 
-GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
+GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 {
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
 	std::vector<std::vector<int>> spawn_point;
@@ -50,6 +51,8 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 		throw "Resource/Sounds/SE/ok.wav";
 	}
 
+	now_graph = 0;
+
 	start_time_font = CreateFontToHandle("メイリオ", 160, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	time_font = LoadFontDataToHandle("Resource/Fonts/TimeAttack_HUD.dft", 2);
 	this->stage_name = stage_name;
@@ -63,7 +66,7 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	start_time = 180;
 	start_effect_timer = 120;
 
-	this->restart = restert;
+	this->restart = restart;
 
 
 	stage = new STAGE(stage_name, this->restart);
@@ -209,11 +212,11 @@ GAMEMAIN::GAMEMAIN(bool restert, int halfway_time, const char* stage_name)
 	input_margin = 0;
 	scroll_speed = 4;
 	player_visible = true;
+	
 }
 
 GAMEMAIN::~GAMEMAIN()
 {
-
 	DeleteGraph(hp_img);
 
 	//仮の背景画像
@@ -387,7 +390,9 @@ AbstractScene* GAMEMAIN::Update()
 				//ゲームオーバー
 				if (player->IsDeath()) {
 					if (!restart && stage->GetHalfwayPointFlg()) {
-						return new GAMEMAIN(true, elapsed_time, stage_name);
+						now_graph = MakeGraph(1280, 720);
+						GetDrawScreenGraph(0, 0, 1280, 720, now_graph);
+						return new GAMEMAIN_RESTART(true, elapsed_time, stage_name,now_graph);
 					}
 					return new GameOver(stage_name);
 				}
@@ -402,7 +407,11 @@ AbstractScene* GAMEMAIN::Update()
 		else {	//ポーズ画面のセレクター
 
 			if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::TITLE) { return new Title(); }
-			else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::RESTART) { return new GAMEMAIN(false, 0, stage_name); }
+			else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::RESTART) {
+				now_graph = MakeGraph(1280, 720);
+				GetDrawScreenGraph(0, 0, 1280, 720, now_graph);
+				return new GAMEMAIN_RESTART(false, 0, stage_name,now_graph); 
+			}
 			else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::OPTION) {
 				//BGM
 				if (stage_name == "Stage01") {
