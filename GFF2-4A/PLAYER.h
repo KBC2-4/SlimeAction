@@ -51,6 +51,7 @@ class PLAYER
 {
 
 private:
+	float dis;
 	bool is_visible;
 	float player_x, player_y;
 	float old_player_x, old_player_y;
@@ -95,6 +96,12 @@ private:
 	int throw_interval;
 	int throw_ball_image;
 	float throw_rad;
+	bool push_button;
+	//フックの移動方向
+	float hook_move_x;
+	float hook_move_y;
+	//フックまでの移動終了判定
+	bool hook_end_move;
 
 	std::vector<ThrowSlime> throw_slime;
 	std::vector<float>throw_x;
