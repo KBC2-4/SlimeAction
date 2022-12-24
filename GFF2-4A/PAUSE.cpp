@@ -30,6 +30,7 @@ PAUSE::PAUSE() {
 }
 
 PAUSE::~PAUSE() {
+
 	delete option;
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
