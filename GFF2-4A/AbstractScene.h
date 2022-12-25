@@ -3,12 +3,22 @@
 class AbstractScene
 {
 public:
+	//コンストラクタ
+	AbstractScene();
+	// CommonProcessを実行しないようにする引数有りの空コンストラクタ
+	AbstractScene(bool not_initialized) {};
 	//デストラクタ
 	virtual ~AbstractScene() {};
 	//描画以外の更新を実行
 	virtual AbstractScene* Update() = 0;
 	//描画に関することを実装
 	virtual void Draw() const = 0;
+
+	/// <summary>
+	/// 全シーン共通のコンストラクタで行う処理
+	/// </summary>
+	void CommonProcess();
+
 	/// <summary>
 	/// 文字の描画するX座標が中心になるX座標を取得する。
 	/// </summary>

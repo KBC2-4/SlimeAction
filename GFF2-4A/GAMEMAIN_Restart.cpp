@@ -2,7 +2,7 @@
 #include "GameMain.h"
 #include "DxLib.h"
 
-GAMEMAIN_RESTART::GAMEMAIN_RESTART(bool restart, int halfway_time, const char* stage_name, int now_graph) {
+GAMEMAIN_RESTART::GAMEMAIN_RESTART(bool restart, int halfway_time, const char* stage_name, int now_graph) : AbstractScene(false) {
 	this->restart = restart;
 	this->halfway_time = halfway_time;
 	this->stage_name = stage_name;
