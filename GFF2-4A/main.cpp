@@ -19,7 +19,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	SetWindowVisibleFlag(FALSE);// ウィンドウを表示させない
 
-	//SetAlwaysRunFlag(true);		//常にアクティブにする
+	SetAlwaysRunFlag(true);		//常にアクティブにする
 
 	if (DxLib_Init() == -1) return -1;	// DXライブラリの初期化処理
 

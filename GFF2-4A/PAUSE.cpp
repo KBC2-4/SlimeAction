@@ -43,6 +43,7 @@ PAUSE::~PAUSE() {
 
 int PAUSE::Update(void) {
 
+	if (GetWindowActiveFlag() == FALSE || GetWindowMinSizeFlag() == TRUE) { pause_flg = true; }
 
 	//STARTボタンでポーズ
 	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_START) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
