@@ -24,6 +24,8 @@ private:
 	int input_margin;
 	int timer;
 
+	int title_anitimer[2];
+
 	Option* option;
 
 public:
