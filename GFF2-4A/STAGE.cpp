@@ -462,7 +462,6 @@ void STAGE::StageClear(PLAYER* player) {
 
 	int player_map_x = static_cast<int>(roundf(player->GetPlayerX() - scroll_x));
 	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()) - scroll_y);
-	DrawFormatString(100, 200, 0xffffff, "x:%dy:%d", clearbox.x, clearbox.y);
 
 	//Šø‚ÉG‚ê‚é‚ÆƒQ[ƒ€ƒNƒŠƒA
 	if ((player_map_x >= clearbox.x - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox.x + MAP_CEllSIZE + 30) && (player_map_y >= clearbox.y - MAP_CEllSIZE / 2) && (player_map_y <= clearbox.y + MAP_CEllSIZE / 2)) {
