@@ -57,6 +57,7 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 	time_font = LoadFontDataToHandle("Resource/Fonts/TimeAttack_HUD.dft", 2);
 	this->stage_name = stage_name;
 	elapsed_time = halfway_time;
+	start_addtime = 0;
 	lemoner_count = 0;
 	tomaton_count = 0;
 	item_count = 0;
@@ -284,6 +285,7 @@ AbstractScene* GAMEMAIN::Update()
 
 	if (start_time > 0) {
 
+		if (restart == true) { SetDrawBright(255 - start_time, 255 - start_time, 255 - start_time); }
 		//カウント音再生
 		if (start_time % 60 == 0) {
 			PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
@@ -302,6 +304,8 @@ AbstractScene* GAMEMAIN::Update()
 
 		//START音再生
 		if (start_time == 0) {
+			if (restart == false) { start_addtime = GetNowCount(); }
+			else { start_addtime = GetNowCount() - elapsed_time; }
 			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
 		}
 	}
@@ -318,7 +322,7 @@ AbstractScene* GAMEMAIN::Update()
 		if (pause->IsPause() == false) {
 
 			//経過時間の加算
-			elapsed_time += 1000 / 60;
+			elapsed_time = GetNowCount() - start_addtime;
 
 			player->Update(element, stage, tomaton, tomaton_count);
 			stage->Update(player, element);	//ステージクリア用
