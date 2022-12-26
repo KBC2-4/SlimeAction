@@ -85,21 +85,22 @@ AbstractScene* Title::Update()
 			input_margin++;
 		}
 		else {
+			if (title_anitimer[1] <= 0) {
+				if (PAD_INPUT::GetPadThumbLY() > 20000)
+				{
 
-			if (PAD_INPUT::GetPadThumbLY() > 20000)
-			{
+					selectmenu = (selectmenu + 3) % 4;
+					input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+					StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+				}
 
-				selectmenu = (selectmenu + 3) % 4;
-				input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
-				StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
-			}
+				if (PAD_INPUT::GetPadThumbLY() < -20000)
+				{
 
-			if (PAD_INPUT::GetPadThumbLY() < -20000)
-			{
-
-				selectmenu = (selectmenu + 1) % 4; input_margin = 0;
-				PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
-				StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+					selectmenu = (selectmenu + 1) % 4; input_margin = 0;
+					PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+					StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+				}
 			}
 		}
 

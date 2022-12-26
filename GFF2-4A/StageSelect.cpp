@@ -110,6 +110,12 @@ STAGE_SELECT::~STAGE_SELECT()
 	delete player;
 	delete stage;
 	delete element;
+
+	for (int i = 0; i < lemoner_count; i++)
+	{
+		delete lemoner[i];
+	}
+	delete[] lemoner;
 }
 
 AbstractScene* STAGE_SELECT::Update()
