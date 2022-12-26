@@ -1,6 +1,27 @@
 #include "AbstractScene.h"
 #include "DxLib.h"
 
+AbstractScene::AbstractScene() {
+	static short initialized = 0;
+
+	//プログラム開始時に2回呼ばれるのを無効化
+	if (initialized > 1 ) {
+		CommonProcess();
+	}
+	else {
+		initialized++;
+	}
+}
+
+
+void AbstractScene::CommonProcess() {
+	
+	//リソースをリセット
+	InitFontToHandle();
+	InitGraph();
+	InitSoundMem();
+}
+
 int AbstractScene::GetDrawCenterX(const char* string, int font_handle, int margin)const {
 
 	//画面幅

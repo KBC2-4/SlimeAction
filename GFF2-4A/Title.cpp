@@ -5,6 +5,9 @@
 #include "DxLib.h"
 #include "Option.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 
 Title::Title()
 {
@@ -35,6 +38,9 @@ Title::Title()
 	selectmenu = 0;
 	input_margin = 0;
 	timer = 0;
+
+	title_anitimer[0] = 0;
+	title_anitimer[1] = 180;
 
 	option = new Option();
 
@@ -79,53 +85,66 @@ AbstractScene* Title::Update()
 			input_margin++;
 		}
 		else {
+			if (title_anitimer[1] <= 0) {
+				if (PAD_INPUT::GetPadThumbLY() > 20000)
+				{
 
-			if (PAD_INPUT::GetPadThumbLY() > 20000)
-			{
+					selectmenu = (selectmenu + 3) % 4;
+					input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+					StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+				}
 
-				selectmenu = (selectmenu + 3) % 4;
-				input_margin = 0; PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
-				StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
-			}
+				if (PAD_INPUT::GetPadThumbLY() < -20000)
+				{
 
-			if (PAD_INPUT::GetPadThumbLY() < -20000)
-			{
-
-				selectmenu = (selectmenu + 1) % 4; input_margin = 0;
-				PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
-				StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+					selectmenu = (selectmenu + 1) % 4; input_margin = 0;
+					PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+					StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+				}
 			}
 		}
 
 		if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
 		{
-			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
-			StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
 
-			switch (static_cast<MENU>(selectmenu))
-			{
+			if (title_anitimer[1] <= 0) {
+				PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+				StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
 
-			case MENU::GAME_SELECT:
-				return new STAGE_SELECT();
-				break;
+				switch (static_cast<MENU>(selectmenu))
+				{
 
-			case MENU::RANKING:
-				return new DRAW_RANKING();
-				break;
+				case MENU::GAME_SELECT:
+					return new STAGE_SELECT();
+					break;
 
-			case MENU::OPTION:
-				option->ChangeOptionFlg();
-				break;
+				case MENU::RANKING:
+					return new DRAW_RANKING();
+					break;
 
-			case MENU::END:
-				return nullptr;
-				break;
+				case MENU::OPTION:
+					option->ChangeOptionFlg();
+					break;
 
-			default:
-				break;
-			}
+				case MENU::END:
+					return nullptr;
+					break;
+
+				default:
+					break;
+				}
+
+			}else{ title_anitimer[1] = 0; }
 		}
 		timer++;
+
+
+		//合計フレーム
+		if (title_anitimer[1] > 0) { title_anitimer[1]--; }
+
+		//回転
+		if (title_anitimer[0] < 180 && title_anitimer[1] > 0) { title_anitimer[0]++; }
+		else { title_anitimer[0] = 0; }
 	}
 	
 	return this;
@@ -142,7 +161,8 @@ void Title::Draw()const
 	}
 	else {
 
-		DrawStringToHandle(GetDrawCenterX("スライムアクション",title_font), 100, "スライムアクション", 0x56F590, title_font, 0xFFFFFF);
+		DrawRotaStringToHandle(GetDrawCenterX("スライムアクション",title_font, 600 - title_anitimer[1] * 3), 200 + title_anitimer[1] * 3, 1.0 - title_anitimer[1] * 0.01,1.0 - title_anitimer[1] * 0.01, 600, 100, 10 * title_anitimer[0] * (M_PI / 180), 0x56F590, title_font, 0xFFFFFF, FALSE, "スライムアクション");
+		//DrawStringToHandle(GetDrawCenterX("スライムアクション",title_font), 100, "スライムアクション", 0x56F590, title_font, 0xFFFFFF);
 
 		//ボックス
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA,100);
@@ -151,6 +171,8 @@ void Title::Draw()const
 
 		//矢印
 		//DrawCircleAA(475.0f, 398.0f + selectmenu * 90, 20, 3, 0xffffff, TRUE, 3.0f);
+
+		if (title_anitimer[1] > 0) { return; }
 
 		//選択メニュー
 		DrawStringToHandle(GetDrawCenterX("プレイ",menu_font), 360, "プレイ", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);

@@ -27,7 +27,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	SetJoypadDeadZone(DX_INPUT_PAD1, 0.0);
 
-;	SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
+	;	SetDrawScreen(DX_SCREEN_BACK);	// 描画先画面を裏にする
 
 	SceneManager* sceneMng;
 	try
@@ -62,10 +62,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		SetWindowVisibleFlag(TRUE);// ウィンドウを表示させる
 
 		//フレームレートの設定
-		dNextTime += 16.66;
+		dNextTime += static_cast<double>(1.0 / 60.0 * 1000.0);
 		if (dNextTime > GetNowCount()) {
-			WaitTimer((int)dNextTime - GetNowCount());
+			WaitTimer(static_cast<int>(dNextTime) - GetNowCount());
 		}
+		else { dNextTime = GetNowCount(); }		//補正
 
 		//Backボタンを押したら強制終了
 		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_DPAD_DOWN) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))

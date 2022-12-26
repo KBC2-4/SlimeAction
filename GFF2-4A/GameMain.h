@@ -20,8 +20,10 @@ private:
 	int cursor_move_se, ok_se;	//SE
 	int start_time;		//開始までの遅延時間
 	int start_effect_timer;
+	int start_addtime;
 	int elapsed_time;	//経過時間
 	const char* stage_name;	//リスタート時のステージ選択用
+	int now_graph;		//リスタート時の今現在の画面
 
 	//プレイヤーのライフの画像
 	int hp_img;
@@ -61,7 +63,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	GAMEMAIN(bool restert = false, int halfway_time = 0, const char* stage_name = "StageSelect");
+	GAMEMAIN(bool restart = false, int halfway_time = 0, const char* stage_name = "StageSelect");
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
@@ -75,7 +77,5 @@ public:
 	/// 描画に関することを実装
 	/// </summary>
 	void Draw() const override;
-
-	void ItemTrunc();
 };
 

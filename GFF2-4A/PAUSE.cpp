@@ -17,6 +17,7 @@ PAUSE::PAUSE() {
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	selectmenu = 0;
 	nextmenu = 0;
+	input_margin = 0;
 	pause_graph = 0;
 	pause_effect_timer = 0;
 	pause_flg = false;
@@ -29,6 +30,7 @@ PAUSE::PAUSE() {
 }
 
 PAUSE::~PAUSE() {
+
 	delete option;
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
@@ -41,6 +43,7 @@ PAUSE::~PAUSE() {
 
 int PAUSE::Update(void) {
 
+	if (GetWindowActiveFlag() == FALSE || GetWindowMinSizeFlag() == TRUE) { pause_flg = true; }
 
 	//STARTボタンでポーズ
 	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_START) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
@@ -95,6 +98,7 @@ int PAUSE::Update(void) {
 					pause_flg = !pause_flg;
 				}
 				else if (static_cast<MENU>(selectmenu) == MENU::OPTION) { option->ChangeOptionFlg(); }
+				else if (static_cast<MENU>(selectmenu) == MENU::TITLE) { option->~Option(); }
 			}
 
 			//Aボタンでもポーズを戻す

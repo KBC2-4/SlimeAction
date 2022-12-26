@@ -38,11 +38,12 @@ Option::Option() {
 	ChangeVolumeSoundMem(GetSEVolume(), cursor_move_se);
 
 	option_flg = false;
+
+	
 }
 
 
 Option::~Option() {
-
 	SaveData();
 	DeleteFontToHandle(menu_font);
 	DeleteFontToHandle(buttonguid_font);
@@ -224,7 +225,7 @@ void Option::LoadData(void) {
 
 			std::istringstream line_stream(line);
 			std::string key;
-			if (std::getline(line_stream, key, '=')) {
+			if (std::getline(line_stream, key, ':')) {
 
 				int value;
 
@@ -261,11 +262,11 @@ void Option::SaveData(void) {
 	int se_buf = ((110 * se_vol / 255) - 1) / 10;
 
 	if (config_file.is_open()) {
-		config_file << "‰¹—Ê’²®(0 ` 10)" << std::endl;
-		config_file << "BGM = " << bgm_buf << std::endl;
-		config_file << "SE = " << se_buf << std::endl;
-		config_file << "\n0[A:Œˆ’è B:–ß‚é], 1[A:–ß‚é B:Œˆ’è]" << std::endl;
-		config_file << "INPUT_MODE = " << input_mode << std::endl;
+		config_file << u8"‰¹—Ê’²®(0 ` 10)" << std::endl;
+		config_file << "BGM : " << bgm_buf << std::endl;
+		config_file << " SE : " << se_buf << std::endl;
+		config_file << u8"\n0[A:Œˆ’è B:–ß‚é], 1[A:–ß‚é B:Œˆ’è]" << std::endl;
+		config_file << "INPUT_MODE : " << input_mode << std::endl;
 		config_file.close();
 	}
 }

@@ -2,6 +2,7 @@
 #include "AbstractScene.h"
 #include "PLAYER.h"
 #include "STAGE.h"
+#include "Lemon.h"
 
 class STAGE_SELECT :
 	public AbstractScene
@@ -16,9 +17,15 @@ private:
 	bool effect_delta;
 	int effect_timer[2];	//[0:出現エフェクト, 1:ステージポータルエフェクト]
 
+	//チュートリアル用
+	int joys_anitimer;
+	bool joystick_delta;
+
 	PLAYER* player;	//プレイヤー
 	STAGE* stage;	//ステージ
 	ELEMENT* element;	//ステージ内要素
+	LEMON** lemoner;	//レモナー
+	int lemoner_count;
 
 	float player_map_x, player_map_y;	//プレイヤーマップ内座標計算用
 	POINT stage_return;		//タイトルへ戻る座標

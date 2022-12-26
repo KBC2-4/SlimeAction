@@ -17,6 +17,35 @@ STAGE_SELECT::STAGE_SELECT()
 	stage = new STAGE("StageSelect");
 	player = new PLAYER(stage);
 	element = new ELEMENT();
+	lemoner = nullptr;
+
+	
+	std::vector<std::vector<int>> spawn_point;
+	//レモナー生成する数を数える
+	for (int i = 0, point = 0; i < stage->GetMapSize().x; i++)
+	{
+		for (int j = 0; j < stage->GetMapSize().y; j++)
+		{
+			if (stage->GetMapData(i, j) == 91)
+			{
+				lemoner_count++;
+				spawn_point.push_back(std::vector<int>(2));
+				spawn_point[point][0] = i;
+				spawn_point[point][1] = j;
+				point++;
+			}
+		}
+	}
+
+	//レモナーの生成
+	if (lemoner_count > 0)
+	{
+		lemoner = new LEMON * [lemoner_count];
+		for (int i = 0; i < lemoner_count; i++)
+		{
+			lemoner[i] = new LEMON(player, stage, spawn_point[i][0], spawn_point[i][1]);
+		}
+	}
 
 	//スポーン地点をセット
 	stage->SetScrollX(-(stage->GetSpawnPoint().y - MAP_CEllSIZE));
@@ -30,6 +59,10 @@ STAGE_SELECT::STAGE_SELECT()
 	stage_return = { 0,0 };
 	*stage_move = { 0,0 };
 	effect_delta = false;
+
+
+	joys_anitimer = 0;
+	joystick_delta = false;
 
 	for (int i = 0; i < stage->GetMapSize().x; i++)
 	{
@@ -77,6 +110,12 @@ STAGE_SELECT::~STAGE_SELECT()
 	delete player;
 	delete stage;
 	delete element;
+
+	for (int i = 0; i < lemoner_count; i++)
+	{
+		delete lemoner[i];
+	}
+	delete[] lemoner;
 }
 
 AbstractScene* STAGE_SELECT::Update()
@@ -85,6 +124,29 @@ AbstractScene* STAGE_SELECT::Update()
 	player->Update(element, stage, nullptr, 0);
 	stage->Update(player, element);
 	element->Update(player, stage);
+
+	//プレイヤーを死なせない。
+	if (player->GetLife() < 2) { player->SetLife(2); }
+
+	for (int i = 0; i < lemoner_count; i++)
+	{
+		if (lemoner[i] != nullptr)
+		{
+			lemoner[i]->Update();
+			if (lemoner[i]->GetDeleteFlag())
+			{
+				//item_rand = GetRand(5);
+				//アイテムを生成
+				/*if (item_rand == 0)
+				{
+					item[item_num++] = new ITEMBALL(lemoner[i]->GetX(), lemoner[i]->GetY(), lemoner[i]->GetMapX(), lemoner[i]->GetMapY(), player, stage, stage->GetScrollX(), stage->GetScrollY());
+				}*/
+				delete lemoner[i];
+				lemoner[i] = nullptr;
+			}
+		}
+	}
+	
 
 	player_map_x = roundf(player->GetPlayerX() - stage->GetScrollX());
 	player_map_y = floorf(player->GetPlayerY());
@@ -122,12 +184,22 @@ AbstractScene* STAGE_SELECT::Update()
 		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new GAMEMAIN(false, 0, "MapData1"); }
 	}
 
-
+	//ポータルのアニメーションタイマー
 	if (effect_timer[1] >= 255) { effect_delta = true; }
 	if (effect_timer[1] <= 0) { effect_delta = false; }
 
 	if (effect_delta) { effect_timer[1]--; }
-	else if(!effect_delta){ effect_timer[1]++; }
+	else if (!effect_delta) { effect_timer[1]++; }
+
+
+	//ジョイスティックのアニメーションタイマー
+	if (joys_anitimer >= 15) { joystick_delta = true; }
+	if (joys_anitimer <= -15) { joystick_delta = false; }
+
+	if (effect_timer[1] % 2 == 0) {
+		if (joystick_delta) { joys_anitimer--; }
+		else if (!joystick_delta) { joys_anitimer++; }
+	}
 
 
 	//デバッグ
@@ -146,8 +218,17 @@ void STAGE_SELECT::Draw() const
 
 
 	//ステージの描画
-	element->Draw(stage,player);
+	element->Draw(stage, player);
 	stage->Draw(element);
+	
+	for (int i = 0; i < lemoner_count; i++)
+	{
+		if (lemoner[i] != nullptr)
+		{
+			lemoner[i]->Draw();
+
+		}
+	}
 
 	//DrawCircleAA(player->GetPlayerX(), player->GetPlayerY(), 900.0F, 32, 0x000000, FALSE, 1200.0F);
 
@@ -159,6 +240,22 @@ void STAGE_SELECT::Draw() const
 	//}
 
 	//ガイド表示
+
+	const int joystick_x = 300;
+	const int joystick_y = 670;
+
+	DrawOvalAA(joystick_x, joystick_y + 6, 18, 10, 20, 0x000000, TRUE);
+	//アニメーション有り
+	//DrawOval(joystick_x + joys_anitimer * 0.8, joystick_y + 6 + abs(joys_anitimer * 0.6), 18, 10, 0x000000, 1);
+	DrawBoxAA(joystick_x - 5, joystick_y, joystick_x + 7, joystick_y + 23, 0x000000, TRUE);
+	//アニメーション有り
+	//DrawQuadrangle(joystick_x - 5 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), joystick_x + 7 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), joystick_x + 7, joystick_y + 23, joystick_x - 5, joystick_y + 23, 0x000000, TRUE);
+	DrawOvalAA(joystick_x, joystick_y + 23, 22, 8, 20, 0x000000, TRUE);
+	DrawString(joystick_x - 2, joystick_y - 2, "L", 0xFFFFFF);
+	//アニメーション有り
+	//DrawString(joystick_x - 5 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), "L", 0xFFFFFF);
+	DrawStringToHandle(330, 668, "移動", 0x91EB52, buttonguid_font, 0x000000);
+
 	DrawStringToHandle(880, 668, "[ゲーム中]ポーズ", 0x91EB52, buttonguid_font, 0x000000);
 	DrawBoxAA(790, 665, 860, 695, 0xFFFFFF, TRUE, 1.0F);
 	DrawCircleAA(795, 679.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//左端
@@ -222,6 +319,40 @@ void STAGE_SELECT::Draw() const
 
 		DrawCircleAA(11 * MAP_CEllSIZE + stage->GetScrollX(), stage_move[1].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
 		DrawStringToHandle(11 * MAP_CEllSIZE + stage->GetScrollX() - 7, stage_move[1].y + stage->GetScrollY() - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
+	}
+
+	//チュートリアル
+	if (lemoner[0] != nullptr){
+		const int x = 31;
+		const int x_map = x * MAP_CEllSIZE + +stage->GetScrollX();
+		const int y_map = stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY();
+		if ((player_map_x >= x * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= x * MAP_CEllSIZE + (MAP_CEllSIZE * 3) / 2)) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+			DrawTriangleAA(x_map + 100, y_map - 62, x_map + 140, y_map, x_map + 300, y_map - 200, 0xFFFFFF, TRUE,2.0F);
+			DrawOvalAA(x * MAP_CEllSIZE + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY(), 100, 80, 30, 0x000000, FALSE, 1.0F);
+			DrawOvalAA(x * MAP_CEllSIZE + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 30, 0xFFFFFF, TRUE, 0.0F);
+			//DrawString(stage_move[1].x + MAP_CEllSIZE / 2, stage_move[1].y + MAP_CEllSIZE, "STAGE 1" , 0x6AF6C5, 0x000000);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+			//DrawCircleAA(x * MAP_CEllSIZE + stage->GetScrollX(), stage_move[1].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+			//DrawStringToHandle(x * MAP_CEllSIZE + stage->GetScrollX() - 7, stage_move[1].y + stage->GetScrollY() - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
+
+			const int joystick_x = x * MAP_CEllSIZE + +stage->GetScrollX() - 10;
+			const int joystick_y = stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY() - 10;
+			const int joystick_size = 15;
+
+
+			DrawOvalAA(joystick_x + joys_anitimer * 0.8, joystick_y + 6 + abs(joys_anitimer * 0.6), joystick_size + 8, 20, joystick_size, 0x000000, TRUE);
+			//DrawBox(joystick_x - 5, joystick_y, joystick_x + 7, joystick_y + 23, 0x000000, 1);
+			DrawQuadrangle(joystick_x - 5 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), joystick_x + 7 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), joystick_x + 7, joystick_y + 23, joystick_x - 5, joystick_y + 23, 0x000000, TRUE);
+			DrawOval(joystick_x, joystick_y + joystick_size + 13, joystick_size + 12, 8, 0x000000, 1);
+			DrawStringToHandle(joystick_x - 8 + joys_anitimer, joystick_y + -8 + abs(joys_anitimer * 0.5), "R", 0xFFFFFF, buttonguid_font);
+
+			DrawStringToHandle(joystick_x + 30, joystick_y, " + ", 0xFFFFFF, buttonguid_font, 0x000000);
+			//RBボタン
+			DrawBoxAA(joystick_x + 70, joystick_y - 10, joystick_x + 130, joystick_y + 30, 0x000000, TRUE, 1.0F);
+			DrawStringToHandle(joystick_x + 83, joystick_y + 0, "RB", 0xFFFFFF, buttonguid_font);
+		}
 	}
 
 
