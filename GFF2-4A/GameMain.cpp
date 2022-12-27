@@ -54,6 +54,14 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 		throw "Resource/Sounds/SE/ok.wav";
 	}
 
+	if ((count_se = LoadSoundMem("Resource/Sounds/SE/321.wav")) == -1) {
+		throw "Resource/Sounds/SE/321.wav";
+	}
+
+	if ((start_se = LoadSoundMem("Resource/Sounds/SE/start.wav")) == -1) {
+		throw "Resource/Sounds/SE/start.wav";
+	}
+
 	now_graph = 0;
 
 	start_time_font = CreateFontToHandle("メイリオ", 160, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
@@ -207,9 +215,14 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 		ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[2]);
 	}
 
+
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, count_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, start_se);
+
+	PlaySoundMem(count_se, DX_PLAYTYPE_BACK,TRUE);
 
 
 	//PV制作用（完成次第即座に消去）
@@ -247,6 +260,9 @@ GAMEMAIN::~GAMEMAIN()
 
 	DeleteSoundMem(cursor_move_se);
 	DeleteSoundMem(ok_se);
+	DeleteSoundMem(count_se);
+	DeleteSoundMem(start_se);
+
 	delete player;
 	delete stage;
 	delete pause;
@@ -289,9 +305,9 @@ AbstractScene* GAMEMAIN::Update()
 
 		if (restart == true) { SetDrawBright(255 - start_time, 255 - start_time, 255 - start_time); }
 		//カウント音再生
-		if (start_time % 60 == 0) {
-			PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
-		}
+		//if (start_time % 60 == 0) {
+			//PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+		//}
 
 		start_time--;
 
@@ -308,7 +324,7 @@ AbstractScene* GAMEMAIN::Update()
 		if (start_time == 0) {
 			if (restart == false) { start_addtime = GetNowCount(); }
 			else { start_addtime = GetNowCount() - elapsed_time; }
-			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+			PlaySoundMem(start_se, DX_PLAYTYPE_BACK, TRUE);
 		}
 	}
 	else if (start_effect_timer > 0) {
