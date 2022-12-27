@@ -68,13 +68,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		else { dNextTime = GetNowCount(); }		//補正
 
-		//Backボタンを押したら強制終了
-		if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_DPAD_DOWN) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
-		{
-			break;
-		}
-		//STARTボタンでタイトル画面へ移行
-		//if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_START) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) { sceneMng = new SceneManager((AbstractScene*)new Title()); }
+
 	}
 
 	InitFontToHandle();	//全てのフォントデータを削除

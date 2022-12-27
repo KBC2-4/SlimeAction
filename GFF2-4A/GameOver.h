@@ -13,12 +13,14 @@ enum class GAMEOVER_MENU
 class GameOver : public AbstractScene
 {
 private:
-	int GameOverImage;	//画像用変数
-	int SelectCount;	//Select用変数
-	int Select_font;	//Select_font用変数
-	int Button_font;	//Bボタンを押すことを促す文字列用font
-	int Input_WaitTime;	//SelectcursorのWaitTime
-	int timer;			//表示非表示切り替え用のtimer変数
+	int title_image,background_image;
+	int selectmenu;
+	int menu_font;
+	int guid_font;
+	int background_music;
+	int bad_se[4], ok_se, cursor_move_se;
+	int input_margin;
+	int timer,se_randnum;
 	const char* stage_name;	//リスタート時のステージ選択用
 	
 public:

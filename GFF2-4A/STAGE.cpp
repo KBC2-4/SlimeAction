@@ -93,7 +93,7 @@ STAGE::~STAGE() {
 void STAGE::Update(PLAYER* player, ELEMENT* element) {
 
 	//デバッグ
-	if (CheckHitKey(KEY_INPUT_C))clearflg = true;
+	//if (CheckHitKey(KEY_INPUT_C))clearflg = true;
 	ChangeVolumeSoundMem(Option::GetSEVolume(), halfwaypoint_se);
 
 	StageClear(player);
@@ -104,14 +104,8 @@ void STAGE::Update(PLAYER* player, ELEMENT* element) {
 /// ステージの描画
 /// </summary>
 void STAGE::Draw(ELEMENT* element)const {
-	//デバッグ
-	//DrawFormatString(200, 100, 0xffffff, "oldx:%f", player_x_old);
-	//DrawFormatString(350, 100, 0xffffff, "vectory:%f", player_vector_y);
-	//DrawFormatString(200, 100, 0xffffff, "%2f %2f", scroll_x,scroll_y);
 	//ゲームクリア時
 	if (clearflg == true) { DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47); }
-
-	//printfDx("%f",scroll_x);
 
 	for (int i = 0; i < map_data.size(); i++) {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
@@ -464,7 +458,7 @@ void STAGE::StageClear(PLAYER* player) {
 	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()) - scroll_y);
 
 	//旗に触れるとゲームクリア
-	if ((player_map_x >= clearbox.x - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox.x + MAP_CEllSIZE + 30) && (player_map_y >= clearbox.y - MAP_CEllSIZE / 2) && (player_map_y <= clearbox.y + MAP_CEllSIZE / 2)) {
+	if ((player_map_x >= clearbox.x - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox.x + MAP_CEllSIZE + 30)) {
 		clearflg = true;
 	}
 

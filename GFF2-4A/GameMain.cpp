@@ -10,13 +10,6 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 	std::vector<std::vector<int>> spawn_point;
 	hp_img = LoadGraph("Resource/Images/Player/hp.png");
 
-	//仮の背景画像
-	if (stage_name != "Stage02") {
-		if ((background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1) {
-			throw "Resource/Images/Stage/BackImage1.png";
-		}
-	}
-
 	if (stage_name == "Stage01") {
 
 		if ((background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1) {
@@ -38,8 +31,18 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 		}
 	}
 	else if (stage_name == "Stage03") {
+
+		if ((background_image[2] = LoadGraph("Resource/Images/Stage/BackImage3.png")) == -1) {
+			throw "Resource/Images/Stage/BackImage2.png";
+		}
+
 		if ((background_music[2] = LoadSoundMem("Resource/Sounds/BGM/stage3.wav")) == -1) {
 			throw "Resource/Sounds/BGM/stage3.wav";
+		}
+	}
+	else {
+		if ((background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1) {
+			throw "Resource/Images/Stage/BackImage1.png";
 		}
 	}
 
@@ -49,6 +52,22 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 
 	if ((ok_se = LoadSoundMem("Resource/Sounds/SE/ok.wav")) == -1) {
 		throw "Resource/Sounds/SE/ok.wav";
+	}
+
+	if ((count_se = LoadSoundMem("Resource/Sounds/SE/321.wav")) == -1) {
+		throw "Resource/Sounds/SE/321.wav";
+	}
+
+	if ((start_se = LoadSoundMem("Resource/Sounds/SE/start.wav")) == -1) {
+		throw "Resource/Sounds/SE/start.wav";
+	}
+
+	int clear_se_random = GetRand(4);
+	char dis_clear_se[30];
+	sprintf_s(dis_clear_se, sizeof(dis_clear_se), "Resource/Sounds/SE/clear%d.wav", clear_se_random + 1);
+
+	if ((clear_se = LoadSoundMem(dis_clear_se)) == -1) {
+		throw dis_clear_se;
 	}
 
 	now_graph = 0;
@@ -66,6 +85,7 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 
 	start_time = 180;
 	start_effect_timer = 120;
+	clear_interval = 360;
 
 	this->restart = restart;
 
@@ -204,9 +224,15 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 		ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[2]);
 	}
 
+
 	//SE
-	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, cursor_move_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, count_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, start_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, clear_se);
+
+	PlaySoundMem(count_se, DX_PLAYTYPE_BACK,TRUE);
 
 
 	//PV制作用（完成次第即座に消去）
@@ -219,11 +245,6 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 GAMEMAIN::~GAMEMAIN()
 {
 	DeleteGraph(hp_img);
-
-	//仮の背景画像
-	if (stage_name != "Stage02") {
-		DeleteGraph(background_image[0]);
-	}
 
 	if (stage_name == "Stage01") {
 		StopSoundMem(background_music[0]);
@@ -238,6 +259,10 @@ GAMEMAIN::~GAMEMAIN()
 	else if (stage_name == "Stage03") {
 		StopSoundMem(background_music[2]);
 		DeleteSoundMem(background_music[2]);
+		DeleteGraph(background_image[2]);
+	}
+	else {
+		DeleteGraph(background_image[0]);
 	}
 
 	DeleteFontToHandle(start_time_font);
@@ -245,6 +270,10 @@ GAMEMAIN::~GAMEMAIN()
 
 	DeleteSoundMem(cursor_move_se);
 	DeleteSoundMem(ok_se);
+	DeleteSoundMem(count_se);
+	DeleteSoundMem(start_se);
+	DeleteSoundMem(clear_se);
+
 	delete player;
 	delete stage;
 	delete pause;
@@ -287,9 +316,9 @@ AbstractScene* GAMEMAIN::Update()
 
 		if (restart == true) { SetDrawBright(255 - start_time, 255 - start_time, 255 - start_time); }
 		//カウント音再生
-		if (start_time % 60 == 0) {
-			PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
-		}
+		//if (start_time % 60 == 0) {
+			//PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+		//}
 
 		start_time--;
 
@@ -306,7 +335,7 @@ AbstractScene* GAMEMAIN::Update()
 		if (start_time == 0) {
 			if (restart == false) { start_addtime = GetNowCount(); }
 			else { start_addtime = GetNowCount() - elapsed_time; }
-			PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+			PlaySoundMem(start_se, DX_PLAYTYPE_BACK, TRUE);
 		}
 	}
 	else if (start_effect_timer > 0) {
@@ -322,7 +351,7 @@ AbstractScene* GAMEMAIN::Update()
 		if (pause->IsPause() == false) {
 
 			//経過時間の加算
-			elapsed_time = GetNowCount() - start_addtime;
+			if (!stage->GetClearFlg()) { elapsed_time = GetNowCount() - start_addtime; }
 
 			player->Update(element, stage, tomaton, tomaton_count);
 			stage->Update(player, element);	//ステージクリア用
@@ -404,7 +433,11 @@ AbstractScene* GAMEMAIN::Update()
 				//ステージクリア
 				if (stage->GetClearFlg())
 				{
-					return new RESULT(true, elapsed_time, stage_name);
+					if(clear_interval == 360){ PlaySoundMem(clear_se, DX_PLAYTYPE_BACK, TRUE); }
+					player->SetPlayerX(player->GetOldPlayerX());
+					if (--clear_interval < 0 && !CheckSoundMem(clear_se)) {
+						return new RESULT(true, elapsed_time, stage_name);
+					}
 				}
 			}
 		}
@@ -429,17 +462,20 @@ AbstractScene* GAMEMAIN::Update()
 				}
 
 				//SE
-				ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 				ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, count_se);
+				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, start_se);
+				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, clear_se);
 			}
 		}
 
 		//デバッグ
-		if (CheckHitKey(KEY_INPUT_F)) {
-			int scrollx = -(7800 - 500);
-			stage->SetScrollX(scrollx);	//スポーン地点をセット
-			player->SetPlayerX(500); //プレイヤーの画面内座標をセット
-		}
+		//if (CheckHitKey(KEY_INPUT_F)) {
+		//	int scrollx = -(7800 - 500);
+		//	stage->SetScrollX(scrollx);	//スポーン地点をセット
+		//	player->SetPlayerX(500); //プレイヤーの画面内座標をセット
+		//}
 	}
 
 	if (input_margin < 10) {
@@ -498,13 +534,21 @@ void GAMEMAIN::Draw() const
 {
 
 	//ステージ背景
-	if (stage_name != "Stage02") {
+	if (stage_name == "Stage01") {
 		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[0], FALSE);
 		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[0], FALSE);
 	}
 	else if (stage_name == "Stage02") {
 		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[1], FALSE);
 		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[1], FALSE);
+	}
+	else if (stage_name == "Stage03") {
+		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[2], FALSE);
+		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[2], FALSE);
+	}
+	else {
+		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[0], FALSE);
+		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[0], FALSE);
 	}
 
 
@@ -599,15 +643,15 @@ void GAMEMAIN::Draw() const
 
 
 	//デバッグ
-	if (CheckHitKey(KEY_INPUT_A)) {
-		DrawFormatString(100, 150, 0xF77D0A, "ScrollX:%f", stage->GetScrollX());
-		DrawFormatString(100, 200, 0xF77D0A, "ScrollY:%f", stage->GetScrollY());
-		DrawFormatString(100, 250, 0xE04D02, "MapData:%d", stage->GetMapData((player->GetPlayerY() / MAP_CEllSIZE) + 1, player->GetPlayerX() / MAP_CEllSIZE));
-		DrawFormatString(100, 300, 0x02F896, "PlayerX%f", player->GetPlayerX());
-		DrawFormatString(100, 350, 0x02F896, "PlayerY%f", player->GetPlayerY());
-		DrawFormatString(100, 400, 0x02F896, "SpawnPointY:%d", stage->GetSpawnPoint().y);
-		DrawFormatString(100, 450, 0x02F896, "Jump:%f", player->GetJumpVelocity());
-	}
+	//if (CheckHitKey(KEY_INPUT_A)) {
+	//	DrawFormatString(100, 150, 0xF77D0A, "ScrollX:%f", stage->GetScrollX());
+	//	DrawFormatString(100, 200, 0xF77D0A, "ScrollY:%f", stage->GetScrollY());
+	//	DrawFormatString(100, 250, 0xE04D02, "MapData:%d", stage->GetMapData((player->GetPlayerY() / MAP_CEllSIZE) + 1, player->GetPlayerX() / MAP_CEllSIZE));
+	//	DrawFormatString(100, 300, 0x02F896, "PlayerX%f", player->GetPlayerX());
+	//	DrawFormatString(100, 350, 0x02F896, "PlayerY%f", player->GetPlayerY());
+	//	DrawFormatString(100, 400, 0x02F896, "SpawnPointY:%d", stage->GetSpawnPoint().y);
+	//	DrawFormatString(100, 450, 0x02F896, "Jump:%f", player->GetJumpVelocity());
+	//}
 
 	if (start_time > 0) {
 

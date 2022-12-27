@@ -54,7 +54,7 @@ void DRAW_RANKING::Draw() const
 {
 	DrawGraph(0, 0, background_image, false);
 
-	DrawRotaGraph(640, 300, 1, 0, image, TRUE);
+	DrawRotaGraph(640, 200, 1, 0, image, TRUE);
 
 
 	for (int i = 0; i < 3; i++)

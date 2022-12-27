@@ -35,7 +35,7 @@ Option::Option() {
 	input_margin = 0;
 
 	//SE
-	ChangeVolumeSoundMem(GetSEVolume(), cursor_move_se);
+	ChangeVolumeSoundMem(GetSEVolume() * 1.6, cursor_move_se);
 
 	option_flg = false;
 
@@ -74,7 +74,7 @@ void Option::Update() {
 			if (selectmenu == 0 && bgm_vol < 255 * 90 / 100) { bgm_vol += 255 * 10 / 100; }
 			else if (selectmenu == 1 && se_vol < 255 * 90 / 100) { se_vol += 255 * 10 / 100; }
 
-			ChangeVolumeSoundMem(GetSEVolume(), cursor_move_se);
+			ChangeVolumeSoundMem(GetSEVolume() * 1.6, cursor_move_se);
 		}
 
 		if (PAD_INPUT::GetPadThumbLX() < -20000) {
@@ -119,7 +119,7 @@ void Option::Update() {
 		ChangeOptionFlg();
 	}
 
-	ChangeVolumeSoundMem(GetSEVolume(), cursor_move_se);
+	ChangeVolumeSoundMem(GetSEVolume() * 1.6, cursor_move_se);
 	ChangeVolumeSoundMem(GetSEVolume(), mute_se);
 }
 
@@ -191,15 +191,15 @@ void Option::Draw() {
 	DrawCircleAA(back_guid_x + 5, back_guid_y + 14.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//左端
 	DrawCircleAA(back_guid_x + 65, back_guid_y + 14.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//右端
 	DrawStringToHandle(back_guid_x + 2, back_guid_y + 3, "BACK", BACK_COLOR, buttonguid_font, 0xFFFFFF);
-	DrawStringToHandle(back_guid_x + 85, 668, "入力方式切替", 0xFFA15C, buttonguid_font, 0x000000);
+	DrawStringToHandle(back_guid_x + 85, 668, "入力方式切替", 0xFFFFFF, buttonguid_font, 0x000000);
 
 	const int mute_guid_x = 560;
-	DrawStringToHandle(mute_guid_x, 668, "ミュート／ミュート解除", 0xFFA15C, buttonguid_font, 0x000000);
+	DrawStringToHandle(mute_guid_x, 668, "ミュート／ミュート解除", 0xFFFFFF, buttonguid_font, 0x000000);
 	DrawCircleAA(mute_guid_x - 20, 680, 15, 20, 0xFFFFFF, 1);
 	DrawStringToHandle(mute_guid_x - 27, 668, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
 
 	const int return_center_x = 940;
-	DrawStringToHandle(return_center_x, 668, "戻る", 0xFFA15C, buttonguid_font, 0x000000);
+	DrawStringToHandle(return_center_x, 668, "戻る", 0xFFFFFF, buttonguid_font, 0x000000);
 	DrawCircleAA(return_center_x - 20, 680, 15, 20, 0xFFFFFF, 1);
 	DrawStringToHandle(return_center_x - 27, 668, Option::GetInputMode() ? "A" : "B", Option::GetInputMode() ? A_COLOR : B_COLOR, buttonguid_font, 0xFFFFFF);
 }
@@ -230,7 +230,7 @@ void Option::LoadData(void) {
 				int value;
 
 				//空白を除去した文字列に書き換える
-				key.erase(std::remove_if(key.begin(), key.end(), isspace), key.end());
+				key.erase(std::remove_if(key.begin(), key.end(), iswspace), key.end());
 
 				if (key == "BGM") {
 					line_stream >> value;
