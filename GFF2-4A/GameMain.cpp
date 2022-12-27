@@ -437,11 +437,11 @@ AbstractScene* GAMEMAIN::Update()
 		}
 
 		//デバッグ
-		if (CheckHitKey(KEY_INPUT_F)) {
-			int scrollx = -(7800 - 500);
-			stage->SetScrollX(scrollx);	//スポーン地点をセット
-			player->SetPlayerX(500); //プレイヤーの画面内座標をセット
-		}
+		//if (CheckHitKey(KEY_INPUT_F)) {
+		//	int scrollx = -(7800 - 500);
+		//	stage->SetScrollX(scrollx);	//スポーン地点をセット
+		//	player->SetPlayerX(500); //プレイヤーの画面内座標をセット
+		//}
 	}
 
 	if (input_margin < 10) {
