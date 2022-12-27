@@ -12,7 +12,7 @@
 Title::Title()
 {
 
-	if ((background_image = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1) 
+	if ((background_image = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1)
 	{
 		throw "Resource/Images/Stage/BackImage1.png";
 	}
@@ -21,14 +21,22 @@ Title::Title()
 		throw "Resource/Sounds/BGM/title.wav";
 	}
 
-	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1) 
+	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1)
 	{
 		throw "Resource/Sounds/SE/cursor_move.wav";
 	}
 
-	if ((ok_se = LoadSoundMem("Resource/Sounds/SE/ok.wav")) == -1) 
+	if ((ok_se = LoadSoundMem("Resource/Sounds/SE/ok.wav")) == -1)
 	{
 		throw "Resource/Sounds/SE/ok.wav";
+	}
+
+	int se_random = GetRand(1);
+	char dis_exit_se[30];
+	sprintf_s(dis_exit_se, sizeof(dis_exit_se), "Resource/Sounds/SE/exit0%d.wav", se_random + 1);
+
+	if ((exit_se = LoadSoundMem(dis_exit_se)) == -1) {
+		throw dis_exit_se;
 	}
 
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 120, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
@@ -38,6 +46,7 @@ Title::Title()
 	selectmenu = 0;
 	input_margin = 0;
 	timer = 0;
+	exit_flg = false;
 
 	title_anitimer[0] = 0;
 	title_anitimer[1] = 180;
@@ -52,9 +61,10 @@ Title::Title()
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.3, exit_se);
 }
 
-Title::~Title() 
+Title::~Title()
 {
 	delete option;
 
@@ -63,6 +73,7 @@ Title::~Title()
 	DeleteSoundMem(background_music);
 	DeleteSoundMem(cursor_move_se);
 	DeleteSoundMem(ok_se);
+	DeleteSoundMem(exit_se);
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(menu_font);
 	DeleteFontToHandle(guid_font);
@@ -78,6 +89,7 @@ AbstractScene* Title::Update()
 		//SE
 		ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 		ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+		ChangeVolumeSoundMem(Option::GetSEVolume() * 1.3, exit_se);
 	}
 	else {
 
@@ -127,17 +139,20 @@ AbstractScene* Title::Update()
 					break;
 
 				case MENU::END:
-					return nullptr;
+					exit_flg = true;
+					PlaySoundMem(exit_se, DX_PLAYTYPE_BACK, FALSE);
 					break;
 
 				default:
 					break;
 				}
 
-			}else{ title_anitimer[1] = 0; }
+			}
+			else { title_anitimer[1] = 0; }
 		}
 		timer++;
 
+		if (exit_flg == true && !CheckSoundMem(exit_se)) { return nullptr; }
 
 		//合計フレーム
 		if (title_anitimer[1] > 0) { title_anitimer[1]--; }
@@ -146,7 +161,7 @@ AbstractScene* Title::Update()
 		if (title_anitimer[0] < 180 && title_anitimer[1] > 0) { title_anitimer[0]++; }
 		else { title_anitimer[0] = 0; }
 	}
-	
+
 	return this;
 }
 
@@ -156,12 +171,12 @@ void Title::Draw()const
 	DrawGraph(0, 0, background_image, false);
 
 	//オプション画面へ入る
-	if (option->GetOptionFlg() == true) { 
-		option->Draw(); 
+	if (option->GetOptionFlg() == true) {
+		option->Draw();
 	}
 	else {
 
-		DrawRotaStringToHandle(GetDrawCenterX("スライムアクション",title_font, 600 - title_anitimer[1] * 3), 200 + title_anitimer[1] * 3, 1.0 - title_anitimer[1] * 0.01,1.0 - title_anitimer[1] * 0.01, 600, 100, 10 * title_anitimer[0] * (M_PI / 180), 0x56F590, title_font, 0xFFFFFF, FALSE, "スライムアクション");
+		DrawRotaStringToHandle(GetDrawCenterX("スライムアクション", title_font, 600 - title_anitimer[1] * 3), 200 + title_anitimer[1] * 3, 1.0 - title_anitimer[1] * 0.01, 1.0 - title_anitimer[1] * 0.01, 600, 100, 10 * title_anitimer[0] * (M_PI / 180), 0x56F590, title_font, 0xFFFFFF, FALSE, "スライムアクション");
 		//DrawStringToHandle(GetDrawCenterX("スライムアクション",title_font), 100, "スライムアクション", 0x56F590, title_font, 0xFFFFFF);
 
 		//ボックス
@@ -175,10 +190,10 @@ void Title::Draw()const
 		if (title_anitimer[1] > 0) { return; }
 
 		//選択メニュー
-		DrawStringToHandle(GetDrawCenterX("プレイ",menu_font), 360, "プレイ", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(GetDrawCenterX("ランキング",menu_font), 450, "ランキング", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(GetDrawCenterX("オプション",menu_font), 540, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(GetDrawCenterX("終了",menu_font,8), 630, "終了", selectmenu == 3 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("プレイ", menu_font), 360, "プレイ", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("ランキング", menu_font), 450, "ランキング", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("オプション", menu_font), 540, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("終了", menu_font, 8), 630, "終了", selectmenu == 3 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 
 
 

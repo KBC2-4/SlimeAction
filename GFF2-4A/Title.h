@@ -18,11 +18,12 @@ private:
 
 	int background_image;
 	int background_music;
-	int cursor_move_se, ok_se;
+	int cursor_move_se, ok_se,exit_se;
 	int title_font, menu_font, guid_font;
 	int selectmenu;
 	int input_margin;
 	int timer;
+	bool exit_flg;
 
 	int title_anitimer[2];
 
