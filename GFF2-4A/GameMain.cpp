@@ -62,6 +62,14 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 		throw "Resource/Sounds/SE/start.wav";
 	}
 
+	int clear_se_random = GetRand(4);
+	char dis_clear_se[30];
+	sprintf_s(dis_clear_se, sizeof(dis_clear_se), "Resource/Sounds/SE/clear%d.wav", clear_se_random + 1);
+
+	if ((clear_se = LoadSoundMem(dis_clear_se)) == -1) {
+		throw dis_clear_se;
+	}
+
 	now_graph = 0;
 
 	start_time_font = CreateFontToHandle("メイリオ", 160, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
@@ -77,6 +85,7 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 
 	start_time = 180;
 	start_effect_timer = 120;
+	clear_interval = 360;
 
 	this->restart = restart;
 
@@ -221,6 +230,7 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, ok_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, count_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, start_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, clear_se);
 
 	PlaySoundMem(count_se, DX_PLAYTYPE_BACK,TRUE);
 
@@ -262,6 +272,7 @@ GAMEMAIN::~GAMEMAIN()
 	DeleteSoundMem(ok_se);
 	DeleteSoundMem(count_se);
 	DeleteSoundMem(start_se);
+	DeleteSoundMem(clear_se);
 
 	delete player;
 	delete stage;
@@ -340,7 +351,7 @@ AbstractScene* GAMEMAIN::Update()
 		if (pause->IsPause() == false) {
 
 			//経過時間の加算
-			elapsed_time = GetNowCount() - start_addtime;
+			if (!stage->GetClearFlg()) { elapsed_time = GetNowCount() - start_addtime; }
 
 			player->Update(element, stage, tomaton, tomaton_count);
 			stage->Update(player, element);	//ステージクリア用
@@ -422,7 +433,11 @@ AbstractScene* GAMEMAIN::Update()
 				//ステージクリア
 				if (stage->GetClearFlg())
 				{
-					return new RESULT(true, elapsed_time, stage_name);
+					if(clear_interval == 360){ PlaySoundMem(clear_se, DX_PLAYTYPE_BACK, TRUE); }
+					player->SetPlayerX(player->GetOldPlayerX());
+					if (--clear_interval < 0 && !CheckSoundMem(clear_se)) {
+						return new RESULT(true, elapsed_time, stage_name);
+					}
 				}
 			}
 		}
@@ -449,6 +464,9 @@ AbstractScene* GAMEMAIN::Update()
 				//SE
 				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 				ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, count_se);
+				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, start_se);
+				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, clear_se);
 			}
 		}
 

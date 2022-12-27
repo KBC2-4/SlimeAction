@@ -105,7 +105,7 @@ void STAGE::Update(PLAYER* player, ELEMENT* element) {
 /// </summary>
 void STAGE::Draw(ELEMENT* element)const {
 	//ゲームクリア時
-	//if (clearflg == true) { DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47); }
+	if (clearflg == true) { DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47); }
 
 	for (int i = 0; i < map_data.size(); i++) {
 		for (int j = 0; j < map_data.at(0).size(); j++) {

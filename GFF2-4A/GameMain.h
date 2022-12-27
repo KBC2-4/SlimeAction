@@ -17,13 +17,14 @@ private:
 	int background_image[3];
 	int background_music[3];		//BGM
 	int start_time_font, time_font;	//フォント
-	int cursor_move_se, ok_se, count_se, start_se;	//SE
+	int cursor_move_se, ok_se, count_se, start_se, clear_se;	//SE
 	int start_time;		//開始までの遅延時間
 	int start_effect_timer;
 	int start_addtime;
 	int elapsed_time;	//経過時間
 	const char* stage_name;	//リスタート時のステージ選択用
 	int now_graph;		//リスタート時の今現在の画面
+	int clear_interval;	//クリア時の画面推移までの時間
 
 	//プレイヤーのライフの画像
 	int hp_img;
