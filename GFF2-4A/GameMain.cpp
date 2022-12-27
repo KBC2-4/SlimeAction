@@ -10,13 +10,6 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 	std::vector<std::vector<int>> spawn_point;
 	hp_img = LoadGraph("Resource/Images/Player/hp.png");
 
-	//‰¼‚Ì”wŒi‰æ‘œ
-	if (stage_name != "Stage02") {
-		if ((background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1) {
-			throw "Resource/Images/Stage/BackImage1.png";
-		}
-	}
-
 	if (stage_name == "Stage01") {
 
 		if ((background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1) {
@@ -38,8 +31,18 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 		}
 	}
 	else if (stage_name == "Stage03") {
+
+		if ((background_image[2] = LoadGraph("Resource/Images/Stage/BackImage3.png")) == -1) {
+			throw "Resource/Images/Stage/BackImage2.png";
+		}
+
 		if ((background_music[2] = LoadSoundMem("Resource/Sounds/BGM/stage3.wav")) == -1) {
 			throw "Resource/Sounds/BGM/stage3.wav";
+		}
+	}
+	else {
+		if ((background_image[0] = LoadGraph("Resource/Images/Stage/BackImage1.png")) == -1) {
+			throw "Resource/Images/Stage/BackImage1.png";
 		}
 	}
 
@@ -205,7 +208,7 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 	}
 
 	//SE
-	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, cursor_move_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, ok_se);
 
 
@@ -220,11 +223,6 @@ GAMEMAIN::~GAMEMAIN()
 {
 	DeleteGraph(hp_img);
 
-	//‰¼‚Ì”wŒi‰æ‘œ
-	if (stage_name != "Stage02") {
-		DeleteGraph(background_image[0]);
-	}
-
 	if (stage_name == "Stage01") {
 		StopSoundMem(background_music[0]);
 		DeleteSoundMem(background_music[0]);
@@ -238,6 +236,10 @@ GAMEMAIN::~GAMEMAIN()
 	else if (stage_name == "Stage03") {
 		StopSoundMem(background_music[2]);
 		DeleteSoundMem(background_music[2]);
+		DeleteGraph(background_image[2]);
+	}
+	else {
+		DeleteGraph(background_image[0]);
 	}
 
 	DeleteFontToHandle(start_time_font);
@@ -429,7 +431,7 @@ AbstractScene* GAMEMAIN::Update()
 				}
 
 				//SE
-				ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 				ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 			}
 		}
@@ -498,13 +500,21 @@ void GAMEMAIN::Draw() const
 {
 
 	//ƒXƒe[ƒW”wŒi
-	if (stage_name != "Stage02") {
+	if (stage_name == "Stage01") {
 		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[0], FALSE);
 		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[0], FALSE);
 	}
 	else if (stage_name == "Stage02") {
 		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[1], FALSE);
 		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[1], FALSE);
+	}
+	else if (stage_name == "Stage03") {
+		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[2], FALSE);
+		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[2], FALSE);
+	}
+	else {
+		DrawGraph(int(stage->GetScrollX()) % 2560 + 2560, /*scroll_y*/0, background_image[0], FALSE);
+		DrawGraph(int(stage->GetScrollX()) % 2560, /*scroll_y*/0, background_image[0], FALSE);
 	}
 
 

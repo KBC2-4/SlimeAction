@@ -6,44 +6,78 @@
 GameOver::GameOver(const char* stage_name)
 {
 
-	//GameOverImageを初期化
-	if ((GameOverImage = (LoadGraph("Resource/Images/Result/GameOver_Image.png"))) == -1)
+	if ((title_image = (LoadGraph("Resource/Images/Result/GameOver_title.png"))) == -1)
 	{
-		throw "Resource/Images/Result/GameOver_Image.png";
+		throw "Resource/Images/Result/GameOver_title.png";
 	}
 
-	//Select用fontを初期化
+	if ((background_image = (LoadGraph("Resource/Images/Result/GameOvar_background.png"))) == -1)
+	{
+		throw "Resource/Images/Result/GameOvar_background.png";
+	}
 
-	Select_font = CreateFontToHandle("メイリオ", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	if ((background_music = LoadSoundMem("Resource/Sounds/BGM/gameover02.wav")) == -1) {
+		throw "Resource/Sounds/BGM/gameover02.wav";
+	}
 
-	//Bボタンを押すのを促す文字列用fontを初期化
-	Button_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 100, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	if ((ok_se = LoadSoundMem("Resource/Sounds/SE/ok.wav")) == -1) {
+		throw "Resource/Sounds/SE/ok.wav";
+	}
 
-	//Input_WaitTimeを初期化
-	Input_WaitTime= 0;
+	if ((cursor_move_se = LoadSoundMem("Resource/Sounds/SE/cursor_move.wav")) == -1)
+	{
+		throw "Resource/Sounds/SE/cursor_move.wav";
+	}
 
-	//Selectcursorの移動数をカウントする変数を初期化
-	SelectCount = 0;
+	se_randnum = GetRand(3);
+	char dis_bad_se[30];
+	sprintf_s(dis_bad_se, sizeof(dis_bad_se), "Resource/Sounds/SE/bad%d.wav", se_randnum + 1);
+
+	if ((bad_se[se_randnum] = LoadSoundMem(dis_bad_se)) == -1) {
+		throw dis_bad_se;
+	}
+
+
+	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 90, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	guid_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 40, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+
+
+	input_margin= 0;
+	selectmenu = 0;
 
 	timer=0;
 
 	this->stage_name = stage_name;
+
+	ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music);
+
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.3, bad_se[se_randnum]);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+
+	PlaySoundMem(background_music, DX_PLAYTYPE_BACK, FALSE);
+	PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE);
 }
 
 GameOver::~GameOver()
 {
 
-	DeleteGraph(GameOverImage);
-	DeleteFontToHandle(Select_font);
-	DeleteFontToHandle(Button_font);
+	DeleteGraph(title_image);
+	DeleteGraph(background_image);
+	DeleteFontToHandle(menu_font);
+	DeleteFontToHandle(guid_font);
+	DeleteSoundMem(background_music);
+	DeleteSoundMem(ok_se);
+	DeleteSoundMem(cursor_move_se);
+	DeleteSoundMem(bad_se[se_randnum]);
 }
 
 AbstractScene* GameOver::Update()
 {
 
 	//WaitTimeを加算
-	if (Input_WaitTime < 20) {
-		++Input_WaitTime;
+	if (input_margin < 20) {
+		++input_margin;
 	}
 	else {
 
@@ -51,28 +85,30 @@ AbstractScene* GameOver::Update()
 		最上の場合は下へ*/
 		if (PAD_INPUT::GetPadThumbLY() > 20000)
 		{
-
-			SelectCount = (SelectCount + 1) % 2;
-			Input_WaitTime = 0;
+			PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+			StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+			selectmenu = (selectmenu + 1) % 2;
+			input_margin = 0;
 		}
 
 		/*下入力かつWaitTimeが20より大きい時cursorを下に、
 		最上の場合は上へ*/
 		if (PAD_INPUT::GetPadThumbLY() < -20000)
 		{
-
-			SelectCount = (SelectCount + 1) % 2;
-			Input_WaitTime = 0;
+			PlaySoundMem(cursor_move_se, DX_PLAYTYPE_BACK, TRUE);
+			StartJoypadVibration(DX_INPUT_PAD1, 100, 160, -1);
+			selectmenu = (selectmenu + 1) % 2;
+			input_margin = 0;
 		}
 
 	}
 
-	/*Bボタンを入力かつPadStateがONのとき、
-	SelectCountが指定されたcaseの値ならそのコンストラクタをnewする。*/
+
 	if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
 	{
-
-		switch (static_cast<GAMEOVER_MENU>(SelectCount))
+		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+		StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
+		switch (static_cast<GAMEOVER_MENU>(selectmenu))
 		{
 
 		case GAMEOVER_MENU::NewGame:
@@ -95,24 +131,19 @@ AbstractScene* GameOver::Update()
 void GameOver::Draw() const
 {
 
-	//GameOver用Image
-	DrawGraph(0, 0, GameOverImage, FALSE);
-
-	//デバッグ用Line
-	DrawLine(0, 360, 1280, 360, 0x000000);
-	DrawLine(640, 0, 640, 720, 0x000000);
-	DrawLine(0, 460, 1280, 460, 0x000000);
+	DrawGraph(0, 0, background_image, FALSE);
+	DrawGraph(185, 100, title_image, TRUE);
 
 	//Select用String
-	DrawStringToHandle(GetDrawCenterX("GameSelect",Select_font), 460, "GameSelect", SelectCount == 0 ? 0x0a6500 : 0x1aff00, Select_font, 0x000000);
-	DrawStringToHandle(GetDrawCenterX("Restart",Select_font), 360, "Restart", SelectCount == 1 ? 0x0a6500 : 0x1aff00, Select_font, 0x000000);
+	DrawStringToHandle(GetDrawCenterX("ステージ選択画面へ",menu_font), 480, "ステージ選択画面へ", selectmenu == 0 ? 0x0a6500 : 0x1aff00, menu_font, 0x000000);
+	DrawStringToHandle(GetDrawCenterX("リスタート",menu_font), 360, "リスタート", selectmenu == 1 ? 0x0a6500 : 0x1aff00, menu_font, 0x000000);
 
 	if (timer % 120 < 60)
 	{
 
 		//Bボタンを押すことを促す(表示非表示を切り替え)
 		DrawCircleAA(580.5f, 627.5f, 20, 20, 0x000000, 1);
-		DrawExtendStringToHandle(572, 610, 0.4f, 0.4f, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, Button_font, 0x000000);
-		DrawExtendStringToHandle(600, 610, 0.4f, 0.4f, "で決定", 0x95ff89, Button_font, 0x000000);
+		DrawStringToHandle(572, 610,  Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0x000000);
+		DrawStringToHandle(600, 610,  "で決定", 0x95ff89, guid_font, 0x000000);
 	}
 }

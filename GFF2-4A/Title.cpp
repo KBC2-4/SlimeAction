@@ -50,7 +50,7 @@ Title::Title()
 	ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music);
 
 	//SE
-	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 }
 
@@ -76,7 +76,7 @@ AbstractScene* Title::Update()
 		ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music);
 
 		//SE
-		ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+		ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 		ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 	}
 	else {
@@ -178,7 +178,7 @@ void Title::Draw()const
 		DrawStringToHandle(GetDrawCenterX("プレイ",menu_font), 360, "プレイ", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
 		DrawStringToHandle(GetDrawCenterX("ランキング",menu_font), 450, "ランキング", selectmenu == 1 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
 		DrawStringToHandle(GetDrawCenterX("オプション",menu_font), 540, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(GetDrawCenterX("終了",menu_font), 630, "終了", selectmenu == 3 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("終了",menu_font,8), 630, "終了", selectmenu == 3 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
 
 
 

@@ -23,7 +23,7 @@ PAUSE::PAUSE() {
 	pause_flg = false;
 
 	//SE
-	ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 
 	option = new Option();
@@ -66,7 +66,7 @@ int PAUSE::Update(void) {
 			GetDrawScreenGraph(0, 0, 1280, 720, pause_graph);
 		}
 
-		ChangeVolumeSoundMem(Option::GetSEVolume(), cursor_move_se);
+		ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
 		ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 
 		if (option->GetOptionFlg() == true) {

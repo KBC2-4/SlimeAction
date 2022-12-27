@@ -5,9 +5,10 @@ class RESULT : public AbstractScene
 {
 private:
 	int time_font;
-	int Result_Image;
-	int count_se, ok_se, good_se[4], bad_se[4];
-	int Result_font;
+	int title_image, background_image;
+	int background_music;
+	int count_se, ok_se, good_se[4];
+	int menu_font, guid_font, button_guid_font;
 	int timer, guide_timer;
 	bool win;
 	int clear_time;

@@ -4,6 +4,8 @@
 #include "DxLib.h"
 #include "Option.h"
 
+#define callout_backcolor 0xFFFFFF
+
 STAGE_SELECT::STAGE_SELECT()
 {
 	//background_image[0] = LoadGraph("Resource/Images/Stage/BackImpause_cash.bmp");
@@ -18,8 +20,8 @@ STAGE_SELECT::STAGE_SELECT()
 	player = new PLAYER(stage);
 	element = new ELEMENT();
 	lemoner = nullptr;
+	lemoner_count = 0;
 
-	
 	std::vector<std::vector<int>> spawn_point;
 	//レモナー生成する数を数える
 	for (int i = 0, point = 0; i < stage->GetMapSize().x; i++)
@@ -55,6 +57,7 @@ STAGE_SELECT::STAGE_SELECT()
 	player_map_x = 0;
 	player_map_y = 0;
 
+	guid_timer = 0;
 	*effect_timer = 0;
 	stage_return = { 0,0 };
 	*stage_move = { 0,0 };
@@ -146,7 +149,7 @@ AbstractScene* STAGE_SELECT::Update()
 			}
 		}
 	}
-	
+
 
 	player_map_x = roundf(player->GetPlayerX() - stage->GetScrollX());
 	player_map_y = floorf(player->GetPlayerY());
@@ -184,6 +187,10 @@ AbstractScene* STAGE_SELECT::Update()
 		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new GAMEMAIN(false, 0, "MapData1"); }
 	}
 
+	//ガイドの表示タイマー
+	if (guid_timer < 100) { guid_timer++; }
+	else { guid_timer = 0; }
+
 	//ポータルのアニメーションタイマー
 	if (effect_timer[1] >= 255) { effect_delta = true; }
 	if (effect_timer[1] <= 0) { effect_delta = false; }
@@ -220,7 +227,7 @@ void STAGE_SELECT::Draw() const
 	//ステージの描画
 	element->Draw(stage, player);
 	stage->Draw(element);
-	
+
 	for (int i = 0; i < lemoner_count; i++)
 	{
 		if (lemoner[i] != nullptr)
@@ -241,6 +248,8 @@ void STAGE_SELECT::Draw() const
 
 	//ガイド表示
 
+	const int guid_color = 0xFFFFFF;
+
 	const int joystick_x = 300;
 	const int joystick_y = 670;
 
@@ -254,25 +263,25 @@ void STAGE_SELECT::Draw() const
 	DrawString(joystick_x - 2, joystick_y - 2, "L", 0xFFFFFF);
 	//アニメーション有り
 	//DrawString(joystick_x - 5 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), "L", 0xFFFFFF);
-	DrawStringToHandle(330, 668, "移動", 0x91EB52, buttonguid_font, 0x000000);
+	DrawStringToHandle(330, 668, "移動", guid_color, buttonguid_font, 0x000000);
 
-	DrawStringToHandle(880, 668, "[ゲーム中]ポーズ", 0x91EB52, buttonguid_font, 0x000000);
+	DrawStringToHandle(880, 668, "[ゲーム中]ポーズ", guid_color, buttonguid_font, 0x000000);
 	DrawBoxAA(790, 665, 860, 695, 0xFFFFFF, TRUE, 1.0F);
 	DrawCircleAA(795, 679.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//左端
 	DrawCircleAA(855, 679.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//右端
 	DrawStringToHandle(785, 668, "START", START_COLOR, buttonguid_font, 0xFFFFFF);
 
-	DrawStringToHandle(630, 668, "アクション", 0x91EB52, buttonguid_font, 0x000000);
+	DrawStringToHandle(630, 668, "アクション", guid_color, buttonguid_font, 0x000000);
 	DrawCircleAA(610, 680, 15, 20, 0xFFFFFF, 1);
 	DrawStringToHandle(603, 668, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
 
-	DrawStringToHandle(450, 668, "ジャンプ", 0x91EB52, buttonguid_font, 0x000000);
+	DrawStringToHandle(450, 668, "ジャンプ", guid_color, buttonguid_font, 0x000000);
 	DrawCircleAA(430, 680, 15, 20, 0xFFFFFF, 1);
 	DrawStringToHandle(423, 668, Option::GetInputMode() ? "A" : "B", Option::GetInputMode() ? A_COLOR : B_COLOR, buttonguid_font, 0xFFFFFF);
 
 	//戻る
 	if ((player_map_x >= (stage_return.x) - (MAP_CEllSIZE * 3) / 2) && (player_map_x <= stage_return.x + (MAP_CEllSIZE * 3) / 2)) {
-		DrawStageGuid("タイトルへ", stage_return.x - MAP_CEllSIZE / 2, stage_return.y - 30, stagename_font, 0x6AF6C5, 0xFFFFFF, 0, -10, -1, "戻る", 55, 30);
+		DrawStageGuid("タイトルへ", stage_return.x - MAP_CEllSIZE / 2, stage_return.y - 30, stagename_font, 0x1FCF6E, callout_backcolor, 0, -10, -1, "戻る", 55, 30);
 	}
 
 	//ステージ1 ポータル描画
@@ -295,24 +304,24 @@ void STAGE_SELECT::Draw() const
 
 	//ステージ1
 	if ((player_map_x >= stage_move[1].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[1].x + (MAP_CEllSIZE * 3) / 2)) {
-		DrawStageGuid("１ステージ", stage_move[1].x, stage_move[1].y, stagename_font, 0xFA5A47);
+		DrawStageGuid("１ステージ", stage_move[1].x, stage_move[1].y, stagename_font, 0xFA5A47, -1, 0, 0, callout_backcolor);
 	}
 
 	//ステージ2
 	if ((player_map_x >= stage_move[2].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[2].x + (MAP_CEllSIZE * 3) / 2)) {
-		DrawStageGuid("２ステージ", stage_move[2].x, stage_move[2].y, stagename_font, 0xBF700F);
+		DrawStageGuid("２ステージ", stage_move[2].x, stage_move[2].y, stagename_font, 0xBF700F, -1, 0, 0, callout_backcolor);
 	}
 
 	//ステージ3
 	if ((player_map_x >= stage_move[3].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[3].x + (MAP_CEllSIZE * 3) / 2)) {
-		DrawStageGuid("３ステージ", stage_move[3].x, stage_move[3].y, stagename_font, 0x9511D9);
+		DrawStageGuid("３ステージ", stage_move[3].x, stage_move[3].y, stagename_font, 0x9511D9, -1, 0, 0, callout_backcolor);
 	}
 
 	//サンプルステージ
 	if ((player_map_x >= 11 * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= 11 * MAP_CEllSIZE + (MAP_CEllSIZE * 3) / 2)) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
 		DrawOvalAA(11 * MAP_CEllSIZE + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY(), 100, 80, 30, 0x000000, FALSE, 1.0F);
-		DrawOvalAA(11 * MAP_CEllSIZE + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 30, 0xFFFFFF, TRUE, 0.0F);
+		DrawOvalAA(11 * MAP_CEllSIZE + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 30, callout_backcolor, TRUE, 0.0F);
 		//DrawString(stage_move[1].x + MAP_CEllSIZE / 2, stage_move[1].y + MAP_CEllSIZE, "STAGE 1" , 0x6AF6C5, 0x000000);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		DrawExtendStringToHandle(11 * MAP_CEllSIZE + stage->GetScrollX() - 55, stage_move[1].y - MAP_CEllSIZE - 10 + stage->GetScrollY(), 0.4f, 0.4f, "Sampleステージ", 0x856AF6, guid_font, 0x000000);
@@ -322,15 +331,15 @@ void STAGE_SELECT::Draw() const
 	}
 
 	//チュートリアル
-	if (lemoner[0] != nullptr){
+	if (lemoner[0] != nullptr) {
 		const int x = 31;
 		const int x_map = x * MAP_CEllSIZE + +stage->GetScrollX();
 		const int y_map = stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY();
 		if ((player_map_x >= x * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= x * MAP_CEllSIZE + (MAP_CEllSIZE * 3) / 2)) {
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
-			DrawTriangleAA(x_map + 100, y_map - 62, x_map + 140, y_map, x_map + 300, y_map - 200, 0xFFFFFF, TRUE,2.0F);
+			DrawTriangleAA(x_map + 100, y_map - 62, x_map + 140, y_map, x_map + 300, y_map - 200, callout_backcolor, TRUE, 2.0F);
 			DrawOvalAA(x * MAP_CEllSIZE + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY(), 100, 80, 30, 0x000000, FALSE, 1.0F);
-			DrawOvalAA(x * MAP_CEllSIZE + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 30, 0xFFFFFF, TRUE, 0.0F);
+			DrawOvalAA(x * MAP_CEllSIZE + MAP_CEllSIZE / 2 + stage->GetScrollX(), stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY(), 99, 79, 30, callout_backcolor, TRUE, 0.0F);
 			//DrawString(stage_move[1].x + MAP_CEllSIZE / 2, stage_move[1].y + MAP_CEllSIZE, "STAGE 1" , 0x6AF6C5, 0x000000);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
@@ -375,6 +384,6 @@ void STAGE_SELECT::DrawStageGuid(const char* stage_name, const float x, const fl
 	DrawStringToHandle(x + stage->GetScrollX() - 55 + text_margin_x, y - MAP_CEllSIZE - 10 + stage->GetScrollY() + text_margin_y, stage_name, text_color, stagename_font, textback_color);
 	if (second_title != "") { DrawStringToHandle(x + stage->GetScrollX() - 55 + secont_margin_x, y - MAP_CEllSIZE - 10 + stage->GetScrollY() + secont_margin_y, second_title, text_color, stagename_font, textback_color); }
 
-	DrawCircleAA(x + stage->GetScrollX(), y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
+	DrawCircleAA(x + stage->GetScrollX(), y + stage->GetScrollY(), 15, 20, guid_timer < 50 ? 0xFFFFFF : 0xFFCB33, 1);
 	DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
 }
