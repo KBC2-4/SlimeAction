@@ -85,6 +85,12 @@ PLAYER::PLAYER(STAGE* stage) {
 	if ((hook_pendulumSE = LoadSoundMem("Resource/Sounds/SE/Player/hook.wav")) == -1) {
 		throw "Resource/Sounds/SE/Player/hook_pendulum.wav";
 	}
+	if ((healSE = LoadSoundMem("Resource/Sounds/SE/Player/heal.wav")) == -1) {
+		throw "Resource/Sounds/SE/Player/heal.wav";
+	}
+	if ((throw_ballSE = LoadSoundMem("Resource/Sounds/SE/Player/throw_ball.wav")) == -1) {
+		throw "Resource/Sounds/SE/Player/throw_ball.wav";
+	}
 
 
 	//SE
@@ -93,6 +99,8 @@ PLAYER::PLAYER(STAGE* stage) {
 	ChangeVolumeSoundMem(Option::GetSEVolume(), landingSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), hook_moveSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), hook_pendulumSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), healSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), throw_ballSE);
 
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
@@ -121,6 +129,8 @@ PLAYER::~PLAYER() {
 	DeleteSoundMem(landingSE);
 	DeleteSoundMem(hook_moveSE);
 	DeleteSoundMem(hook_pendulumSE);
+	DeleteSoundMem(healSE);
+	DeleteSoundMem(throw_ballSE);
 }
 
 /// <summary>
@@ -133,6 +143,8 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomato
 	ChangeVolumeSoundMem(Option::GetSEVolume(), landingSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), hook_moveSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 0.7, hook_pendulumSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), healSE);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), throw_ballSE);
 
 
 	//à⁄ìÆèàóù
@@ -667,6 +679,7 @@ void PLAYER::Throw(STAGE* stage) {
 		//ìäÇ∞ÇÈèàóù
 		throw_interval = THROW_INTERVAL;
 		throw_slime.push_back(ThrowSlime(player_x, player_y, throw_rad, stage));
+		PlaySoundMem(throw_ballSE, DX_PLAYTYPE_BACK);
 		ChangeAnimation(PLAYER_ANIM_STATE::THROW, true);
 	}
 }
@@ -857,6 +870,7 @@ void PLAYER::SetLife(int a)
 	}
 	else {
 		is_heal = true;
+		PlaySoundMem(healSE, DX_PLAYTYPE_BACK);
 	}
 	life = a;
 }
