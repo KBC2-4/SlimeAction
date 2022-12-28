@@ -588,7 +588,7 @@ void ELEMENT::Door(STAGE* stage) {
 			stage->SetMapData(y - 1, x, 65);
 		}
 
-		if (door[i].flg==true&&(player_map_x >= door[i].x + MAP_CEllSIZE) && (player_map_x <= door[i].x + MAP_CEllSIZE + 5) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
+		if (door[i].flg==true&&(player_map_x >= door[i].x + MAP_CEllSIZE) && (player_map_x <= door[i].x + MAP_CEllSIZE + 5) && (player_map_y >= door[i].y - MAP_CEllSIZE *1.5) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
 			stage->SetMapData(y, x, 66);
