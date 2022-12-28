@@ -9,6 +9,7 @@ private:
 	int best_time[3];
 	int title_font,time_font;
 	int image;
+	int ok_se;
 	int background_image;
 public:
 	/// <summary>

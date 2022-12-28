@@ -63,7 +63,7 @@ RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume(), count_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
-	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.3, good_se[se_randnum]);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, good_se[se_randnum]);
 
 	PlaySoundMem(background_music, DX_PLAYTYPE_BACK, FALSE);
 	PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE);
@@ -121,7 +121,9 @@ AbstractScene* RESULT::Update()
 	if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A) && PAD_INPUT::GetPadState() == PAD_STATE::ON)
 	{
 		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
-		StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
+		//ok_seÇ™ñ¬ÇËèIÇÌÇ¡ÇƒÇ©ÇÁâÊñ êÑà⁄Ç∑ÇÈÅB
+		while (CheckSoundMem(ok_se)) {}
+		StartJoypadVibration(DX_INPUT_PAD1, OK_VIBRATION_POWER, OK_VIBRATION_TIME, -1);
 		return new STAGE_SELECT();
 	}
 

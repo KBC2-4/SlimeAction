@@ -84,7 +84,9 @@ int PAUSE::Update(void) {
 
 			if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
 				PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
-				StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
+				//ok_seが鳴り終わってから画面推移する。
+				while (CheckSoundMem(ok_se)) {}
+				StartJoypadVibration(DX_INPUT_PAD1, OK_VIBRATION_POWER, OK_VIBRATION_TIME, -1);
 
 				//デリート処理
 				if (static_cast<MENU>(selectmenu) != MENU::OPTION) {

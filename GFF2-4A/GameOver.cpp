@@ -107,7 +107,10 @@ AbstractScene* GameOver::Update()
 	if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
 	{
 		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
-		StartJoypadVibration(DX_INPUT_PAD1, 180, 160, -1);
+		//ok_se‚ª–Â‚èI‚í‚Á‚Ä‚©‚ç‰æ–Ê„ˆÚ‚·‚éB
+		while (CheckSoundMem(ok_se)) {}
+		StartJoypadVibration(DX_INPUT_PAD1,  OK_VIBRATION_POWER, OK_VIBRATION_TIME, -1);
+
 		switch (static_cast<GAMEOVER_MENU>(selectmenu))
 		{
 

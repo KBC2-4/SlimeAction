@@ -24,6 +24,12 @@ DRAW_RANKING::DRAW_RANKING()
 	{
 		throw "Resource/Images/Stage/BackImage1.png";
 	}
+
+	if ((ok_se = LoadSoundMem("Resource/Sounds/SE/ok.wav")) == -1) {
+		throw "Resource/Sounds/SE/ok.wav";
+	}
+
+	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 }
 
 DRAW_RANKING::~DRAW_RANKING() {
@@ -31,6 +37,7 @@ DRAW_RANKING::~DRAW_RANKING() {
 	DeleteFontToHandle(title_font);
 	DeleteFontToHandle(time_font);
 	DeleteGraph(image);
+	DeleteSoundMem(ok_se);
 
 }
 
@@ -44,6 +51,10 @@ AbstractScene* DRAW_RANKING::Update()
 
 	if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON))
 	{
+		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+		//ok_seÇ™ñ¬ÇËèIÇÌÇ¡ÇƒÇ©ÇÁâÊñ êÑà⁄Ç∑ÇÈÅB
+		while (CheckSoundMem(ok_se)) {}
+		StartJoypadVibration(DX_INPUT_PAD1,  OK_VIBRATION_POWER, OK_VIBRATION_TIME, -1);
 		return new Title();
 	}
 

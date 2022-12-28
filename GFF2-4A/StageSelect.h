@@ -12,6 +12,8 @@ private:
 	int background_image[5];
 	//BGM
 	int background_music;
+
+	int ok_se;
 	//フォント
 	int guid_font, buttonguid_font, stagename_font;
 	int guid_timer;		//ガイド表示タイマー
@@ -50,6 +52,11 @@ public:
 	/// 描画に関することを実装
 	/// </summary>
 	void Draw() const override;
+
+	/// <summary>
+	/// ステージに入る時のUpdate
+	/// </summary>
+	void StageIn(void);
 
 	/// <summary>
 	/// ステージポータルガイド表示

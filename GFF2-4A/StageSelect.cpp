@@ -13,6 +13,11 @@ STAGE_SELECT::STAGE_SELECT()
 	if ((background_music = LoadSoundMem("Resource/Sounds/BGM/title.wav")) == -1) {
 		throw "Resource/Sounds/BGM/title.wav";
 	}
+
+	if ((ok_se = LoadSoundMem("Resource/Sounds/SE/ok.wav")) == -1) {
+		throw "Resource/Sounds/SE/ok.wav";
+	}
+
 	guid_font = CreateFontToHandle("メイリオ", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	stagename_font = CreateFontToHandle("メイリオ", 31, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 4);
@@ -100,6 +105,7 @@ STAGE_SELECT::STAGE_SELECT()
 
 	//BGM
 	ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
 }
 
 STAGE_SELECT::~STAGE_SELECT()
@@ -109,6 +115,7 @@ STAGE_SELECT::~STAGE_SELECT()
 	DeleteFontToHandle(stagename_font);
 	StopSoundMem(background_music);
 	DeleteSoundMem(background_music);
+	DeleteSoundMem(ok_se);
 	DeleteGraph(background_image[0]);
 	delete player;
 	delete stage;
@@ -161,30 +168,30 @@ AbstractScene* STAGE_SELECT::Update()
 
 	//戻る
 	if ((player_map_x >= stage_return.x - (MAP_CEllSIZE * 3) / 2) && (player_map_x <= stage_return.x + (MAP_CEllSIZE * 3) / 2)) {
-		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new Title(); }
+		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { StageIn(); return new Title(); }
 	}
 
 	//ステージ1
 	if ((player_map_x >= stage_move[1].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[1].x + (MAP_CEllSIZE * 3) / 2)) {
-		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new GAMEMAIN(false, 0, "Stage01"); }
+		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { StageIn(); return new GAMEMAIN(false, 0, "Stage01"); }
 	}
 
 
 	//ステージ2
 	if ((player_map_x >= stage_move[2].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[2].x + (MAP_CEllSIZE * 3) / 2)) {
-		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new GAMEMAIN(false, 0, "Stage02"); }
+		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { StageIn(); return new GAMEMAIN(false, 0, "Stage02"); }
 	}
 
 
 	//ステージ3
 	if ((player_map_x >= stage_move[3].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[3].x + (MAP_CEllSIZE * 3) / 2)) {
-		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new GAMEMAIN(false, 0, "Stage03"); }
+		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { StageIn(); return new GAMEMAIN(false, 0, "Stage03"); }
 	}
 
 
 	//サンプルステージ
 	if ((player_map_x >= 11 * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= 11 * MAP_CEllSIZE + (MAP_CEllSIZE * 3) / 2)) {
-		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { return new GAMEMAIN(false, 0, "MapData1"); }
+		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { StageIn(); return new GAMEMAIN(false, 0, "MapData1"); }
 	}
 
 	//ガイドの表示タイマー
@@ -368,6 +375,16 @@ void STAGE_SELECT::Draw() const
 
 	//プレイヤーの描画
 	player->Draw(stage);
+}
+
+void STAGE_SELECT::StageIn(void)
+{
+	PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+	//ok_seが鳴り終わってから画面推移する。
+	while (CheckSoundMem(ok_se)) {}
+	StartJoypadVibration(DX_INPUT_PAD1,  OK_VIBRATION_POWER, OK_VIBRATION_TIME, -1);
+
+
 }
 
 
