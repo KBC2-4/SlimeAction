@@ -104,8 +104,6 @@ void STAGE::Update(PLAYER* player, ELEMENT* element) {
 /// ステージの描画
 /// </summary>
 void STAGE::Draw(ELEMENT* element)const {
-	//ゲームクリア時
-	if (clearflg == true) { DrawExtendString(30, 200, 5.5f, 5.5f, "ゲームクリアおめでとう！！！", 0xE2FE47); }
 
 	for (int i = 0; i < map_data.size(); i++) {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
@@ -458,7 +456,7 @@ void STAGE::StageClear(PLAYER* player) {
 	int player_map_y = static_cast<int>(floorf(player->GetPlayerY()) - scroll_y);
 
 	//旗に触れるとゲームクリア
-	if ((player_map_x >= clearbox.x - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox.x + MAP_CEllSIZE + 30)) {
+	if ((player_map_x >= clearbox.x - MAP_CEllSIZE / 2 + 50) && (player_map_x <= clearbox.x + MAP_CEllSIZE + 30) && (player_map_y >= clearbox.y - MAP_CEllSIZE * 8) && (player_map_y <= clearbox.y + MAP_CEllSIZE / 2)) {
 		clearflg = true;
 	}
 
