@@ -69,7 +69,7 @@ public:
 	/// <summary>
 	/// ƒhƒA‚Ìˆ—
 	/// </summary>
-	void Door(STAGE*stage);
+	void Door(STAGE* stage);
 	/// <summary>
 	/// “®‚­°‚Ìˆ—
 	/// </summary>
