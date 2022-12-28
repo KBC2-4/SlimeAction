@@ -483,7 +483,7 @@ void ELEMENT::Update(PLAYER* player, STAGE* stage) {
 	player_map_y = floorf(player->GetPlayerY() - stage->GetScrollY());
 
 	Button(player);
-	Door(stage, player);
+	Door(stage);
 	Lift(player, stage);
 	Manhole(player, stage);
 	Acidrain_puddles(player);
@@ -510,7 +510,7 @@ void ELEMENT::Button(PLAYER* player) {
 		if (button[i].type == 1) {		//横ボタン
 			int max_ball_num = player->GetThrowCnt();
 			for (int ball_num = 0; ball_num < max_ball_num; ball_num++) {
-				if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2 + 33) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2 - 20) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
+				if ((player->GetThrowSlime(ball_num).GetThrowX() >= button[i].x - MAP_CEllSIZE / 2 + 33) && (player->GetThrowSlime(ball_num).GetThrowX() <= button[i].x + MAP_CEllSIZE / 2 - 30) && (player->GetThrowSlime(ball_num).GetThrowY() >= button[i].y - MAP_CEllSIZE / 2) && (player->GetThrowSlime(ball_num).GetThrowY() <= button[i].y + MAP_CEllSIZE / 2)) {
 					//デバッグ
 					//printfDx("1番に入ってるよ！");
 					if (CheckSoundMem(press_the_button_se) == FALSE)PlaySoundMem(press_the_button_se, DX_PLAYTYPE_BACK, TRUE);
@@ -579,7 +579,7 @@ void ELEMENT::Button(PLAYER* player) {
 /// <summary>
 /// ドアの処理
 /// </summary>
-void ELEMENT::Door(STAGE* stage, PLAYER* player) {
+void ELEMENT::Door(STAGE* stage) {
 	for (int i = 0; i < door.size(); i++) {
 		if (door[i].flg == true) {
 			int x = floor(door[i].x / MAP_CEllSIZE);
@@ -588,13 +588,14 @@ void ELEMENT::Door(STAGE* stage, PLAYER* player) {
 			stage->SetMapData(y - 1, x, 65);
 		}
 
-		if (door[i].flg == true && (player_map_x > door[i].x + MAP_CEllSIZE) && (player_map_x <= door[i].x + MAP_CEllSIZE + 5) && (player_map_y >= door[i].y - MAP_CEllSIZE * 1.5) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
+		if ((player_map_x >= door[i].x + MAP_CEllSIZE) && (player_map_x <= door[i].x + MAP_CEllSIZE + 5) && (player_map_y >= door[i].y - MAP_CEllSIZE / 2) && (player_map_y <= door[i].y + MAP_CEllSIZE / 2)) {
 			int x = floor(door[i].x / MAP_CEllSIZE);
 			int y = floor(door[i].y / MAP_CEllSIZE);
 			stage->SetMapData(y, x, 66);
 			stage->SetMapData(y - 1, x, 67);
-			if (CheckSoundMem(door_close_se) == FALSE)PlaySoundMem(door_close_se, DX_PLAYTYPE_BACK, TRUE);
 			door[i].flg = false;
+			if (CheckSoundMem(door_close_se) == FALSE)PlaySoundMem(door_close_se, DX_PLAYTYPE_BACK, TRUE);
+
 		}
 	}
 }
