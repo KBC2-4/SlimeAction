@@ -119,7 +119,9 @@ private:
 	int jumpSE;			//ジャンプしたとき
 	int landingSE;		//着地したとき
 	int hook_moveSE;	//フックへの移動時
-	int hook_pendulumSE;	//振り子運動時
+	int hook_pendulumSE;//振り子運動時
+	int healSE;			//回復したとき
+	int throw_ballSE;	//投げるとき
 
 	typedef struct Animation {
 		//画像を切り替えるタイミング(フレーム)
