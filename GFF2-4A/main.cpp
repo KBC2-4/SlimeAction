@@ -14,6 +14,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	SetOutApplicationLogValidFlag(FALSE);   //ログ出力を無効にする
 
+	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
+
 	ChangeWindowMode(TRUE);		// ウィンドウモードで起動
 	SetGraphMode(1280, 720, 32);
 

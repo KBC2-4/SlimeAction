@@ -13,6 +13,10 @@
 //BACK(SELECT)ボタンの文字色
 #define BACK_COLOR 0x16F2AC
 
+//OK時のバイブレーション設定
+#define OK_VIBRATION_POWER	130
+#define OK_VIBRATION_TIME	150
+
 class Option
 {
 
@@ -20,17 +24,19 @@ private:
 
 	enum class MENU
 	{
+		WindowMode,
 		BGM,
 		SE,
 		RETURN
 	};
 
 	int menu_font, buttonguid_font;
-	int cursor_move_se, mute_se;
+	int cursor_move_se, ok_se, mute_se;
 	int input_margin;
 	static int bgm_vol;        //BGMの音量
 	static int se_vol;         //SEの音量
 	static bool input_mode;	//入力方式の切り替え
+	bool window_mode;//ウィンドウモードの切り替え
 	int old_bgm_vol, old_se_vol;
 	int selectmenu;     //選択しているメニュー
 	bool option_flg;	//オプション画面表示フラグ
