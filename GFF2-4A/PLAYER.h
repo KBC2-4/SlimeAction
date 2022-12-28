@@ -84,7 +84,6 @@ private:
 	int hook_index;
 	int idle_nobi_img;
 	std::vector<int> grabbed_hook_array;
-	int hook_interval = 0;
 	
 	double x;     // 紐を伸ばして一周させた場合に出来る円の線上の座標、０は紐が軸の真下に伸びた位置
 	double speed; // xの変化速度
@@ -277,7 +276,7 @@ public:
 	/// <summary>
 	/// プレイヤーのライフのSetter
 	/// </summary>
-	void SetLife(int a);
+	void SetLife(int _life);
 
 	/// <summary>
 	/// プレイヤーの画面内X座標のSetter

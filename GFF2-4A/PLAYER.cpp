@@ -5,6 +5,7 @@
 #include <math.h>
 #include "Option.h"
 
+//デバッグ無効化
 //#define _NDEBUG
 
 /*コンストラクタ*/
@@ -36,6 +37,7 @@ PLAYER::PLAYER(STAGE* stage) {
 
 	is_heal = false;
 
+	//画像の読み込み
 	if (LoadDivGraph("Resource/Images/Player/IdorSlime.png", 9, 9, 1, 80, 80, images[0]) == -1) {
 		throw "Resource/Images/Player/IdorSlime.png";
 	}
@@ -70,6 +72,7 @@ PLAYER::PLAYER(STAGE* stage) {
 		throw "Resource/Images/Player/FuckAnim2.png";
 	}
 
+	//SEの読み込み
 	if ((damageSE = LoadSoundMem("Resource/Sounds/SE/Player/damage.wav")) == -1) {
 		throw "Resource/Sounds/SE/Player/damage.wav";
 	}
@@ -93,7 +96,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	}
 
 
-	//SE
+	//SEのボリューム変更
 	ChangeVolumeSoundMem(Option::GetSEVolume(), damageSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), jumpSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), landingSE);
@@ -102,6 +105,7 @@ PLAYER::PLAYER(STAGE* stage) {
 	ChangeVolumeSoundMem(Option::GetSEVolume(), healSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), throw_ballSE);
 
+	//アニメーションの初期化
 	animation_state = PLAYER_ANIM_STATE::IDLE;
 	for (int i = 0; i < ANIMATION_TYPE; i++) {
 		animation[i].frame = 0;
@@ -115,6 +119,9 @@ PLAYER::PLAYER(STAGE* stage) {
 	animation[static_cast<int>(PLAYER_ANIM_STATE::LANDING)].playMode = 1;
 }
 
+/// <summary>
+/// デストラクタ
+/// </summary>
 PLAYER::~PLAYER() {
 	DeleteGraph(throw_ball_image);
 	DeleteGraph(idle_nobi_img);
@@ -217,6 +224,7 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomato
 /// プレイヤーの表示
 /// </summary>
 void PLAYER::Draw(STAGE* stage)const {
+	//表示フラグ
 	if (!is_visible) return;
 
 	if (is_damage) {
@@ -224,7 +232,6 @@ void PLAYER::Draw(STAGE* stage)const {
 	}
 
 	//プレイヤーの表示
-	//フック中じゃない時
 	if (player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move) {
 		//描画する画像のセット
 		int image_type = static_cast<int>(animation_state);
@@ -232,6 +239,7 @@ void PLAYER::Draw(STAGE* stage)const {
 
 		DrawRotaGraphF(player_x + stage->GetScrollX(), (player_y - 20 + stage->GetScrollY()) + (1.6 - player_scale) * 40, player_scale, 0.0, now_image, TRUE, move_type);
 	}
+	//フック中
 	else {
 		//振り子中
 		if (player_state == PLAYER_MOVE_STATE::HOOK) {
@@ -277,17 +285,29 @@ void PLAYER::Draw(STAGE* stage)const {
 /// </summary>
 void PLAYER::Move()
 {
+	//移動前の座標
+	old_player_x = player_x;
+	old_player_y = player_y;
+
+	//スピードのセット
 	player_speed = SPEED + (MAX_LIFE - life) * 0.4f;
+
+	//フック中は移動させない
 	if (is_hook_move || player_state == PLAYER_MOVE_STATE::HOOK) return;
 
 	//スティック入力の取得
-	old_player_x = player_x;
-	old_player_y = player_y;
 	int input_lx = PAD_INPUT::GetPadThumbLX();
-	//移動するとき
+
+	//移動方向
+	if (input_lx > 0) {
+		move_x = 1.0f;
+	}
 	move_x = input_lx > 0 ? 1.0f : -1.0f;	//移動方向のセット
+
+	//移動するとき
 	if (input_lx < -DEVIATION || input_lx > DEVIATION)
 	{
+		//ジャンプ中
 		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL)
 		{
 			move_type = (move_x > 0) ? 0 : 1;				//移動向きのセット(0: 右, 1: 左)
@@ -320,7 +340,8 @@ void PLAYER::Move()
 			}
 		}
 	}
-	else //移動してない時
+	//移動してない時
+	else
 	{
 		move_x = 0;
 		//移動アニメーションを後半へ移行
@@ -362,12 +383,12 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 	//Bボタン押したとき
 	if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) {
 		if (player_state != PLAYER_MOVE_STATE::HOOK) {
-			//if (--hook_interval > 0) return;
 			//フックまでの距離
 			float min_distance = HOOK_MAX_DISTANCE;
 			//フックの位置
 			std::vector<ELEMENT::ELEMENT_DATA> hook_pos = element->GetHook();
 			for (int i = 0; i < hook_pos.size(); i++) {
+				//前に掴んだフックは着地するまで掴まない
 				if (std::find(grabbed_hook_array.begin(), grabbed_hook_array.end(), i) != grabbed_hook_array.end()) continue;
 				ELEMENT::ELEMENT_DATA pos = hook_pos[i];
 				//距離計算
@@ -512,9 +533,8 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 		if (player_state == PLAYER_MOVE_STATE::HOOK || is_hook_move) {
 			//フック後のジャンプ方向の修正
 			StopSoundMem(hook_pendulumSE);
-			hook_interval = HOOK_INTERVAL;
 			grabbed_hook_array.push_back(hook_index);
-			//printfDx("%d\n", hook_index);
+
 			if (input_lx < -DEVIATION) {
 				jump_move_x = -1;
 			}
@@ -623,12 +643,17 @@ void PLAYER::JumpMove() {
 
 }
 
+/// <summary>
+/// 投げる処理
+/// </summary>
+/// <param name="stage">STAGEクラスのポインタ</param>
 void PLAYER::Throw(STAGE* stage) {
 	//軌道の計算
 	throw_index = 0;
 	throw_x.clear();
 	throw_y.clear();
 
+	//クールタイム
 	if (--throw_interval > 0) return;
 
 	int input_ry = PAD_INPUT::GetPadThumbRY();
@@ -649,6 +674,7 @@ void PLAYER::Throw(STAGE* stage) {
 		else if (angle < 90) throw_rad = 90 * M_PI / 180.0f;
 	}
 
+	//軌道の計算
 	float ve = 110;
 
 	float vx0 = ve * (float)cos(throw_rad);
@@ -675,6 +701,8 @@ void PLAYER::Throw(STAGE* stage) {
 		throw_x.push_back(x0);
 		throw_y.push_back(y0);
 	}
+
+	//投げるとき
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_RIGHT_SHOULDER && PAD_INPUT::GetPadState() == PAD_STATE::ON) {
 		//投げる処理
 		throw_interval = THROW_INTERVAL;
@@ -685,7 +713,7 @@ void PLAYER::Throw(STAGE* stage) {
 }
 
 /// <summary>
-/// 横移動の当たり判定
+/// 当たり判定
 /// </summary>
 void PLAYER::Hit(ELEMENT* element, STAGE* stage) {
 	//マップチップの座標のセット
@@ -761,10 +789,6 @@ void PLAYER::Hit(ELEMENT* element, STAGE* stage) {
 		}
 	}
 
-	if (is_ground) {
-		hook_interval = 0;
-	}
-
 	//壁の判定
 	int screen_left = static_cast<int>(-stage->GetScrollX() / MAP_CEllSIZE);
 	for (int i = 0; i < stage->GetMapSize().x; i++) {
@@ -806,9 +830,15 @@ void PLAYER::Hit(ELEMENT* element, STAGE* stage) {
 	is_heal = false;
 }
 
+/// <summary>
+/// アニメーションの切り替え
+/// </summary>
+/// <param name="anim">Enumクラス アニメーション</param>
+/// <param name="compelChange">強制的に切り替えるかどうか</param>
 void PLAYER::ChangeAnimation(PLAYER_ANIM_STATE anim, bool compelChange) {
-	int now_anim_type = static_cast<int>(animation_state);
-	int next_anim_type = static_cast<int>(anim);
+	int now_anim_type = static_cast<int>(animation_state);	//今のアニメーション
+	int next_anim_type = static_cast<int>(anim);			//切り替えるアニメーション
+	
 	if (animation_state != anim && player_state != PLAYER_MOVE_STATE::HOOK && !is_hook_move || compelChange) {
 		if (animation[now_anim_type].priority <= animation[next_anim_type].priority || animation[now_anim_type].endAnim || compelChange) {
 			animation_state = anim;
@@ -858,19 +888,22 @@ void PLAYER::MoveAnimation() {
 	}
 }
 
-void PLAYER::SetLife(int a)
+void PLAYER::SetLife(int _life)
 {
-	if (life > a && is_damage) return;
-	if (life > a) {
+	//ダメージ判定
+	if (life > _life && is_damage) return;
+	//ダメージ
+	if (life > _life) {
 		//player_state = PLAYER_MOVE_STATE::DAMAGE;
 		alpha_time = 120;
 		is_damage = true;
 		StartJoypadVibration(DX_INPUT_PAD1, 360, 320, -1);
 		PlaySoundMem(damageSE, DX_PLAYTYPE_BACK);
 	}
+	//回復
 	else {
 		is_heal = true;
 		PlaySoundMem(healSE, DX_PLAYTYPE_BACK);
 	}
-	life = a;
+	life = _life;
 }
