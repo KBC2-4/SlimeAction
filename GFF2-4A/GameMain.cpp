@@ -3,6 +3,7 @@
 #include "Title.h"
 #include <vector>
 #include "Option.h"
+#include "StageSelect.h"
 
 GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 {
@@ -85,7 +86,7 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 
 	start_time = 180;
 	start_effect_timer = 120;
-	clear_interval = 360;
+	clear_interval = 480;
 
 	this->restart = restart;
 
@@ -232,14 +233,14 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, start_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, clear_se);
 
-	PlaySoundMem(count_se, DX_PLAYTYPE_BACK,TRUE);
+	PlaySoundMem(count_se, DX_PLAYTYPE_BACK, TRUE);
 
 
 	//PV制作用（完成次第即座に消去）
 	input_margin = 0;
 	scroll_speed = 4;
 	player_visible = true;
-	
+
 }
 
 GAMEMAIN::~GAMEMAIN()
@@ -425,7 +426,7 @@ AbstractScene* GAMEMAIN::Update()
 					if (!restart && stage->GetHalfwayPointFlg()) {
 						now_graph = MakeGraph(1280, 720);
 						GetDrawScreenGraph(0, 0, 1280, 720, now_graph);
-						return new GAMEMAIN_RESTART(true, elapsed_time, stage_name,now_graph);
+						return new GAMEMAIN_RESTART(true, elapsed_time, stage_name, now_graph);
 					}
 					return new GameOver(stage_name);
 				}
@@ -433,9 +434,10 @@ AbstractScene* GAMEMAIN::Update()
 				//ステージクリア
 				if (stage->GetClearFlg())
 				{
-					if(clear_interval == 360){ PlaySoundMem(clear_se, DX_PLAYTYPE_BACK, TRUE); }
+					if (clear_interval == 480) { PlaySoundMem(clear_se, DX_PLAYTYPE_BACK, TRUE); }
+					if (clear_interval > 0) { clear_interval--; }
 					player->SetPlayerX(player->GetOldPlayerX());
-					if (--clear_interval < 0 && !CheckSoundMem(clear_se)) {
+					if (clear_interval <= 0 && !CheckSoundMem(clear_se)) {
 						return new RESULT(true, elapsed_time, stage_name);
 					}
 				}
@@ -443,11 +445,11 @@ AbstractScene* GAMEMAIN::Update()
 		}
 		else {	//ポーズ画面のセレクター
 
-			if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::TITLE) { return new Title(); }
+			if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::STAGE_SELECT) { return new STAGE_SELECT(); }
 			else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::RESTART) {
 				now_graph = MakeGraph(1280, 720);
 				GetDrawScreenGraph(0, 0, 1280, 720, now_graph);
-				return new GAMEMAIN_RESTART(false, 0, stage_name,now_graph); 
+				return new GAMEMAIN_RESTART(false, 0, stage_name, now_graph);
 			}
 			else if (static_cast<PAUSE::MENU>(pause->GetSelectMenu()) == PAUSE::MENU::OPTION) {
 				//BGM
@@ -610,6 +612,26 @@ void GAMEMAIN::Draw() const
 			{
 				item[i]->Draw();
 			}
+		}
+	}
+
+
+	//ゲームクリア時の描画
+	if (stage->GetClearFlg()) {
+		if (clear_interval >= 0) {
+
+			//DrawStringToHandle(GetDrawCenterX("ゲームクリアおめでとう！！！", start_time_font), 200, "ゲームクリアおめでとう！！！", 0xE2FE47, start_time_font);
+
+			SetDrawBlendMode(DX_BLENDMODE_ADD, 255 - clear_interval);
+			//DrawTriangleAA(0, 0, 0, 720, 640, 720, 0xFFFFFF, TRUE);
+			//DrawTriangleAA(1280, 0, 1280, 720, 640, 720, 0xFFFFFF, TRUE);
+
+			DrawBox(0, 0, 1280, 720, 0xFFFFFF, TRUE);
+
+			//DrawTriangleAA(0, 0, 0, 720, player->GetPlayerX() - stage->GetScrollX(), player->GetPlayerY(), 0xFFFFFF, TRUE);
+			//DrawTriangleAA(1280, 0, 1280, 720, player->GetPlayerX() - stage->GetScrollX(), player->GetPlayerY(), 0xFFFFFF, TRUE);
+
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
 	}
 
