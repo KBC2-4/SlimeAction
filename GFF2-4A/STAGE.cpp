@@ -134,20 +134,20 @@ void STAGE::Draw(ELEMENT* element)const {
 						////89～90番台を描画しない
 						|| map_data.at(i).at(j) >= 100 && map_data.at(i).at(j) != 777)
 					) {
-					DrawGraph(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE);
+					DrawGraphF(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE);
 				}
 			}
 			//レモナーとグレポンはツルだけ描画する
-			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraph(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
-			if (map_data.at(i).at(j) == 101) { DrawExtendGraph((j - 1) * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, (j + 1) * MAP_CEllSIZE + scroll_x, (i + 1) * MAP_CEllSIZE + scroll_y, block_image1[100], TRUE); }
+			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraphF(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
+			if (map_data.at(i).at(j) == 101) { DrawExtendGraphF((j - 1) * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, (j + 1) * MAP_CEllSIZE + scroll_x, (i + 1) * MAP_CEllSIZE + scroll_y, block_image1[100], TRUE); }
 		}
 	}
 
 	//中間地点　描画
 	//中間地点がない場合は描画しない。
 	if (halfwaypointbox.x != 0) {
-		if (halfwaypoint == false) { DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[88], TRUE); }
-		else { DrawGraph(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
+		if (halfwaypoint == false) { DrawGraphF(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[88], TRUE); }
+		else { DrawGraphF(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
 	}
 
 }
