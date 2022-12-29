@@ -414,8 +414,8 @@ void GRAPEFRUIT::Draw() const
 {
 	for (int i = 0; i < 2; i++)
 	{
-		DrawRotaGraph(x + stage->GetScrollX(), (y + 5 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), fruit_image[i], TRUE);
-		DrawRotaGraph(x + stage->GetScrollX(), (y + 5 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), face_image[i], TRUE);
+		DrawRotaGraphF(x + stage->GetScrollX(), (y + 5 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), fruit_image[i], TRUE);
+		DrawRotaGraphF(x + stage->GetScrollX(), (y + 5 * i) + stage->GetScrollY(), 1, rad + (-90 * (PI / 180)), face_image[i], TRUE);
 	}
 
 	if (flag)

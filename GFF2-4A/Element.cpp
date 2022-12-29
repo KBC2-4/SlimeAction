@@ -316,11 +316,11 @@ void ELEMENT::Draw(STAGE* stage, PLAYER* player) {
 			if (player_state != static_cast<int>(PLAYER_MOVE_STATE::HOOK)) {
 				if (guid_timer < 50) {
 					DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
+					DrawStringToHandle(static_cast<int>(hook[i].x + stage->GetScrollX()) - 7, static_cast<int>(hook[i].y + stage->GetScrollY()) - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 				else {
 					DrawCircleAA(hook[i].x + stage->GetScrollX(), hook[i].y + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-					DrawStringToHandle(hook[i].x + stage->GetScrollX() - 7, hook[i].y + stage->GetScrollY() - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
+					DrawStringToHandle(static_cast<int>(hook[i].x + stage->GetScrollX()) - 7, static_cast<int>(hook[i].y + stage->GetScrollY()) - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 			}
 		}
@@ -335,12 +335,12 @@ void ELEMENT::Draw(STAGE* stage, PLAYER* player) {
 				DrawOvalAA(button[i].x + stage->GetScrollX(), button[i].y + stage->GetScrollY() + 30, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 			}
 			if (button[i].flg == true && button[i].animtimer < 30) {
-				SetDrawArea(button[i].x + stage->GetScrollX() - MAP_CEllSIZE / 2, button[i].y + stage->GetScrollY() - MAP_CEllSIZE / 2, button[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, button[i].y + stage->GetScrollY() + MAP_CEllSIZE / 2);
+				SetDrawArea(static_cast<int>(button[i].x + stage->GetScrollX()) - MAP_CEllSIZE / 2, static_cast<int>( button[i].y + stage->GetScrollY()) - MAP_CEllSIZE / 2, static_cast<int>( button[i].x + stage->GetScrollX()) + MAP_CEllSIZE / 2, static_cast<int>(button[i].y + stage->GetScrollY()) + MAP_CEllSIZE / 2);
 				DrawOvalAA(button[i].x + stage->GetScrollX(), button[i].y + stage->GetScrollY() + 30 + button[i].animtimer, 25, 10, 20, 0xbfcb4e, TRUE, 1.0f);
 				SetDrawAreaFull();
 			}
 
-			DrawGraph(button[i].x + stage->GetScrollX() - MAP_CEllSIZE / 2, button[i].y + stage->GetScrollY() - MAP_CEllSIZE / 2, block_image1[61], TRUE);
+			DrawGraphF(button[i].x + stage->GetScrollX() - MAP_CEllSIZE / 2, button[i].y + stage->GetScrollY() - MAP_CEllSIZE / 2, block_image1[61], TRUE);
 		}
 	}
 
@@ -350,7 +350,7 @@ void ELEMENT::Draw(STAGE* stage, PLAYER* player) {
 		//DrawFormatString(100 + i * 100, 400, 0xffffff, "%f", lift[i].x);
 		/*DrawFormatString(100+i*100, 400, 0xffffff, "%f", lift_goal_X[i].x);
 		DrawBox(lift_goal_X[i].x + stage->GetScrollX(), lift_goal_X[i].y + stage->GetScrollY(), lift_goal_X[i].x + MAP_CEllSIZE * 2 + stage->GetScrollX(), lift_goal_X[i].y + MAP_CEllSIZE / 2 + stage->GetScrollY(),0xff0000,FALSE);*/
-		DrawExtendGraph(lift[i].x + stage->GetScrollX(), lift[i].y - 31 + stage->GetScrollY(), lift[i].x + LIFT_SIZE + stage->GetScrollX(), lift[i].y + 70 + stage->GetScrollY(), block_image1[51], TRUE);
+		DrawExtendGraphF(lift[i].x + stage->GetScrollX(), lift[i].y - 31 + stage->GetScrollY(), lift[i].x + LIFT_SIZE + stage->GetScrollX(), lift[i].y + 70 + stage->GetScrollY(), block_image1[51], TRUE);
 	}
 
 	//ドア
@@ -368,50 +368,50 @@ void ELEMENT::Draw(STAGE* stage, PLAYER* player) {
 			if (manhole[i].flg == true) {
 
 				if (manhole[i].animtimer < 20) {
-					DrawModiGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * (288 / 20),
+					DrawModiGraphF(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * (288 / 20),
 						manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() - manhole[i].animtimer * (288 / 20),
 						manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE, manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
 						manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY() + MAP_CEllSIZE,
 						block_image1[67], TRUE);
 				}
 				else {
-					DrawGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY(), block_image1[97], TRUE);
+					DrawGraphF(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY(), block_image1[97], TRUE);
 				}
 			}
 			else {
-				DrawGraph(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY(), block_image1[67], TRUE);
+				DrawGraphF(manhole[i].x + stage->GetScrollX(), manhole[i].y + stage->GetScrollY(), block_image1[67], TRUE);
 
 				//マンホールのガイド表示
 				if (guid_timer < 50) {
 					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
+					DrawStringToHandle(static_cast<int>(manhole[i].x + stage->GetScrollX()) - 7 + MAP_CEllSIZE / 2, static_cast<int>(manhole[i].y + MAP_CEllSIZE + stage->GetScrollY()) - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 				else {
 					DrawCircleAA(manhole[i].x + stage->GetScrollX() + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-					DrawStringToHandle(manhole[i].x + stage->GetScrollX() - 7 + MAP_CEllSIZE / 2, manhole[i].y + MAP_CEllSIZE + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
+					DrawStringToHandle(static_cast<int>(manhole[i].x + stage->GetScrollX()) - 7 + MAP_CEllSIZE / 2, static_cast<int>(manhole[i].y + MAP_CEllSIZE + stage->GetScrollY()) - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 				}
 			}
 		}
 
 		if (manhole[i].type == 3) {
 			if (manhole[i].flg == true) {
-				DrawGraph(manhole[i].x + stage->GetScrollX() - MAP_CEllSIZE / 2, manhole[i].y + stage->GetScrollY() - MAP_CEllSIZE / 2, block_image1[97], TRUE);
+				DrawGraphF(manhole[i].x + stage->GetScrollX() - MAP_CEllSIZE / 2, manhole[i].y + stage->GetScrollY() - MAP_CEllSIZE / 2, block_image1[97], TRUE);
 			}
 			else {
-				DrawGraph(manhole[i].x + stage->GetScrollX() - MAP_CEllSIZE / 2, manhole[i].y + stage->GetScrollY() - MAP_CEllSIZE / 2, block_image1[67], TRUE);
+				DrawGraphF(manhole[i].x + stage->GetScrollX() - MAP_CEllSIZE / 2, manhole[i].y + stage->GetScrollY() - MAP_CEllSIZE / 2, block_image1[67], TRUE);
 			}
 			//マンホールのガイド表示
 
-			int x = manhole[i].lift_init_x * MAP_CEllSIZE + MAP_CEllSIZE / 2;
-			int y = manhole[i].lift_init_y * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+			int x = static_cast<int>(manhole[i].lift_init_x) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
+			int y = static_cast<int>(manhole[i].lift_init_y) * MAP_CEllSIZE + MAP_CEllSIZE / 2;
 
 			if (guid_timer < 50) {
 				DrawCircleAA(x + stage->GetScrollX(), y - 20 + stage->GetScrollY(), 15, 20, 0xFFFFFF, 1);
-				DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
+				DrawStringToHandle(x + static_cast<int>(stage->GetScrollX()) - 7, y + static_cast<int>(stage->GetScrollY()) - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 			}
 			else {
 				DrawCircleAA(x + stage->GetScrollX(), y - 20 + stage->GetScrollY(), 15, 20, 0xFFCB33, 1);
-				DrawStringToHandle(x + stage->GetScrollX() - 7, y + stage->GetScrollY() - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
+				DrawStringToHandle(x + static_cast<int>(stage->GetScrollX()) - 7, y + static_cast<int>(stage->GetScrollY()) - 20 - 12, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, guid_font, 0xFFFFFF);
 			}
 		}
 	}
@@ -420,36 +420,36 @@ void ELEMENT::Draw(STAGE* stage, PLAYER* player) {
 	//酸性雨の水たまり
 	for (int i = 0; i < acidrain_puddles.size(); i++) {
 
-		if (stage_name == "Stage02") { DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[7], TRUE); }
-		else if (stage_name == "Stage03") { DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[11], TRUE); }
-		else { DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[3], TRUE); }
+		if (stage_name == "Stage02") { DrawGraphF(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[7], TRUE); }
+		else if (stage_name == "Stage03") { DrawGraphF(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[11], TRUE); }
+		else { DrawGraphF(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[3], TRUE); }
 
 		switch (acidrain_puddles[i].type)
 		{
 		case 1:		//左端
 			if (acidrain_puddles_anitimer > 5) {
-				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[74], TRUE);
+				DrawGraphF(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[74], TRUE);
 			}
 			else {
-				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[73], TRUE);
+				DrawGraphF(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[73], TRUE);
 			}
 			break;
 
 		case 2:		//中央
 			if (acidrain_puddles_anitimer > 5) {
-				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[76], TRUE);
+				DrawGraphF(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[76], TRUE);
 			}
 			else {
-				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[75], TRUE);
+				DrawGraphF(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[75], TRUE);
 			}
 			break;
 
 		case 3:		//右端
 			if (acidrain_puddles_anitimer > 5) {
-				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[78], TRUE);
+				DrawGraphF(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[78], TRUE);
 			}
 			else {
-				DrawGraph(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[77], TRUE);
+				DrawGraphF(acidrain_puddles[i].x + stage->GetScrollX(), acidrain_puddles[i].y + stage->GetScrollY(), block_image1[77], TRUE);
 			}
 			break;
 		default:

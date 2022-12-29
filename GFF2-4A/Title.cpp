@@ -8,6 +8,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+//タイトルアニメーションを初回起動時のみ有効化するためのフラグ
+static bool animation_flg = false;
+
 
 Title::Title()
 {
@@ -49,11 +52,17 @@ Title::Title()
 	exit_flg = false;
 
 	title_anitimer[0] = 0;
-	title_anitimer[1] = 180;
+
+	//タイトルアニメーションを初回起動時のみ有効化
+	if (animation_flg == false) {
+		title_anitimer[1] = 180;
+		animation_flg = true;
+	}
+	else { title_anitimer[1] = 0; }
 
 	option = new Option();
 
-	PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
+	
 
 	//BGM
 	ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music);
@@ -97,6 +106,13 @@ AbstractScene* Title::Update()
 			input_margin++;
 		}
 		else {
+
+			//タイトルアニメーションが終わってからBGMを再生する
+			if (title_anitimer[1] == 0 && !CheckSoundMem(background_music)) {
+				PlaySoundMem(background_music, DX_PLAYTYPE_LOOP);
+			}
+
+
 			if (title_anitimer[1] <= 0) {
 				if (PAD_INPUT::GetPadThumbLY() > 20000)
 				{

@@ -137,6 +137,7 @@ void Option::Update() {
 			//ok_seが鳴り終わってから画面推移する。
 			while (CheckSoundMem(ok_se)) {}
 			StartJoypadVibration(DX_INPUT_PAD1,  OK_VIBRATION_POWER, OK_VIBRATION_TIME, -1);
+			selectmenu = 0;
 			ChangeOptionFlg();
 		}
 	}
@@ -157,6 +158,7 @@ void Option::Update() {
 		//ok_seが鳴り終わってから画面推移する。
 		while (CheckSoundMem(ok_se)) {}
 		StartJoypadVibration(DX_INPUT_PAD1,  OK_VIBRATION_POWER, OK_VIBRATION_TIME, -1);
+		selectmenu = 0;
 		ChangeOptionFlg();
 	}
 
@@ -220,7 +222,7 @@ void Option::Draw() {
 	DrawCircleAA(start_x + 65, start_y + 14.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//右端
 	DrawStringToHandle(start_x + 2, start_y + 3, "BACK", BACK_COLOR, buttonguid_font, 0xFFFFFF);
 
-	DrawStringToHandle(100, 300, "入力方式", 0xEB8F63, buttonguid_font, 0xFFFFFF);
+	DrawStringToHandle(100, 300 + 3, "入力方式", 0xEB8F63, buttonguid_font, 0xFFFFFF);
 
 	{//ボタンの動作内容
 		const int x = 110;
