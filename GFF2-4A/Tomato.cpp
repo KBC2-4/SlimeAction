@@ -1,6 +1,6 @@
 #include "DxLib.h"
 #include "Tomato.h"
-
+#include "Option.h"
 
 TOMATO::TOMATO()
 {
@@ -42,6 +42,12 @@ TOMATO::TOMATO(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 		throw "Resource/Images/Enemy/tomaton_Break.png";
 	}
 
+	if ((splash_se = LoadSoundMem("Resource/Sounds/SE/Enemy/splash.wav")) == -1) {
+		throw "Resource/Sounds/SE/Enemy/splash.wav";
+	}
+
+	ChangeVolumeSoundMem(Option::GetSEVolume(), splash_se);
+
 }
 
 TOMATO::~TOMATO()
@@ -53,9 +59,14 @@ TOMATO::~TOMATO()
 	}
 
 	delete[] image;
+
+	DeleteSoundMem(splash_se);
+
 }
 void TOMATO::Update()
 {
+	ChangeVolumeSoundMem(Option::GetSEVolume(), splash_se);
+
 	if (animation_timer < 80) {
 		++animation_timer;
 	}
@@ -110,10 +121,10 @@ void TOMATO::Hit()
 	float px1, py1, px2, py2;
 	float bx1, by1, bx2, by2;
 
-	px1 = player->GetPlayerX() - 30 - stage->GetScrollX();
-	px2 = px1 + 60;
-	py1 = player->GetPlayerY();
-	py2 = py1 + 40;
+	px1 = player->GetPlayerX() - (20 * (player->GetPlayerScale()));
+	px2 = px1 + (50 * (player->GetPlayerScale()));
+	py1 = player->GetPlayerY() + (20 * (2 - player->GetPlayerScale()));
+	py2 = py1 + (25 * (player->GetPlayerScale()));
 
 	bx1 = x - IMAGE_SIZE / 2;
 	bx2 = bx1 + IMAGE_SIZE;
@@ -132,6 +143,8 @@ void TOMATO::Hit()
 		state = ENEMY_STATE::DETH;
 		animation_timer = 0;
 		animation_type = 00;
+		PlaySoundMem(splash_se, DX_PLAYTYPE_BACK);
+
 	}
 }
 
@@ -189,7 +202,7 @@ void TOMATO::Draw()const
 	//‰æ–ÊŠO‚Éo‚½‚ç•`‰æ‚µ‚È‚¢
 	if ((x + stage->GetScrollX() > -IMAGE_SIZE) && (x + stage->GetScrollX() < 1280 + IMAGE_SIZE))
 	{
-		DrawRotaGraph(x + stage->GetScrollX(), y + stage->GetScrollY(), image_rate, 0, now_image, TRUE);
+		DrawRotaGraphF(x + stage->GetScrollX(), y + stage->GetScrollY(), image_rate, 0, now_image, TRUE);
 	}
 
 }

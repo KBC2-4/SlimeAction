@@ -34,6 +34,8 @@ private:
     int image;                        //画像の変数
     int animation_timer;              //アニメーションの時間
     int animation_type;               //アニメーションの判別
+    int splash_se;                    //弾けるときのSE
+
     PLAYER* player;                   //プレイヤーのクラスの変数
     STAGE* stage;                     //ステージのクラスの変数
 

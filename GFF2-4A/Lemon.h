@@ -15,6 +15,7 @@ private:
 
 	int damage_se;		//ダメージを受けた時のSE
 	int press_se;		//プレスアニメーション時のSE
+	int splash_se;		//弾けるときのSE
 
 	int spawn_map_x;	//スポーン地点(x)
 	int spawn_map_y;	//スポーン地点(y)

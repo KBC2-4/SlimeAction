@@ -25,6 +25,7 @@ private:
 	int fruit_image[3];             //果実の画像
 	int damage_se;					//ダメージを受けた時のSE
 	int press_se;					//プレスアニメーション時のSE
+	int splash_se;					//弾けるときのSE
 
 	ENEMY_BULLET* bullet[3];       //弾のクラス
 public:
