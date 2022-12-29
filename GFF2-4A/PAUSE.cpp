@@ -100,16 +100,27 @@ int PAUSE::Update(void) {
 					pause_flg = !pause_flg;
 				}
 				else if (static_cast<MENU>(selectmenu) == MENU::OPTION) { option->ChangeOptionFlg(); }
-				else if (static_cast<MENU>(selectmenu) == MENU::TITLE) { option->~Option(); }
+				else if (static_cast<MENU>(selectmenu) == MENU::STAGE_SELECT) { option->~Option(); }
 			}
 
 			//Aボタンでもポーズを戻す
 			if ((PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_A : XINPUT_BUTTON_B)) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
 				//デリート処理
 				DeleteGraph(pause_graph);
+				selectmenu = 0;
 				pause_graph = 0;
 				pause_effect_timer = 0;
 				pause_flg = !pause_flg;
+
+				// Aボタンを一定時間無効化する
+				int disable_time = 100;  // Aボタンを無効化する時間（単位：ミリ秒）
+				int start_time = GetNowCount();  // Aボタンを押した時間
+				while (!pause_flg) {
+					// Aボタンを無効化する時間を超えた場合、while文を抜ける
+					if (GetNowCount() - start_time > disable_time) {
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -138,10 +149,10 @@ void PAUSE::Draw() {
 
 		DrawStringToHandle(GetDrawCenterX("ポーズ", title_font), 100, "ポーズ", 0x56F590, title_font, 0xFFFFFF);
 		//選択メニュー
-		DrawStringToHandle(GetDrawCenterX("ゲームへ戻る", menu_font), 270, "ゲームへ戻る", selectmenu == 0 ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(GetDrawCenterX("リスタート", menu_font), 360, "リスタート", selectmenu == 1 ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(GetDrawCenterX("オプション", menu_font), 450, "オプション", selectmenu == 2 ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
-		DrawStringToHandle(GetDrawCenterX("タイトルへ戻る", menu_font), 540, "タイトルへ戻る", selectmenu == 3 ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("ゲームへ戻る", menu_font), 270, "ゲームへ戻る", static_cast<MENU>(selectmenu) == MENU::RETURN ? 0xB3E0F5 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("リスタート", menu_font), 360, "リスタート", static_cast<MENU>(selectmenu) == MENU::RESTART ? 0xEBABDC : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("オプション", menu_font), 450, "オプション", static_cast<MENU>(selectmenu) == MENU::OPTION ? 0x5FEBB6 : 0xEB8F63, menu_font, 0xFFFFFF);
+		DrawStringToHandle(GetDrawCenterX("ステージ選択へ", menu_font), 540, "ステージ選択へ", static_cast<MENU>(selectmenu) == MENU::STAGE_SELECT ? 0xF5E6B3 : 0xEB8F63, menu_font, 0xFFFFFF);
 
 		//ガイド表示
 		DrawStringToHandle(580, 668, "ゲームへ戻る", 0xFFA15C, buttonguid_font, 0x000000);

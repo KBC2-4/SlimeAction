@@ -33,7 +33,7 @@ public:
 		RETURN,
 		RESTART,
 		OPTION,
-		TITLE
+		STAGE_SELECT
 	};
 };
 
