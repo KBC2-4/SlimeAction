@@ -143,7 +143,7 @@ PLAYER::~PLAYER() {
 /// <summary>
 /// プレイヤーの更新
 /// </summary>
-void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomaton_count) {
+void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomaton_count, bool is_stay) {
 
 	ChangeVolumeSoundMem(Option::GetSEVolume(), damageSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), jumpSE);
@@ -153,18 +153,22 @@ void PLAYER::Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomato
 	ChangeVolumeSoundMem(Option::GetSEVolume(), healSE);
 	ChangeVolumeSoundMem(Option::GetSEVolume(), throw_ballSE);
 
-
 	//移動処理
 	Move();
 
-	//ジャンプ処理
+	if (is_stay) {
+		player_x = old_player_x;
+	}
+	else {
+		//フック処理
+		HookMove(element, stage);
+
+		//投げる処理
+		Throw(stage);
+	}
+
+	//ジャンプと落下処理
 	JumpMove();
-
-	//フック処理
-	HookMove(element, stage);
-
-	//投げる処理
-	Throw(stage);
 
 	//アニメーションの再生
 	MoveAnimation();
@@ -576,8 +580,8 @@ void PLAYER::JumpMove() {
 	//Aボタンを押したとき
 	if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_A : XINPUT_BUTTON_B) || jump_request) {
 		//ジャンプ中じゃないとき
-		if (player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && player_state != PLAYER_MOVE_STATE::HOOK && is_ground
-			|| jump_request) {
+		if ((player_state != PLAYER_MOVE_STATE::JUMP && player_state != PLAYER_MOVE_STATE::FALL && player_state != PLAYER_MOVE_STATE::HOOK && is_ground
+			|| jump_request) && is_gravity) {
 			jump_request = false;
 			is_jump = true;			//ジャンプ中に移行
 			jump_velocity = JUMP_VELOCITY * jumppower;

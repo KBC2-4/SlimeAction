@@ -323,7 +323,7 @@ void STAGE::CameraWork(PLAYER* player, ELEMENT* element) {
 
 
 
-	if (player->GetPlayerY() >= 560 && GetMapData((player->GetPlayerY() - scroll_y) / MAP_CEllSIZE + 3, (player->GetPlayerX() - scroll_x) / MAP_CEllSIZE) != -1) {
+	if (player->GetPlayerY() >= 560 &&player->GetPlayerY()-scroll_y<=map_data.size()*MAP_CEllSIZE&& GetMapData((player->GetPlayerY() - scroll_y) / MAP_CEllSIZE + 3, (player->GetPlayerX() - scroll_x) / MAP_CEllSIZE) != -1) {
 		if (player->GetPlayerMoveState() == PLAYER_MOVE_STATE::FALL) {
 			//プレイヤーの落下速度に応じてスクロールYを下げる
 			if (player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();

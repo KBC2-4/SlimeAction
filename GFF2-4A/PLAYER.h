@@ -179,7 +179,7 @@ public:
 	void JumpMove();
 	void Throw(STAGE* stage);
 	void MoveAnimation();
-	void Update(ELEMENT*element, STAGE* stage, TOMATO** tomaton, int tomaton_count);
+	void Update(ELEMENT* element, STAGE* stage, TOMATO** tomaton, int tomaton_count, bool is_stay = false);
 	void Hit(ELEMENT* element, STAGE* stage);
 	void ChangeAnimation(PLAYER_ANIM_STATE anim, bool compelChange = false);
 
