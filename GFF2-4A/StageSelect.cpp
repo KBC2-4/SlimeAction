@@ -20,6 +20,7 @@ STAGE_SELECT::STAGE_SELECT()
 
 	guid_font = CreateFontToHandle("メイリオ", 60, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	move_to_title_font = CreateFontToHandle("メイリオ", 18, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	stagename_font = CreateFontToHandle("メイリオ", 31, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 4);
 	stage = new STAGE("StageSelect");
 	player = new PLAYER(stage);
@@ -112,6 +113,7 @@ STAGE_SELECT::~STAGE_SELECT()
 {
 	DeleteFontToHandle(guid_font);
 	DeleteFontToHandle(buttonguid_font);
+	DeleteFontToHandle(move_to_title_font);
 	DeleteFontToHandle(stagename_font);
 	StopSoundMem(background_music);
 	DeleteSoundMem(background_music);
@@ -130,6 +132,14 @@ STAGE_SELECT::~STAGE_SELECT()
 
 AbstractScene* STAGE_SELECT::Update()
 {
+	//BACKボタンでタイトルへ戻る
+	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_BACK) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+		PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
+		//ok_seが鳴り終わってから画面推移する。
+		while (CheckSoundMem(ok_se)) {}
+		StartJoypadVibration(DX_INPUT_PAD1, OK_VIBRATION_POWER, OK_VIBRATION_TIME, -1);
+		return new Title(); 
+	}
 
 	player->Update(element, stage, nullptr, 0);
 	stage->Update(player, element);
@@ -221,11 +231,6 @@ AbstractScene* STAGE_SELECT::Update()
 	}
 
 
-	//デバッグ
-	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_X) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
-		//return new GAMEMAIN(false, 0, "DebugStage");
-	}
-
 	return this;
 }
 
@@ -262,34 +267,61 @@ void STAGE_SELECT::Draw() const
 
 	const int guid_color = 0xFFFFFF;
 
-	const int joystick_x = 300;
-	const int joystick_y = 670;
+	const int guid_x = 600;
+	{//BACKボタン：タイトルへ戻る
+		
+		const int start_x = guid_x - 600;
+		const int start_y = 665;
 
-	DrawOvalAA(joystick_x, joystick_y + 6, 18, 10, 20, 0x000000, TRUE);
-	//アニメーション有り
-	//DrawOval(joystick_x + joys_anitimer * 0.8, joystick_y + 6 + abs(joys_anitimer * 0.6), 18, 10, 0x000000, 1);
-	DrawBoxAA(joystick_x - 5, joystick_y, joystick_x + 7, joystick_y + 23, 0x000000, TRUE);
-	//アニメーション有り
-	//DrawQuadrangle(joystick_x - 5 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), joystick_x + 7 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), joystick_x + 7, joystick_y + 23, joystick_x - 5, joystick_y + 23, 0x000000, TRUE);
-	DrawOvalAA(joystick_x, joystick_y + 23, 22, 8, 20, 0x000000, TRUE);
-	DrawString(joystick_x - 2, joystick_y - 2, "L", 0xFFFFFF);
-	//アニメーション有り
-	//DrawString(joystick_x - 5 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), "L", 0xFFFFFF);
-	DrawStringToHandle(330, 668, "移動", guid_color, buttonguid_font, 0x000000);
+		//{//大枠
+		//	const int x = 20;
+		//	const int y = 30;
+		//	DrawBoxAA(start_x - x, start_y - y, start_x + 55 + x, start_y + 30 + y, 0x99F000, TRUE, 1.0F);
+		//	DrawCircleAA(start_x + 65, start_y + 14.6, 15 + y, 20, 0x99F000, TRUE, 1.0F);	//右端
+		//}
 
-	DrawStringToHandle(880, 668, "[ゲーム中]ポーズ", guid_color, buttonguid_font, 0x000000);
-	DrawBoxAA(790, 665, 860, 695, 0xFFFFFF, TRUE, 1.0F);
-	DrawCircleAA(795, 679.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//左端
-	DrawCircleAA(855, 679.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//右端
-	DrawStringToHandle(785, 668, "START", START_COLOR, buttonguid_font, 0xFFFFFF);
 
-	DrawStringToHandle(630, 668, "アクション", guid_color, buttonguid_font, 0x000000);
-	DrawCircleAA(610, 680, 15, 20, 0xFFFFFF, 1);
-	DrawStringToHandle(603, 668, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
+		const int y = 10;
+		DrawBoxAA(start_x, start_y + y, start_x + 70, start_y + 30 + y, 0xFFFFFF, TRUE, 1.0F);
+		DrawCircleAA(start_x + 5, start_y + 14.6 + y, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//左端
+		DrawCircleAA(start_x + 65, start_y + 14.6 + y, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//右端
+		DrawStringToHandle(start_x + 2, start_y + 3 + y, "BACK", BACK_COLOR, buttonguid_font, 0xFFFFFF);
 
-	DrawStringToHandle(450, 668, "ジャンプ", guid_color, buttonguid_font, 0x000000);
-	DrawCircleAA(430, 680, 15, 20, 0xFFFFFF, 1);
-	DrawStringToHandle(423, 668, Option::GetInputMode() ? "A" : "B", Option::GetInputMode() ? A_COLOR : B_COLOR, buttonguid_font, 0xFFFFFF);
+		DrawStringToHandle(start_x, start_y - 18, "タイトルへ", guid_color, move_to_title_font, 0x000000);
+
+		
+	}
+
+	{//ジョイスティック：移動
+		const int joystick_x = guid_x - 340;
+		const int joystick_y = 670;
+
+		DrawOvalAA(joystick_x, joystick_y + 6, 18, 10, 20, 0x000000, TRUE);
+		//アニメーション有り
+		//DrawOval(joystick_x + joys_anitimer * 0.8, joystick_y + 6 + abs(joys_anitimer * 0.6), 18, 10, 0x000000, 1);
+		DrawBoxAA(joystick_x - 5, joystick_y, joystick_x + 7, joystick_y + 23, 0x000000, TRUE);
+		//アニメーション有り
+		//DrawQuadrangle(joystick_x - 5 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), joystick_x + 7 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), joystick_x + 7, joystick_y + 23, joystick_x - 5, joystick_y + 23, 0x000000, TRUE);
+		DrawOvalAA(joystick_x, joystick_y + 23, 22, 8, 20, 0x000000, TRUE);
+		DrawString(joystick_x - 2, joystick_y - 2, "L", 0xFFFFFF);
+		//アニメーション有り
+		//DrawString(joystick_x - 5 + joys_anitimer, joystick_y + abs(joys_anitimer * 0.5), "L", 0xFFFFFF);
+		DrawStringToHandle(joystick_x + 30, 668, "移動", guid_color, buttonguid_font, 0x000000);
+	}
+
+	DrawStringToHandle(guid_x + 250, 668, "[ゲーム中]ポーズ", guid_color, buttonguid_font, 0x000000);
+	DrawBoxAA(guid_x + 160, 665, guid_x + 230, 695, 0xFFFFFF, TRUE, 1.0F);
+	DrawCircleAA(guid_x + 165, 679.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//左端
+	DrawCircleAA(guid_x + 225, 679.6, 15, 20, 0xFFFFFF, TRUE, 1.0F);	//右端
+	DrawStringToHandle(guid_x + 155, 668, "START", START_COLOR, buttonguid_font, 0xFFFFFF);
+
+	DrawStringToHandle(guid_x - 10, 668, "アクション", guid_color, buttonguid_font, 0x000000);
+	DrawCircleAA(guid_x - 30, 680, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(guid_x - 37, 668, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, buttonguid_font, 0xFFFFFF);
+
+	DrawStringToHandle(guid_x - 190, 668, "ジャンプ", guid_color, buttonguid_font, 0x000000);
+	DrawCircleAA(guid_x - 210, 680, 15, 20, 0xFFFFFF, 1);
+	DrawStringToHandle(guid_x - 217, 668, Option::GetInputMode() ? "A" : "B", Option::GetInputMode() ? A_COLOR : B_COLOR, buttonguid_font, 0xFFFFFF);
 
 	//戻る
 	if ((player_map_x >= (stage_return.x) - (MAP_CEllSIZE * 3) / 2) && (player_map_x <= stage_return.x + (MAP_CEllSIZE * 3) / 2)) {
@@ -393,7 +425,7 @@ void STAGE_SELECT::StageIn(void)
 	PlaySoundMem(ok_se, DX_PLAYTYPE_BACK, TRUE);
 	//ok_seが鳴り終わってから画面推移する。
 	while (CheckSoundMem(ok_se)) {}
-	StartJoypadVibration(DX_INPUT_PAD1,  OK_VIBRATION_POWER, OK_VIBRATION_TIME, -1);
+	StartJoypadVibration(DX_INPUT_PAD1, OK_VIBRATION_POWER, OK_VIBRATION_TIME, -1);
 
 
 }

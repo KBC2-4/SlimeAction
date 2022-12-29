@@ -15,7 +15,7 @@ private:
 
 	int ok_se;
 	//フォント
-	int guid_font, buttonguid_font, stagename_font;
+	int guid_font, buttonguid_font, stagename_font, move_to_title_font;
 	int guid_timer;		//ガイド表示タイマー
 	bool effect_delta;
 	int effect_timer[2];	//[0:出現エフェクト, 1:ステージポータルエフェクト]
@@ -57,7 +57,10 @@ public:
 	/// ステージに入る時のUpdate
 	/// </summary>
 	void StageIn(void);
-
+	/// <summary>
+	/// ステージに入る時のアニメーション
+	/// </summary>
+	void StageIn_Animation(void);
 	/// <summary>
 	/// ステージポータルガイド表示
 	/// </summary>
