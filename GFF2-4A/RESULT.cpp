@@ -56,6 +56,7 @@ RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 	this->clear_time = clear_time;
 
 	*effect_timer = 0;
+	string_effect_timer = 0.0f;
 	guide_timer = 0;
 
 	ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music);
@@ -68,18 +69,22 @@ RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 	PlaySoundMem(background_music, DX_PLAYTYPE_BACK, FALSE);
 	PlaySoundMem(good_se[se_randnum], DX_PLAYTYPE_BACK, FALSE);
 
+	high_score = false;
 
 	//ランキング登録
 	if (stage_name == "Stage01")
 	{
+		if (clear_time < RANKING::GetBestTime(0)) { high_score = true; }
 		RANKING::Insert(this->clear_time, 1);
 	}
 	else if (stage_name == "Stage02")
 	{
+		if (clear_time < RANKING::GetBestTime(1)) { high_score = true; }
 		RANKING::Insert(this->clear_time, 2);
 	}
 	else if (stage_name == "Stage03")
 	{
+		if (clear_time < RANKING::GetBestTime(2)) { high_score = true; }
 		RANKING::Insert(this->clear_time, 3);
 	}
 	else {}
@@ -127,6 +132,9 @@ AbstractScene* RESULT::Update()
 		return new STAGE_SELECT();
 	}
 
+	if (effect_timer[0] < 180) { effect_timer[0]++; }
+	if (string_effect_timer < 10.0f) { string_effect_timer += 0.1f; }
+
 	return this;
 }
 
@@ -163,6 +171,19 @@ void RESULT::Draw() const {
 		DrawStringToHandle(GetDrawCenterX(dis_clear_time, time_font,-20), 410, dis_clear_time, 0x1aff00, time_font, 0xFFFFFF);
 
 		DrawFormatStringToHandle(GetDrawCenterX("%2d秒後にリスタートします",guid_font,120), 540, 0x56F590, guid_font, "%2d秒後にリスタートします", timer / 60);
+
+
+		if (high_score == true) {
+			const int x = 80;
+			const int y = 260;
+			const float size = 1.0f + string_effect_timer;
+			/*DrawOvalAA(x, y, 100, 80, 30, 0x000000, FALSE, 1.0F);
+			DrawOvalAA(x, y, 99, 79, 30, 0xFFFFFF, TRUE, 0.0F);*/
+			DrawStringToHandle(x, y, "新記録", 0xFAF300, menu_font, 0xFFFFFF);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 75 + effect_timer[0]);
+			//DrawExtendStringToHandle(x, y, size, size, "新記録", 0xFAF300, menu_font, 0xFFFFFF);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		}
 	}
 
 	if (guide_timer < 50)

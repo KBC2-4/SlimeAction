@@ -14,6 +14,8 @@ private:
 	int clear_time;
 	int se_randnum;
 	int effect_timer[2];
+	float string_effect_timer;
+	bool high_score;
 
 public:
 	RESULT(bool issue, int clear_time = -1, const char* stage_name = "StageSelect");
