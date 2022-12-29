@@ -189,7 +189,7 @@ void TOMATO::Draw()const
 	//‰æ–ÊŠO‚Éo‚½‚ç•`‰æ‚µ‚È‚¢
 	if ((x + stage->GetScrollX() > -IMAGE_SIZE) && (x + stage->GetScrollX() < 1280 + IMAGE_SIZE))
 	{
-		DrawRotaGraph(x + stage->GetScrollX(), y + stage->GetScrollY(), image_rate, 0, now_image, TRUE);
+		DrawRotaGraphF(x + stage->GetScrollX(), y + stage->GetScrollY(), image_rate, 0, now_image, TRUE);
 	}
 
 }

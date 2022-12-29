@@ -280,7 +280,7 @@ void PLAYER::Draw(STAGE* stage)const {
 
 	//ƒ{[ƒ‹‚Ì‹O“¹‚Ì•`‰æ
 	for (int i = 0; i < throw_x.size(); i += 5) {
-		DrawGraph(throw_x[i], throw_y[i], throw_ball_image, TRUE);
+		DrawGraphF(throw_x[i], throw_y[i], throw_ball_image, TRUE);
 	}
 }
 
