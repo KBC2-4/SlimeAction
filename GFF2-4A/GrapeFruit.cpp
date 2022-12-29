@@ -237,7 +237,7 @@ void GRAPEFRUIT::Update()
 void GRAPEFRUIT::Move()
 {
 	//‰º‚Ö—Ž‚¿‚é
-	y += 5;
+	y += 10;
 	//’e‚Ìƒtƒ‰ƒO‚ðFALSE‚Ö
 	for (int i = 0; i < 3; i++)
 	{

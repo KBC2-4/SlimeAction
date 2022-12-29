@@ -186,7 +186,7 @@ void LEMON::Update()
 
 void LEMON::Move()
 {
-	y += 5;
+	y += 10;
 }
 
 void LEMON::Hit()
