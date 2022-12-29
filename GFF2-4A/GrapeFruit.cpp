@@ -61,6 +61,9 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	if ((press_se = LoadSoundMem("Resource/Sounds/SE/Enemy/press.wav")) == -1) {
 		throw "Resource/Sounds/SE/Enemy/press.wav";
 	}
+	if ((splash_se = LoadSoundMem("Resource/Sounds/SE/Enemy/splash.wav")) == -1) {
+		throw "Resource/Sounds/SE/Enemy/splash.wav";
+	}
 	shootcount = 0;
 	target_x = 200;
 
@@ -77,8 +80,9 @@ GRAPEFRUIT::GRAPEFRUIT(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	this->stage = stage;
 	bullet_count = 3;
 
-	ChangeVolumeSoundMem(Option::GetSEVolume(), damage_se);
+	ChangeVolumeSoundMem(static_cast<int>(Option::GetSEVolume() * 1.2), damage_se);
 	ChangeVolumeSoundMem(static_cast<int>(Option::GetSEVolume() * 0.9), press_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), splash_se);
 
 }
 
@@ -98,14 +102,16 @@ GRAPEFRUIT::~GRAPEFRUIT()
 
 	DeleteSoundMem(damage_se);
 	DeleteSoundMem(press_se);
+	DeleteSoundMem(splash_se);
 
 }
 //アップデート
 void GRAPEFRUIT::Update()
 {
 
-	ChangeVolumeSoundMem(Option::GetSEVolume(), damage_se);
+	ChangeVolumeSoundMem(static_cast<int>(Option::GetSEVolume() * 1.2), damage_se);
 	ChangeVolumeSoundMem(static_cast<int>(Option::GetSEVolume() * 0.9), press_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), splash_se);
 
 	//アニメーションの時間を加算
 	if (animation_timer < 80) {
@@ -286,7 +292,7 @@ void GRAPEFRUIT::Hit()
 			state = ENEMY_STATE::DETH;
 			animation_timer = 0;
 			animation_type = 0;
-
+			PlaySoundMem(splash_se, DX_PLAYTYPE_BACK);
 		}
 	}
 }

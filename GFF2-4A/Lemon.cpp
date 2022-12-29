@@ -48,6 +48,9 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 	if ((press_se = LoadSoundMem("Resource/Sounds/SE/Enemy/press.wav")) == -1) {
 		throw "Resource/Sounds/SE/Enemy/press.wav";
 	}
+	if ((splash_se = LoadSoundMem("Resource/Sounds/SE/Enemy/splash.wav")) == -1) {
+		throw "Resource/Sounds/SE/Enemy/splash.wav";
+	}
 	shootcount = 0;
 
 	bullet = nullptr;
@@ -57,9 +60,9 @@ LEMON::LEMON(PLAYER* player, STAGE* stage, int spawn_y, int spawn_x)
 
 	now_image = image[3];
 	state = ENEMY_STATE::IDOL;
-	ChangeVolumeSoundMem(Option::GetSEVolume(), damage_se);
+	ChangeVolumeSoundMem(static_cast<int>(Option::GetSEVolume() * 1.2), damage_se);
 	ChangeVolumeSoundMem(static_cast<int>(Option::GetSEVolume() * 0.9), press_se);
-
+	ChangeVolumeSoundMem(Option::GetSEVolume(), splash_se);
 }
 
 
@@ -80,13 +83,15 @@ LEMON::~LEMON()
 
 	DeleteSoundMem(damage_se);
 	DeleteSoundMem(press_se);
+	DeleteSoundMem(splash_se);
 }
 
 void LEMON::Update()
 {
 
-	ChangeVolumeSoundMem(Option::GetSEVolume(), damage_se);
+	ChangeVolumeSoundMem(static_cast<int>(Option::GetSEVolume() * 1.2), damage_se);
 	ChangeVolumeSoundMem(static_cast<int>(Option::GetSEVolume() * 0.9), press_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume(), splash_se);
 
 	if (animation_timer < 80) {
 		++animation_timer;
@@ -223,7 +228,7 @@ void LEMON::Hit()
 			state = ENEMY_STATE::DETH;
 			animation_timer = 0;
 			animation_type = 0;
-
+			PlaySoundMem(splash_se, DX_PLAYTYPE_BACK);
 		}
 	}
 }

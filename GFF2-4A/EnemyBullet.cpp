@@ -1,6 +1,6 @@
 #include "EnemyBullet.h"
 #include <math.h>
-
+#include"Option.h"
 
 //コンストラクタ
 ENEMY_BULLET::ENEMY_BULLET()
@@ -36,6 +36,7 @@ ENEMY_BULLET::ENEMY_BULLET()
 	image_index = 0;
 	animation_timer = 0;
 	animation_type = 0;
+	splash_se = 0;
 	for (int i = 0; i < 4; i++)
 	{
 		bullet_images[i] = 0;
@@ -56,6 +57,9 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 	if (LoadDivGraph("Resource/images/Enemy/Bullet_End.png", 20, 10, 2, 60, 30, bullet_end_images) == -1)
 	{
 		throw "Resource/Images/Enemy/Bullet_End.png";
+	}
+	if ((splash_se = LoadSoundMem("Resource/Sounds/SE/Enemy/bullet.wav")) == -1) {
+		throw "Resource/Sounds/SE/Enemy/bullet.wav";
 	}
 	player = argu_player;
 	if (player->GetMoveX() > 0)
@@ -107,6 +111,8 @@ ENEMY_BULLET::ENEMY_BULLET(PLAYER* argu_player, STAGE* aug_stage, int x, int y, 
 
 	bullet_sx = dis_x / hypote * BULLET_SPEED;
 	bullet_sy = dis_y / hypote * BULLET_SPEED;
+
+	ChangeVolumeSoundMem(Option::GetSEVolume(), splash_se);
 }
 
 ENEMY_BULLET::~ENEMY_BULLET() {
@@ -119,7 +125,7 @@ ENEMY_BULLET::~ENEMY_BULLET() {
 		DeleteGraph(bullet_end_images[i]);
 	}
 
-
+	DeleteSoundMem(splash_se);
 }
 
 //描画
@@ -235,6 +241,7 @@ void ENEMY_BULLET::Hit()
 	}
 	if (stage->HitMapDat(map_y, map_x))
 	{
+		PlaySoundMem(splash_se, DX_PLAYTYPE_BACK);
 		end_flg = true;
 		animation_timer = 0;
 		animation_type = 0;

@@ -6,6 +6,9 @@ class TOMATO :
 private:
 	int spawn_map_x;		//スポーン地点(x)
 	int spawn_map_y;		//スポーン地点(y)
+
+	int splash_se;		//弾けるときのSE
+
 	int now_image;			//現在の画像
 	double image_rate;			//画像サイズ
 	const int ANIMATION_TIME = 5;	//アニメーションの切り替え時間
