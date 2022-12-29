@@ -70,25 +70,25 @@ void DRAW_RANKING::Draw() const
 
 	for (int i = 0; i < 3; i++)
 	{
-		DrawFormatStringToHandle(320, 320 + (75 * i), 0xFF8C00, title_font,  "%dステージ :", i+1);
+		DrawFormatStringToHandle(360, 320 + (75 * i), 0xFF8C00, title_font,  "%dステージ :", i+1);
 		if (best_time[i] != -1)
 		{
 			if (best_time[i] / 1000 >= 60)
 			{
-				DrawFormatStringToHandle(650, 325 + (75 * i), 0xFF8C00, time_font, "%4d:%02d.%.3d", (best_time[i] / 1000) / 60, (best_time[i] / 1000) % 60, best_time[i] % 1000);
+				DrawFormatStringToHandle(690, 325 + (75 * i), 0xFF8C00, time_font, "%4d:%02d.%.3d", (best_time[i] / 1000) / 60, (best_time[i] / 1000) % 60, best_time[i] % 1000);
 			}
 			else 
 			{
-				DrawFormatStringToHandle(705, 325 + (75 * i), 0xFF8C00, time_font, "%4d.%.3d", best_time[i] / 1000, best_time[i] % 1000);
+				DrawFormatStringToHandle(745, 325 + (75 * i), 0xFF8C00, time_font, "%4d.%.3d", best_time[i] / 1000, best_time[i] % 1000);
 			}
 		}
 		
 	}
 	if (wait_time % 120 < 60)
 	{
-		DrawCircleAA(413.0f, 630.0f, 30, 28, 0x000000, 1);
-		DrawStringToHandle(395, 602, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, title_font);
-		DrawStringToHandle(450, 600, "でタイトルに戻る", 0x000000,title_font);
+		DrawCircleAA(393.0f, 630.0f, 30, 28, 0xFFFFFF, 1);
+		DrawStringToHandle(375, 602, Option::GetInputMode() ? "B" : "A", Option::GetInputMode() ? B_COLOR : A_COLOR, title_font);
+		DrawStringToHandle(430, 600, "でタイトルに戻る", 0xFFFFFF,title_font);
 	}
 	SetFontSize(-1);
 }
