@@ -388,7 +388,7 @@ void STAGE_SELECT::Draw() const
 
 	//チュートリアル
 	if (lemoner[0] != nullptr) {
-		const int x = 31;
+		const int x = 18;
 		const int x_map = x * MAP_CEllSIZE + +stage->GetScrollX();
 		const int y_map = stage_move[1].y - MAP_CEllSIZE + stage->GetScrollY();
 		if ((player_map_x >= x * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= x * MAP_CEllSIZE + (MAP_CEllSIZE * 3) / 2)) {
