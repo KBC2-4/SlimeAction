@@ -220,7 +220,7 @@ GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 	}
 	else if (stage_name == "Stage02") {
 		PlaySoundMem(background_music[1], DX_PLAYTYPE_LOOP);
-		ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[1]);
+		ChangeVolumeSoundMem(Option::GetBGMVolume() * 0.9, background_music[1]);
 	}
 	else if (stage_name == "Stage03") {
 		PlaySoundMem(background_music[2], DX_PLAYTYPE_LOOP);
@@ -459,7 +459,7 @@ AbstractScene* GAMEMAIN::Update()
 					ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[0]);
 				}
 				else if (stage_name == "Stage02") {
-					ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[1]);
+					ChangeVolumeSoundMem(Option::GetBGMVolume() * 0.9, background_music[1]);
 				}
 				else if (stage_name == "Stage03") {
 					ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music[2]);
