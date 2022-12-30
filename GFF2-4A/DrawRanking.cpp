@@ -70,16 +70,16 @@ void DRAW_RANKING::Draw() const
 
 	for (int i = 0; i < 3; i++)
 	{
-		DrawFormatStringToHandle(360, 320 + (75 * i), 0xFF8C00, title_font,  "%dステージ :", i+1);
+		DrawFormatStringToHandle(330, 320 + (75 * i), 0xFF8C00, title_font,  "%dステージ :", i+1);
 		if (best_time[i] != -1)
 		{
 			if (best_time[i] / 1000 >= 60)
 			{
-				DrawFormatStringToHandle(690, 325 + (75 * i), 0xFF8C00, time_font, "%4d:%02d.%.3d", (best_time[i] / 1000) / 60, (best_time[i] / 1000) % 60, best_time[i] % 1000);
+				DrawFormatStringToHandle(660, 325 + (75 * i), 0xFF8C00, time_font, "%4d:%02d.%.3d", (best_time[i] / 1000) / 60, (best_time[i] / 1000) % 60, best_time[i] % 1000);
 			}
 			else 
 			{
-				DrawFormatStringToHandle(745, 325 + (75 * i), 0xFF8C00, time_font, "%4d.%.3d", best_time[i] / 1000, best_time[i] % 1000);
+				DrawFormatStringToHandle(715, 325 + (75 * i), 0xFF8C00, time_font, "%4d.%.3d", best_time[i] / 1000, best_time[i] % 1000);
 			}
 		}
 		
