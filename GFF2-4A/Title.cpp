@@ -69,7 +69,7 @@ Title::Title()
 
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
-	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.2, ok_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.3, exit_se);
 }
 
@@ -97,7 +97,7 @@ AbstractScene* Title::Update()
 
 		//SE
 		ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
-		ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+		ChangeVolumeSoundMem(Option::GetSEVolume() * 1.2, ok_se);
 		ChangeVolumeSoundMem(Option::GetSEVolume() * 1.3, exit_se);
 	}
 	else {

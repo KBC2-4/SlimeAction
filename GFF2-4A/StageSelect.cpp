@@ -108,7 +108,7 @@ STAGE_SELECT::STAGE_SELECT()
 
 	//BGM
 	ChangeVolumeSoundMem(Option::GetBGMVolume(), background_music);
-	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.2, ok_se);
 }
 
 STAGE_SELECT::~STAGE_SELECT()

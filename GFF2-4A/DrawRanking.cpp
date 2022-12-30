@@ -29,7 +29,7 @@ DRAW_RANKING::DRAW_RANKING()
 		throw "Resource/Sounds/SE/ok.wav";
 	}
 
-	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.2, ok_se);
 }
 
 DRAW_RANKING::~DRAW_RANKING() {

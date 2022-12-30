@@ -63,7 +63,7 @@ RESULT::RESULT(bool issue, int clear_time, const char* stage_name)
 
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume(), count_se);
-	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.2, ok_se);
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, good_se[se_randnum]);
 
 	PlaySoundMem(background_music, DX_PLAYTYPE_BACK, FALSE);

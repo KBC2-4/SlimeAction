@@ -6,7 +6,7 @@ class PAUSE
 private:
 	int pause_graph;
 	int pause_effect_timer;
-	int cursor_move_se,ok_se;
+	int cursor_move_se,ok_se, memu_open_se, memu_close_se;
 	int menu_font, title_font, buttonguid_font;
 	int selectmenu;
 	int input_margin;

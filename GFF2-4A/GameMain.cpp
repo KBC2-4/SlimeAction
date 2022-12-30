@@ -467,7 +467,7 @@ AbstractScene* GAMEMAIN::Update()
 
 				//SE
 				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
-				ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.2, ok_se);
 				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, count_se);
 				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, start_se);
 				ChangeVolumeSoundMem(Option::GetSEVolume() * 1.5, clear_se);

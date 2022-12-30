@@ -53,7 +53,7 @@ GameOver::GameOver(const char* stage_name)
 
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.3, bad_se[se_randnum]);
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
-	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.2, ok_se);
 
 	PlaySoundMem(background_music, DX_PLAYTYPE_BACK, FALSE);
 	PlaySoundMem(bad_se[se_randnum], DX_PLAYTYPE_BACK, FALSE);

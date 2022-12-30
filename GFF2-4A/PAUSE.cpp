@@ -12,6 +12,14 @@ PAUSE::PAUSE() {
 	if ((ok_se = LoadSoundMem("Resource/Sounds/SE/ok.wav")) == -1) {
 		throw "Resource/Sounds/SE/ok.wav";
 	}
+
+	if ((memu_open_se = LoadSoundMem("Resource/Sounds/SE/pause_open.wav")) == -1) {
+		throw "Resource/Sounds/SE/ok.wav";
+	}
+
+	if ((memu_close_se = LoadSoundMem("Resource/Sounds/SE/pause_close.wav")) == -1) {
+		throw "Resource/Sounds/SE/ok.wav";
+	}
 	menu_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 80, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	title_font = CreateFontToHandle("UD デジタル 教科書体 N-B", 140, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, 8);
 	buttonguid_font = CreateFontToHandle("メイリオ", 23, 1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
@@ -24,7 +32,9 @@ PAUSE::PAUSE() {
 
 	//SE
 	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
-	ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.2, ok_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.3, memu_open_se);
+	ChangeVolumeSoundMem(Option::GetSEVolume() * 1.3, memu_close_se);
 
 	option = new Option();
 }
@@ -37,6 +47,8 @@ PAUSE::~PAUSE() {
 	DeleteFontToHandle(buttonguid_font);
 	DeleteSoundMem(cursor_move_se);
 	DeleteSoundMem(ok_se);
+	DeleteSoundMem(memu_open_se);
+	DeleteSoundMem(memu_close_se);
 
 	DeleteGraph(pause_graph);
 }
@@ -47,12 +59,14 @@ int PAUSE::Update(void) {
 
 	//STARTボタンでポーズ
 	if ((PAD_INPUT::GetNowKey() == XINPUT_BUTTON_START) && (PAD_INPUT::GetPadState() == PAD_STATE::ON)) {
+		
 		if (pause_flg == true) {
+			PlaySoundMem(memu_close_se, DX_PLAYTYPE_BACK, TRUE);
 			//デリート処理
 			DeleteGraph(pause_graph);
 			pause_graph = 0;
 			pause_effect_timer = 0;
-		}
+		}else{ PlaySoundMem(memu_open_se, DX_PLAYTYPE_BACK, TRUE); }
 		SetPause();
 	}
 
@@ -67,7 +81,9 @@ int PAUSE::Update(void) {
 		}
 
 		ChangeVolumeSoundMem(Option::GetSEVolume() * 1.6, cursor_move_se);
-		ChangeVolumeSoundMem(Option::GetSEVolume(), ok_se);
+		ChangeVolumeSoundMem(Option::GetSEVolume() * 1.2, ok_se);
+		ChangeVolumeSoundMem(Option::GetSEVolume() * 1.3, memu_open_se);
+		ChangeVolumeSoundMem(Option::GetSEVolume() * 1.3, memu_close_se);
 
 		if (option->GetOptionFlg() == true) {
 			option->Update();
