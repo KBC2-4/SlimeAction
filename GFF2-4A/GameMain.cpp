@@ -5,6 +5,8 @@
 #include "Option.h"
 #include "StageSelect.h"
 
+//#define DEBUG_PV
+
 GAMEMAIN::GAMEMAIN(bool restart, int halfway_time, const char* stage_name)
 {
 	ChangeFontType(DX_FONTTYPE_ANTIALIASING_4X4);
@@ -485,30 +487,30 @@ AbstractScene* GAMEMAIN::Update()
 	}
 	else {
 
-
+#ifdef DEBUG_PV
 		//PV制作用（完成次第即座に消去）
 
-		//プレイヤー表示・非表示
-		if (CheckHitKey(KEY_INPUT_N)) {
-			player_visible = !player_visible;
+			//プレイヤー表示・非表示
+			if (CheckHitKey(KEY_INPUT_N)) {
+				player_visible = !player_visible;
 
-			if (player_visible) {
-				player->SetVisible(true);
+				if (player_visible) {
+					player->SetVisible(true);
+				}
+				else {
+					player->SetVisible(false);
+				}
 			}
-			else {
-				player->SetVisible(false);
-			}
-		}
 
 		//スクロールスピードダウン
-		else if (CheckHitKey(KEY_INPUT_M)) {
-			if (scroll_speed > 0) { scroll_speed--; }
-		}
+			else if (CheckHitKey(KEY_INPUT_M)) {
+				if (scroll_speed > 0) { scroll_speed--; }
+			}
 
 		//スクロールスピードアップ
-		else if (CheckHitKey(KEY_INPUT_L)) {
-			scroll_speed++;
-		}
+			else if (CheckHitKey(KEY_INPUT_L)) {
+				scroll_speed++;
+			}
 		input_margin = 0;
 	}
 
@@ -526,11 +528,12 @@ AbstractScene* GAMEMAIN::Update()
 		if (stage->GetScrollX() > 0 || stage->GetScrollX() <= -(80 * static_cast<int>(stage->GetMapSize().x - 1280))) {
 			stage->SetScrollX(stage->GetScrollX() - scroll_speed * 3);
 		}
+#endif // DEBUG_PV
 	}
 
 
 	return this;
-}
+	}
 
 void GAMEMAIN::Draw() const
 {

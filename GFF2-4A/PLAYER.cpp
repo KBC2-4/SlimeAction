@@ -6,7 +6,7 @@
 #include "Option.h"
 
 //デバッグ無効化
-//#define _NDEBUG
+//#define _DEBUG
 
 /*コンストラクタ*/
 PLAYER::PLAYER(STAGE* stage) {
@@ -574,7 +574,7 @@ void PLAYER::HookMove(ELEMENT* element, STAGE* stage) {
 /// プレイヤーのジャンプ処理
 /// </summary>
 void PLAYER::JumpMove() {
-#ifndef _NDEBUG
+#ifdef _DEBUG
 	if (PAD_INPUT::GetNowKey() == XINPUT_BUTTON_Y || CheckHitKey(KEY_INPUT_SPACE))return;		//デバッグ用
 #endif
 	//Aボタンを押したとき

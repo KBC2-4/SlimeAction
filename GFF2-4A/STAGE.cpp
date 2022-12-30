@@ -12,7 +12,7 @@
 #include "RESULT.h"
 #include "Option.h"
 
-#define _DEBUG
+//#define _DEBUG
 
 /// <summary>
 /// コンストラクタ

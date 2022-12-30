@@ -6,6 +6,8 @@
 
 #define callout_backcolor 0xFFFFFF
 
+//#define DEBUG_STAGE
+
 STAGE_SELECT::STAGE_SELECT()
 {
 	//background_image[0] = LoadGraph("Resource/Images/Stage/BackImpause_cash.bmp");
@@ -138,7 +140,7 @@ AbstractScene* STAGE_SELECT::Update()
 		//ok_seが鳴り終わってから画面推移する。
 		while (CheckSoundMem(ok_se)) {}
 		StartJoypadVibration(DX_INPUT_PAD1, OK_VIBRATION_POWER, OK_VIBRATION_TIME, -1);
-		return new Title(); 
+		return new Title();
 	}
 
 	player->Update(element, stage, nullptr, 0);
@@ -198,16 +200,18 @@ AbstractScene* STAGE_SELECT::Update()
 		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { StageIn(); return new GAMEMAIN(false, 0, "Stage03"); }
 	}
 
-
+#ifdef DEBUG_STAGE
 	//旧ステージ1
 	if ((player_map_x >= 11 * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= 11 * MAP_CEllSIZE + (MAP_CEllSIZE * 3) / 2)) {
 		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { StageIn(); return new GAMEMAIN(false, 0, "Stage04"); }
 	}
 
+
 	//デバッグステージ
 	if ((player_map_x >= 2 * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= 2 * MAP_CEllSIZE + (MAP_CEllSIZE * 3) / 2)) {
 		if (PAD_INPUT::GetNowKey() == (Option::GetInputMode() ? XINPUT_BUTTON_B : XINPUT_BUTTON_A)) { StageIn(); return new GAMEMAIN(false, 0, "DebugStage"); }
 	}
+#endif // DEBUG_STAGE
 
 	//ガイドの表示タイマー
 	if (guid_timer < 100) { guid_timer++; }
@@ -269,7 +273,7 @@ void STAGE_SELECT::Draw() const
 
 	const int guid_x = 600;
 	{//BACKボタン：タイトルへ戻る
-		
+
 		const int start_x = guid_x - 600;
 		const int start_y = 665;
 
@@ -289,7 +293,7 @@ void STAGE_SELECT::Draw() const
 
 		DrawStringToHandle(start_x, start_y - 18, "タイトルへ", guid_color, move_to_title_font, 0x000000);
 
-		
+
 	}
 
 	{//ジョイスティック：移動
@@ -360,7 +364,7 @@ void STAGE_SELECT::Draw() const
 	if ((player_map_x >= stage_move[3].x - MAP_CEllSIZE / 2) && (player_map_x <= stage_move[3].x + (MAP_CEllSIZE * 3) / 2)) {
 		DrawStageGuid("３ステージ", stage_move[3].x, stage_move[3].y, stagename_font, 0x9511D9, -1, 0, 0, callout_backcolor);
 	}
-
+#ifdef DEBUG_STAGE
 	//旧ステージ1
 	if ((player_map_x >= 11 * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= 11 * MAP_CEllSIZE + (MAP_CEllSIZE * 3) / 2)) {
 		//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
@@ -375,10 +379,12 @@ void STAGE_SELECT::Draw() const
 		DrawStageGuid("４ステージ", 11 * MAP_CEllSIZE, stage_move[1].y, stagename_font, 0x4F56F8, -1, 0, 0, callout_backcolor);
 	}
 
+
 	//デバッグステージ
 	if ((player_map_x >= 2 * MAP_CEllSIZE - MAP_CEllSIZE / 2) && (player_map_x <= 2 * MAP_CEllSIZE + (MAP_CEllSIZE * 3) / 2)) {
 		DrawStageGuid("５ステージ", 2 * MAP_CEllSIZE, stage_move[1].y, stagename_font, 0xD90B8B, -1, 0, 0, callout_backcolor);
 	}
+#endif // DEBUG_STAGE
 
 	//チュートリアル
 	if (lemoner[0] != nullptr) {
