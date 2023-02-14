@@ -210,13 +210,13 @@ public:
 	/// プレイヤーの画面内X座標のGetter
 	/// </summary>
 	/// <returns>float型：プレイヤーの画面内X座標</returns>	
-	float GetPlayerX() { return player_x + stage->GetScrollX(); }
+	float GetPlayerX() { return player_x /*+ stage->GetScrollX()*/; }
 
 	/// <summary>
 	/// プレイヤーの画面内Y座標のGetter
 	/// </summary>
 	/// <returns>float型：プレイヤーの画面内Y座標</returns>	
-	float GetPlayerY() { return player_y + stage->GetScrollY(); }
+	float GetPlayerY() { return player_y /*+ stage->GetScrollY()*/; }
 
 	/// <summary>
 	/// プレイヤーの画面内旧X座標のGetter

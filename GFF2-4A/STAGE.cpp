@@ -12,7 +12,7 @@
 #include "RESULT.h"
 #include "Option.h"
 
-//#define _DEBUG
+#define _DEBUG
 
 /// <summary>
 /// コンストラクタ
@@ -109,7 +109,7 @@ void STAGE::Draw(ELEMENT* element)const {
 		for (int j = 0; j < map_data.at(0).size(); j++) {
 			//if (map_data.at(i).at(j) == 72)DrawFormatString(100 + j * 20, 50, 0xffffff, "%d %d", i, j);
 			//画面外は描画しない
-			if (j * MAP_CEllSIZE + scroll_x >= -80 && j * MAP_CEllSIZE + scroll_x <= 1280 && i * MAP_CEllSIZE + scroll_y >= -80 && i * MAP_CEllSIZE + scroll_y <= 720) {
+			if (j * MAP_CEllSIZE - scroll_x >= -80 && j * MAP_CEllSIZE - scroll_x <= 1280 && i * MAP_CEllSIZE - scroll_y >= -80 && i * MAP_CEllSIZE - scroll_y <= 720) {
 				if (
 					map_data.at(i).at(j) != 68		//マンホール(上)
 					&& map_data.at(i).at(j) != 62	 //ボタン
@@ -134,20 +134,20 @@ void STAGE::Draw(ELEMENT* element)const {
 						////89～90番台を描画しない
 						|| map_data.at(i).at(j) >= 100 && map_data.at(i).at(j) != 777)
 					) {
-					DrawGraphF(j * MAP_CEllSIZE + scroll_x, i * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE);
+					DrawGraphF(j * MAP_CEllSIZE - scroll_x, i * MAP_CEllSIZE - scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE);
 				}
 			}
 			//レモナーとグレポンはツルだけ描画する
-			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraphF(j * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
-			if (map_data.at(i).at(j) == 101) { DrawExtendGraphF((j - 1) * MAP_CEllSIZE + scroll_x, (i - 1) * MAP_CEllSIZE + scroll_y, (j + 1) * MAP_CEllSIZE + scroll_x, (i + 1) * MAP_CEllSIZE + scroll_y, block_image1[100], TRUE); }
+			if (map_data.at(i).at(j) == 91 || map_data.at(i).at(j) == 92) { DrawGraphF(j * MAP_CEllSIZE - scroll_x, (i - 1) * MAP_CEllSIZE - scroll_y, block_image1[map_data.at(i).at(j) - 1], TRUE); }
+			if (map_data.at(i).at(j) == 101) { DrawExtendGraphF((j - 1) * MAP_CEllSIZE - scroll_x, (i - 1) * MAP_CEllSIZE - scroll_y, (j + 1) * MAP_CEllSIZE - scroll_x, (i + 1) * MAP_CEllSIZE - scroll_y, block_image1[100], TRUE); }
 		}
 	}
 
 	//中間地点　描画
 	//中間地点がない場合は描画しない。
 	if (halfwaypointbox.x != 0) {
-		if (halfwaypoint == false) { DrawGraphF(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[88], TRUE); }
-		else { DrawGraphF(halfwaypointbox.x + scroll_x, halfwaypointbox.y + scroll_y, block_image1[89], TRUE); }
+		if (halfwaypoint == false) { DrawGraphF(halfwaypointbox.x - scroll_x, halfwaypointbox.y - scroll_y, block_image1[88], TRUE); }
+		else { DrawGraphF(halfwaypointbox.x - scroll_x, halfwaypointbox.y - scroll_y, block_image1[89], TRUE); }
 	}
 
 }
@@ -253,99 +253,102 @@ int STAGE::GetMapData(int y, int x) {
 /// ステージスクロール関数
 /// </summary>
 void STAGE::CameraWork(PLAYER* player, ELEMENT* element) {
-	int scroll_speedY = 7;
-	//プレイヤーxベクトルの判定
-	if (player->GetPlayerX() > player_x_old) {
-		player_vector_x = 1;
-	}
-	else if (player->GetPlayerX() < player_x_old) {
-		player_vector_x = -1;
-	}
+	scroll_x = player->GetPlayerX() - MAP_CEllSIZE * 4;
+	scroll_y = player->GetPlayerY() - MAP_CEllSIZE * 6;
 
-	//プレイヤーyベクトルの判定
-	if (player->GetPlayerY() < player_y_old) {
-		player_vector_y = 1;
-	}
-	else if (player->GetPlayerY() > player_y_old) {
-		player_vector_y = -1;
-		//scroll_speedY = 10;
-	}
-	scroll_speed_x = player->GetPlayerSpeed();
-	if (player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK) {
-		scroll_speed_x = fabsf(player->GetPlayerHookSpeed());
-	}
-	//x軸スクロール
-	//if (element->HitLift(player)) { scroll_speed_x = element->GetLift_SpeedX(); }
-	if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
-		scroll_x -= scroll_speed_x * player_vector_x;
-		if (scroll_x > 0 || scroll_x <= -(80 * static_cast<int>(map_data.at(0).size()) - 1280)) {
-			scroll_x += scroll_speed_x * player_vector_x;
-		}
-	}
+	//int scroll_speedY = 7;
+	////プレイヤーxベクトルの判定
+	//if (player->GetPlayerX() > player_x_old) {
+	//	player_vector_x = 1;
+	//}
+	//else if (player->GetPlayerX() < player_x_old) {
+	//	player_vector_x = -1;
+	//}
 
-	//y軸スクロール
-	//if ((player_vector_y > 0 && player->GetPlayerY() <= 240 || player_vector_y < 0 && (scroll_y > 0 && map_data.size() <= 14) || (scroll_y > -720 && map_data.size() > 14)) && player_y_old != player->GetPlayerY()) {
-	//	scroll_y += scroll_speedY * player_vector_y;
-	//	if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
-	//		scroll_y -= scroll_speedY * player_vector_y;
+	////プレイヤーyベクトルの判定
+	//if (player->GetPlayerY() < player_y_old) {
+	//	player_vector_y = 1;
+	//}
+	//else if (player->GetPlayerY() > player_y_old) {
+	//	player_vector_y = -1;
+	//	//scroll_speedY = 10;
+	//}
+	//scroll_speed_x = player->GetPlayerSpeed();
+	//if (player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK) {
+	//	scroll_speed_x = fabsf(player->GetPlayerHookSpeed());
+	//}
+	////x軸スクロール
+	////if (element->HitLift(player)) { scroll_speed_x = element->GetLift_SpeedX(); }
+	//if ((player_vector_x > 0 && player->GetPlayerX() >= 620 || player_vector_x < 0 && player->GetPlayerX() <= 660) && player_x_old != player->GetPlayerX()) {
+	//	scroll_x -= scroll_speed_x * player_vector_x;
+	//	if (scroll_x > 0 || scroll_x <= -(80 * static_cast<int>(map_data.at(0).size()) - 1280)) {
+	//		scroll_x += scroll_speed_x * player_vector_x;
 	//	}
 	//}
 
+	////y軸スクロール
+	////if ((player_vector_y > 0 && player->GetPlayerY() <= 240 || player_vector_y < 0 && (scroll_y > 0 && map_data.size() <= 14) || (scroll_y > -720 && map_data.size() > 14)) && player_y_old != player->GetPlayerY()) {
+	////	scroll_y += scroll_speedY * player_vector_y;
+	////	if (scroll_y > 0/* || scroll_x <= -(80 * static_cast<int>(map_data.size()) - 720)*/) {
+	////		scroll_y -= scroll_speedY * player_vector_y;
+	////	}
+	////}
 
-	//x軸スクロールを元にy座標バージョンを作成
-	//if ((player_vector_y > 0 && player->GetPlayerY() >= 620 || player_vector_y < 0 && player->GetPlayerY() <= 300)) {
-	//	scroll_y -= 5 * player_vector_y;
-	//	//if (scroll_y > 0 || scroll_y <= -(80 * static_cast<int>(map_data.size()) - 720)) {
-	//	//	scroll_y += 5 * player_vector_y;
-	//	//}
-	//}
 
-	if (++count_timer % 60 == 0)player_longold = player->GetPlayerY();
+	////x軸スクロールを元にy座標バージョンを作成
+	////if ((player_vector_y > 0 && player->GetPlayerY() >= 620 || player_vector_y < 0 && player->GetPlayerY() <= 300)) {
+	////	scroll_y -= 5 * player_vector_y;
+	////	//if (scroll_y > 0 || scroll_y <= -(80 * static_cast<int>(map_data.size()) - 720)) {
+	////	//	scroll_y += 5 * player_vector_y;
+	////	//}
+	////}
 
-	//スポーン地点を基準に上げる位置を決める
-	//if (scroll_y + player->GetPlayerY() < 0 && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) { scroll_y += scroll_speed_y; }
-	//else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
-	//	if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().y + 400)) {
+	//if (++count_timer % 60 == 0)player_longold = player->GetPlayerY();
+
+	////スポーン地点を基準に上げる位置を決める
+	////if (scroll_y + player->GetPlayerY() < 0 && player->GetPlayerY() <= spawn_point.y - player->GetPlayerY() + 400 && player->GetPlayerMoveState() != PLAYER_MOVE_STATE::HOOK) { scroll_y += scroll_speed_y; }
+	////else if (scroll_y + player->GetPlayerY() < player->GetPlayerY()) {
+	////	if (scroll_y >= (-MAP_CEllSIZE * static_cast<int>(map_data.size()) + 721) && (player->GetPlayerY() > GetSpawnPoint().y + 400)) {
+	////		//プレイヤーの落下速度に応じてスクロールYを下げる
+	////		if (player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
+	////	}
+	////	if ((player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK || player->GetPlayerMoveState() == PLAYER_MOVE_STATE::GROW_HOOK) && player->GetPlayerY() > 500.0f) {
+	////		scroll_y -= 5;
+	////	}
+	////}
+
+
+	////マンホールの下にいった時	
+	////if (-scroll_y + player->GetPlayerY() > player->GetPlayerY())scroll_y--;
+	////for(unsigned int i=scroll_y )
+
+	////スクロールY-720とプレイヤーY520の誤差が200になるまで
+
+
+
+	//if (player->GetPlayerY() >= 560 &&player->GetPlayerY()-scroll_y<=map_data.size()*MAP_CEllSIZE&& GetMapData((player->GetPlayerY() - scroll_y) / MAP_CEllSIZE + 3, (player->GetPlayerX() - scroll_x) / MAP_CEllSIZE) != -1) {
+	//	if (player->GetPlayerMoveState() == PLAYER_MOVE_STATE::FALL) {
 	//		//プレイヤーの落下速度に応じてスクロールYを下げる
 	//		if (player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
 	//	}
-	//	if ((player->GetPlayerMoveState() == PLAYER_MOVE_STATE::HOOK || player->GetPlayerMoveState() == PLAYER_MOVE_STATE::GROW_HOOK) && player->GetPlayerY() > 500.0f) {
+	//	else {
 	//		scroll_y -= 5;
 	//	}
 	//}
+	//else if (player->GetPlayerY() <= 320) {
+	//	scroll_y += 5;
+	//}
 
-
-	//マンホールの下にいった時	
-	//if (-scroll_y + player->GetPlayerY() > player->GetPlayerY())scroll_y--;
-	//for(unsigned int i=scroll_y )
-
-	//スクロールY-720とプレイヤーY520の誤差が200になるまで
-
-
-
-	if (player->GetPlayerY() >= 560 &&player->GetPlayerY()-scroll_y<=map_data.size()*MAP_CEllSIZE&& GetMapData((player->GetPlayerY() - scroll_y) / MAP_CEllSIZE + 3, (player->GetPlayerX() - scroll_x) / MAP_CEllSIZE) != -1) {
-		if (player->GetPlayerMoveState() == PLAYER_MOVE_STATE::FALL) {
-			//プレイヤーの落下速度に応じてスクロールYを下げる
-			if (player->GetJumpVelocity() > 0)scroll_y -= player->GetJumpVelocity();
-		}
-		else {
-			scroll_y -= 5;
-		}
-	}
-	else if (player->GetPlayerY() <= 320) {
-		scroll_y += 5;
-	}
-
-	if (player_x_old != player->GetPlayerX()) {
-		player_x_old = player->GetPlayerX();
-	}
-	else {
-		player_vector_x = 0;
-	}
-	if (player_y_old != player->GetPlayerY()) {
-		player_y_old = player->GetPlayerY();
-	}
-	else player_vector_y = 0;
+	//if (player_x_old != player->GetPlayerX()) {
+	//	player_x_old = player->GetPlayerX();
+	//}
+	//else {
+	//	player_vector_x = 0;
+	//}
+	//if (player_y_old != player->GetPlayerY()) {
+	//	player_y_old = player->GetPlayerY();
+	//}
+	//else player_vector_y = 0;
 }
 
 /// <summary>
